@@ -20,10 +20,10 @@ var parser = (function(){
 		name: '    名称',
 		value: '流通市值',
 		reason: '涨停原因类别' + '[' + 
-				getDateStr(new Date()) +
+				getDateStr(Configure.date) +
 				']',
 		dayNumber: '连续涨停天数' + '[' + 
-				getDateStr(new Date()) +
+				getDateStr(Configure.date) +
 				']' 
 	};
 	var init = function(data) {
