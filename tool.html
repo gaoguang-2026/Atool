@@ -5,12 +5,39 @@
     <title>涨停板分析工具</title>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
     <script src="https://cdn.bootcss.com/xlsx/0.11.5/xlsx.core.min.js"></script>
+	<style>
+	   #tbl{border-collapse:collapse;margin-top:5px;width:1200px;}
+	   table,th,td{border:1px solid #000;}
+	   th,td{text-align:center;}
+	</style>
 </head>
 <body>
-<input type="file" id="excel-file">
-<div id="window"></div>
-<script src="./config.js"> </script>
-<script src="./parser.js"> </script>
-<script src="./startup.js"> </script>
+	<input type="file" id="excel-file">
+	<div id="window"></div>
+	<form name="form1">
+		概念：<input type="number" name="gainian" id="gainian"/><br/>
+		类型：<input type="radio" name="gtype"/>首板
+		<input type="radio" name="gtype" checked="checked"/>连板<br/>
+		排序：<input type="radio" name="sort" checked="checked"/>得分
+		<input type="radio" name="sort"/>高度<br/>
+		<input type="button" id='btn' value="确定"/>
+	</form>
+	<table id='tbl'>
+		<thead>
+		  <tr>
+			<th>代码</th>
+			<th>名称</th>
+			<th>流通市值</th>
+			<th>涨停原因</th>
+			<th>连板</th>
+			<th>得分</th>
+		  </tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+	<script src="./config.js"> </script>
+	<script src="./parser.js"> </script>
+	<script src="./startup.js"> </script>
 </body>
 </html>
