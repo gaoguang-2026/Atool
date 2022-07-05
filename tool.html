@@ -13,14 +13,16 @@
 </head>
 <body>
 	<input type="file" id="excel-file">
+	<input id="date" type="date"  min="2022-07-04">
 	<div id="window"></div>
-	<form name="form1">
+	<form id="form1">
 		概念：<input type="number" name="gainian" id="gainian"/><br/>
 		类型：<input type="radio" name="gtype"/>首板
-		<input type="radio" name="gtype" checked="checked"/>连板<br/>
+		<input type="radio" name="gtype" checked="checked"/>连板
+		<input type="radio" name="gtype" />默认<br/>
 		排序：<input type="radio" name="sort" checked="checked"/>得分
 		<input type="radio" name="sort"/>高度<br/>
-		<input type="button" id='btn' value="确定"/>
+	<!--	<input type="button" id='btn' value="确定"/> -->
 	</form>
 	<table id='tbl'>
 		<thead>

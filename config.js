@@ -8,14 +8,14 @@ var Configure = (function(){
 	
 	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
 	
-	var getDateStr = function(d) {   // ex. 20220704
+	var getDateStr = function(d, separator='') {   // ex. 20220704
 		var month = d.getMonth() + 1 < 10 ?
 					'0' + (d.getMonth() + 1) : 
 					d.getMonth() + 1;
 		var day = d.getDate() < 10 ? 
 					'0' + d.getDate() :
 					d.getDate();
-		return d.getFullYear() + month + day;
+		return d.getFullYear()+ separator + month + separator + day;
 	};
 	
 	var title = {

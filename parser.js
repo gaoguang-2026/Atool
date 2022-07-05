@@ -51,7 +51,7 @@ var parser = (function(){
 		arr.forEach((a) => {   // a = ['猪肉'， 13]
 			if (a[1].times > Configure.MIN_KAINIAN) {
 				txt += '【' + (++index) + '】' + 
-					a[0] + '  ' + a[1].times + '  ' + a[1].weight + '   \t\r\n';
+					a[0] + '  ' + a[1].times + '    score:' + a[1].weight + '   \t\r\n';
 			}
 		});
 		return txt;
@@ -59,7 +59,7 @@ var parser = (function(){
 	
 	//param : {gainian: '4', type: 1, sort: 0}
 	/*gainian  热点概念排序的索引 
-	/*type  0 首板 ， 1 连板
+	/*type  0 首板 ， 1 连板 , 2 all
 	/*sort  0 得分 ， 1 高度
 	/*
 	//*/
@@ -74,13 +74,17 @@ var parser = (function(){
 			}
 			
 		});
-								
-		var retArr = this.tickets.filter((t)=>{
-			//
-			return obj.type === 1 ? t[Configure.title.dayNumber] > 1 : 
-								t[Configure.title.dayNumber] == 1;
-		});
+			
+		// type
+		var retArr = this.tickets;
+		if (obj.type !== 2) {
+			retArr= this.tickets.filter((t)=>{
+				return obj.type === 1 ? t[Configure.title.dayNumber] > 1 : 
+									t[Configure.title.dayNumber] == 1;
+			});			
+		}
 		
+		// gainian
 		var sortGainian = getRedianGainian();
 		var curGaiNian = sortGainian && sortGainian[obj.gainian - 1] ?
 						sortGainian[obj.gainian - 1] : null;
@@ -93,12 +97,18 @@ var parser = (function(){
 		return retArr;
 	};
 	
+	var clear = function() {
+		tickets = {};
+		gaiNian = new Map();
+	};
+	
 	return {
 		tickets: tickets,
 		init: init,
 		getRedianGainian: getRedianGainian,
 		getRedianGainiantxt:getRedianGainiantxt,
 		getTickets: getTickets,
-		getDateStr: Configure.getDateStr
+		getDateStr: Configure.getDateStr,
+		clear:clear
 	}
 })();
