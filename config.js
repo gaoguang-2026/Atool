@@ -32,6 +32,22 @@ var Configure = (function(){
 		score:'score'                //根据reasion 算出来的评分
 	};
 	
+	var title2 = {
+		date: '日期',
+		erban: '二板数',
+		high:'高度',
+		lianban:'连板',
+		jinji:'连板晋级率',
+		lianbanzhishu:'连板指数',
+		ma5:'5日线',
+		beili:'背离率',
+		sz:'SZ'
+	}
+	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
+	var SZ_zero = 3200;    // sz 0轴坐标
+	var SZ_MaxOffset = 200;   // 纵轴
+	var winFactor = 0.4;    // 两个窗口的比率
+	
 	return {
 		date: date,
 		debug: debug,
@@ -39,6 +55,11 @@ var Configure = (function(){
 		MIN_KAINIAN:MIN_KAINIAN,
 		HIGH_factor:HIGH_factor,
 		title:title,
+		title2:title2,
+		MAX_BEILI:MAX_BEILI,
+		SZ_zero:SZ_zero,
+		SZ_MaxOffset:SZ_MaxOffset,
+		winFactor:winFactor,
 		getDateStr:getDateStr
 	}	
 })();

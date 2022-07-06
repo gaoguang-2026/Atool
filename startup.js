@@ -85,32 +85,26 @@
 	//	}
 	};
 	
-	var workbook;    // 存储所有的表
+	var drawimage = function() {
+		var sheet = workbook.getSheet('情绪');
+		console.log(sheet);
+		canvas.init(document.getElementById("drawing"), sheet);
+		canvas.draw();
+	};
+	
 	var loadData = function() {
 		//re-configure , Design defects 
 		Configure.date = new Date($('#date')[0].value.replace('-', ',').replace('-', ','));
 		Configure.title.reason = '涨停原因类别' + '[' + parser.getDateStr(Configure.date) + ']';
 		Configure.title.dayNumber = '连续涨停天数' + '[' + parser.getDateStr(Configure.date) + ']';
-		// 表格的表格范围，可用于判断表头是否数量是否正确
-        var fromTo = '';
-		var persons = [];  // 存储要使用的表
-        // 遍历每张表读取
-        for (var sheet in workbook.Sheets) {
-			console.log(sheet + '  date:' + parser.getDateStr(Configure.date));
-            if (workbook.Sheets.hasOwnProperty(sheet) &&
-				(parser.getDateStr(Configure.date)+'').includes(sheet)) {
-				fromTo = workbook.Sheets[sheet]['!ref'];
-                console.log(fromTo);
-                persons = persons.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]));
-                //  break; // 如果只取第一张表，就取消注释这行
-            }
-        }
-            //在控制台打印出来表格中的数据
-            console.log(persons);
-			parser.clear();
-			parser.init(persons);
-			display(parser.getRedianGainiantxt());			
-			createTable();
+
+		var persons = workbook.getSheet(parser.getDateStr(Configure.date));
+        //在控制台打印出来表格中的数据
+        console.log(persons);
+		parser.clear();
+		parser.init(persons);
+		display(parser.getRedianGainiantxt());			
+		createTable();
 	};
 	
 	$('#date').val(parser.getDateStr(Configure.date, '-'));
@@ -131,14 +125,15 @@
 			console.log('load done!');
             try {
                 var data = ev.target.result
-                workbook = XLSX.read(data, {
+                workbook.Book(XLSX.read(data, {
                     type: 'binary'
-                }) // 以二进制流方式读取得到整份excel表格对象
+                })); // 以二进制流方式读取得到整份excel表格对象
             } catch (e) {
                 console.log('文件类型不正确');
                 return;
             }
 			loadData();
+			drawimage();
         };
         // 以二进制方式打开文件
         fileReader.readAsBinaryString(files[0]);
