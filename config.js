@@ -41,12 +41,16 @@ var Configure = (function(){
 		lianbanzhishu:'连板指数',
 		ma5:'5日线',
 		beili:'背离率',
-		sz:'SZ'
+		sz:'SZ',
+		gaiNianRank:'热点概念'   // 记录当天热点概念
 	}
 	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
 	var SZ_zero = 3200;    // sz 0轴坐标
 	var SZ_MaxOffset = 200;   // 纵轴
 	var winFactor = 0.4;    // 两个窗口的比率
+	
+	var Min_weight = 10;    //draw概念的条件
+	var Max_weight = 30;
 	
 	return {
 		date: date,
@@ -60,6 +64,8 @@ var Configure = (function(){
 		SZ_zero:SZ_zero,
 		SZ_MaxOffset:SZ_MaxOffset,
 		winFactor:winFactor,
+		Min_weight:Min_weight,
+		Max_weight:Max_weight,
 		getDateStr:getDateStr
 	}	
 })();

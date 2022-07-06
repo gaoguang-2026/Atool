@@ -1,11 +1,24 @@
 var parser = (function(){
-	var tickets;   // 所有股票
+	var tickets = [];   // 所有股票
 	var gaiNian = new Map();   // 所有概念  元素【概念，{times，weight}】:['猪肉'， {13, 0.24}]
+	
+	var dateToload;
 		
-	var init = function(data) {
-		this.tickets = data;
+	var loadSheet = function(dateStr = Configure.getDateStr(Configure.date)) {
+		//避免重复加载
+		if(dateStr == dateToload || !workbook.getSheet(dateStr)) {
+			return;
+		};
+		clear();
+		dateToload = dateStr;
+		tickets = workbook.getSheet(dateStr);
+		// 主动更新表头
+		Configure.title.reason = '涨停原因类别' + '[' + dateStr + ']';
+		Configure.title.dayNumber = '连续涨停天数' + '[' + dateStr + ']';
+		///////
+		
 		var totalscored = 0;      // 出现次数*该股票的连扳数*Configure.HIGH_factor，做后面计算权重的分母
-		this.tickets.forEach((ticket) => {
+		tickets.forEach((ticket) => {
 			var reasons = ticket[Configure.title.reason].split('+');
 			reasons.forEach((r) => {
 				if (gaiNian.has(r)) {
@@ -20,11 +33,11 @@ var parser = (function(){
 				totalscored += ticket[Configure.title.dayNumber] * Configure.HIGH_factor;
 			});
 		});
-		console.log(totalscored);
-		console.log(gaiNian);
+	//	console.log(totalscored);
+	//	console.log(gaiNian);
 
 		//根据概念的权重计算每只股票的得分
-		this.tickets.forEach((ticket) => {
+		tickets.forEach((ticket) => {
 			var reasons = ticket[Configure.title.reason].split('+');
 			ticket[Configure.title.score] = 0;   //初始化
 			reasons.forEach((r) => {
@@ -35,18 +48,19 @@ var parser = (function(){
 		
 	};
 	
-	var getRedianGainian = function() {
+	var getRedianGainian = function(dateStr) {
+		loadSheet(dateStr);
 		var gaiNianArr = Array.from(gaiNian);
 		gaiNianArr.sort((a, b)=> {
-			return b[1].times - a[1].times;
+			return b[1].weight - a[1].weight;
 		});
 		return gaiNianArr;
 	};
 	
-	var getRedianGainiantxt = function() {
+	var getRedianGainiantxt = function(dateStr) {
 		var txt = '热点概念排名：';
 		var index = 0;
-		var arr = getRedianGainian();
+		var arr = getRedianGainian(dateStr);
 
 		arr.forEach((a) => {   // a = ['猪肉'， 13]
 			if (a[1].times > Configure.MIN_KAINIAN) {
@@ -63,10 +77,11 @@ var parser = (function(){
 	/*sort  0 得分 ， 1 高度
 	/*
 	//*/
-	var getTickets = function(obj) {      
+	var getTickets = function(dateStr, obj) {      
 		console.log(obj);
+		loadSheet(dateStr);
 		// sort
-		this.tickets.sort((a, b) => {
+		tickets.sort((a, b) => {
 			if (obj && obj.sort == 1) {
 				return b[Configure.title.dayNumber] - a[Configure.title.dayNumber];
 			} else {
@@ -76,16 +91,16 @@ var parser = (function(){
 		});
 			
 		// type
-		var retArr = this.tickets;
+		var retArr = tickets;
 		if (obj.type !== 2) {
-			retArr= this.tickets.filter((t)=>{
+			retArr= tickets.filter((t)=>{
 				return obj.type === 1 ? t[Configure.title.dayNumber] > 1 : 
 									t[Configure.title.dayNumber] == 1;
 			});			
 		}
 		
 		// gainian
-		var sortGainian = getRedianGainian();
+		var sortGainian = getRedianGainian(dateStr);
 		var curGaiNian = sortGainian && sortGainian[obj.gainian - 1] ?
 						sortGainian[obj.gainian - 1] : null;
 		console.log(curGaiNian);
@@ -98,17 +113,15 @@ var parser = (function(){
 	};
 	
 	var clear = function() {
-		tickets = {};
+		tickets = [];
 		gaiNian = new Map();
 	};
 	
 	return {
 		tickets: tickets,
-		init: init,
 		getRedianGainian: getRedianGainian,
 		getRedianGainiantxt:getRedianGainiantxt,
 		getTickets: getTickets,
-		getDateStr: Configure.getDateStr,
-		clear:clear
+		getDateStr: Configure.getDateStr
 	}
 })();

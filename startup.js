@@ -33,7 +33,7 @@
 				sort: fr.sort[0].checked ? 0 : 1
 			};
 
-			var tks = parser.getTickets(param);
+			var tks = parser.getTickets(parser.getDateStr(Configure.date),param);
 			console.log(tks);
 			tks.forEach((ticket)=> {
 				var tr = document.createElement('tr');
@@ -95,15 +95,13 @@
 	var loadData = function() {
 		//re-configure , Design defects 
 		Configure.date = new Date($('#date')[0].value.replace('-', ',').replace('-', ','));
-		Configure.title.reason = '涨停原因类别' + '[' + parser.getDateStr(Configure.date) + ']';
-		Configure.title.dayNumber = '连续涨停天数' + '[' + parser.getDateStr(Configure.date) + ']';
+	//	Configure.title.reason = '涨停原因类别' + '[' + parser.getDateStr(Configure.date) + ']';
+	//	Configure.title.dayNumber = '连续涨停天数' + '[' + parser.getDateStr(Configure.date) + ']';
 
-		var persons = workbook.getSheet(parser.getDateStr(Configure.date));
+	//	var persons = workbook.getSheet(parser.getDateStr(Configure.date));
         //在控制台打印出来表格中的数据
-        console.log(persons);
-		parser.clear();
-		parser.init(persons);
-		display(parser.getRedianGainiantxt());			
+     //   console.log(persons);
+		display(parser.getRedianGainiantxt(parser.getDateStr(Configure.date)));			
 		createTable();
 	};
 	
@@ -132,8 +130,8 @@
                 console.log('文件类型不正确');
                 return;
             }
-			loadData();
 			drawimage();
+			loadData();
         };
         // 以二进制方式打开文件
         fileReader.readAsBinaryString(files[0]);

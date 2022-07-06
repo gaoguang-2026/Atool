@@ -4,13 +4,21 @@
 	var Book = function(b){
 		Book = b
 	};
+	var sheetExist = function(name) {
+		for (var sheet in Book.Sheets) {
+			if (Book.Sheets.hasOwnProperty(sheet) && name.includes(sheet)) {
+				return true;
+			};
+		 }
+		return false;
+	};
+	
 	var getSheet = function(name) {
 		// 表格的表格范围，可用于判断表头是否数量是否正确
         var fromTo = '';
 		var persons = [];  // 存储要使用的表
         // 遍历每张表读取
         for (var sheet in Book.Sheets) {
-			console.log(sheet + '  date:' + name);
             if (Book.Sheets.hasOwnProperty(sheet) && name.includes(sheet)) {
 				fromTo = Book.Sheets[sheet]['!ref'];
                 console.log(fromTo);
@@ -22,6 +30,7 @@
 	};
 	return {
 		Book:Book,
-		getSheet:getSheet
+		getSheet:getSheet,
+		sheetExist:sheetExist
 	}
  })();
