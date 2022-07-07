@@ -21,20 +21,19 @@ var parser = (function(){
 		tickets.forEach((ticket) => {
 			var reasons = ticket[Configure.title.reason].split('+');
 			reasons.forEach((r) => {
+				var reasonWeight = ticket[Configure.title.dayNumber] * Configure.HIGH_factor;
 				if (gaiNian.has(r)) {
-					gaiNian.set(r, {times:gaiNian.get(r).times + 1,
-									weight:gaiNian.get(r).weight + 
-									ticket[Configure.title.dayNumber] * Configure.HIGH_factor});
+					gaiNian.set(r, {times:gaiNian.get(r).times + 1, weight: parseInt(gaiNian.get(r).weight + reasonWeight)});
 				} else {
 					// 初始化这个概念, 此时的weight保存次数*股票的连扳数之和
-					gaiNian.set(r, {times:1, 
-						weight:ticket[Configure.title.dayNumber] * Configure.HIGH_factor});           
+					gaiNian.set(r, {times:1, weight:parseInt(reasonWeight)});           
 				}
-				totalscored += ticket[Configure.title.dayNumber] * Configure.HIGH_factor;
+				totalscored += reasonWeight;
 			});
 		});
-	//	console.log(totalscored);
-	//	console.log(gaiNian);
+		totalscored = parseInt(totalscored);
+		console.log(totalscored);
+		console.log(gaiNian);
 
 		//根据概念的权重计算每只股票的得分
 		tickets.forEach((ticket) => {
@@ -54,7 +53,10 @@ var parser = (function(){
 		gaiNianArr.sort((a, b)=> {
 			return b[1].weight - a[1].weight;
 		});
-		return gaiNianArr;
+		var ret = gaiNianArr.filter((g)=> {
+			return g[1].times > Configure.MIN_KAINIAN;   //  过滤杂毛
+		});
+		return ret;
 	};
 	
 	var getRedianGainiantxt = function(dateStr) {
@@ -63,10 +65,8 @@ var parser = (function(){
 		var arr = getRedianGainian(dateStr);
 
 		arr.forEach((a) => {   // a = ['猪肉'， 13]
-			if (a[1].times > Configure.MIN_KAINIAN) {
-				txt += '【' + (++index) + '】' + 
-					a[0] + '  ' + a[1].times + '    score:' + a[1].weight + '   \t\r\n';
-			}
+			txt += '【' + (++index) + '】' + 
+				a[0] + '  ' + a[1].times + '    score:' + a[1].weight + '   \t\r\n';
 		});
 		return txt;
 	};

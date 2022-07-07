@@ -122,6 +122,9 @@ var canvas = (function(canvas) {
 		ctx.fillStyle = "black";
 		ctx.fillText('0', siteX + siteWidth + 10, siteY + siteHeight * (1- winFactor));
 		ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth, siteY);
+		ctx.fillStyle = "blue";
+		ctx.fillText('(' + Configure.Min_weight + ')', siteX + siteWidth + 10, siteY + siteHeight * (1- winFactor) + 15);
+		ctx.fillText('(' + Configure.Max_weight + ')', siteX + siteWidth, siteY + 15);
 		ctx.stroke(); 
 
 	};
@@ -143,6 +146,7 @@ var canvas = (function(canvas) {
 						
 			// 画背离率
 			ctx.fillStyle="black";
+			ctx.strokeStyle = "black";
 			var pointH = siteHeight * (1-winFactor) * parseFloat(Days[i][Configure.title2.beili])/Configure.MAX_BEILI;
 			var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
 						y: siteY + siteHeight*(1-winFactor) - pointH};	
@@ -158,14 +162,16 @@ var canvas = (function(canvas) {
 				var pointNextH = siteHeight * (1-winFactor) * parseFloat(Days[i + 1][Configure.title2.beili])/Configure.MAX_BEILI;
 				var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 								y: siteY + siteHeight*(1-winFactor) - pointNextH};
-				ctx.lineWidth="2";
-				ctx.strokeStyle = "black";
+				ctx.lineWidth="3";
 				ctx.moveTo(point.x, point.y);
 				ctx.lineTo(pointNext.x, pointNext.y);
 				ctx.stroke();
 			} else {
+				ctx.strokeStyle = "black";
+				ctx.fillStyle="black";
 				ctx.font="12px Times new Roman";
 				ctx.fillText(parseFloat(Days[i][Configure.title2.beili]) + '%', point.x + 10, point.y);
+				ctx.stroke();
 			}
 			
 			// 画SZ
@@ -199,14 +205,14 @@ var canvas = (function(canvas) {
 		ctx.beginPath();
 		ctx.fillStyle="blue";
 		for(i = 0; i < Days.length; i ++) {
+			var drawNameDone = false;	
 			var gaiaNainArr = Days[i][Configure.title2.gaiNianRank];
 			gaiaNainArr.forEach((g)=> {    //  g : [1, {times:11, weight:17}]
 				var pointH = siteHeight * (1-winFactor) * 
 								parseFloat(g[1].weight - Configure.Min_weight)/Configure.Max_weight;
 				var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
 						y: siteY + siteHeight*(1-winFactor) - pointH};	
-				ctx.fillRect(point.x, point.y, 2, 2);	
-				var isEnd = true;				
+		//		ctx.fillRect(point.x, point.y, 2, 2);				
 				if (i < Days.length - 1) {   // 不是最后一天
 					var gaiaNainArrNext = Days[i+1][Configure.title2.gaiNianRank];
 					
@@ -216,17 +222,18 @@ var canvas = (function(canvas) {
 									parseFloat(gNext[1].weight - Configure.Min_weight)/Configure.Max_weight;
 							var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 												y: siteY + siteHeight*(1-winFactor) - pointNextH};
-							ctx.lineWidth="2";
+							ctx.lineWidth="0.5";
 							ctx.strokeStyle = "blue";
 							ctx.moveTo(point.x, point.y);
 							ctx.lineTo(pointNext.x, pointNext.y);
 							ctx.stroke();
-							isEnd = false;
+							drawNameDone = true;
 						}
 					});
 				}
-				if (isEnd) {  // 没有连线，画名称
-					ctx.font="10px Times new Roman";
+				if (!drawNameDone) {  // 没有连线，画名称
+					drawNameDone = true;
+ 					ctx.font="10px Times new Roman";
 					ctx.fillText('<' + g[0] + '>', point.x + 10, point.y);
 				};
 			});
