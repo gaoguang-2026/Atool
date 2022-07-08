@@ -40,6 +40,11 @@ var Configure = (function(){
 		gaiNianRank:'热点概念'   // 记录当天热点概念
 	}
 	
+	var site_color = 'black';
+	var sz_color = 'purple';
+	var line_color = 'red';
+	var gainian_color = 'orange';
+	
 	var MIN_LB_NUMBER = 2;
 	var MIN_KAINIAN = 3;     // 最少出现的次数
 	
@@ -49,7 +54,7 @@ var Configure = (function(){
 	var SZ_MaxOffset = 200;   // 纵轴
 	var winFactor = 0.4;    // 两个窗口的比率
 	
-	var Min_weight = 8;    //draw概念的条件
+	var Min_weight = 10;    //draw概念的条件
 	var Max_weight = 30;
 	
 	return {
@@ -66,6 +71,10 @@ var Configure = (function(){
 		winFactor:winFactor,
 		Min_weight:Min_weight,
 		Max_weight:Max_weight,
+		site_color:site_color,
+		sz_color:sz_color,
+		line_color:line_color,
+		gainian_color:gainian_color,
 		getDateStr:getDateStr
 	}	
 })();
