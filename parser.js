@@ -13,10 +13,9 @@ var parser = (function(){
 		dateToload = dateStr;
 		tickets = workbook.getSheet(dateStr);
 		// 主动更新表头
-		Configure.title.reason = '涨停原因类别' + '[' + dateStr + ']';
-		Configure.title.dayNumber = '连续涨停天数' + '[' + dateStr + ']';
-		///////
+		Configure.updatetitle(dateStr);
 		
+		///////
 		var totalscored = 0;      // 出现次数*该股票的连扳数*Configure.HIGH_factor，做后面计算权重的分母
 		tickets.forEach((ticket) => {
 			var reasons = ticket[Configure.title.reason].split('+');
@@ -35,16 +34,42 @@ var parser = (function(){
 		console.log(totalscored);
 		console.log(gaiNian);
 
-		//根据概念的权重计算每只股票的得分
 		tickets.forEach((ticket) => {
+			//根据概念的权重计算每只股票的得分
 			var reasons = ticket[Configure.title.reason].split('+');
 			ticket[Configure.title.score] = 0;   //初始化
 			reasons.forEach((r) => {
 				ticket[Configure.title.score] += gaiNian.get(r).weight;
 			});
 			ticket[Configure.title.score] = parseInt(ticket[Configure.title.score]/totalscored * 1000);
+			
+			var dragon = dragons.getDragonStandard(ticket[Configure.title.dayNumber]);
+			// realValue 实际流通市值
+			ticket[Configure.title.realValue] = parseInt(ticket[Configure.title.value] * 
+											(100 - ticket[Configure.title.orgProportion])/100);
+			//实际流通市值背离率
+			ticket[Configure.title.realValueDivergence] = 
+					parseFloat((ticket[Configure.title.realValue] - dragon.realCirculateValue)/
+					dragon.realCirculateValue).toFixed(2);
+			//价格背离率
+			ticket[Configure.title.priceDivergence] = parseFloat((ticket[Configure.title.price] - dragon.price)/
+					dragon.price).toFixed(2);
+			// 实际换手率
+			ticket[Configure.title.realHandoverPercent] = parseFloat(ticket[Configure.title.handoverPercent] * ticket[Configure.title.value] /
+															ticket[Configure.title.realValue]).toFixed(2);
+			//筹码背离率  X10
+			ticket[Configure.title.profitDivergence] = ticket[Configure.title.profitProportion] - dragon.profitProportion > 0 ? 0 : 
+				parseFloat((ticket[Configure.title.profitProportion] - dragon.profitProportion)/dragon.profitProportion * 10).toFixed(2);
+			// 总背离率
+			ticket[Configure.title.totalDivergence] = parseFloat(Math.abs(ticket[Configure.title.realValueDivergence]) + 
+														Math.abs(ticket[Configure.title.priceDivergence]) + 
+														Math.abs(ticket[Configure.title.profitDivergence])).toFixed(2);
+			// 封板力度
+			ticket[Configure.title.boardStrength] = Configure.getBoardStrength(ticket[Configure.title.boardType], 
+									ticket[Configure.title.boardPercent],
+									ticket[Configure.title.boardTime]);
+
 		})
-		
 	};
 	
 	var getRedianGainian = function(dateStr) {

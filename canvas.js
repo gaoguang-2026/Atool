@@ -18,27 +18,6 @@ var canvas = (function(canvas) {
 	
 	var winFactor = Configure.winFactor;
 	
-	/**
-     * 格式化excel传递的时间
-     * @param numb 需转化的时间 43853
-     * @param format 分隔符 "-"
-     * @returns {string} 2020-1-22
-     */
-	var formatExcelDate = function(numb, format = "-") {
-		// 如果numb为空则返回空字符串
-		if (!numb) {
-			return "";
-		}
-		let time = new Date(new Date("1900-1-1").getTime() + (numb - 1) * 3600*24*1000);
-		const year = time.getFullYear() + '';
-		const month = time.getMonth() + 1 + '';
-		const date = time.getDate();
-		if (format && format.length === 1) {
-			return year + format + (month < 10 ? '0' + month : month) + format + (date < 10 ? '0' + date : date)
-		}
-		return year + (month < 10 ? '0' + month : month) + (date < 10 ? '0' + date : date)
-	}
-	
 	var init = function(c, sheet) {
 		drawing = c;
 		Days = sheet;
@@ -63,7 +42,7 @@ var canvas = (function(canvas) {
 					
 		// 通过parser分析出当天的热点概念
 		Days.forEach((d)=>{
-			var dateStr = formatExcelDate(d[Configure.title2.date], '');
+			var dateStr = Configure.formatExcelDate(d[Configure.title2.date], '');
 			if (workbook.sheetExist(dateStr)) {
 				var gainainArr = parser.getRedianGainian( dateStr );
 				d[Configure.title2.gaiNianRank] = gainainArr.filter((g)=>{
@@ -94,7 +73,7 @@ var canvas = (function(canvas) {
 			//	ctx.rotate(310*Math.PI/180);
 				ctx.font="12px Times new Roman";
 				ctx.fillStyle = Configure.site_color;
-				ctx.fillText(formatExcelDate(Days[i][Configure.title2.date], '').substr(4,4),
+				ctx.fillText(Configure.formatExcelDate(Days[i][Configure.title2.date], '').substr(4,4),
 					 siteX + cellWidth  * i, siteY + siteHeight + 20);
 			//	ctx.rotate(50*Math.PI/180);
 			}

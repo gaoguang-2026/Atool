@@ -28,9 +28,32 @@
         }
 		return persons;
 	};
+	
+	var getDateArr = function(sort) {
+		var sheet = getSheet('情绪');
+		var retArr = [];
+		sheet.forEach((d)=>{
+			 retArr.push(Configure.formatExcelDate(d[Configure.title2.date], ''));
+		});
+		return retArr.sort(sort);
+	};
+	
+	// param = {sheetName: '0707',ticketCode:'SZ002527'}}
+	var getValue = function(param) {
+		var s = getSheet(param.sheetName);
+		var ret ;
+		s.forEach((t)=>{
+			if(t[Configure.title.code] == param.ticketCode) {
+				ret = t;
+			}
+		})
+		return ret;
+	};
 	return {
 		Book:Book,
 		getSheet:getSheet,
-		sheetExist:sheetExist
+		sheetExist:sheetExist,
+		getDateArr:getDateArr,
+		getValue:getValue
 	}
  })();
