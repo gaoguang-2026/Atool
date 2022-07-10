@@ -33,8 +33,6 @@ var dragons = (function() {
 	};
 	
 	var getAverageValue = function() {
-		console.log(dragons);
-		
 		var priceArr = [];
 		var realCirculateValueArr = [];
 		var profitProportionArr = [];

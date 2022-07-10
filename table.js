@@ -39,9 +39,20 @@ var table = (function(){
 	}
 	var createTable = function (datetoload) {
 		var fr = document.getElementById('form1');
-		var gainian = fr.gainian;
+		var fr2 = document.getElementById('form2');
+		
+		var paramGainian = [];
+		if (fr2.gainian) {
+			fr2.gainian.forEach((input)=> {
+			if(input.checked) {
+					paramGainian.push(input.dataset.titleProp);
+				}
+			});
+		}
+
+	//	var gainian = fr.gainian;
 		var param = {
-			gainian: gainian.value,
+			gainianArr: paramGainian,
 			type: fr.gtype[2].checked ? 2 : 
 				fr.gtype[0].checked ? 0 : 1,   
 			sort: fr.sort[0].checked ? 0 : 1
@@ -50,8 +61,6 @@ var table = (function(){
 		var dateArr = workbook.getDateArr((a,b)=>{
 			return b - a;
 		});
-		console.log(tks);
-		console.log(dateArr);
 		createTableHead();
 		
 		// create body
@@ -100,6 +109,9 @@ var table = (function(){
 							}
 						}
 						Tip.show(td, txtshow);
+						break;
+					case 'reason':
+						Tip.show(td, parser.getHotpointtxt(datetoload));
 						break;
 					default:
 						break;

@@ -31,8 +31,6 @@ var parser = (function(){
 			});
 		});
 		totalscored = parseInt(totalscored);
-		console.log(totalscored);
-		console.log(gaiNian);
 
 		tickets.forEach((ticket) => {
 			//根据概念的权重计算每只股票的得分
@@ -72,7 +70,7 @@ var parser = (function(){
 		})
 	};
 	
-	var getRedianGainian = function(dateStr) {
+	var getHotpoint = function(dateStr) {
 		loadSheet(dateStr);
 		var gaiNianArr = Array.from(gaiNian);
 		gaiNianArr.sort((a, b)=> {
@@ -84,10 +82,10 @@ var parser = (function(){
 		return ret;
 	};
 	
-	var getRedianGainiantxt = function(dateStr) {
+	var getHotpointtxt = function(dateStr) {
 		var txt = '热点概念排名：';
 		var index = 0;
-		var arr = getRedianGainian(dateStr);
+		var arr = getHotpoint(dateStr);
 
 		arr.forEach((a) => {   // a = ['猪肉'， 13]
 			txt += '【' + (++index) + '】' + 
@@ -96,14 +94,13 @@ var parser = (function(){
 		return txt;
 	};
 	
-	//param : {gainian: '4', type: 1, sort: 0}
+	//param : {gainianArr: ['光伏','储能'], type: 1, sort: 0}
 	/*gainian  热点概念排序的索引 
 	/*type  0 首板 ， 1 连板 , 2 all
 	/*sort  0 得分 ， 1 高度
 	/*
 	//*/
 	var getTickets = function(dateStr, obj) {      
-		console.log(obj);
 		loadSheet(dateStr);
 		// sort
 		tickets.sort((a, b) => {
@@ -125,16 +122,41 @@ var parser = (function(){
 		}
 		
 		// gainian
-		var sortGainian = getRedianGainian(dateStr);
-		var curGaiNian = sortGainian && sortGainian[obj.gainian - 1] ?
-						sortGainian[obj.gainian - 1] : null;
-		console.log(curGaiNian);
-		if (curGaiNian) {
+		if (obj.gainianArr && obj.gainianArr.length != 0) {
 			retArr = retArr.filter((t)=>{
-				return t[Configure.title.reason].indexOf(curGaiNian[0]) != -1;
-			});		
+				var isSelect = false;
+				obj.gainianArr.forEach((g)=> {
+					if(t[Configure.title.reason].indexOf(g) != -1){
+						isSelect = true;
+					}
+				})
+				return isSelect;
+			});	
 		}
+	
 		return retArr;
+	};
+	
+	
+	// 根据hotpoint算出echelons
+	var getEchelons = function(dateStr) {
+		loadSheet(dateStr);
+		if (!gaiNian) return [];
+		var echelons = Configure.echelons;
+		echelons.forEach((echelon)=>{
+			echelon.score = 0;
+			echelon.hotPoints.forEach((hot)=>{
+				if (gaiNian.has(hot)) {
+					echelon.score += parseInt(gaiNian.get(hot).weight);
+				}
+			});
+		});
+		
+		console.log(echelons);
+		echelons.sort((a, b) => {
+			return b.score - a.score;
+		})
+		return echelons;
 	};
 	
 	var clear = function() {
@@ -144,9 +166,9 @@ var parser = (function(){
 	
 	return {
 		tickets: tickets,
-		getRedianGainian: getRedianGainian,
-		getRedianGainiantxt:getRedianGainiantxt,
+		getHotpoint: getHotpoint,
+		getHotpointtxt:getHotpointtxt,
 		getTickets: getTickets,
-		getDateStr: Configure.getDateStr
+		getEchelons:getEchelons
 	}
 })();

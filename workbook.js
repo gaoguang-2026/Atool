@@ -21,7 +21,6 @@
         for (var sheet in Book.Sheets) {
             if (Book.Sheets.hasOwnProperty(sheet) && name.includes(sheet)) {
 				fromTo = Book.Sheets[sheet]['!ref'];
-                console.log(fromTo);
                 persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[sheet]));
                 //  break; // 如果只取第一张表，就取消注释这行
             }

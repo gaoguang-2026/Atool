@@ -7,7 +7,6 @@ var canvas = (function(canvas) {
 	var height = 0;
 	var width_factor = 0.9;
 	var height_factor = 0.8;
-	
 	var siteX;
 	var siteY;
 	var siteHeight;
@@ -15,14 +14,13 @@ var canvas = (function(canvas) {
 	var cellWidth = 0;
 	//var cellHeight;
 	var cell_factor = 0.9;
+	var winFactor = 0.4;
 	
-	var winFactor = Configure.winFactor;
-	
-	var init = function(c, sheet) {
+	var init = function(c, sheet, winXfactor = 1) {
 		drawing = c;
 		Days = sheet;
 		
-		width = c.width;
+		width = c.width * winXfactor;
 		height = c.height;
 		
 		siteX = width * (1 - width_factor)/2;
@@ -44,7 +42,7 @@ var canvas = (function(canvas) {
 		Days.forEach((d)=>{
 			var dateStr = Configure.formatExcelDate(d[Configure.title2.date], '');
 			if (workbook.sheetExist(dateStr)) {
-				var gainainArr = parser.getRedianGainian( dateStr );
+				var gainainArr = parser.getHotpoint( dateStr );
 				d[Configure.title2.gaiNianRank] = gainainArr.filter((g)=>{
 					return g[1].weight > Configure.Min_weight;
 				});

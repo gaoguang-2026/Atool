@@ -1,50 +1,83 @@
-   //给input标签绑定change事件，一上传选中的.xls文件就会触发该函数
-	var display = function (text) {
-		var oDiv = document.getElementById("window");
-		//remove child
-		while(oDiv.hasChildNodes()) {
-			oDiv.removeChild(oDiv.lastChild);
-		};
-			
-        var oStrong = document.createElement("div");
-        var oTxt = document.createTextNode(text);
-		oStrong.appendChild(oTxt);
-        //将strong元素插入div元素（这个div在HTML已经存在）
-		oDiv.appendChild(oStrong);
-	};
-	
 
-	
 	var drawimage = function() {
 		var sheet = workbook.getSheet('情绪');
-		console.log(sheet);
-		canvas.init(document.getElementById("drawing"), sheet);
+		canvas.init(document.getElementById("drawing"), sheet, Configure.WinXFactor);
 		canvas.draw();
 	};
+	var drawEchelons = function(){
+		// 梯队
+		var elCanvas = document.getElementById("drawing")
+		var d = $('#date')[0].value.replace(/\-/g, '');	
+		var echelons = parser.getEchelons(d)
+		if (echelons.length >= Configure.Echelons_Draw_NUM){
+			for (var i = 0; i < Configure.Echelons_Draw_NUM; i ++) {
+				var rect = {x: elCanvas.width * Configure.WinXFactor + 
+									i * elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM, 
+								y:0,
+								width:elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM,
+							height:elCanvas.height};
+				let e1 = new window.Echelon(elCanvas, echelons[i], rect);
+				e1.draw();
+			}			
+		}
+	};
 	
-	var loadData = function() {
-		var d = $('#date')[0].value.replace(/\-/g, '');
-		display(parser.getRedianGainiantxt(d));			
+	var fillTicketsTable = function() {
+		var d = $('#date')[0].value.replace(/\-/g, '');	
 		table.createTable(d);
 	};
 	
-	$('#date').val(parser.getDateStr(Configure.date, '-'));
+	var updateForm = function() {
+		var fr = document.getElementById('form2');
+		while(fr.hasChildNodes()) {
+			fr.removeChild(fr.lastChild);
+		};
+		
+		var t = document.createTextNode('概念：');
+		fr.appendChild(t);	
+		var d = $('#date')[0].value.replace(/\-/g, '');	
+		var gaiNianArr = parser.getHotpoint(d);
+		
+		gaiNianArr.forEach((g)=>{
+			var oTxt = document.createTextNode(g[0]);
+			var input = document.createElement('input');
+			input.type = 'checkbox';
+			input.name = 'gainian';
+			input.checked = false;
+			input.dataset.titleProp = g[0];
+				
+			fr.appendChild(input);	
+			fr.appendChild(oTxt);			
+		});
+
+	};
 	
-	$('#date').change(function(e) {
-		console.log('date on change');
-		loadData();
-	});
+	$('#date').val(Configure.getDateStr(Configure.date, '-'));
+	var init = function() {
+		dragons.init();
+		updateForm();
+	};
 	
-	$('#form1').change(function(e) {
-		console.log('form1 on change');
-		loadData();
-	});
+	var addEvent = function() {
+		$('#date').change(function(e) {
+			fillTicketsTable();
+			updateForm();
+			drawEchelons();
+		});
+			
+		$('#form1').change(function(e) {
+			fillTicketsTable();
+		});
+		
+		$('#form2').change(function(e) {
+			fillTicketsTable();
+		});
+	};
 	
     $('#excel-file').change(function(e) {
         var files = e.target.files;
         var fileReader = new FileReader();
         fileReader.onload = function(ev) {
-			console.log('load done!');
             try {
                 var data = ev.target.result
                 workbook.Book(XLSX.read(data, {
@@ -54,9 +87,13 @@
                 console.log('文件类型不正确');
                 return;
             }
-			dragons.init();
+			init();
+			
 			drawimage();
-			loadData();
+			drawEchelons();
+			fillTicketsTable();
+			
+			addEvent();
         };
         // 以二进制方式打开文件
         fileReader.readAsBinaryString(files[0]);

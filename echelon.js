@@ -1,0 +1,177 @@
+'use strict';
+
+(function(exports){
+	
+	var points1 = [[1/2, 1/12],[1/4,3/12],[3/4, 3/12],[7/8, 3/12],[1/8, 3/12]];
+	var points2 = [[3/8, 5/12],[3/4, 7/12],[1/4, 7/12], [1/2, 7/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12]];
+	var points3 = [[3/8, 9/12],[5/8, 9/12],[1/8, 9/12], [1/2, 7/12],[1/4, 7/12], [3/4, 7/12], [7/8, 9/12]];
+	
+	var handOverBar_w = 12;
+	var handOverBar_h = 30;
+	
+	let Echelon = function (canvas, e, rect) {
+		this.canvas = canvas;
+		this.echelon = e;
+		this.rect = rect;
+		console.log(this.echelon);
+		console.log(this.rect);
+		
+		
+		this.tickets = [];
+		// 通过echelon选出股票
+		this.dateArr = workbook.getDateArr((a,b)=>{
+			return b - a;
+		});
+		
+		
+		for (i = 0; i < Configure.Echelons_tickit_period; i ++ ) {
+			var param = {
+				gainianArr: this.echelon.hotPoints,
+				type:1,
+				sort:1
+			}
+			var tArr = parser.getTickets(this.dateArr[i],param);
+			tArr = tArr.filter((t1)=>{
+				var isSelect = true;
+				this.tickets.forEach((t2)=> {
+					if(t2[Configure.title.code] == t1[Configure.title.code]){
+						isSelect = false;
+					}
+				})
+				
+				if(isSelect) {
+					t1.selectDate = this.dateArr[i];
+				}
+				return isSelect;
+			});
+			
+			this.tickets = this.tickets.concat(tArr);
+		};
+		
+		// 过滤掉背离率大于3的
+		this.tickets = this.tickets.filter((t)=>{
+			return t[Configure.title.totalDivergence] < 3;
+		});
+		
+		console.log(this.tickets);
+		// 按得分排序，减除多余的
+		this.tickets.sort((a, b)=> {
+			return b[Configure.title.score] - a[Configure.title.score];
+		});
+		this.tickets = this.tickets.slice(0,Configure.Echelons_ticket_NUM);
+		this.tickets.sort((a, b)=> {
+			return b[Configure.replaceTitleDate(Configure.title.dayNumber, b.selectDate)] - 
+				a[Configure.replaceTitleDate(Configure.title.dayNumber, a.selectDate)];
+		});
+		
+		console.log(this.tickets);
+		
+		
+	};
+	Echelon.prototype.getSitePoint = function (ticket) {
+		var ticketBoardNum = ticket[Configure.replaceTitleDate(Configure.title.dayNumber, ticket.selectDate)];
+		var retP;
+		if (ticketBoardNum >= 6) {
+			retP = points1[0];
+			points1 = points1.slice(1);
+		} else if (ticketBoardNum >= 3) {
+			retP = points2[0];
+			points2 = points2.slice(1);
+		} else {
+			retP = points3[0];
+			points3 = points3.slice(1);
+		}
+		return retP;
+	};
+	Echelon.prototype.drawBar = function(rect, realHandoverPer, boardStrength, alreadyKO) {
+		var ctx = this.canvas.getContext("2d");		
+		ctx.beginPath();
+		ctx.lineWidth="2";
+
+		if(parseFloat(realHandoverPer) < 100 && parseInt(realHandoverPer) > 0) {
+			if(boardStrength == '很强') {
+				ctx.fillStyle= 'red';
+			} else if (boardStrength == '强'){
+				ctx.fillStyle= 'orange';
+			} else if (boardStrength == '一般') {
+				ctx.fillStyle= '#E0E080';
+			} else if (boardStrength == '弱'){
+				ctx.fillStyle= 'green';
+			}
+			
+			var barHeight = rect.height * parseFloat(realHandoverPer)/100 * Configure.Echelons_handover_factor;
+			ctx.fillRect(rect.x, rect.y + rect.height - barHeight, rect.width * 0.9, barHeight);
+	//		ctx.fillStyle= 'black';			
+	//		ctx.fillText(realHandoverPer, rect.x + 100, rect.y + rect.height - barHeight);
+		} else {
+			ctx.fillStyle= 'grey';
+			ctx.fillRect(rect.x, rect.y, rect.width * 0.9, rect.height);	
+		}
+	};
+	Echelon.prototype.drawTicket = function (ticket, startPoint) {
+		// 获取其他日期的换手率
+		var index = parseInt(this.dateArr.indexOf(ticket.selectDate));
+		var drawLenth = index + 
+				parseInt(ticket[Configure.replaceTitleDate(Configure.title.dayNumber, ticket.selectDate)]);
+				
+		for (var i = drawLenth -1 ; i >= 0; i --) {
+			var param = {sheetName:this.dateArr[i],
+					ticketCode:ticket[Configure.title.code]};
+			var tkt = workbook.getValue(param);
+			var realHandoverPer = -1;
+			var boardStrength = '';
+			if (tkt) {
+				realHandoverPer = parseFloat(tkt[Configure.replaceTitleDate(Configure.title.handoverPercent, this.dateArr[i])] 
+										/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';
+				boardStrength = Configure.getBoardStrength(tkt[Configure.title.boardType], 
+									tkt[Configure.title.boardPercent],
+									tkt[Configure.title.boardTime]);
+										
+			}
+			
+			var barRect = {x: startPoint.x + (drawLenth - 1 - i) * handOverBar_w,
+							y: startPoint.y,
+							width: handOverBar_w,
+							height: handOverBar_h};
+			console.log('name： ' + ticket[Configure.title.name] + 
+						'  date:' + this.dateArr[i] + '  realHandoverPer: ' + realHandoverPer + 
+						'  boardStrength:' + boardStrength);
+			this.drawBar(barRect, realHandoverPer, boardStrength);
+		}
+		// 名字
+		var ctx = this.canvas.getContext("2d");		
+		ctx.beginPath();
+		if (index != 0) {
+			ctx.lineWidth="1";
+			ctx.font="12px Times new Roman";
+			ctx.fillStyle = 'black';
+		} else {
+			ctx.lineWidth="2";
+			ctx.font="14px Times new Roman";
+			ctx.fillStyle = 'red';
+		}
+		ctx.fillText(ticket[Configure.title.name], startPoint.x, startPoint.y - 8);
+	};
+	Echelon.prototype.draw = function () {
+		var ctx = this.canvas.getContext("2d");	
+		ctx.clearRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);
+		ctx.beginPath();
+		ctx.lineWidth="2";
+		ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";
+	//	ctx.strokeRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);	
+		
+		ctx.lineWidth="2";
+		ctx.font="16px Times new Roman";
+		ctx.fillStyle = 'red';
+		ctx.fillText(this.echelon.name, this.rect.x + 5, this.rect.y + 15);
+		
+		this.tickets.forEach((t)=>{
+			var p = this.getSitePoint(t);
+			this.drawTicket(t, {x : this.rect.x + this.rect.width * p[0],
+								y : this.rect.y + this.rect.height * p[1]});
+		});
+		
+	};
+	
+	exports.Echelon = Echelon;
+}(window));

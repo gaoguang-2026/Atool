@@ -153,6 +153,20 @@ var Configure = (function(){
 	var Min_weight = 10;    //draw概念的条件
 	var Max_weight = 30;
 	
+	// 左右窗口
+	var WinXFactor = 0.5;     //  左边窗口占比
+	
+	// echelon 
+	var echelons = [
+		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '锂电池']},
+		{name: '风光电储', hotPoints:['光伏', '电力', '储能','风电', 'HJT电池', '智能电网', '特高压']},
+		{name: '机器人', hotPoints:['机器人']}
+	];
+	var Echelons_Draw_NUM = 1;
+	var Echelons_tickit_period = 3;    // 选出股票的期限
+	var Echelons_ticket_NUM = 10;     // 画出来的数量
+	var Echelons_handover_factor = 2; // 换手放大便于观察
+	
 	return {
 		date: date,
 		debug: debug,
@@ -162,12 +176,17 @@ var Configure = (function(){
 		HIGH_factor:HIGH_factor,
 		title:title,
 		title2:title2,
+		echelons:echelons,
 		MAX_BEILI:MAX_BEILI,
 		SZ_zero:SZ_zero,
 		SZ_MaxOffset:SZ_MaxOffset,
-		winFactor:winFactor,
+		WinXFactor:WinXFactor,
 		Min_weight:Min_weight,
 		Max_weight:Max_weight,
+		Echelons_Draw_NUM:Echelons_Draw_NUM,
+		Echelons_tickit_period:Echelons_tickit_period,
+		Echelons_ticket_NUM:Echelons_ticket_NUM,
+		Echelons_handover_factor:Echelons_handover_factor,
 		site_color:site_color,
 		sz_color:sz_color,
 		line_color:line_color,
