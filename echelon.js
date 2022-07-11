@@ -25,7 +25,7 @@
 		for (i = 0; i < Configure.Echelons_tickit_period; i ++ ) {
 			var param = {
 				gainianArr: this.echelon.hotPoints,
-				type:1,
+				type:2,
 				sort:1
 			}
 			var tArr = parser.getTickets(this.dateArr[i],param);
@@ -142,7 +142,7 @@
 		if (index != 0) {
 			ctx.lineWidth="1";
 			ctx.font="12px Times new Roman";
-			ctx.fillStyle = 'black';
+			ctx.fillStyle = 'green';
 		} else {
 			ctx.lineWidth="2";
 			ctx.font="14px Times new Roman";
@@ -160,7 +160,7 @@
 		
 		ctx.lineWidth="2";
 		ctx.font="16px Times new Roman";
-		ctx.fillStyle = 'red';
+		ctx.fillStyle = 'orange';
 		ctx.fillText(this.echelon.name, this.rect.x + 5, this.rect.y + 15);
 		
 		this.tickets.forEach((t)=>{

@@ -36,11 +36,27 @@
 		};
 		
 		var t = document.createTextNode('概念：');
-		t
 		fr.appendChild(t);	
+		// all
+		var o = document.createTextNode('全部\xa0\xa0\xa0\xa0');
+		var inputAll = document.createElement('input');
+		inputAll.type = 'checkbox';
+		inputAll.name = 'all';
+		inputAll.checked = false;
+		inputAll.onchange = function(e){
+			if (e.target.checked) {
+				if (fr.gainian) {
+					fr.gainian.forEach((input)=>{
+						input.checked = false;
+					})
+				}
+			}
+		};
+		fr.appendChild(inputAll);	
+		fr.appendChild(o);			
+		
 		var d = $('#date')[0].value.replace(/\-/g, '');	
 		var gaiNianArr = parser.getHotpoint(d);
-		
 		gaiNianArr.forEach((g)=>{
 			var oTxt = document.createTextNode(g[0] + ' (' + g[1].times + ')\xa0\xa0\xa0\xa0');
 			var input = document.createElement('input');
@@ -48,6 +64,11 @@
 			input.name = 'gainian';
 			input.checked = false;
 			input.dataset.titleProp = g[0];
+			input.onchange = function(e){
+				if(e.target.checked) {
+					inputAll.checked = false;
+				}
+			}
 				
 			fr.appendChild(input);	
 			fr.appendChild(oTxt);			
