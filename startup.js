@@ -7,8 +7,10 @@
 	var drawEchelons = function(){
 		// 梯队
 		var elCanvas = document.getElementById("drawing")
-		var d = $('#date')[0].value.replace(/\-/g, '');	
-		var echelons = parser.getEchelons(d)
+		var dateArr = workbook.getDateArr((a,b)=>{
+				return b - a;
+			});
+		var echelons = parser.getEchelons(dateArr[0]);
 		if (echelons.length >= Configure.Echelons_Draw_NUM){
 			for (var i = 0; i < Configure.Echelons_Draw_NUM; i ++) {
 				var rect = {x: elCanvas.width * Configure.WinXFactor + 
@@ -34,12 +36,13 @@
 		};
 		
 		var t = document.createTextNode('概念：');
+		t
 		fr.appendChild(t);	
 		var d = $('#date')[0].value.replace(/\-/g, '');	
 		var gaiNianArr = parser.getHotpoint(d);
 		
 		gaiNianArr.forEach((g)=>{
-			var oTxt = document.createTextNode(g[0]);
+			var oTxt = document.createTextNode(g[0] + ' (' + g[1].times + ')\xa0\xa0\xa0\xa0');
 			var input = document.createElement('input');
 			input.type = 'checkbox';
 			input.name = 'gainian';
@@ -54,6 +57,8 @@
 	
 	$('#date').val(Configure.getDateStr(Configure.date, '-'));
 	var init = function() {
+		var dateArr = workbook.getDateArr(()=>{}, '-');
+		$('#date').val(dateArr[dateArr.length - 1]);
 		dragons.init();
 		updateForm();
 	};
@@ -62,7 +67,6 @@
 		$('#date').change(function(e) {
 			fillTicketsTable();
 			updateForm();
-			drawEchelons();
 		});
 			
 		$('#form1').change(function(e) {

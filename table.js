@@ -111,7 +111,7 @@ var table = (function(){
 						Tip.show(td, txtshow);
 						break;
 					case 'reason':
-						Tip.show(td, parser.getHotpointtxt(datetoload));
+		//				Tip.show(td, parser.getHotpointtxt(datetoload));
 						break;
 					default:
 						break;

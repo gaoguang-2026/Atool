@@ -53,30 +53,28 @@ var Configure = (function(){
 		var ret = '@~@';
 		switch (bType) {
 			case '一字板':
-				if (bPercent > 50) {
+				if (bPercent > 5) {
 					ret = '很强'
-				} else if (bPercent > 10){
-					ret = '强';
 				} else {
-					ret = '一般'
-				}
+					ret = '强';
+				} 
 				break;
 			case 'T字板':
-				if (bPercent > 80) {
+				if (bPercent > 20) {
 					ret = '很强'
-				} else if (bPercent > 40) {
-					ret = '强'
 				} else {
-					ret = '一般'
-				}
+					ret = '强'
+				} 
 				break;
 			case '换手板':
-				if (bPercent > 80 || bTime.substr(0,1) == '9') {
+				if (bPercent > 50) {
+					ret = '很强';
+				} else if (bPercent > 20 || bTime.substr(0,1) == '9') {
 					ret = '强';
-				} else if (bPercent > 20) {
-					ret = '一般';
-				} else {
+				} else if(bPercent < 5 || bTime.substr(0,2) == '14'){
 					ret = '弱';
+				} else {
+					ret = '一般';
 				}
 				break;
 			default:
@@ -142,7 +140,7 @@ var Configure = (function(){
 	var gainian_color = 'orange';
 	
 	var MIN_LB_NUMBER = 2;
-	var MIN_KAINIAN = 3;     // 最少出现的次数
+	var MIN_KAINIAN = 1;     // 最少出现的次数
 	
 	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
 	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
@@ -160,11 +158,12 @@ var Configure = (function(){
 	var echelons = [
 		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '锂电池']},
 		{name: '风光电储', hotPoints:['光伏', '电力', '储能','风电', 'HJT电池', '智能电网', '特高压']},
-		{name: '机器人', hotPoints:['机器人']}
+		{name: '机器人', hotPoints:['机器人']},
+		{name: '医药', hotPoints:['新冠预防药', '医药商业', '医药', '中药', '新冠治疗', '生物医药']}
 	];
-	var Echelons_Draw_NUM = 1;
+	var Echelons_Draw_NUM = 2;
 	var Echelons_tickit_period = 3;    // 选出股票的期限
-	var Echelons_ticket_NUM = 10;     // 画出来的数量
+	var Echelons_ticket_NUM = 8;     // 画出来的数量
 	var Echelons_handover_factor = 2; // 换手放大便于观察
 	
 	return {

@@ -28,11 +28,11 @@
 		return persons;
 	};
 	
-	var getDateArr = function(sort) {
+	var getDateArr = function(sort, separator = '') {
 		var sheet = getSheet('情绪');
 		var retArr = [];
 		sheet.forEach((d)=>{
-			 retArr.push(Configure.formatExcelDate(d[Configure.title2.date], ''));
+			 retArr.push(Configure.formatExcelDate(d[Configure.title2.date], separator));
 		});
 		return retArr.sort(sort);
 	};

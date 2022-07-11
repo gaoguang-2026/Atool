@@ -1,11 +1,6 @@
 'use strict';
 
-(function(exports){
-	
-	var points1 = [[1/2, 1/12],[1/4,3/12],[3/4, 3/12],[7/8, 3/12],[1/8, 3/12]];
-	var points2 = [[3/8, 5/12],[3/4, 7/12],[1/4, 7/12], [1/2, 7/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12]];
-	var points3 = [[3/8, 9/12],[5/8, 9/12],[1/8, 9/12], [1/2, 7/12],[1/4, 7/12], [3/4, 7/12], [7/8, 9/12]];
-	
+(function(exports){	
 	var handOverBar_w = 12;
 	var handOverBar_h = 30;
 	
@@ -16,7 +11,10 @@
 		console.log(this.echelon);
 		console.log(this.rect);
 		
-		
+		this.points1 = [[1/2, 1/12],[1/4,3/12],[3/4, 3/12],[7/8, 3/12],[1/8, 3/12]];
+		this.points2 = [[3/8, 5/12],[3/4, 7/12],[1/4, 7/12], [1/2, 7/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12]];
+		this.points3 = [[3/8, 9/12],[5/8, 9/12],[1/8, 9/12], [1/2, 7/12],[1/4, 7/12], [3/4, 7/12], [7/8, 9/12]];
+
 		this.tickets = [];
 		// 通过echelon选出股票
 		this.dateArr = workbook.getDateArr((a,b)=>{
@@ -72,14 +70,14 @@
 		var ticketBoardNum = ticket[Configure.replaceTitleDate(Configure.title.dayNumber, ticket.selectDate)];
 		var retP;
 		if (ticketBoardNum >= 6) {
-			retP = points1[0];
-			points1 = points1.slice(1);
+			retP = this.points1[0];
+			this.points1 = this.points1.slice(1);
 		} else if (ticketBoardNum >= 3) {
-			retP = points2[0];
-			points2 = points2.slice(1);
+			retP = this.points2[0];
+			this.points2 = this.points2.slice(1);
 		} else {
-			retP = points3[0];
-			points3 = points3.slice(1);
+			retP = this.points3[0];
+			this.points3 = this.points3.slice(1);
 		}
 		return retP;
 	};
@@ -124,8 +122,8 @@
 				realHandoverPer = parseFloat(tkt[Configure.replaceTitleDate(Configure.title.handoverPercent, this.dateArr[i])] 
 										/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';
 				boardStrength = Configure.getBoardStrength(tkt[Configure.title.boardType], 
-									tkt[Configure.title.boardPercent],
-									tkt[Configure.title.boardTime]);
+									tkt[Configure.replaceTitleDate(Configure.title.boardPercent, this.dateArr[i])],
+									tkt[Configure.replaceTitleDate(Configure.title.boardTime, this.dateArr[i])]);
 										
 			}
 			
@@ -167,6 +165,7 @@
 		
 		this.tickets.forEach((t)=>{
 			var p = this.getSitePoint(t);
+			console.log(p);
 			this.drawTicket(t, {x : this.rect.x + this.rect.width * p[0],
 								y : this.rect.y + this.rect.height * p[1]});
 		});
