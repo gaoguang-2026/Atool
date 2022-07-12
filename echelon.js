@@ -9,11 +9,12 @@
 		this.echelon = e;
 		this.rect = rect;
 		console.log(this.echelon);
-		console.log(this.rect);
+	//	console.log(this.rect);
 		
 		this.points1 = [[1/2, 1/12],[1/4,3/12],[3/4, 3/12],[7/8, 3/12],[1/8, 3/12],[3/4, 3/12]];
 		this.points2 = [[3/8, 5/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12], [7/8, 3/12],];
-		this.points3 = [[3/8, 9/12],[5/8, 9/12],[1/8, 9/12], [1/2, 7/12],[1/4, 7/12], [3/4, 7/12], [7/8, 9/12]];
+		this.points3 = [[3/8, 9/12],[5/8, 9/12],[1/8, 9/12], [1/2, 7/12],[1/4, 7/12], [3/4, 7/12], [7/8, 9/12],
+						[3/4, 11/12], [1/2,11/12], [1/4, 11/12]];
 
 		this.tickets = [];
 		// 通过echelon选出股票
@@ -62,9 +63,7 @@
 				a[Configure.replaceTitleDate(Configure.title.dayNumber, a.selectDate)];
 		});
 		
-		console.log(this.tickets);
-		
-		
+	//	console.log(this.tickets);	
 	};
 	Echelon.prototype.getSitePoint = function (ticket) {
 		var ticketBoardNum = ticket[Configure.replaceTitleDate(Configure.title.dayNumber, ticket.selectDate)];
@@ -131,9 +130,9 @@
 							y: startPoint.y,
 							width: handOverBar_w,
 							height: handOverBar_h};
-			console.log('name： ' + ticket[Configure.title.name] + 
-						'  date:' + this.dateArr[i] + '  realHandoverPer: ' + realHandoverPer + 
-						'  boardStrength:' + boardStrength);
+	//		console.log('name： ' + ticket[Configure.title.name] + 
+	//					'  date:' + this.dateArr[i] + '  realHandoverPer: ' + realHandoverPer + 
+	//					'  boardStrength:' + boardStrength);
 			this.drawBar(barRect, realHandoverPer, boardStrength);
 		}
 		// 名字
@@ -165,9 +164,14 @@
 		
 		this.tickets.forEach((t)=>{
 			var p = this.getSitePoint(t);
-			console.log(p);
-			this.drawTicket(t, {x : this.rect.x + this.rect.width * p[0] - 15,
+	//		console.log(p);
+			if(p) {
+				this.drawTicket(t, {x : this.rect.x + this.rect.width * p[0] - 15,
 								y : this.rect.y + this.rect.height * p[1]});
+			} else {
+				console.error('No enough point site to set ' + t[Configure.title.name]);
+			}
+			
 		});
 		
 	};
