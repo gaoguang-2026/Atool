@@ -166,7 +166,7 @@
 		this.tickets.forEach((t)=>{
 			var p = this.getSitePoint(t);
 			console.log(p);
-			this.drawTicket(t, {x : this.rect.x + this.rect.width * p[0],
+			this.drawTicket(t, {x : this.rect.x + this.rect.width * p[0] - 15,
 								y : this.rect.y + this.rect.height * p[1]});
 		});
 		
