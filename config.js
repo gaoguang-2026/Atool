@@ -163,7 +163,7 @@ var Configure = (function(){
 	];
 	var Echelons_Draw_NUM = 2;
 	var Echelons_tickit_period = 3;    // 选出股票的期限
-	var Echelons_ticket_NUM = 8;     // 画出来的数量
+	var Echelons_ticket_NUM = 10;     // 画出来的数量
 	var Echelons_handover_factor = 2; // 换手放大便于观察
 	
 	return {

@@ -11,8 +11,8 @@
 		console.log(this.echelon);
 		console.log(this.rect);
 		
-		this.points1 = [[1/2, 1/12],[1/4,3/12],[3/4, 3/12],[7/8, 3/12],[1/8, 3/12]];
-		this.points2 = [[3/8, 5/12],[3/4, 7/12],[1/4, 7/12], [1/2, 7/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12]];
+		this.points1 = [[1/2, 1/12],[1/4,3/12],[3/4, 3/12],[7/8, 3/12],[1/8, 3/12],[3/4, 3/12]];
+		this.points2 = [[3/8, 5/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12], [7/8, 3/12],];
 		this.points3 = [[3/8, 9/12],[5/8, 9/12],[1/8, 9/12], [1/2, 7/12],[1/4, 7/12], [3/4, 7/12], [7/8, 9/12]];
 
 		this.tickets = [];
@@ -141,14 +141,14 @@
 		ctx.beginPath();
 		if (index != 0) {
 			ctx.lineWidth="1";
-			ctx.font="12px Times new Roman";
+			ctx.font="10px Times new Roman";
 			ctx.fillStyle = 'green';
 		} else {
 			ctx.lineWidth="2";
-			ctx.font="14px Times new Roman";
+			ctx.font="12px Times new Roman";
 			ctx.fillStyle = 'red';
 		}
-		ctx.fillText(ticket[Configure.title.name], startPoint.x, startPoint.y - 8);
+		ctx.fillText(ticket[Configure.title.name], startPoint.x, startPoint.y - 3);
 	};
 	Echelon.prototype.draw = function () {
 		var ctx = this.canvas.getContext("2d");	
