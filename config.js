@@ -152,7 +152,7 @@ var Configure = (function(){
 	var Max_weight = 30;
 	
 	// 左右窗口
-	var WinXFactor = 0.5;     //  左边窗口占比
+	var WinXFactor = 0.4;     //  左边窗口占比
 	
 	// echelon 
 	var echelons = [
@@ -160,7 +160,7 @@ var Configure = (function(){
 		{name: '风光电储', hotPoints:['光伏', '电力', '储能','风电', 'HJT电池', '智能电网', '特高压', '钒电池']},
 		{name: '机器人', hotPoints:['机器人']},
 		{name: '医药', hotPoints:['新冠预防药', '医药商业', '医药', '中药', '新冠治疗', '生物医药']},
-		{name: '基建', hotPoints:['建筑材料', '建筑装饰', '水利', '新型城镇化', '装配式建筑']}
+		{name: '基建', hotPoints:['建筑材料', '建筑装饰', '水利', '新型城镇化', '装配式建筑', '公路铁路运输']}
 	];
 	var Echelons_Draw_NUM = 2;
 	var Echelons_tickit_period = 3;    // 选出股票的期限

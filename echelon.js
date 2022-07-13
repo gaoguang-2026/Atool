@@ -85,7 +85,7 @@
 		ctx.beginPath();
 		ctx.lineWidth="2";
 
-		if(parseFloat(realHandoverPer) < 100 && parseInt(realHandoverPer) > 0) {
+		if(parseFloat(realHandoverPer) < 100 && parseFloat(realHandoverPer) > 0) {
 			if(boardStrength == '很强') {
 				ctx.fillStyle= 'red';
 			} else if (boardStrength == '强'){
@@ -133,6 +133,10 @@
 	//		console.log('name： ' + ticket[Configure.title.name] + 
 	//					'  date:' + this.dateArr[i] + '  realHandoverPer: ' + realHandoverPer + 
 	//					'  boardStrength:' + boardStrength);
+	
+			//当最后一天该股票的涨停原因为空或者其他情况，index需要重新更新，显示名字颜色
+			index = i;
+			/////
 			this.drawBar(barRect, realHandoverPer, boardStrength);
 		}
 		// 名字
