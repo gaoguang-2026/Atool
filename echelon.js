@@ -25,7 +25,7 @@
 		
 		for (i = 0; i < Configure.Echelons_tickit_period; i ++ ) {
 			var param = {
-				gainianArr: this.echelon.hotPoints,
+				hotpointArr: this.echelon.hotPoints,
 				type:2,
 				sort:1
 			}
@@ -164,7 +164,7 @@
 		ctx.lineWidth="2";
 		ctx.font="16px Times new Roman";
 		ctx.fillStyle = 'orange';
-		ctx.fillText(this.echelon.name, this.rect.x + 5, this.rect.y + 15);
+		ctx.fillText(this.echelon.name + '(' + this.echelon.score + ')', this.rect.x + 5, this.rect.y + 15);
 		
 		this.tickets.forEach((t)=>{
 			var p = this.getSitePoint(t);

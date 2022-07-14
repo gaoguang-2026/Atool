@@ -45,14 +45,14 @@ var table = (function(){
 		if (fr2.gainian) {
 			fr2.gainian.forEach((input)=> {
 			if(input.checked) {
-					paramGainian.push(input.dataset.titleProp);
+					paramGainian =paramGainian.concat(input.dataset.titleProp.split(','));
 				}
 			});
 		}
 
 	//	var gainian = fr.gainian;
 		var param = {
-			gainianArr: paramGainian,
+			hotpointArr: paramGainian,
 			type: fr.gtype[2].checked ? 2 : 
 				fr.gtype[0].checked ? 0 : 1,   
 			sort: fr.sort[0].checked ? 0 : 1
@@ -111,7 +111,7 @@ var table = (function(){
 						Tip.show(td, txtshow);
 						break;
 					case 'reason':
-		//				Tip.show(td, parser.getHotpointtxt(datetoload));
+		//				Tip.show(td, parser.getHotpointstxt(datetoload));
 						break;
 					default:
 						break;

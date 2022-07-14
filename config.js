@@ -131,7 +131,7 @@ var Configure = (function(){
 		ma5:'5日线',
 		beili:'背离率',
 		sz:'SZ',
-		gaiNianRank:'热点概念'   // 记录当天热点概念
+		echelons:'echelon'   // 记录当天echelon排名
 	}
 	
 	var site_color = 'black';
@@ -148,8 +148,8 @@ var Configure = (function(){
 	var SZ_MaxOffset = 200;   // 纵轴
 	var winFactor = 0.4;    // 两个窗口的比率
 	
-	var Min_weight = 10;    //draw概念的条件
-	var Max_weight = 30;
+	var Min_echelon_score = 30;    //draw 的条件
+	var Max_echelon_score = 70;
 	
 	// 左右窗口
 	var WinXFactor = 0.4;     //  左边窗口占比
@@ -182,8 +182,8 @@ var Configure = (function(){
 		SZ_zero:SZ_zero,
 		SZ_MaxOffset:SZ_MaxOffset,
 		WinXFactor:WinXFactor,
-		Min_weight:Min_weight,
-		Max_weight:Max_weight,
+		Min_echelon_score:Min_echelon_score,
+		Max_echelon_score:Max_echelon_score,
 		Echelons_Draw_NUM:Echelons_Draw_NUM,
 		Echelons_tickit_period:Echelons_tickit_period,
 		Echelons_ticket_NUM:Echelons_ticket_NUM,

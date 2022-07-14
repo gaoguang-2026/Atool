@@ -56,22 +56,25 @@
 		fr.appendChild(o);			
 		
 		var d = $('#date')[0].value.replace(/\-/g, '');	
-		var gaiNianArr = parser.getHotpoint(d);
-		gaiNianArr.forEach((g)=>{
-			var oTxt = document.createTextNode(g[0] + ' (' + g[1].times + ')\xa0\xa0\xa0\xa0');
-			var input = document.createElement('input');
-			input.type = 'checkbox';
-			input.name = 'gainian';
-			input.checked = false;
-			input.dataset.titleProp = g[0];
-			input.onchange = function(e){
-				if(e.target.checked) {
-					inputAll.checked = false;
+		var echelonArr = parser.getEchelons(d);
+		echelonArr.forEach((g)=>{
+			if (g.score > 0) {
+				var oTxt = document.createTextNode(g.name + '\xa0\xa0\xa0\xa0');
+				var input = document.createElement('input');
+				input.type = 'checkbox';
+				input.name = 'gainian';
+				input.checked = false;
+				input.dataset.titleProp = g.hotPoints;
+				input.onchange = function(e){
+					if(e.target.checked) {
+						inputAll.checked = false;
+					}
 				}
+					
+				fr.appendChild(input);	
+				fr.appendChild(oTxt);	
 			}
-				
-			fr.appendChild(input);	
-			fr.appendChild(oTxt);			
+		
 		});
 
 	};

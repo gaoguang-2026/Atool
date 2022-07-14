@@ -38,16 +38,13 @@ var canvas = (function(canvas) {
 					' siteHeight:' + siteHeight +
 					' cellWidth:' + cellWidth);
 					
-		// 通过parser分析出当天的热点概念
+		// 通过parser分析出当天的echelon
 		Days.forEach((d)=>{
 			var dateStr = Configure.formatExcelDate(d[Configure.title2.date], '');
 			if (workbook.sheetExist(dateStr)) {
-				var gainainArr = parser.getHotpoint( dateStr );
-				d[Configure.title2.gaiNianRank] = gainainArr.filter((g)=>{
-					return g[1].weight > Configure.Min_weight;
-				});
+				d[Configure.title2.echelons] = parser.getEchelons( dateStr );
 			} else {
-				d[Configure.title2.gaiNianRank] = [];
+				d[Configure.title2.echelons] = [];
 			}
 		});
 	};
@@ -101,8 +98,8 @@ var canvas = (function(canvas) {
 		ctx.fillText('0', siteX + siteWidth + 10, siteY + siteHeight * (1- winFactor));
 		ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth, siteY);
 		ctx.fillStyle = Configure.gainian_color;
-		ctx.fillText('(' + Configure.Min_weight + ')', siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor) + 15);
-		ctx.fillText('(' + Configure.Max_weight + ')', siteX + siteWidth, siteY + 15);
+		ctx.fillText('(' + Configure.Min_echelon_score + ')', siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor) + 15);
+		ctx.fillText('(' + Configure.Max_echelon_score + ')', siteX + siteWidth, siteY + 15);
 		ctx.stroke(); 
 
 	};
@@ -183,42 +180,44 @@ var canvas = (function(canvas) {
 		ctx.stroke();
 	};
 	
-	var drawGaiNian = function() {
+	var drawEchelon = function() {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
 		ctx.fillStyle= Configure.gainian_color;
 		for(i = 0; i < Days.length; i ++) {
-			var gaiaNainArr = Days[i][Configure.title2.gaiNianRank];
-			gaiaNainArr.forEach((g)=> {    //  g : [1, {times:11, weight:17}]
-				var drawNameDone = false;	
-				var pointH = siteHeight * (1-winFactor) * 
-								parseFloat(g[1].weight - Configure.Min_weight)/Configure.Max_weight;
-				var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
-						y: siteY + siteHeight*(1-winFactor) - pointH};	
-		//		ctx.fillRect(point.x, point.y, 2, 2);				
-				if (i < Days.length - 1) {   // 不是最后一天
-					var gaiaNainArrNext = Days[i+1][Configure.title2.gaiNianRank];
-					
-					gaiaNainArrNext.forEach((gNext)=>{
-						if (gNext[0] == g[0]){
-							var pointNextH = siteHeight * (1-winFactor) * 
-									parseFloat(gNext[1].weight - Configure.Min_weight)/Configure.Max_weight;
-							var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
-												y: siteY + siteHeight*(1-winFactor) - pointNextH};
-							ctx.lineWidth="0.5";
-							ctx.strokeStyle = Configure.gainian_color;
-							ctx.moveTo(point.x, point.y);
-							ctx.lineTo(pointNext.x, pointNext.y);
-							ctx.stroke();
-							drawNameDone = true;
-						}
-					});
+			var echelonArr = Days[i][Configure.title2.echelons];
+			echelonArr.forEach((g)=> {    //  g : {name:'', hotPoints:[], score:''};
+				if(g.score >= Configure.Min_echelon_score) {
+					var drawNameDone = false;	
+					var pointH = siteHeight * (1-winFactor) * 
+									parseFloat(g.score - Configure.Min_echelon_score)/Configure.Max_echelon_score;
+					var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
+							y: siteY + siteHeight*(1-winFactor) - pointH};	
+			//		ctx.fillRect(point.x, point.y, 2, 2);				
+					if (i < Days.length - 1) {   // 不是最后一天
+						var echelonsNext = Days[i+1][Configure.title2.echelons];
+						
+						echelonsNext.forEach((gNext)=>{
+							if (gNext.name == g.name && gNext.score > Configure.Min_echelon_score){
+								var pointNextH = siteHeight * (1-winFactor) * 
+										parseFloat(gNext.score - Configure.Min_echelon_score)/Configure.Max_echelon_score;
+								var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
+													y: siteY + siteHeight*(1-winFactor) - pointNextH};
+								ctx.lineWidth="0.5";
+								ctx.strokeStyle = Configure.gainian_color;
+								ctx.moveTo(point.x, point.y);
+								ctx.lineTo(pointNext.x, pointNext.y);
+								ctx.stroke();
+								drawNameDone = true;
+							}
+						});
+					}
+					if (!drawNameDone) {  // 没有连线，画名称
+						drawNameDone = true;
+						ctx.font="10px Times new Roman";
+						ctx.fillText(g.name, point.x, point.y);
+					};
 				}
-				if (!drawNameDone) {  // 没有连线，画名称
-					drawNameDone = true;
- 					ctx.font="10px Times new Roman";
-					ctx.fillText(g[0].substr(0,1), point.x, point.y);
-				};
 			});
 
 		};
@@ -228,7 +227,7 @@ var canvas = (function(canvas) {
 		if (drawing.getContext){
 			drawSite();
 			drawLine();
-	//		drawGaiNian();
+			drawEchelon();
 		}
 	}
 	

@@ -70,22 +70,19 @@ var parser = (function(){
 		})
 	};
 	
-	var getHotpoint = function(dateStr) {
+	var getHotpoints = function(dateStr) {
 		loadSheet(dateStr);
-		var gaiNianArr = Array.from(gaiNian);
-		gaiNianArr.sort((a, b)=> {
+		var hotPointsArr = Array.from(gaiNian);
+		hotPointsArr.sort((a, b)=> {
 			return b[1].weight - a[1].weight;
 		});
-		var ret = gaiNianArr.filter((g)=> {
-			return g[1].times > Configure.MIN_KAINIAN;   //  过滤杂毛
-		});
-		return ret;
+		return hotPointsArr;
 	};
 	
-	var getHotpointtxt = function(dateStr) {
+	var getHotpointstxt = function(dateStr) {
 		var txt = '热点概念排名：';
 		var index = 0;
-		var arr = getHotpoint(dateStr);
+		var arr = getHotpoints(dateStr);
 
 		arr.forEach((a) => {   // a = ['猪肉'， 13]
 			txt += '【' + (++index) + '】' + 
@@ -94,7 +91,7 @@ var parser = (function(){
 		return txt;
 	};
 	
-	//param : {gainianArr: ['光伏','储能'], type: 1, sort: 0}
+	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0}
 	/*gainian  热点概念排序的索引 
 	/*type  0 首板 ， 1 连板 , 2 all
 	/*sort  0 得分 ， 1 高度
@@ -122,10 +119,10 @@ var parser = (function(){
 		}
 		
 		// gainian
-		if (obj.gainianArr && obj.gainianArr.length != 0) {
+		if (obj.hotpointArr && obj.hotpointArr.length != 0) {
 			retArr = retArr.filter((t)=>{
 				var isSelect = false;
-				obj.gainianArr.forEach((g)=> {
+				obj.hotpointArr.forEach((g)=> {
 					if(t[Configure.title.reason].indexOf(g) != -1){
 						isSelect = true;
 					}
@@ -142,16 +139,21 @@ var parser = (function(){
 	var getEchelons = function(dateStr) {
 		loadSheet(dateStr);
 		if (!gaiNian) return [];
-		var echelons = Configure.echelons;
-		echelons.forEach((echelon)=>{
-			echelon.score = 0;
+		var echelons = [];
+		Configure.echelons.forEach((echelon)=>{
+			var e = {};
+			e.score = 0;
+			e.name = echelon.name;
+			e.hotPoints = echelon.hotPoints;
 			echelon.hotPoints.forEach((hot)=>{
 				if (gaiNian.has(hot)) {
-					echelon.score += parseInt(gaiNian.get(hot).weight);
+					e.score += parseInt(gaiNian.get(hot).weight);
 				}
 			});
+			echelons.push(e);
 		});
-		
+		console.log(dateStr);
+		console.log(gaiNian);
 		console.log(echelons);
 		echelons.sort((a, b) => {
 			return b.score - a.score;
@@ -166,8 +168,8 @@ var parser = (function(){
 	
 	return {
 		tickets: tickets,
-		getHotpoint: getHotpoint,
-		getHotpointtxt:getHotpointtxt,
+		getHotpoints: getHotpoints,
+		getHotpointstxt:getHotpointstxt,
 		getTickets: getTickets,
 		getEchelons:getEchelons
 	}
