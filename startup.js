@@ -29,68 +29,19 @@
 		table.createTable(d);
 	};
 	
-	var updateForm = function() {
-		var fr = document.getElementById('form2');
-		while(fr.hasChildNodes()) {
-			fr.removeChild(fr.lastChild);
-		};
-		
-		var t = document.createTextNode('概念：');
-		fr.appendChild(t);	
-		// all
-		var o = document.createTextNode('全部\xa0\xa0\xa0\xa0');
-		var inputAll = document.createElement('input');
-		inputAll.type = 'checkbox';
-		inputAll.name = 'all';
-		inputAll.checked = false;
-		inputAll.onchange = function(e){
-			if (e.target.checked) {
-				if (fr.gainian) {
-					fr.gainian.forEach((input)=>{
-						input.checked = false;
-					})
-				}
-			}
-		};
-		fr.appendChild(inputAll);	
-		fr.appendChild(o);			
-		
-		var d = $('#date')[0].value.replace(/\-/g, '');	
-		var echelonArr = parser.getEchelons(d);
-		echelonArr.forEach((g)=>{
-			if (g.score > 0) {
-				var oTxt = document.createTextNode(g.name + '\xa0\xa0\xa0\xa0');
-				var input = document.createElement('input');
-				input.type = 'checkbox';
-				input.name = 'gainian';
-				input.checked = false;
-				input.dataset.titleProp = g.hotPoints;
-				input.onchange = function(e){
-					if(e.target.checked) {
-						inputAll.checked = false;
-					}
-				}
-					
-				fr.appendChild(input);	
-				fr.appendChild(oTxt);	
-			}
-		
-		});
-
-	};
 	
 	$('#date').val(Configure.getDateStr(Configure.date, '-'));
 	var init = function() {
 		var dateArr = workbook.getDateArr(()=>{}, '-');
 		$('#date').val(dateArr[dateArr.length - 1]);
 		dragons.init();
-		updateForm();
+		table.updateForm();
 	};
 	
 	var addEvent = function() {
 		$('#date').change(function(e) {
 			fillTicketsTable();
-			updateForm();
+			table.updateForm();
 		});
 			
 		$('#form1').change(function(e) {

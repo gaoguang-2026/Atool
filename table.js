@@ -3,6 +3,79 @@ var table = (function(){
 	//var tableHeadDone = false;
 	var tbl = document.getElementById('tbl');
 	
+	var updateForm = function() {
+		var fr = document.getElementById('form2');
+		while(fr.hasChildNodes()) {
+			fr.removeChild(fr.lastChild);
+		};
+		
+		var t = document.createTextNode('概念：');
+		fr.appendChild(t);	
+		// all
+		var oAll = document.createTextNode('全部\xa0\xa0\xa0\xa0');
+		var inputAll = document.createElement('input');
+		var oOther = document.createTextNode('其他\xa0\xa0\xa0\xa0');
+		var inputOther = document.createElement('input');
+		inputAll.type = 'checkbox';
+		inputAll.name = 'all';
+		inputAll.checked = false;
+		inputAll.onchange = function(e){
+			if (e.target.checked) {
+				if (fr.gainian) {
+					fr.gainian.forEach((input)=>{
+						input.checked = false;
+						inputOther.checked = false;
+					})
+				}
+			}
+		};
+		fr.appendChild(inputAll);	
+		fr.appendChild(oAll);		
+		// other
+		inputOther.type = 'checkbox';
+		inputOther.name = 'all';
+		inputOther.checked = false;
+		inputOther.onchange = function(e){
+			if (e.target.checked) {
+				if (fr.gainian) {
+					fr.gainian.forEach((input)=>{
+						input.checked = false;
+						inputAll.checked = false;
+					})
+				}
+			}
+		};
+			
+		
+		var d = $('#date')[0].value.replace(/\-/g, '');	
+		var echelonArr = parser.getEchelons(d);
+		echelonArr.forEach((g)=>{
+			if (g.score > 0) {
+				var oTxt = document.createTextNode(g.name + '\xa0\xa0\xa0\xa0');
+				var input = document.createElement('input');
+				input.type = 'checkbox';
+				input.name = 'gainian';
+				input.checked = false;
+				input.dataset.titleProp = g.hotPoints;
+				input.onchange = function(e){
+					if(e.target.checked) {
+						inputAll.checked = false;
+						inputOther.checked = false;
+					}
+				}
+				Tip.show(input, g.hotPoints.toString().replace(/\,/g, '、<br>'));
+					
+				fr.appendChild(input);	
+				fr.appendChild(oTxt);	
+			}
+		
+		});
+		
+		fr.appendChild(inputOther);	
+		fr.appendChild(oOther);	
+
+	};
+	
 	var createTableHead = function() {
 	//	if(tableHeadDone) return;
 		tableHeadDone = true;
@@ -42,20 +115,25 @@ var table = (function(){
 		var fr2 = document.getElementById('form2');
 		
 		var paramGainian = [];
+		var paramGainianForOther = [];
 		if (fr2.gainian) {
 			fr2.gainian.forEach((input)=> {
-			if(input.checked) {
+				if(input.checked) {
 					paramGainian =paramGainian.concat(input.dataset.titleProp.split(','));
+				} else {
+					paramGainianForOther= paramGainianForOther.concat(input.dataset.titleProp.split(','));
 				}
 			});
 		}
 
 	//	var gainian = fr.gainian;
+		var isOther = fr2.all[1].checked;  // other 选项
 		var param = {
-			hotpointArr: paramGainian,
+			hotpointArr: isOther ? paramGainianForOther : paramGainian,
 			type: fr.gtype[2].checked ? 2 : 
 				fr.gtype[0].checked ? 0 : 1,   
-			sort: fr.sort[0].checked ? 0 : 1
+			sort: fr.sort[0].checked ? 0 : 1,
+			other: fr2.all[1].checked
 		};
 		var tks = parser.getTickets(datetoload,param);
 		var dateArr = workbook.getDateArr((a,b)=>{
@@ -144,6 +222,7 @@ var table = (function(){
 	};
 	
 	return {
-		createTable:createTable
+		createTable:createTable,
+		updateForm:updateForm
 	}
 })();
