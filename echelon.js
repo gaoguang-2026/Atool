@@ -123,7 +123,10 @@
 				boardStrength = Configure.getBoardStrength(tkt[Configure.title.boardType], 
 									tkt[Configure.replaceTitleDate(Configure.title.boardPercent, this.dateArr[i])],
 									tkt[Configure.replaceTitleDate(Configure.title.boardTime, this.dateArr[i])]);
-										
+									
+				//当最后一天该股票的涨停原因为空或者其他情况，index需要重新更新，显示名字颜色
+				index = i;
+				/////
 			}
 			
 			var barRect = {x: startPoint.x + (drawLenth - 1 - i) * handOverBar_w,
@@ -134,9 +137,6 @@
 	//					'  date:' + this.dateArr[i] + '  realHandoverPer: ' + realHandoverPer + 
 	//					'  boardStrength:' + boardStrength);
 	
-			//当最后一天该股票的涨停原因为空或者其他情况，index需要重新更新，显示名字颜色
-			index = i;
-			/////
 			this.drawBar(barRect, realHandoverPer, boardStrength);
 		}
 		// 名字

@@ -228,7 +228,7 @@ var canvas = (function(canvas) {
 		if (drawing.getContext){
 			drawSite();
 			drawLine();
-			drawGaiNian();
+	//		drawGaiNian();
 		}
 	}
 	

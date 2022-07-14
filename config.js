@@ -159,10 +159,11 @@ var Configure = (function(){
 		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '锂电池']},
 		{name: '风光电储', hotPoints:['光伏', '电力', '储能','风电', 'HJT电池', '智能电网', '特高压', '钒电池']},
 		{name: '机器人', hotPoints:['机器人']},
+		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
 		{name: '医药', hotPoints:['新冠预防药', '医药商业', '医药', '中药', '新冠治疗', '生物医药']},
 		{name: '基建', hotPoints:['建筑材料', '建筑装饰', '水利', '新型城镇化', '装配式建筑', '公路铁路运输']}
 	];
-	var Echelons_Draw_NUM = 2;
+	var Echelons_Draw_NUM = 3;
 	var Echelons_tickit_period = 3;    // 选出股票的期限
 	var Echelons_ticket_NUM = 8;     // 画出来的数量
 	var Echelons_handover_factor = 2; // 换手放大便于观察
@@ -171,7 +172,7 @@ var Configure = (function(){
 		date: date,
 		debug: debug,
 		showInTableTitile:showInTableTitile,
-		MIN_LB_NUMBER:MIN_LB_NUMBER,
+		MIN_LB_NUMBER:MIN_LB_NUMBER,	
 		MIN_KAINIAN:MIN_KAINIAN,
 		HIGH_factor:HIGH_factor,
 		title:title,
