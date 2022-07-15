@@ -177,7 +177,7 @@ var table = (function(){
 						break;
 					case 'realHandoverPercent':
 						var txtshow = '前' + (parseInt(ticket[Configure.title.dayNumber]) - 1) +  '天实际换手率：';
-						for(i = parseInt(ticket[Configure.title.dayNumber]) - 1; i ; i --){
+						for(var i = parseInt(ticket[Configure.title.dayNumber]) - 1; i ; i --){
 							var param = {sheetName:dateArr[i],
 								ticketCode:ticket[Configure.title.code]};
 							var tkt = workbook.getValue(param);

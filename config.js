@@ -149,10 +149,10 @@ var Configure = (function(){
 	var winFactor = 0.4;    // 两个窗口的比率
 	
 	var Min_echelon_score = 30;    //draw 的条件
-	var Max_echelon_score = 70;
+	var Max_echelon_score = 50;
 	
 	// 左右窗口
-	var WinXFactor = 0.5;     //  左边窗口占比
+	var WinXFactor = 0.4;     //  左边窗口占比
 	
 	// echelon 
 	var echelons = [
@@ -161,11 +161,12 @@ var Configure = (function(){
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
 		{name: '医药', hotPoints:['新冠预防药', '医药商业', '医药', '中药', '新冠治疗', '生物医药']},
 		{name: '基建', hotPoints:['建筑材料', '建筑装饰', '水利', '新型城镇化', '装配式建筑', '公路铁路运输']},
-		{name: '机器人', hotPoints:['机器人']}
+		{name: '机器人', hotPoints:['机器人']},
+		{name: '半年报预增', hotPoints:['半年报预增+']}
 	];
 	var Echelons_Draw_NUM = 2;
 	var Echelons_tickit_period = 2;    // 选出股票的期限
-	var Echelons_ticket_NUM = 8;     // 画出来的数量
+	var Echelons_ticket_NUM = 15;     // 画出来的数量
 	var Echelons_handover_factor = 2; // 换手放大便于观察
 	
 	return {

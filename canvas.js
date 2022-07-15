@@ -215,7 +215,7 @@ var canvas = (function(canvas) {
 					if (!drawNameDone) {  // 没有连线，画名称
 						drawNameDone = true;
 						ctx.font="10px Times new Roman";
-						ctx.fillText(g.name, point.x, point.y);
+						ctx.fillText(g.name.substr(0,1), point.x, point.y);
 					};
 				}
 			});

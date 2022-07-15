@@ -47,9 +47,10 @@
 			this.tickets = this.tickets.concat(tArr);
 		};
 		
-		// 过滤掉背离率大于3的
+		// 过滤掉首板背离率大于3的
 		this.tickets = this.tickets.filter((t)=>{
-			return t[Configure.title.totalDivergence] < 3;
+			return t[Configure.replaceTitleDate(Configure.title.dayNumber, t.selectDate)] > 1 ?  true :
+					t[Configure.title.totalDivergence] < 3;
 		});
 		
 		console.log(this.tickets);
