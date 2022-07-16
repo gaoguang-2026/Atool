@@ -23,7 +23,7 @@
 		});
 		
 		
-		for (i = 0; i < Configure.Echelons_tickit_period; i ++ ) {
+		for (var i = 0; i < Configure.Echelons_tickit_period; i ++ ) {
 			var param = {
 				hotpointArr: this.echelon.hotPoints,
 				type:2,
@@ -47,11 +47,36 @@
 			this.tickets = this.tickets.concat(tArr);
 		};
 		
-		// 过滤掉首板背离率大于3的
-		this.tickets = this.tickets.filter((t)=>{
-			return t[Configure.replaceTitleDate(Configure.title.dayNumber, t.selectDate)] > 1 ?  true :
-					t[Configure.title.totalDivergence] < 3;
+		// 检查断板
+		this.tickets.forEach((ticket)=>{
+			ticket.startDate = this.dateArr[this.getBoardDateIndex(ticket, ticket.selectDate)];
 		});
+		
+		console.log(this.tickets);
+		// 过滤掉首板和背离率大于3的
+		this.tickets = this.tickets.filter((t)=>{
+			var isSelect = true;
+			//首板
+			var dayNumber = t[Configure.replaceTitleDate(Configure.title.dayNumber, t.selectDate)];
+			if (dayNumber == 1 &&   
+				parseInt(this.dateArr.indexOf(t.startDate)) - 
+				this.dateArr.indexOf(t.selectDate) < Configure.Echelons_tickit_period) {
+				isSelect = false;
+			}
+			
+			// 背离率大于3， 断板大于6的
+			if ((parseInt(this.dateArr.indexOf(t.startDate)) - 
+				this.dateArr.indexOf(t.selectDate) > Configure.Echelons_tickit_period 
+			)) {
+				if (t[Configure.title.totalDivergence] > 6) {
+					isSelect = false;
+				}
+				
+			} else if(t[Configure.title.totalDivergence] > 3){
+				isSelect = false;
+			}
+			return isSelect;
+		});  
 		
 		console.log(this.tickets);
 		// 按得分排序，减除多余的
@@ -59,15 +84,31 @@
 			return b[Configure.title.score] - a[Configure.title.score];
 		});
 		this.tickets = this.tickets.slice(0,Configure.Echelons_ticket_NUM);
-		this.tickets.sort((a, b)=> {
-			return b[Configure.replaceTitleDate(Configure.title.dayNumber, b.selectDate)] - 
-				a[Configure.replaceTitleDate(Configure.title.dayNumber, a.selectDate)];
-		});
-		
-	//	console.log(this.tickets);	
 	};
+	
+	Echelon.prototype.getBoardDateIndex = function (ticket, selectDate) {
+		var dayNumber = parseInt(ticket[Configure.replaceTitleDate(Configure.title.dayNumber, selectDate)]);
+		dayNumber = dayNumber > 0 ? dayNumber : 1;  // check valid 
+		var startIndex = this.dateArr.indexOf(selectDate) + dayNumber - 1;
+		
+		var obj = {};
+		for (var i = 1; i <= Configure.Echelons_miss_tickit_period ; i ++ ) {
+			var param = {sheetName:this.dateArr[startIndex + i],
+				ticketCode:ticket[Configure.title.code]};
+			obj.tkt = workbook.getValue(param);
+			if(obj.tkt) {
+				obj.date = this.dateArr[startIndex + i];
+				break;
+			}
+		}
+		if (obj.tkt) {
+			startIndex = this.getBoardDateIndex(obj.tkt, obj.date);
+		}
+		return startIndex;
+	};
+	
 	Echelon.prototype.getSitePoint = function (ticket) {
-		var ticketBoardNum = ticket[Configure.replaceTitleDate(Configure.title.dayNumber, ticket.selectDate)];
+		var ticketBoardNum = this.dateArr.indexOf(ticket.startDate);
 		var retP;
 		if (ticketBoardNum >= 6) {
 			retP = this.points1[0];
@@ -109,8 +150,7 @@
 	Echelon.prototype.drawTicket = function (ticket, startPoint) {
 		// 获取其他日期的换手率
 		var index = parseInt(this.dateArr.indexOf(ticket.selectDate));
-		var drawLenth = index + 
-				parseInt(ticket[Configure.replaceTitleDate(Configure.title.dayNumber, ticket.selectDate)]);
+		var drawLenth = parseInt(this.dateArr.indexOf(ticket.startDate)) + 1;
 				
 		for (var i = drawLenth -1 ; i >= 0; i --) {
 			var param = {sheetName:this.dateArr[i],
@@ -137,7 +177,7 @@
 	//		console.log('name： ' + ticket[Configure.title.name] + 
 	//					'  date:' + this.dateArr[i] + '  realHandoverPer: ' + realHandoverPer + 
 	//					'  boardStrength:' + boardStrength);
-	
+	//		console.log('barRect height: ' + barRect.height + 'realHandoverPer: ' + realHandoverPer + 'boardStrength: ' + boardStrength);
 			this.drawBar(barRect, realHandoverPer, boardStrength);
 		}
 		// 名字
