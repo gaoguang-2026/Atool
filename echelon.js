@@ -8,8 +8,6 @@
 		this.canvas = canvas;
 		this.echelon = e;
 		this.rect = rect;
-		console.log(this.echelon);
-	//	console.log(this.rect);
 		
 		this.points1 = [[1/2, 1/12],[1/4,3/12],[3/4, 3/12],[7/8, 3/12],[1/8, 3/12],[3/4, 3/12]];
 		this.points2 = [[3/8, 5/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12], [7/8, 3/12],];
@@ -46,13 +44,18 @@
 			
 			this.tickets = this.tickets.concat(tArr);
 		};
-		
 		// 检查断板
 		this.tickets.forEach((ticket)=>{
 			ticket.startDate = this.dateArr[this.getBoardDateIndex(ticket, ticket.selectDate)];
 		});
 		
 		console.log(this.tickets);
+		
+		this.filterTickets();
+	};
+	
+	Echelon.prototype.filterTickets = function() {
+
 		// 过滤掉首板和背离率大于3的
 		this.tickets = this.tickets.filter((t)=>{
 			var isSelect = true;
@@ -92,7 +95,7 @@
 		var startIndex = this.dateArr.indexOf(selectDate) + dayNumber - 1;
 		
 		var obj = {};
-		for (var i = 1; i <= Configure.Echelons_miss_tickit_period ; i ++ ) {
+		for (var i = 1; i <= Configure.Echelons_miss_tickit_period; i ++ ) {
 			var param = {sheetName:this.dateArr[startIndex + i],
 				ticketCode:ticket[Configure.title.code]};
 			obj.tkt = workbook.getValue(param);
@@ -194,6 +197,13 @@
 		}
 		ctx.fillText(ticket[Configure.title.name], startPoint.x, startPoint.y - 3);
 	};
+	Echelon.prototype.drawTitle = function() {
+		var ctx = this.canvas.getContext("2d");	
+		ctx.lineWidth="2";
+		ctx.font="16px Times new Roman";
+		ctx.fillStyle = 'orange';
+		ctx.fillText(this.echelon.name + '  连板', this.rect.x + 5, this.rect.y + 15);
+	};
 	Echelon.prototype.draw = function () {
 		var ctx = this.canvas.getContext("2d");	
 		ctx.clearRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);
@@ -201,12 +211,7 @@
 		ctx.lineWidth="2";
 		ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";
 	//	ctx.strokeRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);	
-		
-		ctx.lineWidth="2";
-		ctx.font="16px Times new Roman";
-		ctx.fillStyle = 'orange';
-		ctx.fillText(this.echelon.name + '(' + this.echelon.score + ')', this.rect.x + 5, this.rect.y + 15);
-		
+		this.drawTitle();
 		this.tickets.forEach((t)=>{
 			var p = this.getSitePoint(t);
 	//		console.log(p);

@@ -32,7 +32,13 @@
 								y:0,
 								width:elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM,
 							height:elCanvas.height};
-				let e1 = new window.Echelon(elCanvas, echelons[i], rect);
+				let e1;
+				if(i%2 == 0) {
+					e1 = new window.Echelon(elCanvas, echelons[Math.floor(i/2)], rect);      //连板
+				} else {
+					e1 = new window.bandEchelon(elCanvas, echelons[Math.floor(i/2)], rect);   // 波段，首板断板
+				}
+				
 				e1.draw();
 			}			
 		}
