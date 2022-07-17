@@ -1,8 +1,22 @@
 
+	var displayAI = function (text) {
+		var oDiv = document.getElementById("window");
+		//remove child
+		while(oDiv.hasChildNodes()) {
+			oDiv.removeChild(oDiv.lastChild);
+		};
+			
+        var oStrong = document.createElement("div");
+        var oTxt = document.createTextNode(text);
+		oStrong.appendChild(oTxt);
+		oDiv.appendChild(oStrong);
+	};
 	var drawimage = function() {
 		var sheet = workbook.getSheet('情绪');
 		canvas.init(document.getElementById("drawing"), sheet, Configure.WinXFactor);
 		canvas.draw();
+		
+		displayAI(AI.getRecommend());
 	};
 	var drawEchelons = function(){
 		// 梯队

@@ -36,6 +36,12 @@
 		});
 		return retArr.sort(sort);
 	};
+		
+	var getLastDate = function() {
+		return getDateArr((a,b)=>{
+			return b - a;
+		})[0];
+	};
 	
 	// param = {sheetName: '0707',ticketCode:'SZ002527'}}
 	var getValue = function(param) {
@@ -53,6 +59,7 @@
 		getSheet:getSheet,
 		sheetExist:sheetExist,
 		getDateArr:getDateArr,
-		getValue:getValue
+		getValue:getValue,
+		getLastDate:getLastDate
 	}
  })();

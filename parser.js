@@ -91,6 +91,17 @@ var parser = (function(){
 		return txt;
 	};
 	
+	var getTicket = function(datestr, name) {
+		loadSheet(datestr);
+		var ret;
+		tickets.forEach((t) => {
+			if(t[Configure.title.name] == name){
+				ret = t;
+			}
+		});
+		return ret;
+	};
+	
 	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
 	/*gainian  热点概念排序的索引 
 	/*type  0 首板 ， 1 连板 , 2 all, 3 other
@@ -152,9 +163,6 @@ var parser = (function(){
 			});
 			echelons.push(e);
 		});
-		console.log(dateStr);
-		console.log(gaiNian);
-		console.log(echelons);
 		echelons.sort((a, b) => {
 			return b.score - a.score;
 		})
@@ -171,6 +179,7 @@ var parser = (function(){
 		getHotpoints: getHotpoints,
 		getHotpointstxt:getHotpointstxt,
 		getTickets: getTickets,
+		getTicket:getTicket,
 		getEchelons:getEchelons
 	}
 })();

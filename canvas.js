@@ -3,6 +3,8 @@ var canvas = (function(canvas) {
 	var drawing;
 	var Days;
 	
+	var emotionPoints = [];   // 保存背离率的点
+	
 	var width = 0;
 	var height = 0;
 	var width_factor = 0.9;
@@ -133,6 +135,9 @@ var canvas = (function(canvas) {
 			var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
 						y: siteY + siteHeight*(1-winFactor) - pointH};	
 						
+			emotionPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.beili]), 
+						date:Days[i][Configure.title2.date]});
+						
 			grd=ctx.createLinearGradient(siteX, siteY + siteHeight * (1-winFactor), 
 											siteX, siteY);
 			grd.addColorStop(0,"green");
@@ -223,6 +228,15 @@ var canvas = (function(canvas) {
 		};
 	};
 	
+	var getLastEmotionPoints = function(num) {
+		var n = num > emotionPoints.length ? emotionPoints.length : num;
+		var retP = [];
+		for(var i = emotionPoints.length - 1; i > emotionPoints.length - 1 - n; i --) {
+			retP.push(emotionPoints[i]);
+		}
+		return retP;
+	};
+	
 	var draw = function() {
 		if (drawing.getContext){
 			drawSite();
@@ -234,6 +248,6 @@ var canvas = (function(canvas) {
 	return {
 		init: init,
 		draw: draw,
-		Days:Days
+		getLastEmotionPoints:getLastEmotionPoints
 	}
 })();

@@ -1,0 +1,21 @@
+
+
+
+
+#tbl {
+	border-collapse:collapse;
+	margin-top:5px;
+	width:1200px;	  
+}
+
+table,th,td {
+	border:1px solid #000;
+}
+
+th,td {
+	text-align:center;
+}
+
+#window {
+	color: red;
+}
