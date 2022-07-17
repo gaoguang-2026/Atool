@@ -1,6 +1,7 @@
 
 var AI = (function(){
 	var recommendText = '';
+	var objStorage = LocalStore.getAll();
 	var dataStorage = {
 		emotion:'',
 		tickits:[],
@@ -28,7 +29,6 @@ var AI = (function(){
 		});
 		var datestr = dateArr[0];
 		var preDatestr = dateArr[1];
-		var objStorage = LocalStore.getAll();
 		if (objStorage[preDatestr]) {
 			var sucessNum = 0;
 			objStorage[preDatestr].tickits.forEach((name)=>{
@@ -75,6 +75,27 @@ var AI = (function(){
 		var angle = 180 / Math.PI * radian; // 根据弧度计算角度
 		return angle;
 	};
+	
+	var getEmotionSuccessRate = function(emotion) {
+		var dateArr = workbook.getDateArr((a,b)=>{
+			return b - a;
+		});
+		var total = 0;
+		var num = 0;
+		var totalValue = 0;
+		for (var i = 1; i <= RectifyDay_num; i ++) {
+			if (objStorage[dateArr[i]] ) {
+				total ++;
+				if(objStorage[dateArr[i]].emotion == emotion) {
+					num ++;
+					totalValue += parseFloat(objStorage[dateArr[i]].sucessRate);
+				}
+			}
+		}
+		
+		return num == 0 ? '' : '前' + total + '天内出现' + 
+			num + '次,平均成功率' + parseFloat(totalValue/num) + '%。';
+	};
 	var getEmotions = function() {
 		var emotionPoints = canvas.getLastEmotionPoints(2);    // 
 		var angle = getAngle(emotionPoints[0].point, emotionPoints[1].point);
@@ -97,11 +118,12 @@ var AI = (function(){
 			else if (angle > 0) dataStorage.emotion = '持续修复';
 			else dataStorage.emotion = '持续退潮';
 		} else {
-			dataStorage.emotion = '持续修复';
+			dataStorage.emotion = angle > 0 ?  '持续修复' : '持续退潮';
 		};
 		
 		
-		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion) + '。';
+		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion) + '，' +
+				getEmotionSuccessRate(dataStorage.emotion);
 		
 	};
 	
