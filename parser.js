@@ -104,13 +104,45 @@ var parser = (function(){
 		return ret;
 	};
 	
+	var getBandTicket = function(obj) {
+		var retArr = workbook.getBandTicket();
+		// sort
+		retArr.sort((a, b) => {
+			if (obj && obj.sort == 1) {
+				return b[Configure.replaceTitleDate(Configure.title.dayNumber, b.selectDate)] - 
+						a[Configure.replaceTitleDate(Configure.title.dayNumber, a.selectDate)];
+			} else {
+				return b[Configure.title.score] - a[Configure.title.score];
+			}
+			
+		});
+		
+		// gainian
+		if (obj.hotpointArr && obj.hotpointArr.length != 0) {
+			retArr = retArr.filter((t)=>{
+				var isSelect = false;
+				obj.hotpointArr.forEach((g)=> {
+					if(t[Configure.replaceTitleDate(Configure.title.reason,t.selectDate)].indexOf(g) != -1){
+						isSelect = true;
+					}
+				})
+				return obj.other ? !isSelect : isSelect;
+			});	
+		}
+		return retArr;
+	};
+	
 	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
 	/*gainian  热点概念排序的索引 
-	/*type  0 首板 ， 1 连板 , 2 all, 3 other
+	/*type  0 首板 ， 1 连板 , 2 全部, 3 波段
 	/*sort  0 得分 ， 1 高度
 	/*other  true 热点外的其他票
 	//*/
-	var getTickets = function(dateStr, obj) {      
+	var getTickets = function(dateStr, obj) {
+		if(obj.type == 3) {
+			return getBandTicket(obj);
+		};
+		
 		loadSheet(dateStr);
 		// sort
 		tickets.sort((a, b) => {
@@ -143,7 +175,6 @@ var parser = (function(){
 				return obj.other ? !isSelect : isSelect;
 			});	
 		}
-	
 		return retArr;
 	};
 	
@@ -177,7 +208,6 @@ var parser = (function(){
 	};
 	
 	return {
-		tickets: tickets,
 		getHotpoints: getHotpoints,
 		getHotpointstxt:getHotpointstxt,
 		getTickets: getTickets,

@@ -42,12 +42,15 @@ var Configure = (function(){
 	var WinXFactor = 0.4;     //  左边窗口占比
 	
 	var Echelons_Draw_NUM = 2;
-	var Echelons_tickit_period = 2;    // 选出股票的期限
+	
 	var Echelons_ticket_NUM = 10;     // 画出来的数量
 	var Echelons_handover_factor = 2; // 换手放大便于观察
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限
-	var Band_miss_tickit_period = 10;    //波段检查断板的期限
+	var Band_miss_tickit_period = 7;    //波段检查断板的期限
+	var Echelons_tickit_period = 2;    // 连扳选出股票的期限
+	var Band_tickit_period = 4;    // 波段选出股票的期限
+	var Band_Max_LENGTH = 20;    // 波段选出股票画出的长度。
 	
 		/**
      * 格式化excel传递的时间
@@ -163,9 +166,11 @@ var Configure = (function(){
 		profitDivergence: '筹码背离率',			 // 与dragon对比的背离率   这个值越大越好，只有小于dargon才会有值
 		totalDivergence: '背离率',              // 总背离率
 		realHandoverPercent: '实际换手率',
-		boardStrength: '封板力度'
+		boardStrength: '封板力度',
+		selectDate: '最近涨停日期'
 	};
 	var showInTableTitile = ['name',  'realValue','score','totalDivergence','realHandoverPercent', 'boardStrength','reason', 'dayNumber'];
+	var bandShowInTableTitile = ['name', 'realValue','score','realHandoverPercent', 'boardStrength', 'price','reason', 'selectDate'];
 	
 	var title2 = {
 		date: '日期',
@@ -184,6 +189,7 @@ var Configure = (function(){
 		date: date,
 		debug: debug,
 		showInTableTitile:showInTableTitile,
+		bandShowInTableTitile:bandShowInTableTitile,
 		MIN_LB_NUMBER:MIN_LB_NUMBER,	
 		MIN_KAINIAN:MIN_KAINIAN,
 		HIGH_factor:HIGH_factor,
@@ -198,8 +204,10 @@ var Configure = (function(){
 		Max_echelon_score:Max_echelon_score,
 		Echelons_Draw_NUM:Echelons_Draw_NUM,
 		Echelons_tickit_period:Echelons_tickit_period,
+		Band_tickit_period:Band_tickit_period,
 		Echelons_miss_tickit_period:Echelons_miss_tickit_period,
 		Band_miss_tickit_period:Band_miss_tickit_period,
+		Band_Max_LENGTH:Band_Max_LENGTH,
 		Echelons_ticket_NUM:Echelons_ticket_NUM,
 		Echelons_handover_factor:Echelons_handover_factor,
 		site_color:site_color,

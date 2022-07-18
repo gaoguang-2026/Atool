@@ -38,7 +38,7 @@
 				break;
 			}
 		}
-		if (obj.tkt) {
+		if (obj.tkt && this.dateArr.indexOf(obj.date) < Configure.Band_Max_LENGTH) {
 			startIndex = this.getBoardDateIndex(obj.tkt, obj.date);
 		}
 		return startIndex;
@@ -50,7 +50,7 @@
 							width: handOverBar_w,
 							height: handOverBar_h};
 	};
-	bandEchelon.prototype.drawBar = function(rect, realHandoverPer, boardStrength) {
+	/*bandEchelon.prototype.drawBar = function(rect, realHandoverPer, boardStrength) {
 		var ctx = this.canvas.getContext("2d");		
 		ctx.beginPath();
 		ctx.lineWidth="2";
@@ -74,7 +74,7 @@
 			ctx.fillStyle= 'grey';
 			ctx.fillRect(rect.x, rect.y, rect.width * 0.9, rect.height);	
 		}
-	};
+	}; */
 	
 	bandEchelon.prototype.drawTitle = function () {
 		var ctx = this.canvas.getContext("2d");	
@@ -94,17 +94,34 @@
 		return retP;
 	};
 	
+	bandEchelon.prototype.get_tickit_period = function() {
+		return Configure.Band_tickit_period;
+	};
+	
 	bandEchelon.prototype.filterTickets = function() {
 		this.tickets = this.tickets.filter((t)=>{
 			var isSelect = true;
 			//首板
 			var dayNumber = t[Configure.replaceTitleDate(Configure.title.dayNumber, t.selectDate)];
 			if (dayNumber > 1 || this.dateArr.indexOf(t.startDate) - this.dateArr.indexOf(t.selectDate)
-					< Configure.Echelons_tickit_period ) {
+					< this.get_tickit_period() ) {
 				isSelect = false;
 			} 
 			return isSelect;
 		});  
+		
+		workbook.setBandTicket(this.tickets);   // 显示剔除前保存
+		console.log(this.tickets);
+		// echelon股票
+		this.tickets = this.tickets.filter((t) => {
+			var isSelect = false;
+			this.echelon.hotPoints.forEach((g)=> {
+				if(t[Configure.replaceTitleDate(Configure.title.reason, t.selectDate)].indexOf(g) != -1){
+						isSelect = true;
+				}
+			});
+			return isSelect;
+		})
 		
 		console.log(this.tickets);
 		// 按涨停基因排序，减除多余的

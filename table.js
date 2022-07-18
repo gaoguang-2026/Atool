@@ -95,7 +95,9 @@ var table = (function(){
 				tr.appendChild(td);
 			}
 		} else {
-			Configure.showInTableTitile.forEach((t)=> {
+			var titleArr = document.getElementById('form1').gtype[3].checked ? 
+						Configure.bandShowInTableTitile : Configure.showInTableTitile;
+			titleArr.forEach((t)=> {
 				var td = document.createElement('td');
 				if (t == 'reason') {
 					td.innerHTML = '涨停原因';
@@ -131,7 +133,8 @@ var table = (function(){
 		var isOther = fr2.all[1].checked;  // other 选项
 		var param = {
 			hotpointArr: isOther ? paramGainianForOther : paramGainian,
-			type: fr.gtype[2].checked ? 2 : 
+			type: fr.gtype[3].checked ? 3 :
+				fr.gtype[2].checked ? 2 : 
 				fr.gtype[0].checked ? 0 : 1,   
 			sort: fr.sort[0].checked ? 0 : 1,
 			other: fr2.all[1].checked
@@ -155,7 +158,9 @@ var table = (function(){
 			var tr = document.createElement('tr');
 			tHeadtds.forEach((t)=> {
 				var td = document.createElement('td');
-				td.innerHTML = ticket[Configure.title[t.dataset.titleProp]];
+				td.innerHTML =ticket.selectDate ? 
+								ticket[Configure.replaceTitleDate(Configure.title[t.dataset.titleProp],ticket.selectDate)] :
+									ticket[Configure.title[t.dataset.titleProp]];
 				switch (t.dataset.titleProp) {
 					case 'realValue':
 						td.innerHTML = parseFloat(ticket[t.innerHTML]/100000000).toFixed(2);
@@ -191,6 +196,14 @@ var table = (function(){
 						break;
 					case 'reason':
 						Tip.show(t, parser.getHotpointstxt(datetoload));
+						break;
+					case 'selectDate':
+						td.innerHTML = ticket.selectDate.slice(0,4) + '-' + 
+										ticket.selectDate.slice(4,6) + '-' + 
+										ticket.selectDate.slice(6);
+						break;
+					case 'price' : 
+						td.innerHTML = '&nbsp;&nbsp;&nbsp;' + td.innerHTML + '&nbsp;&nbsp;&nbsp;';
 						break;
 					default:
 						break;

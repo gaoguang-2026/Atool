@@ -1,6 +1,8 @@
  var workbook = (function() {
 	var Book;
 	
+	var BandTickets = [];
+	
 	var Book = function(b){
 		Book = b
 	};
@@ -26,6 +28,17 @@
             }
         }
 		return persons;
+	};
+	
+	var setBandTicket = function(ticketArr) {
+		BandTickets = [];
+		ticketArr.forEach((t)=>{
+			BandTickets.push(t);
+		});
+	};
+	
+	var getBandTicket = function() {
+		return BandTickets;
 	};
 	
 	var getDateArr = function(sort, separator = '') {
@@ -60,6 +73,8 @@
 		sheetExist:sheetExist,
 		getDateArr:getDateArr,
 		getValue:getValue,
-		getLastDate:getLastDate
+		getLastDate:getLastDate,
+		setBandTicket:setBandTicket,
+		getBandTicket:getBandTicket
 	}
  })();

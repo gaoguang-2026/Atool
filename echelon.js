@@ -10,20 +10,33 @@
 		this.rect = rect;
 		
 		this.points1 = [[1/2, 1/12],[1/4,3/12],[3/4, 3/12],[7/8, 3/12],[1/8, 3/12],[3/4, 3/12]];
-		this.points2 = [[3/8, 5/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12], [7/8, 3/12],];
+		this.points2 = [[3/8, 5/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12],[3/4, 3/12],[1/4, 7/12], [7/8, 3/12],[3/4, 7/12],];
 		this.points3 = [[3/8, 9/12],[5/8, 9/12],[1/8, 9/12], [1/2, 7/12],[1/4, 7/12], [3/4, 7/12], [7/8, 9/12],
 						[3/4, 11/12], [1/2,11/12], [1/4, 11/12]];
 
 		this.tickets = [];
-		// 通过echelon选出股票
+		this.collectTickets();
+		// 检查断板
+		this.tickets.forEach((ticket)=>{
+			ticket.startDate = this.dateArr[this.getBoardDateIndex(ticket, ticket.selectDate)];
+		});
+		
+		console.log(this.tickets);
+		this.filterTickets();
+	};
+	
+	Echelon.prototype.get_tickit_period = function() {
+		return Configure.Echelons_tickit_period;
+	};
+	
+	Echelon.prototype.collectTickets = function() {
 		this.dateArr = workbook.getDateArr((a,b)=>{
 			return b - a;
 		});
 		
-		
-		for (var i = 0; i < Configure.Echelons_tickit_period; i ++ ) {
+		for (var i = 0; i < this.get_tickit_period(); i ++ ) {
 			var param = {
-				hotpointArr: this.echelon.hotPoints,
+				hotpointArr: [],
 				type:2,
 				sort:1
 			}
@@ -44,32 +57,31 @@
 			
 			this.tickets = this.tickets.concat(tArr);
 		};
-		// 检查断板
-		this.tickets.forEach((ticket)=>{
-			ticket.startDate = this.dateArr[this.getBoardDateIndex(ticket, ticket.selectDate)];
-		});
-		
-		console.log(this.tickets);
-		
-		this.filterTickets();
 	};
 	
 	Echelon.prototype.filterTickets = function() {
-
 		// 过滤掉首板和背离率大于3的
 		this.tickets = this.tickets.filter((t)=>{
 			var isSelect = true;
+			// echelon股票
+			var isInEchelon = false;
+			this.echelon.hotPoints.forEach((g)=> {
+				if(t[Configure.replaceTitleDate(Configure.title.reason, t.selectDate)].indexOf(g) != -1){
+						isInEchelon = true;
+				}
+			});
+			isSelect = isInEchelon;
 			//首板
 			var dayNumber = t[Configure.replaceTitleDate(Configure.title.dayNumber, t.selectDate)];
 			if (dayNumber == 1 &&   
 				parseInt(this.dateArr.indexOf(t.startDate)) - 
-				this.dateArr.indexOf(t.selectDate) < Configure.Echelons_tickit_period) {
+				this.dateArr.indexOf(t.selectDate) < this.get_tickit_period()) {
 				isSelect = false;
 			}
 			
 			// 背离率大于3， 断板大于6的
 			if ((parseInt(this.dateArr.indexOf(t.startDate)) - 
-				this.dateArr.indexOf(t.selectDate) > Configure.Echelons_tickit_period 
+				this.dateArr.indexOf(t.selectDate) > this.get_tickit_period() 
 			)) {
 				if (t[Configure.title.totalDivergence] > 6) {
 					isSelect = false;
