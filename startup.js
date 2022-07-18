@@ -11,12 +11,10 @@
 		oStrong.appendChild(oTxt);
 		oDiv.appendChild(oStrong);
 	};
-	var drawimage = function() {
+	var drawimage = function(echelonNames = []) {
 		var sheet = workbook.getSheet('情绪');
 		canvas.init(document.getElementById("drawing"), sheet, Configure.WinXFactor);
-		canvas.draw();
-		
-		displayAI(AI.getRecommend());
+		canvas.draw(echelonNames);
 	};
 	var drawEchelons = function(){
 		// 梯队
@@ -70,6 +68,17 @@
 		
 		$('#form2').change(function(e) {
 			fillTicketsTable();
+			
+			var fr2 = document.getElementById('form2');
+			var paramEchelons = [];
+			if (fr2.gainian) {
+				fr2.gainian.forEach((input)=> {
+					if(input.checked) {
+						paramEchelons = paramEchelons.concat(input.dataset.titleName);
+					} 
+				});
+			}
+			drawimage(paramEchelons);
 		});
 	};
 	
@@ -89,6 +98,7 @@
 			init();
 			
 			drawimage();
+			displayAI(AI.getRecommend());
 			drawEchelons();
 			fillTicketsTable();
 			

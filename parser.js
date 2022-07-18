@@ -85,8 +85,10 @@ var parser = (function(){
 		var arr = getHotpoints(dateStr);
 
 		arr.forEach((a) => {   // a = ['猪肉'， 13]
-			txt += '【' + (++index) + '】' + 
+			if(a[1].times >= Configure.MIN_KAINIAN) {
+				txt += '【' + (++index) + '】' + 
 				a[0] + '  ' + a[1].times + '    score:' + a[1].weight + '   \t\r\n';
+			}
 		});
 		return txt;
 	};

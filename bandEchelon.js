@@ -2,6 +2,9 @@
 
 (function(exports){	
 
+	var handOverBar_w = 6;
+	var handOverBar_h = 30;
+
 	let bandEchelon = function (canvas, e, rect) {
 		Echelon.call(this, canvas, e, rect);
 
@@ -20,14 +23,13 @@
 	F.prototype = Echelon.prototype;
 	bandEchelon.prototype = new F();
 	bandEchelon.prototype.constructor = bandEchelon;
-	bandEchelon.prototype.ticket_miss_period = 10;
 	bandEchelon.prototype.getBoardDateIndex = function(ticket, selectDate) {
 		var dayNumber = parseInt(ticket[Configure.replaceTitleDate(Configure.title.dayNumber, selectDate)]);
 		dayNumber = dayNumber > 0 ? dayNumber : 1;  // check valid 
 		var startIndex = this.dateArr.indexOf(selectDate) + dayNumber - 1;
 		
 		var obj = {};
-		for (var i = 1; i <= this.ticket_miss_period ; i ++ ) {
+		for (var i = 1; i <= Configure.Band_miss_tickit_period ; i ++ ) {
 			var param = {sheetName:this.dateArr[startIndex + i],
 				ticketCode:ticket[Configure.title.code]};
 			obj.tkt = workbook.getValue(param);
@@ -42,12 +44,48 @@
 		return startIndex;
 	};
 	
+	bandEchelon.prototype.calBarRect = function(startPoint, drawLenth, index) {
+		return {x: startPoint.x + (drawLenth - 1 - index) * handOverBar_w,
+							y: startPoint.y,
+							width: handOverBar_w,
+							height: handOverBar_h};
+	};
+	bandEchelon.prototype.drawBar = function(rect, realHandoverPer, boardStrength) {
+		var ctx = this.canvas.getContext("2d");		
+		ctx.beginPath();
+		ctx.lineWidth="2";
+
+		if(parseFloat(realHandoverPer) < 100 && parseFloat(realHandoverPer) > 0) {
+			if(boardStrength == '很强') {
+				ctx.fillStyle= 'red';
+			} else if (boardStrength == '强'){
+				ctx.fillStyle= 'orange';
+			} else if (boardStrength == '一般') {
+				ctx.fillStyle= '#E0E080';
+			} else if (boardStrength == '弱'){
+				ctx.fillStyle= 'green';
+			}
+			
+			var barHeight = rect.height * parseFloat(realHandoverPer)/100 * Configure.Echelons_handover_factor;
+			ctx.fillRect(rect.x, rect.y + rect.height - barHeight, rect.width * 0.9, barHeight);
+	//		ctx.fillStyle= 'black';			
+	//		ctx.fillText(realHandoverPer, rect.x + 100, rect.y + rect.height - barHeight);
+		} else {
+			ctx.fillStyle= 'grey';
+			ctx.fillRect(rect.x, rect.y, rect.width * 0.9, rect.height);	
+		}
+	};
+	
 	bandEchelon.prototype.drawTitle = function () {
 		var ctx = this.canvas.getContext("2d");	
 		ctx.lineWidth="2";
 		ctx.font="16px Times new Roman";
-		ctx.fillStyle = 'blue';
-		ctx.fillText(this.echelon.name + ' ' + this.ticket_miss_period + '天波段', this.rect.x + 5, this.rect.y + 15);
+		ctx.fillStyle = 'Orange';
+		ctx.fillText(this.echelon.name , this.rect.x + 5, this.rect.y + 15);
+		
+		ctx.font="12px Times new Roman";
+		ctx.fillStyle = 'Orange';
+		ctx.fillText('<' + Configure.Band_miss_tickit_period + '天波段>', this.rect.x + 5, this.rect.y + 30);
 	};
 	
 	bandEchelon.prototype.getSitePoint = function (ticket) {

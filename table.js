@@ -50,13 +50,14 @@ var table = (function(){
 		var d = $('#date')[0].value.replace(/\-/g, '');	
 		var echelonArr = parser.getEchelons(d);
 		echelonArr.forEach((g)=>{
-			if (g.score > 0) {
-				var oTxt = document.createTextNode(g.name + '\xa0\xa0\xa0\xa0');
+			if (g.score > 10) {
+				var oTxt = document.createTextNode(g.name + '(' + g.score + ')\xa0\xa0\xa0\xa0');
 				var input = document.createElement('input');
 				input.type = 'checkbox';
 				input.name = 'gainian';
 				input.checked = false;
 				input.dataset.titleProp = g.hotPoints;
+				input.dataset.titleName = g.name;
 				input.onchange = function(e){
 					if(e.target.checked) {
 						inputAll.checked = false;
@@ -189,7 +190,7 @@ var table = (function(){
 						Tip.show(td, txtshow);
 						break;
 					case 'reason':
-		//				Tip.show(td, parser.getHotpointstxt(datetoload));
+						Tip.show(t, parser.getHotpointstxt(datetoload));
 						break;
 					default:
 						break;

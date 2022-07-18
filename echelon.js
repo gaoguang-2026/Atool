@@ -125,7 +125,13 @@
 		}
 		return retP;
 	};
-	Echelon.prototype.drawBar = function(rect, realHandoverPer, boardStrength, alreadyKO) {
+	Echelon.prototype.calBarRect = function(startPoint, drawLenth, index) {
+		return {x: startPoint.x + (drawLenth - 1 - index) * handOverBar_w,
+							y: startPoint.y,
+							width: handOverBar_w,
+							height: handOverBar_h};
+	};
+	Echelon.prototype.drawBar = function(rect, realHandoverPer, boardStrength) {
 		var ctx = this.canvas.getContext("2d");		
 		ctx.beginPath();
 		ctx.lineWidth="2";
@@ -173,14 +179,7 @@
 				/////
 			}
 			
-			var barRect = {x: startPoint.x + (drawLenth - 1 - i) * handOverBar_w,
-							y: startPoint.y,
-							width: handOverBar_w,
-							height: handOverBar_h};
-	//		console.log('name： ' + ticket[Configure.title.name] + 
-	//					'  date:' + this.dateArr[i] + '  realHandoverPer: ' + realHandoverPer + 
-	//					'  boardStrength:' + boardStrength);
-	//		console.log('barRect height: ' + barRect.height + 'realHandoverPer: ' + realHandoverPer + 'boardStrength: ' + boardStrength);
+			var barRect = this.calBarRect(startPoint, drawLenth, i);
 			this.drawBar(barRect, realHandoverPer, boardStrength);
 		}
 		// 名字
@@ -202,7 +201,11 @@
 		ctx.lineWidth="2";
 		ctx.font="16px Times new Roman";
 		ctx.fillStyle = 'orange';
-		ctx.fillText(this.echelon.name + '  连板', this.rect.x + 5, this.rect.y + 15);
+		ctx.fillText(this.echelon.name, this.rect.x + 5, this.rect.y + 15);
+		
+		ctx.font="12px Times new Roman";
+		ctx.fillStyle = 'orange';
+		ctx.fillText('<' + Configure.Echelons_miss_tickit_period + '天连板>', this.rect.x + 5, this.rect.y + 30);
 	};
 	Echelon.prototype.draw = function () {
 		var ctx = this.canvas.getContext("2d");	

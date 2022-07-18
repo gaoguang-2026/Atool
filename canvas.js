@@ -25,6 +25,9 @@ var canvas = (function(canvas) {
 		width = c.width * winXfactor;
 		height = c.height;
 		
+		var ctx = drawing.getContext("2d");
+		ctx.clearRect(0, 0, width, height);
+		
 		siteX = width * (1 - width_factor)/2;
 		siteY = height * (1 - height_factor)/2;
 		siteWidth = width * width_factor;
@@ -99,7 +102,7 @@ var canvas = (function(canvas) {
 		ctx.fillStyle = Configure.line_color;
 		ctx.fillText('0', siteX + siteWidth + 10, siteY + siteHeight * (1- winFactor));
 		ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth, siteY);
-		ctx.fillStyle = Configure.gainian_color;
+		ctx.fillStyle = Configure.echelon_color[0];
 		ctx.fillText('(' + Configure.Min_echelon_score + ')', siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor) + 15);
 		ctx.fillText('(' + Configure.Max_echelon_score + ')', siteX + siteWidth, siteY + 15);
 		ctx.stroke(); 
@@ -171,7 +174,7 @@ var canvas = (function(canvas) {
 					(parseFloat(Days[i + 1][Configure.title2.sz]) - Configure.SZ_zero)/Configure.SZ_MaxOffset;
 				var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 								y: siteY + siteHeight*(1-winFactor) - pointNextH};
-				ctx.lineWidth="0.5";
+				ctx.lineWidth="1";
 				ctx.strokeStyle = Configure.sz_color;
 				ctx.moveTo(szPoint.x, szPoint.y);
 				ctx.lineTo(szpointNext.x, szpointNext.y);
@@ -185,31 +188,32 @@ var canvas = (function(canvas) {
 		ctx.stroke();
 	};
 	
-	var drawEchelon = function() {
+	var drawEchelon = function(echelonNames) {
 		var ctx = drawing.getContext("2d");		
-		ctx.beginPath();
-		ctx.fillStyle= Configure.gainian_color;
 		for(i = 0; i < Days.length; i ++) {
 			var echelonArr = Days[i][Configure.title2.echelons];
 			echelonArr.forEach((g)=> {    //  g : {name:'', hotPoints:[], score:''};
-				if(g.score >= Configure.Min_echelon_score) {
+				if(echelonNames.indexOf(g.name) != -1) {
 					var drawNameDone = false;	
 					var pointH = siteHeight * (1-winFactor) * 
 									parseFloat(g.score - Configure.Min_echelon_score)/Configure.Max_echelon_score;
 					var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
 							y: siteY + siteHeight*(1-winFactor) - pointH};	
-			//		ctx.fillRect(point.x, point.y, 2, 2);				
+							
+					var color = Configure.echelon_color[echelonNames.indexOf(g.name)%Configure.echelon_color.length];
+								
 					if (i < Days.length - 1) {   // 不是最后一天
 						var echelonsNext = Days[i+1][Configure.title2.echelons];
 						
 						echelonsNext.forEach((gNext)=>{
-							if (gNext.name == g.name && gNext.score > Configure.Min_echelon_score){
+							if (gNext.name == g.name){
 								var pointNextH = siteHeight * (1-winFactor) * 
 										parseFloat(gNext.score - Configure.Min_echelon_score)/Configure.Max_echelon_score;
 								var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 													y: siteY + siteHeight*(1-winFactor) - pointNextH};
-								ctx.lineWidth="0.5";
-								ctx.strokeStyle = Configure.gainian_color;
+								ctx.beginPath();
+								ctx.lineWidth="2";
+								ctx.strokeStyle = color;
 								ctx.moveTo(point.x, point.y);
 								ctx.lineTo(pointNext.x, pointNext.y);
 								ctx.stroke();
@@ -219,8 +223,11 @@ var canvas = (function(canvas) {
 					}
 					if (!drawNameDone) {  // 没有连线，画名称
 						drawNameDone = true;
-						ctx.font="10px Times new Roman";
-						ctx.fillText(g.name.substr(0,1), point.x, point.y);
+						ctx.beginPath();
+						ctx.fillStyle= color;
+						ctx.font="12px Times new Roman";
+						ctx.fillText('<' + g.name + '>', point.x + 5, point.y);
+						ctx.stroke();
 					};
 				}
 			});
@@ -237,11 +244,11 @@ var canvas = (function(canvas) {
 		return retP;
 	};
 	
-	var draw = function() {
+	var draw = function(echelonNames) {
 		if (drawing.getContext){
 			drawSite();
 			drawLine();
-			drawEchelon();
+			drawEchelon(echelonNames);
 		}
 	}
 	
