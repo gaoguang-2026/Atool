@@ -49,7 +49,7 @@ var Configure = (function(){
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限
 	var Band_miss_tickit_period = 7;    //波段检查断板的期限
 	var Echelons_tickit_period = 2;    // 连扳选出股票的期限
-	var Band_tickit_period = 4;    // 波段选出股票的期限
+	var Band_tickit_period = 3;    // 波段选出股票的期限
 	var Band_Max_LENGTH = 20;    // 波段选出股票画出的长度。
 	
 		/**
