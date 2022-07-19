@@ -16,6 +16,11 @@ th,td {
 	text-align:center;
 }
 
-#window {
+#AI {
 	color: red;
+	background-color: blink;
+	font-weight:bold;
+	font-family:"微软雅黑"; 
+	float:right; 
+	border:red 1px solid;
 }

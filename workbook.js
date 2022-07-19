@@ -37,7 +37,7 @@
 		});
 	};
 	
-	var getBandTicket = function() {
+	var getBandTickets = function() {
 		return BandTickets;
 	};
 	
@@ -75,6 +75,6 @@
 		getValue:getValue,
 		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,
-		getBandTicket:getBandTicket
+		getBandTickets:getBandTickets
 	}
  })();

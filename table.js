@@ -136,7 +136,8 @@ var table = (function(){
 			type: fr.gtype[3].checked ? 3 :
 				fr.gtype[2].checked ? 2 : 
 				fr.gtype[0].checked ? 0 : 1,   
-			sort: fr.sort[0].checked ? 0 : 1,
+			sort: fr.sort[2].checked ? 2 :
+				fr.sort[0].checked ? 0 : 1,
 			other: fr2.all[1].checked
 		};
 		var tks = parser.getTickets(datetoload,param);
@@ -205,6 +206,8 @@ var table = (function(){
 					case 'price' : 
 						td.innerHTML = '&nbsp;&nbsp;&nbsp;' + td.innerHTML + '&nbsp;&nbsp;&nbsp;';
 						break;
+					case 'increaseRate':
+						td.innerHTML = ticket.increaseRate == '' ? '' : parseFloat(ticket.increaseRate * 100).toFixed(2);
 					default:
 						break;
 					} 

@@ -104,13 +104,12 @@ var parser = (function(){
 		return ret;
 	};
 	
-	var getBandTicket = function(obj) {
-		var retArr = workbook.getBandTicket();
+	var getBandTickets = function(obj) {
+		var retArr = workbook.getBandTickets();
 		// sort
 		retArr.sort((a, b) => {
-			if (obj && obj.sort == 1) {
-				return b[Configure.replaceTitleDate(Configure.title.dayNumber, b.selectDate)] - 
-						a[Configure.replaceTitleDate(Configure.title.dayNumber, a.selectDate)];
+			if (obj && obj.sort == 2) {
+				return b.increaseRate - a.increaseRate;
 			} else {
 				return b[Configure.title.score] - a[Configure.title.score];
 			}
@@ -135,12 +134,12 @@ var parser = (function(){
 	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
 	/*gainian  热点概念排序的索引 
 	/*type  0 首板 ， 1 连板 , 2 全部, 3 波段
-	/*sort  0 得分 ， 1 高度
+	/*sort  0 得分 ， 1 高度,  2 涨速
 	/*other  true 热点外的其他票
 	//*/
 	var getTickets = function(dateStr, obj) {
 		if(obj.type == 3) {
-			return getBandTicket(obj);
+			return getBandTickets(obj);
 		};
 		
 		loadSheet(dateStr);

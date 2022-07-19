@@ -110,6 +110,19 @@
 			return isSelect;
 		});  
 		
+		// 计算涨速
+		this.tickets.forEach((ticket)=>{
+			var param = {
+				sheetName: ticket.startDate,
+				ticketCode:ticket[Configure.title.code]
+			}
+			
+			var tktStart = workbook.getValue(param);
+			var priceStart = tktStart ? tktStart[Configure.title.price] : 0;
+			var dayNum = this.dateArr.indexOf(ticket.startDate) - this.dateArr.indexOf(ticket.selectDate);
+			ticket.increaseRate = (!priceStart || priceStart == 0) ? 0 : 
+				parseFloat((parseFloat(ticket[Configure.title.price]) - priceStart) / (priceStart * dayNum)).toFixed(4);
+		});
 		workbook.setBandTicket(this.tickets);   // 显示剔除前保存
 		console.log(this.tickets);
 		// echelon股票

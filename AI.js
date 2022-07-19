@@ -1,6 +1,6 @@
 
 var AI = (function(){
-	var recommendText = '';
+	var recommendText = '    AI 提示：';
 	var objStorage = LocalStore.getAll();
 	var dataStorage = {
 		emotion:'',
@@ -15,7 +15,7 @@ var AI = (function(){
 	var cangMap = new Map([
 		['修复', '加仓，六成'],
 		['持续修复', '仓位五层'],
-		['高潮', '注意兑现风险，减仓'],
+		['高潮', '注意分化，减仓'],
 		['继续高潮', '注意兑现风险，减仓'],
 		['高位分化', '减仓至二成以下'],
 		['退潮', '空仓'],
@@ -122,7 +122,7 @@ var AI = (function(){
 		};
 		
 		
-		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion) + '，' +
+		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion) + '。' +
 				getEmotionSuccessRate(dataStorage.emotion);
 		
 	};

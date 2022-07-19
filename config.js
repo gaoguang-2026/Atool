@@ -49,8 +49,8 @@ var Configure = (function(){
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限
 	var Band_miss_tickit_period = 7;    //波段检查断板的期限
 	var Echelons_tickit_period = 2;    // 连扳选出股票的期限
-	var Band_tickit_period = 3;    // 波段选出股票的期限
-	var Band_Max_LENGTH = 20;    // 波段选出股票画出的长度。
+	var Band_tickit_period = 4;    // 波段选出股票的期限
+	var Band_Max_LENGTH = 14;    // 波段选出股票画出的长度。
 	
 		/**
      * 格式化excel传递的时间
@@ -167,10 +167,12 @@ var Configure = (function(){
 		totalDivergence: '背离率',              // 总背离率
 		realHandoverPercent: '实际换手率',
 		boardStrength: '封板力度',
-		selectDate: '最近涨停日期'
+		selectDate: '最近涨停日期',
+		increaseRate: '最近涨速%'
 	};
-	var showInTableTitile = ['name',  'realValue','score','totalDivergence','realHandoverPercent', 'boardStrength','reason', 'dayNumber'];
-	var bandShowInTableTitile = ['name', 'realValue','score','realHandoverPercent', 'boardStrength', 'price','reason', 'selectDate'];
+	var showInTableTitile = ['name',  'realValue','score','totalDivergence',
+			'realHandoverPercent', 'boardStrength','reason', 'dayNumber'];
+	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','selectDate','reason'];
 	
 	var title2 = {
 		date: '日期',

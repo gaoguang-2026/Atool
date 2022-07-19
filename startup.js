@@ -1,6 +1,6 @@
 
 	var displayAI = function (text) {
-		var oDiv = document.getElementById("window");
+		var oDiv = document.getElementById("AI");
 		//remove child
 		while(oDiv.hasChildNodes()) {
 			oDiv.removeChild(oDiv.lastChild);
