@@ -6,7 +6,7 @@ var Configure = (function(){
 	var echelons = [
 		//赛道
 		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '锂电池', '一体化压铸']},
-		{name: '风光储', hotPoints:['光伏', '储能','风电', 'HJT电池', '智能电网', '特高压', '钒电池', '虚拟电厂']},
+		{name: '风光储', hotPoints:['光伏', '储能','风电', 'HJT电池', '智能电网', '特高压', '钒电池', '虚拟电厂', '电力']},
 		
 		// 消费
 		{name: '白酒', hotPoints:['白酒','啤酒概念','白酒概念']},
@@ -41,7 +41,7 @@ var Configure = (function(){
 	// 左右窗口
 	var WinXFactor = 0.4;     //  左边窗口占比
 	
-	var Echelons_Draw_NUM = 2;
+	var Echelons_Draw_NUM = 3;
 	
 	var Echelons_ticket_NUM = 10;     // 画出来的数量
 	var Echelons_handover_factor = 2; // 换手放大便于观察
