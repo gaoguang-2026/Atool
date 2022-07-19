@@ -181,7 +181,7 @@ var canvas = (function(canvas) {
 				ctx.stroke();
 			} else {
 				ctx.font="12px Times new Roman";
-				ctx.fillText(parseFloat(Days[i][Configure.title2.sz]) + '', szPoint.x + 10, szPoint.y);
+				ctx.fillText(parseFloat(Days[i][Configure.title2.sz]) + '', szPoint.x - 30, szPoint.y + 10);
 			}
 			
 		};

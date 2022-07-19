@@ -97,7 +97,7 @@ var AI = (function(){
 			num + '次,平均成功率' + parseFloat(totalValue/num) + '%。';
 	};
 	var getEmotions = function() {
-		var emotionPoints = canvas.getLastEmotionPoints(2);    // 
+		var emotionPoints = canvas.getLastEmotionPoints(2);    
 		var angle = getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var value = parseFloat(emotionPoints[0].value);
 		if (angle > 45) {
@@ -127,10 +127,12 @@ var AI = (function(){
 		
 	};
 	
-	// 根据题材和背离率算最后的得分
+	// 根据题材、背离率和 连扳 算最后的得分    
 	var getFinalScroe = function(t) {
-		return  parseInt(t[Configure.title.score]) - 
-				t[Configure.title.totalDivergence] * dataStorage.scoreFator;
+		var emotionPoints = canvas.getLastEmotionPoints(1); 
+		return parseInt(t[Configure.title.score]) - 
+				t[Configure.title.totalDivergence] * dataStorage.scoreFator + 
+				(10 - emotionPoints[0].value)* t[Configure.title.dayNumber] ;
 	};
 	var getTickits = function() {
 		var dateStr = workbook.getLastDate();
@@ -138,7 +140,7 @@ var AI = (function(){
 		var hotpoints = [];
 		hotpoints = hotpoints.concat(echelons[0].hotPoints);
 		//如果梯队一与梯队二得分相差很小，选用两个梯队的票
-		if(echelons[0].score - echelons[1].score < 7) {
+		if(echelons[0].score - echelons[1].score <= 7) {
 			hotpoints = hotpoints.concat(echelons[1].hotPoints);
 		}
 		
