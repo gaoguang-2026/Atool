@@ -137,11 +137,9 @@
 		})
 		
 		console.log(this.tickets);
-		// 按涨停基因排序，减除多余的
+		// 按涨速排序，减除多余的
 		this.tickets.sort((a, b)=> {
-			var bDateNum = this.dateArr.indexOf(b.startDate) - this.dateArr.indexOf(b.selectDate);
-			var aDateNum = this.dateArr.indexOf(a.startDate) - this.dateArr.indexOf(a.selectDate);
-			return bDateNum - aDateNum;
+			return b.increaseRate - a.increaseRate;
 		});
 		this.tickets = this.tickets.slice(0,Configure.Echelons_ticket_NUM);
 	};
