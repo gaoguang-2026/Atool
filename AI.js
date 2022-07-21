@@ -1,12 +1,16 @@
 
 var AI = (function(){
-	var recommendText = '    AI 提示：';
+	var recommendText = 'AI 提示：';
 	var objStorage = LocalStore.getAll();
 	var dataStorage = {
 		emotion:'',
 		tickits:[],
 		sucessRate:0,
-		scoreFator: 50         // 默认值，localstorage没有值使用它； 越大结构权重越大，越小题材权重越小
+		scoreFator: 50,         // 默认值，localstorage没有值使用它； 越大结构权重越大，越小题材权重越小
+		
+		sz_average_angle:0,
+		sz_ma_beili : 0,
+		band_ticktes:[],
 	};
 	
 	var RectifyDay_num = 30;
@@ -52,6 +56,7 @@ var AI = (function(){
 				num ++;
 			}
 		}
+		// 计算 scoreFator
 		var aveage = total/num;
 		if (objStorage[preDatestr].sucessRate) {
 			dataStorage.scoreFator = objStorage[preDatestr].scoreFator - aveage > 0 ? 
@@ -71,7 +76,7 @@ var AI = (function(){
 	};
 	
 	var getAngle = function(p2, p1) {
-		var radian = Math.atan2(p1.y - p2.y, p1.x - p2.x); // 返回来的是弧度
+		var radian = Math.atan2(p1.y - p2.y, p2.x - p1.x); // 返回来的是弧度
 		var angle = 180 / Math.PI * radian; // 根据弧度计算角度
 		return angle;
 	};
@@ -122,9 +127,19 @@ var AI = (function(){
 		};
 		
 		
-		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion) + '。' +
+		return '短线情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion) + '。' +
 				getEmotionSuccessRate(dataStorage.emotion);
 		
+	};
+	
+	// 根据 题材、涨速 算最后的得分    
+	var getBandFinalScroe = function(t) {
+		var dateArr = workbook.getDateArr((a,b)=>{
+				return b - a;
+		});
+		 // 日涨幅 5%左右， 太高容易回落，太低没有活性
+		return parseInt(t[Configure.title.score] * (1-(Math.abs(t.increaseRate *100 - 5)/5))) *   
+					(dateArr.indexOf(t.startDate) - dateArr.indexOf(t.selectDate) + 1);
 	};
 	
 	// 根据题材、背离率和 连扳 算最后的得分    
@@ -133,6 +148,38 @@ var AI = (function(){
 		return parseInt(t[Configure.title.score]) - 
 				t[Configure.title.totalDivergence] * dataStorage.scoreFator + 
 				(10 - emotionPoints[0].value)* t[Configure.title.dayNumber] ;
+	};
+	
+	var getBandticket = function() {
+		// 算斜率
+		var szPoinsts = canvas.getLastSZPoints(Configure.Band_MA_NUM);    
+		var sumAngle = 0;
+		var sumValue = 0;
+		for(var i = 0; i < Configure.Band_MA_NUM - 1; i ++){
+			sumAngle += getAngle(szPoinsts[i].point, szPoinsts[i+1].point);
+			sumValue +=  szPoinsts[i].value;    // 前Configure.Band_MA_NUM - 1天的和，还要加最后一天
+		}
+		dataStorage.sz_average_angle = parseFloat(sumAngle / Configure.Band_MA_NUM).toFixed(2);
+		// 算sz和MA的背离率
+		var MA_value = (sumValue + parseInt(szPoinsts[Configure.Band_MA_NUM - 1].value))/Configure.Band_MA_NUM;
+		dataStorage.sz_ma_beili = parseFloat((szPoinsts[Configure.Band_MA_NUM - 1].value - MA_value) / MA_value).toFixed(4);
+		
+		var txt = '';
+		if(dataStorage.sz_average_angle > 0 && dataStorage.sz_ma_beili > 0) {
+		//	txt += '上证背离率' + dataStorage.sz_ma_beili*100 + '%(angle:' + dataStorage.sz_average_angle + '),波段关注：';
+			//选出波段票
+			txt += '波段：';
+			var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
+			tickets.sort((a, b)=>{
+				return getBandFinalScroe(b) - getBandFinalScroe(a);
+			});
+			var num = tickets.length > 1 ? 1 : tickets.length;
+			for(var i = 0; i < num; i ++ ) {
+				txt += tickets[i][Configure.title.name];
+				dataStorage.band_ticktes.push(tickets[i][Configure.title.name]);
+			}
+		}
+		return txt;
 	};
 	var getTickits = function() {
 		var dateStr = workbook.getLastDate();
@@ -154,14 +201,14 @@ var AI = (function(){
 			return getFinalScroe(b) - getFinalScroe(a);
 		});
 		
+		var bandTxt = getBandticket();
+		var num = bandTxt == '' ?  3 : 2;
 		var txt = '今日关注：';
-		var num = tickets.length > 3 ? 3 : tickets.length;
 		for(var i = 0; i < num; i ++ ) {
 			dataStorage.tickits.push(tickets[i][Configure.title.name]);
-			txt += tickets[i][Configure.title.name] + '  ';
+			txt += tickets[i][Configure.title.name] + ' ';
 		}
-		
-		return txt;
+		return bandTxt == '' ? txt : txt + '\t' +bandTxt;
 	};
 	var getRecommend = function() {
 		// 更新获取storage的数据

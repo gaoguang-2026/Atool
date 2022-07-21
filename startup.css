@@ -23,4 +23,5 @@ th,td {
 	font-family:"微软雅黑"; 
 	float:right; 
 	border:red 1px solid;
+	white-space: pre;
 }

@@ -132,7 +132,7 @@ var parser = (function(){
 	};
 	
 	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
-	/*gainian  热点概念排序的索引 
+	/*hotpointArr  热点概念排序的索引 
 	/*type  0 首板 ， 1 连板 , 2 全部, 3 波段
 	/*sort  0 得分 ， 1 高度,  2 涨速
 	/*other  true 热点外的其他票
@@ -201,6 +201,25 @@ var parser = (function(){
 		return echelons;
 	};
 	
+		// 根据hotpoint算出echelons
+	var getCombinedEchelon = function(dateStr, echelonNames) {
+		var echelons = getEchelons(dateStr);
+		var combinedEchelon = {
+			name: echelonNames.toString(),
+			hotPoints: [],
+			score: 0
+		};
+		echelonNames.forEach((name)=>{
+			echelons.forEach((echelon)=>{
+				if (echelon.name == name) {
+					combinedEchelon.hotPoints = combinedEchelon.hotPoints.concat(echelon.hotPoints);
+					combinedEchelon.score += parseInt(echelon.score);
+				}
+			});
+		})
+		return combinedEchelon;
+	};
+	
 	var clear = function() {
 		tickets = [];
 		gaiNian = new Map();
@@ -211,6 +230,8 @@ var parser = (function(){
 		getHotpointstxt:getHotpointstxt,
 		getTickets: getTickets,
 		getTicket:getTicket,
-		getEchelons:getEchelons
+		getBandTickets:getBandTickets,
+		getEchelons:getEchelons,
+		getCombinedEchelon:getCombinedEchelon
 	}
 })();

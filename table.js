@@ -50,7 +50,7 @@ var table = (function(){
 		var d = $('#date')[0].value.replace(/\-/g, '');	
 		var echelonArr = parser.getEchelons(d);
 		echelonArr.forEach((g)=>{
-			if (g.score > 10) {
+			if (g.score >= Configure.Echelons_show_min_score) {
 				var oTxt = document.createTextNode(g.name + '(' + g.score + ')\xa0\xa0\xa0\xa0');
 				var input = document.createElement('input');
 				input.type = 'checkbox';
@@ -208,6 +208,9 @@ var table = (function(){
 						break;
 					case 'increaseRate':
 						td.innerHTML = ticket.increaseRate == '' ? '' : parseFloat(ticket.increaseRate * 100).toFixed(2);
+						var num = dateArr.indexOf(ticket.startDate) - dateArr.indexOf(ticket.selectDate);
+						var txt = '' + ticket.startDate + '-' + ticket.selectDate +' ' + num + '天';
+						Tip.show(td, txt);
 					default:
 						break;
 					} 

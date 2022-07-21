@@ -4,6 +4,7 @@ var canvas = (function(canvas) {
 	var Days;
 	
 	var emotionPoints = [];   // 保存背离率的点
+	var szPoints = [];   // 保存sz的点
 	
 	var width = 0;
 	var height = 0;
@@ -168,6 +169,8 @@ var canvas = (function(canvas) {
 				(parseFloat(Days[i][Configure.title2.sz])- Configure.SZ_zero)/Configure.SZ_MaxOffset;
 			var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
 					y: siteY + siteHeight*(1-winFactor) - szPointH};
+			szPoints.push({point:szPoint, value:parseFloat(Days[i][Configure.title2.sz]), 
+						date:Days[i][Configure.title2.date]});
 		//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
 			if (i < Days.length - 1) {// 不是最后一个点
 				var pointNextH = siteHeight * (1-winFactor) * 
@@ -244,6 +247,15 @@ var canvas = (function(canvas) {
 		return retP;
 	};
 	
+	var getLastSZPoints = function(num) {
+		var n = num > szPoints.length ? szPoints.length : num;
+		var retP = [];
+		for(var i = szPoints.length - 1; i > szPoints.length - 1 - n; i --) {
+			retP.push(szPoints[i]);
+		}
+		return retP;
+	};
+	
 	var draw = function(echelonNames) {
 		if (drawing.getContext){
 			drawSite();
@@ -255,6 +267,7 @@ var canvas = (function(canvas) {
 	return {
 		init: init,
 		draw: draw,
-		getLastEmotionPoints:getLastEmotionPoints
+		getLastEmotionPoints:getLastEmotionPoints,
+		getLastSZPoints:getLastSZPoints
 	}
 })();

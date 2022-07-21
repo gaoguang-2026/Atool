@@ -5,7 +5,7 @@ var Configure = (function(){
 		// echelon 
 	var echelons = [
 		//赛道
-		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '锂电池', '一体化压铸']},
+		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '锂电池']},
 		{name: '风光储', hotPoints:['光伏','有机硅概念', '储能','风电', 'HJT电池', '智能电网', '特高压', '虚拟电厂', '电力']},
 		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', '第三代半导体', '中芯国际概念']},
 		
@@ -26,6 +26,7 @@ var Configure = (function(){
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航']},
 		
 		{name: '机器人', hotPoints:['机器人']},
+		{name: '一体化压铸', hotPoints:['一体化压铸']},
 		{name: '钒电池', hotPoints:['钒电池']},
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
 		{name: '半年报预增', hotPoints:['半年报预增']}
@@ -49,18 +50,21 @@ var Configure = (function(){
 	var Max_echelon_score = 100;
 	
 	// 左右窗口
-	var WinXFactor = 0.4;     //  左边窗口占比
+	var WinXFactor = 0.5;     //  左边窗口占比
 	
-	var Echelons_Draw_NUM = 3;
+	var Echelons_Draw_NUM = 2;
 	
 	var Echelons_ticket_NUM = 10;     // 画出来的数量
 	var Echelons_handover_factor = 2; // 换手放大便于观察
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限
-	var Band_miss_tickit_period = 7;    //波段检查断板的期限
 	var Echelons_tickit_period = 2;    // 连扳选出股票的期限
+	var Echelons_show_min_score = 3;  // 最小显示限制
 	var Band_tickit_period = 4;    // 波段选出股票的期限
 	var Band_Max_LENGTH = 14;    // 波段选出股票画出的长度。
+	var Band_miss_tickit_period = 10;    //波段检查断板的期限
+	
+	var Band_MA_NUM = 5;    //MA5
 	
 		/**
      * 格式化excel传递的时间
@@ -216,10 +220,12 @@ var Configure = (function(){
 		Max_echelon_score:Max_echelon_score,
 		Echelons_Draw_NUM:Echelons_Draw_NUM,
 		Echelons_tickit_period:Echelons_tickit_period,
+		Echelons_show_min_score:Echelons_show_min_score,
 		Band_tickit_period:Band_tickit_period,
 		Echelons_miss_tickit_period:Echelons_miss_tickit_period,
 		Band_miss_tickit_period:Band_miss_tickit_period,
 		Band_Max_LENGTH:Band_Max_LENGTH,
+		Band_MA_NUM:Band_MA_NUM,
 		Echelons_ticket_NUM:Echelons_ticket_NUM,
 		Echelons_handover_factor:Echelons_handover_factor,
 		site_color:site_color,
