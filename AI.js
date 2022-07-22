@@ -195,7 +195,7 @@ var AI = (function(){
 		
 		var param = {
 			hotpointArr: hotpoints,
-			type:2,
+			type:1,
 			sort:1
 		}
 		var tickets =  parser.getTickets(dateStr, param);
