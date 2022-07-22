@@ -1,6 +1,8 @@
 
 
-
+body {
+	background-color:#CBE9CB;
+}
 
 #tbl {
 	border-collapse:collapse;
