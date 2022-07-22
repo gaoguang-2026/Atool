@@ -99,7 +99,7 @@ var AI = (function(){
 		}
 		
 		return num == 0 ? '' : '前' + total + '天内出现' + 
-			num + '次,平均成功率' + parseFloat(totalValue/num) + '%。';
+			num + '次,平均成功率' + parseInt(totalValue * 100/num) + '%。';
 	};
 	var getEmotions = function() {
 		var emotionPoints = canvas.getLastEmotionPoints(2);    
@@ -186,10 +186,12 @@ var AI = (function(){
 		var echelons = parser.getEchelons(dateStr);
 		var hotpoints = [];
 		hotpoints = hotpoints.concat(echelons[0].hotPoints);
-		//如果梯队一与梯队二得分相差很小，选用两个梯队的票
-		if(echelons[0].score - echelons[1].score <= 7) {
-			hotpoints = hotpoints.concat(echelons[1].hotPoints);
-		}
+		//在排名靠前的梯队里面找
+		echelons.forEach((echelon)=>{
+			if (echelon.score > Configure.Echelons_show_min_score){
+				hotpoints = hotpoints.concat(echelon.hotPoints);
+			}
+		})
 		
 		var param = {
 			hotpointArr: hotpoints,

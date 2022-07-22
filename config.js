@@ -5,9 +5,11 @@ var Configure = (function(){
 		// echelon 
 	var echelons = [
 		//赛道
-		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '锂电池']},
-		{name: '风光储', hotPoints:['光伏','有机硅概念', '储能','风电', 'HJT电池', '智能电网', '特高压', '虚拟电厂', '电力']},
-		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', '第三代半导体', '中芯国际概念']},
+		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '充电桩']},
+		{name: '风光电', hotPoints:['光伏','有机硅概念','风电', 'HJT电池']},
+		{name: '电力', hotPoints:['智能电网', '特高压', '虚拟电厂', '电力']},
+		{name: '储能', hotPoints:[ '储能', 'HJT电池','锂电池']},
+		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', '第三代半导体', '中芯国际概念','芯片']},
 		
 		// 消费
 		{name: '白酒', hotPoints:['白酒','啤酒概念','白酒概念', '烟草']},
@@ -22,10 +24,10 @@ var Configure = (function(){
 		{name: '金融', hotPoints:['银行', '保险', '证券', '券商']},
 		
 		{name: '环保', hotPoints:['环保', '污水处理','固废处理','绿色发电']},		
-		{name: '传媒', hotPoints:['传媒', '元宇宙', '虚拟现实', '人工智能', '游戏', '云游戏', '云计算', '东数西算', '计算机软件']},
+		{name: '传媒', hotPoints:['传媒', '元宇宙', '虚拟现实', '人工智能', '游戏', '云游戏', '云计算', '东数西算', '计算机软件','手机游戏']},
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航']},
 		
-		{name: '机器人', hotPoints:['机器人']},
+		{name: '机器人', hotPoints:['机器人', '智能制造']},
 		{name: '一体化压铸', hotPoints:['一体化压铸']},
 		{name: '钒电池', hotPoints:['钒电池']},
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
@@ -38,7 +40,7 @@ var Configure = (function(){
 	var echelon_color = ['orange', '#8BEDD9', '#E89AF5', '#6F65DE', '#9D97FF', '#F597C0'];
 	
 	var MIN_LB_NUMBER = 2;
-	var MIN_KAINIAN = 3;     // 最少出现的次数
+	var MIN_KAINIAN = 2;     // 最少出现的次数
 	
 	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
 	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
@@ -47,7 +49,7 @@ var Configure = (function(){
 	var winFactor = 0.4;    // 两个窗口的比率
 	
 	var Min_echelon_score = 0;    //draw 的条件
-	var Max_echelon_score = 100;
+	var Max_echelon_score = 40;
 	
 	// 左右窗口
 	var WinXFactor = 0.5;     //  左边窗口占比
@@ -182,7 +184,7 @@ var Configure = (function(){
 		realHandoverPercent: '实际换手率',
 		boardStrength: '封板力度',
 		selectDate: '最近涨停日期',
-		increaseRate: '最近涨速%'
+		increaseRate: '平均涨速'
 	};
 	var showInTableTitile = ['name',  'realValue','score','totalDivergence',
 			'realHandoverPercent', 'boardStrength','reason', 'dayNumber'];
