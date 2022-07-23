@@ -46,6 +46,8 @@
 			
 			if (i == 0) {
 				highlightTichets = e1.getTickets();     // 记录需要highlight的票
+				// 初始化一下趋势数据 AI需要使用
+				new window.bandEchelon(elCanvas, echelons[i], rect);   
 			}
 		}			
 

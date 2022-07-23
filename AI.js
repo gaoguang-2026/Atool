@@ -210,7 +210,7 @@ var AI = (function(){
 			dataStorage.tickits.push(tickets[i][Configure.title.name]);
 			txt += tickets[i][Configure.title.name] + ' ';
 		}
-		return bandTxt == '' ? txt : txt + '\t' +bandTxt;
+		return bandTxt == '' ? txt : txt + ' ' +bandTxt;
 	};
 	var getRecommend = function() {
 		// 更新获取storage的数据
