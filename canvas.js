@@ -72,7 +72,7 @@ var canvas = (function(canvas) {
 			if ((i % 5 == 0 && (Days.length - i > 8)) || i == Days.length -1) {
 				//日期
 			//	ctx.rotate(310*Math.PI/180);
-				ctx.font="12px Times new Roman";
+				ctx.font="14px Times new Roman";
 				ctx.fillStyle = Configure.site_color;
 				ctx.fillText(Configure.formatExcelDate(Days[i][Configure.title2.date], '').substr(4,4),
 					 siteX + cellWidth  * i, siteY + siteHeight + 20);
@@ -92,7 +92,7 @@ var canvas = (function(canvas) {
 		ctx.moveTo(siteX,siteY + siteHeight * (1-winFactor));
 		ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor));
 		
-		ctx.font="12px Times new Roman";
+		ctx.font="14px Times new Roman";
 		ctx.fillStyle = Configure.line_color;
 		ctx.fillText('0', siteX - 20, siteY + siteHeight);
 		ctx.fillText('(1)', siteX - 20, siteY + siteHeight * (1- winFactor) + 10);
@@ -158,7 +158,7 @@ var canvas = (function(canvas) {
 				ctx.lineTo(pointNext.x, pointNext.y);
 				ctx.stroke();
 			} else {
-				ctx.font="12px Times new Roman";
+				ctx.font="14px Times new Roman";
 				ctx.fillText(parseFloat(Days[i][Configure.title2.beili]) + '%', point.x + 10, point.y);
 				ctx.stroke();
 			}
@@ -183,7 +183,7 @@ var canvas = (function(canvas) {
 				ctx.lineTo(szpointNext.x, szpointNext.y);
 				ctx.stroke();
 			} else {
-				ctx.font="12px Times new Roman";
+				ctx.font="14px Times new Roman";
 				ctx.fillText(parseFloat(Days[i][Configure.title2.sz]) + '', szPoint.x - 30, szPoint.y + 10);
 			}
 			

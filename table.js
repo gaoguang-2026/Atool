@@ -113,7 +113,7 @@ var table = (function(){
 
 		tHead.appendChild(tr);
 	}
-	var createTable = function (datetoload) {
+	var createTable = function (datetoload, highlightTichets) {
 		var fr = document.getElementById('form1');
 		var fr2 = document.getElementById('form2');
 		
@@ -178,9 +178,16 @@ var table = (function(){
 							Tip.show(td, '板：' + ticket[Configure.title.boardAndDay] + '<br>');
 						};
 						break;
+					case 'boardAndDay':
+						var txt = Configure.boardAndDayMap[ticket[Configure.title.boardAndDay]];
+						td.innerHTML = txt ? txt : ticket[Configure.title.boardAndDay];
+						break;
 					case 'totalDivergence':
 						Tip.show(td, '价格：' + ticket[Configure.title.price] + '<br>' +
 								'筹码: ' + ticket[Configure.title.profitProportion]);
+						if (ticket[Configure.title.totalDivergence] > 3) {
+							td.className = 'grey';
+						}
 						break;
 					case 'realHandoverPercent':
 						var txtshow = '前' + (parseInt(ticket[Configure.title.dayNumber]) - 1) +  '天实际换手率：';
@@ -194,6 +201,9 @@ var table = (function(){
 							}
 						}
 						Tip.show(td, txtshow);
+						if (ticket[Configure.title.realHandoverPercent] > 55) {
+							td.className = 'grey';
+						}
 						break;
 					case 'reason':
 						Tip.show(t, parser.getHotpointstxt(datetoload));
@@ -214,6 +224,12 @@ var table = (function(){
 					default:
 						break;
 					} 
+					
+				highlightTichets.forEach((t)=>{
+					if(t[Configure.title.code] == ticket[Configure.title.code]) {
+						tr.className = 'red';
+					}
+				})
 				tr.appendChild(td);
 			});
 			

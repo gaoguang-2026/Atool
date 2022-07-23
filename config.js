@@ -55,17 +55,16 @@ var Configure = (function(){
 	var WinXFactor = 0.5;     //  左边窗口占比
 	
 	var Echelons_Draw_NUM = 2;
-	
-	var Echelons_ticket_NUM = 10;     // 画出来的数量
+	var Echelons_ticket_NUM = 7;     // 画出来的数量
 	var Echelons_handover_factor = 2; // 换手放大便于观察
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限
-	var Echelons_tickit_period = 2;    // 连扳选出股票的期限
+	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
 	var Echelons_show_min_score = 3;  // 最小显示限制
+	
 	var Band_tickit_period = 4;    // 波段选出股票的期限
 	var Band_Max_LENGTH = 14;    // 波段选出股票画出的长度。
 	var Band_miss_tickit_period = 10;    //波段检查断板的期限
-	
 	var Band_MA_NUM = 5;    //MA5
 	
 		/**
@@ -148,6 +147,17 @@ var Configure = (function(){
 			return ret;
 	};
 	
+	var boardAndDayMap = {
+		'393224': '8/6',
+		'327685': '5',
+		'262149': '5/4',
+		'196612': '4/3',
+		'196611': '3',
+		'131075': '3/2',
+		'131074':  '2',
+		'65537': '1'
+	};
+	
 	var title = {
 		code: '代码',
 		name: '    名称',
@@ -187,7 +197,7 @@ var Configure = (function(){
 		increaseRate: '平均涨速'
 	};
 	var showInTableTitile = ['name',  'realValue','score','totalDivergence',
-			'realHandoverPercent', 'boardStrength','reason', 'dayNumber'];
+					'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
 	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','selectDate','reason'];
 	
 	var title2 = {
@@ -238,6 +248,7 @@ var Configure = (function(){
 		getBoardStrength:getBoardStrength,
 		formatExcelDate:formatExcelDate,
 		updatetitle:updatetitle,
-		replaceTitleDate:replaceTitleDate
+		replaceTitleDate:replaceTitleDate,
+		boardAndDayMap:boardAndDayMap
 	}	
 })();

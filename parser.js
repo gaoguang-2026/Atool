@@ -146,7 +146,7 @@ var parser = (function(){
 		// sort
 		tickets.sort((a, b) => {
 			if (obj && obj.sort == 1) {
-				return b[Configure.title.dayNumber] - a[Configure.title.dayNumber];
+				return b[Configure.title.boardAndDay] - a[Configure.title.boardAndDay];
 			} else {
 				return b[Configure.title.score] - a[Configure.title.score];
 			}
@@ -157,8 +157,8 @@ var parser = (function(){
 		var retArr = tickets;
 		if (obj.type !== 2) {
 			retArr= tickets.filter((t)=>{
-				return obj.type === 1 ? t[Configure.title.dayNumber] > 1 : 
-									t[Configure.title.dayNumber] == 1;
+				return obj.type === 1 ? t[Configure.title.boardAndDay] > 65537 : 
+									t[Configure.title.boardAndDay] == 65537;
 			});			
 		}
 		

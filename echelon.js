@@ -198,12 +198,12 @@
 		var ctx = this.canvas.getContext("2d");		
 		ctx.beginPath();
 		if (index != 0) {
-			ctx.lineWidth="1";
-			ctx.font="10px Times new Roman";
+			ctx.lineWidth="2";
+			ctx.font="14px Times new Roman";
 			ctx.fillStyle = 'green';
 		} else {
 			ctx.lineWidth="2";
-			ctx.font="12px Times new Roman";
+			ctx.font="14px Times new Roman";
 			ctx.fillStyle = 'red';
 		}
 		ctx.fillText(ticket[Configure.title.name], startPoint.x, startPoint.y - 3);
@@ -241,5 +241,8 @@
 		
 	};
 	
+	Echelon.prototype.getTickets = function() {
+		return this.tickets;
+	}
 	exports.Echelon = Echelon;
 }(window));

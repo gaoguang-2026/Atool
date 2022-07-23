@@ -18,6 +18,9 @@ th,td {
 	text-align:center;
 }
 
+td,tr	{}.grey{background-color: green}
+		.red{background-color: rgba(255, 128, 0, 0.3)}
+
 #AI {
 	color: red;
 	background-color: blink;

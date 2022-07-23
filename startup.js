@@ -16,37 +16,44 @@
 		canvas.init(document.getElementById("drawing"), sheet, Configure.WinXFactor);
 		canvas.draw(echelonNames);
 	};
-	var drawEchelons = function(echelonNames = []){
+	
+	
+	var highlightTichets;
+	// type = 0 画连扳， 3画波段
+	var drawEchelons = function(echelonNames = [], type = 0){
 		// 梯队
 		var elCanvas = document.getElementById("drawing")
 		var dateArr = workbook.getDateArr((a,b)=>{
 				return b - a;
 			});
-		var echelons = echelonNames.length ?  [(parser.getCombinedEchelon(dateArr[0], echelonNames))]
-						: parser.getEchelons(dateArr[0]);
-		var showNum = echelons.length * 2 <= Configure.Echelons_Draw_NUM ? 
-										echelons.length * 2 : Configure.Echelons_Draw_NUM;
+		var echelons = echelonNames.length ?  
+						[(parser.getCombinedEchelon(dateArr[0], echelonNames))] : [];
+		echelons = echelons.concat(parser.getEchelons(dateArr[0]));
 
-		for (var i = 0; i < showNum; i ++) {
+		for (var i = 0; i < Configure.Echelons_Draw_NUM; i ++) {
 			var rect = {x: elCanvas.width * Configure.WinXFactor + 
-								i * elCanvas.width * (1-Configure.WinXFactor)/showNum, 
+								i * elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM, 
 							y:0,
-							width:elCanvas.width * (1-Configure.WinXFactor)/showNum,
+							width:elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM,
 						height:elCanvas.height};
 			let e1;
-			if(i%2 == 0) {
-				e1 = new window.Echelon(elCanvas, echelons[Math.floor(i/2)], rect);      //连板
-			} else {
-				e1 = new window.bandEchelon(elCanvas, echelons[Math.floor(i/2)], rect);   // 波段，首板断板
+			if(type == 0) {
+				e1 = new window.Echelon(elCanvas, echelons[i], rect);      //连板
+			} else {  // type = 3
+				e1 = new window.bandEchelon(elCanvas, echelons[i], rect);   // 波段，首板断板
 			}
 			e1.draw();
+			
+			if (i == 0) {
+				highlightTichets = e1.getTickets();     // 记录需要highlight的票
+			}
 		}			
 
 	};
 	
 	var fillTicketsTable = function() {
 		var d = $('#date')[0].value.replace(/\-/g, '');	
-		table.createTable(d);
+		table.createTable(d, highlightTichets);
 	};
 	
 	
@@ -63,12 +70,8 @@
 			fillTicketsTable();
 			table.updateForm();
 		});
-			
-		$('#form1').change(function(e) {
-			fillTicketsTable();
-		});
 		
-		$('#form2').change(function(e) {
+		var formUpdate = function() {
 			var fr2 = document.getElementById('form2');
 			var paramEchelons = [];
 			if (fr2.gainian) {
@@ -78,13 +81,19 @@
 					} 
 				});
 			}
-			// table update
-			fillTicketsTable();
 			// canvas update
 			drawimage(paramEchelons);
 			// Echelon update
-			drawEchelons(paramEchelons);
-		});
+			var type = document.getElementById('form1').gtype[3].checked ? 
+						3 : 0;   // 画波段还是连扳
+			drawEchelons(paramEchelons, type);
+			
+			// table update
+			fillTicketsTable();
+		};
+			
+		$('#form1').change(formUpdate);
+		$('#form2').change(formUpdate);
 	};
 	
     $('#excel-file').change(function(e) {
