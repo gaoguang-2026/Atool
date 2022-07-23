@@ -17,14 +17,14 @@ var AI = (function(){
 	var Rectify_factor = 7;
 	
 	var cangMap = new Map([
-		['修复', '加仓，六成'],
-		['持续修复', '仓位五层'],
-		['高潮', '注意分化，减仓'],
-		['继续高潮', '注意兑现风险，减仓'],
-		['高位分化', '减仓至二成以下'],
-		['退潮', '空仓'],
-		['持续退潮', '空仓'],
-		['冰点', '提防二次冰点，适当开仓']
+		['修复', '加仓，5成以上，盯住龙头'],
+		['持续修复', '关注高位缠打型品种'],
+		['高潮', '注意分化，关注低位补涨'],
+		['继续高潮', '注意兑现风险，止盈'],
+		['高位分化', '减仓至二成以下，避免中位吹哨人'],
+		['退潮', '空仓，尝试低位补涨'],
+		['持续退潮', '空仓，尝试低吸中位大长腿'],
+		['冰点', '提防二次冰点，打板龙头，预期修复']
 	]);
 	
 	var getAndUpdateLoacalstorage = function() {
@@ -166,9 +166,9 @@ var AI = (function(){
 		
 		var txt = '';
 		if(dataStorage.sz_average_angle > 0 && dataStorage.sz_ma_beili > 0) {
-		//	txt += '上证背离率' + dataStorage.sz_ma_beili*100 + '%(angle:' + dataStorage.sz_average_angle + '),波段关注：';
-			//选出波段票
-			txt += '波段：';
+		//	txt += '上证背离率' + dataStorage.sz_ma_beili*100 + '%(angle:' + dataStorage.sz_average_angle + '),趋势关注：';
+			//选出趋势票
+			txt += '趋势：';
 			var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
 			tickets.sort((a, b)=>{
 				return getBandFinalScroe(b) - getBandFinalScroe(a);

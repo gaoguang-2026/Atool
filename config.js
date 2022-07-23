@@ -62,9 +62,9 @@ var Configure = (function(){
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
 	var Echelons_show_min_score = 3;  // 最小显示限制
 	
-	var Band_tickit_period = 4;    // 波段选出股票的期限
-	var Band_Max_LENGTH = 7;    // 波段选出股票画出的长度。
-	var Band_miss_tickit_period = 10;    //波段检查断板的期限
+	var Band_tickit_period = 4;    // 趋势选出股票的期限
+	var Band_Max_LENGTH = 7;    // 趋势选出股票画出的长度。
+	var Band_miss_tickit_period = 10;    //趋势检查断板的期限
 	var Band_MA_NUM = 5;    //MA5
 	
 		/**

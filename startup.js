@@ -19,7 +19,7 @@
 	
 	
 	var highlightTichets;
-	// type = 0 画连扳， 3画波段
+	// type = 0 画连扳， 3画趋势
 	var drawEchelons = function(echelonNames = [], type = 0){
 		// 梯队
 		var elCanvas = document.getElementById("drawing")
@@ -40,7 +40,7 @@
 			if(type == 0) {
 				e1 = new window.Echelon(elCanvas, echelons[i], rect);      //连板
 			} else {  // type = 3
-				e1 = new window.bandEchelon(elCanvas, echelons[i], rect);   // 波段，首板断板
+				e1 = new window.bandEchelon(elCanvas, echelons[i], rect);   // 趋势，首板断板
 			}
 			e1.draw();
 			
@@ -85,7 +85,7 @@
 			drawimage(paramEchelons);
 			// Echelon update
 			var type = document.getElementById('form1').gtype[3].checked ? 
-						3 : 0;   // 画波段还是连扳
+						3 : 0;   // 画趋势还是连扳
 			drawEchelons(paramEchelons, type);
 			
 			// table update

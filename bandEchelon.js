@@ -85,7 +85,7 @@
 		
 		ctx.font="12px Times new Roman";
 		ctx.fillStyle = 'Orange';
-		ctx.fillText('<' + Configure.Band_miss_tickit_period + '天波段>', this.rect.x + 5, this.rect.y + 30);
+		ctx.fillText('<' + Configure.Band_miss_tickit_period + '天趋势>', this.rect.x + 5, this.rect.y + 30);
 	};
 	
 	bandEchelon.prototype.getSitePoint = function (ticket) {
