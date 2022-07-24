@@ -1,6 +1,6 @@
 var Configure = (function(){
 	var debug = false;
-	var date = debug ? new Date(2022,06,09) : new Date();
+	var date = new Date();
 	
 		// echelon 
 	var echelons = [
@@ -58,13 +58,13 @@ var Configure = (function(){
 	var Echelons_ticket_NUM = 7;     // 画出来的数量
 	var Echelons_handover_factor = 2; // 换手放大便于观察
 	
-	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限
+	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
 	var Echelons_show_min_score = 3;  // 最小显示限制
 	
-	var Band_tickit_period = 4;    // 趋势选出股票的期限
-	var Band_Max_LENGTH = 7;    // 趋势选出股票画出的长度。
-	var Band_miss_tickit_period = 10;    //趋势检查断板的期限
+	var Band_tickit_period = 4;    // 趋势选出股票的期限      TFD
+	var Band_Max_LENGTH = 11;    // 趋势选出股票画出的长度。    SED + TFD
+	var Band_miss_tickit_period = 7;    //趋势检查断板的期限     SED
 	var Band_MA_NUM = 5;    //MA5
 	
 		/**
@@ -114,49 +114,59 @@ var Configure = (function(){
 	
 	// 封板力度算法
 	var getBoardStrength = function(bType, bPercent, bTime = '') {
-		var ret = '@~@';
+		var retObj = {v:0, description:'@~@'};
 		switch (bType) {
 			case '一字板':
 				if (bPercent > 5) {
-					ret = '很强'
+					retObj.description = '很强'
 				} else {
-					ret = '强';
+					retObj.description = '强';
 				} 
 				break;
 			case 'T字板':
 				if (bPercent > 20) {
-					ret = '很强'
+					retObj.description = '很强'
 				} else {
-					ret = '强'
+					retObj.description = '强'
 				} 
 				break;
 			case '换手板':
 				if (bPercent > 50) {
-					ret = '很强';
+					retObj.description = '很强';
 				} else if (bPercent > 20 || bTime.substr(0,1) == '9') {
-					ret = '强';
+					retObj.description = '强';
 				} else if(bPercent < 5 || bTime.substr(0,2) == '14'){
-					ret = '弱';
+					retObj.description = '弱';
 				} else {
-					ret = '一般';
+					retObj.description = '一般';
 				}
 				break;
 			default:
 				break;
 			} 
-			return ret;
+		switch(retObj.description) {
+			case '很强':
+				retObj.v = 4;
+				break;
+			case '强':
+				retObj.v = 3;
+				break;
+			case '一般':
+				retObj.v = 2;
+				break;
+			case '弱':
+				retObj.v = 1;
+				break;
+			default:
+				break;
+			}
+		return retObj;
 	};
 	
-	var boardAndDayMap = {
-		'393224': '8/6',
-		'327685': '5',
-		'262149': '5/4',
-		'196612': '4/3',
-		'196611': '3',
-		'131075': '3/2',
-		'131074':  '2',
-		'65537': '1'
-	};
+	var getDayBoard = function(number){
+		return {d: parseInt( number % 65537 + number / 65537), 
+			b: parseInt(number / 65537)};
+	}
 	
 	var title = {
 		code: '代码',
@@ -249,6 +259,6 @@ var Configure = (function(){
 		formatExcelDate:formatExcelDate,
 		updatetitle:updatetitle,
 		replaceTitleDate:replaceTitleDate,
-		boardAndDayMap:boardAndDayMap
+		getDayBoard:getDayBoard
 	}	
 })();

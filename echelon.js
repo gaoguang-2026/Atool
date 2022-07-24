@@ -20,8 +20,6 @@
 		this.tickets.forEach((ticket)=>{
 			ticket.startDate = this.dateArr[this.getBoardDateIndex(ticket, ticket.selectDate)];
 		});
-		
-		console.log(this.tickets);
 		this.filterTickets();
 	};
 	
@@ -92,8 +90,7 @@
 			}
 			return isSelect;
 		});  
-		
-		console.log(this.tickets);
+	
 		// 按得分排序，减除多余的
 		this.tickets.sort((a, b)=> {
 			return b[Configure.title.score] - a[Configure.title.score];
@@ -184,7 +181,7 @@
 										/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';
 				boardStrength = Configure.getBoardStrength(tkt[Configure.title.boardType], 
 									tkt[Configure.replaceTitleDate(Configure.title.boardPercent, this.dateArr[i])],
-									tkt[Configure.replaceTitleDate(Configure.title.boardTime, this.dateArr[i])]);
+									tkt[Configure.replaceTitleDate(Configure.title.boardTime, this.dateArr[i])]).description;
 									
 				//当最后一天该股票的涨停原因为空或者其他情况，index需要重新更新，显示名字颜色
 				index = i;

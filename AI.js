@@ -6,7 +6,7 @@ var AI = (function(){
 		emotion:'',
 		tickits:[],
 		sucessRate:0,
-		scoreFator: 50,         // 默认值，localstorage没有值使用它； 越大结构权重越大，越小题材权重越小
+		scoreFator: 50,         // 默认值，localstorage没有值使用它； 越大结构权重越大，越小题材权重越大
 		
 		sz_average_angle:0,
 		sz_ma_beili : 0,
@@ -132,25 +132,16 @@ var AI = (function(){
 		
 	};
 	
-	// 根据 题材、涨速 算最后的得分    
-	var getBandFinalScroe = function(t) {
-		var dateArr = workbook.getDateArr((a,b)=>{
-				return b - a;
-		});
-		 // 日涨幅 5%左右， 太高容易回落，太低没有活性
-		return parseInt(t[Configure.title.score] * (1-(Math.abs(t.increaseRate *100 - 5)/5))) *   
-					(dateArr.indexOf(t.startDate) - dateArr.indexOf(t.selectDate) + 1);
-	};
-	
-	// 根据题材、背离率和 连扳 算最后的得分    
+	// 根据题材、背离率、连扳和 封板强度 算最后的得分    
 	var getFinalScroe = function(t) {
 		var emotionPoints = canvas.getLastEmotionPoints(1); 
-		return parseInt(t[Configure.title.score]) - 
+		return parseInt(parseInt(t[Configure.title.score]) - 
 				t[Configure.title.totalDivergence] * dataStorage.scoreFator + 
-				(10 - emotionPoints[0].value)* t[Configure.title.dayNumber] ;
+				(10 - emotionPoints[0].value)* Configure.getDayBoard(t[Configure.title.boardAndDay]).b + 
+				t[Configure.title.boardStrength].v * 10);   // 封板强度 X10
 	};
 	
-	var getBandticket = function() {
+	var getBandtickets = function() {
 		// 算斜率
 		var szPoinsts = canvas.getLastSZPoints(Configure.Band_MA_NUM);    
 		var sumAngle = 0;
@@ -165,14 +156,22 @@ var AI = (function(){
 		dataStorage.sz_ma_beili = parseFloat((szPoinsts[Configure.Band_MA_NUM - 1].value - MA_value) / MA_value).toFixed(4);
 		
 		var txt = '';
-		if(dataStorage.sz_average_angle > 0 && dataStorage.sz_ma_beili > 0) {
+		if(dataStorage.sz_average_angle > 0 && dataStorage.sz_ma_beili > 0 
+			|| Configure.debug) {
 		//	txt += '上证背离率' + dataStorage.sz_ma_beili*100 + '%(angle:' + dataStorage.sz_average_angle + '),趋势关注：';
 			//选出趋势票
 			txt += '趋势：';
 			var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
 			tickets.sort((a, b)=>{
-				return getBandFinalScroe(b) - getBandFinalScroe(a);
+				return window.GetBandFinalScroe(b) - window.GetBandFinalScroe(a);
 			});
+			if (Configure.debug) {
+				console.log('AI趋势得分排名:');
+				tickets.forEach((t)=>{
+					console.log(t[Configure.title.name] + '  ' + window.GetBandFinalScroe(t));
+				})
+			}
+
 			var num = tickets.length > 1 ? 1 : tickets.length;
 			for(var i = 0; i < num; i ++ ) {
 				txt += tickets[i][Configure.title.name];
@@ -202,8 +201,14 @@ var AI = (function(){
 		tickets.sort((a, b)=>{
 			return getFinalScroe(b) - getFinalScroe(a);
 		});
+		if (Configure.debug) {
+			console.log('AI超短得分排名:');
+			tickets.forEach((t)=>{
+				console.log(t[Configure.title.name] + '  ' + getFinalScroe(t));
+			})
+		}
 		
-		var bandTxt = getBandticket();
+		var bandTxt = getBandtickets();
 		var num = bandTxt == '' ?  3 : 2;
 		var txt = '今日关注：';
 		for(var i = 0; i < num; i ++ ) {

@@ -87,7 +87,7 @@ var table = (function(){
 		};
 		
 		var tr = document.createElement('tr');
-		if (Configure.debug) {
+		if (false) {  // for Debug
 			for (var prop in Configure.title) {
 				var td = document.createElement('td');
 				td.innerHTML = Configure.title[prop];
@@ -163,12 +163,22 @@ var table = (function(){
 								ticket[Configure.replaceTitleDate(Configure.title[t.dataset.titleProp],ticket.selectDate)] :
 									ticket[Configure.title[t.dataset.titleProp]];
 				switch (t.dataset.titleProp) {
+					case 'name':
+						var ty = ticket[Configure.title.code].substr(2,2);
+						if( ty == '30') {
+							td.innerHTML += '(创)';
+						} else if (ty == '68') {
+							td.innerHTML += '(科)';
+							tr.className = 'grey';
+						}
+						break;
 					case 'realValue':
 						td.innerHTML = parseFloat(ticket[t.innerHTML]/100000000).toFixed(2);
 						Tip.show(td, '流通市值：' + parseFloat(ticket[Configure.title.value]/100000000).toFixed(2) + '<br>' +
 								'机构持股比例合计: ' + ticket[Configure.title.orgProportion] + '%<br>');
 						break;
 					case 'boardStrength':
+						td.innerHTML = ticket[Configure.title.boardStrength].description;
 						Tip.show(td, '封板类型：' + ticket[Configure.title.boardType] + '<br>' +
 								'封板时间: ' + ticket[Configure.title.boardTime] + '<br>' + 
 								'封成比: ' + ticket[Configure.title.boardPercent] + '%');
@@ -179,14 +189,15 @@ var table = (function(){
 						};
 						break;
 					case 'boardAndDay':
-						var txt = Configure.boardAndDayMap[ticket[Configure.title.boardAndDay]];
+						var db = Configure.getDayBoard(ticket[Configure.title.boardAndDay]);
+						var txt = db.d == db.b ? db.b : db.d + '/' + db.b;
 						td.innerHTML = txt ? txt : ticket[Configure.title.boardAndDay];
 						break;
 					case 'totalDivergence':
 						Tip.show(td, '价格：' + ticket[Configure.title.price] + '<br>' +
 								'筹码: ' + ticket[Configure.title.profitProportion]);
 						if (ticket[Configure.title.totalDivergence] > 3) {
-							td.className = 'grey';
+							td.className = 'green';
 						}
 						break;
 					case 'realHandoverPercent':
@@ -202,7 +213,7 @@ var table = (function(){
 						}
 						Tip.show(td, txtshow);
 						if (ticket[Configure.title.realHandoverPercent] > 55) {
-							td.className = 'grey';
+							td.className = 'green';
 						}
 						break;
 					case 'reason':

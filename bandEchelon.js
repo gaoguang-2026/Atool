@@ -4,6 +4,16 @@
 
 	var handOverBar_w = 6;
 	var handOverBar_h = 30;
+	
+		// 根据 题材、涨速 算最后的得分    
+	var GetBandFinalScroe = function(t) {
+		var dateArr = workbook.getDateArr((a,b)=>{
+				return b - a;
+		});
+		 // 日涨幅 5%左右， 太高容易回落，太低没有活性
+		return parseInt(t[Configure.title.score] * (1-(Math.abs(t.increaseRate *100 - 5)/5))) *   
+					(dateArr.indexOf(t.startDate) - dateArr.indexOf(t.selectDate) + 1);
+	};
 
 	let bandEchelon = function (canvas, e, rect) {
 		Echelon.call(this, canvas, e, rect);
@@ -124,7 +134,6 @@
 				parseFloat((parseFloat(ticket[Configure.title.price]) - priceStart) / (priceStart * dayNum)).toFixed(4);
 		});
 		workbook.setBandTicket(this.tickets);   // 显示剔除前保存
-		console.log(this.tickets);
 		// echelon股票
 		this.tickets = this.tickets.filter((t) => {
 			var isSelect = false;
@@ -136,13 +145,13 @@
 			return isSelect;
 		})
 		
-		console.log(this.tickets);
-		// 按涨速排序，减除多余的
+		// 按得分排序，减除多余的
 		this.tickets.sort((a, b)=> {
-			return b.increaseRate - a.increaseRate;
+			return GetBandFinalScroe(b) - GetBandFinalScroe(a);
 		});
 		this.tickets = this.tickets.slice(0,Configure.Echelons_ticket_NUM);
 	};
 	
 	exports.bandEchelon = bandEchelon;
+	exports.GetBandFinalScroe = GetBandFinalScroe;
 }(window));

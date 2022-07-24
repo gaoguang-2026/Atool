@@ -50,10 +50,11 @@ var dragons = (function() {
 		}
 	} ;
 	
-	var getDragonStandard = function(boardNum) {
+	var getDragonStandard = function(boardNum, code) {
+		var f = code.substr(2, 2) == '30' ? 1.2 : 1.1;
 		return {
-			price : parseFloat(dragon.price * Math.pow(1.1, boardNum -2)).toFixed(2),
-			realCirculateValue : parseInt(dragon.realCirculateValue * Math.pow(1.1, boardNum -2)),
+			price : parseFloat(dragon.price * Math.pow(f, boardNum -2)).toFixed(2),
+			realCirculateValue : parseInt(dragon.realCirculateValue * Math.pow(f, boardNum -2)),
 			profitProportion : parseInt(dragon.profitProportion)
 		}
 	};

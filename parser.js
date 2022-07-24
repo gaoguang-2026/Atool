@@ -41,7 +41,8 @@ var parser = (function(){
 			});
 			ticket[Configure.title.score] = parseInt(ticket[Configure.title.score]/totalscored * 1000);
 			
-			var dragon = dragons.getDragonStandard(ticket[Configure.title.dayNumber]);
+			var dragon = dragons.getDragonStandard(
+						Configure.getDayBoard(ticket[Configure.title.boardAndDay]).b, ticket[Configure.title.code]);
 			// realValue 实际流通市值
 			ticket[Configure.title.realValue] = parseInt(ticket[Configure.title.value] * 
 											(100 - ticket[Configure.title.orgProportion])/100);
