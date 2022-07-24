@@ -33,41 +33,8 @@ var Configure = (function(){
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
-	
-	var site_color = 'black';
-	var sz_color = 'purple';
-	var line_color = 'red';
-	var echelon_color = ['orange', '#8BEDD9', '#E89AF5', '#6F65DE', '#9D97FF', '#F597C0'];
-	
-	var MIN_LB_NUMBER = 2;
-	var MIN_KAINIAN = 2;     // 最少出现的次数
-	
-	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
-	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
-	var SZ_zero = 3200;    // sz 0轴坐标
-	var SZ_MaxOffset = 200;   // 纵轴
-	var winFactor = 0.4;    // 两个窗口的比率
-	
-	var Min_echelon_score = 0;    //draw 的条件
-	var Max_echelon_score = 40;
-	
-	// 左右窗口
-	var WinXFactor = 0.5;     //  左边窗口占比
-	
-	var Echelons_Draw_NUM = 2;
-	var Echelons_ticket_NUM = 7;     // 画出来的数量
-	var Echelons_handover_factor = 2; // 换手放大便于观察
-	
-	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
-	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 3;  // 最小显示限制
-	
-	var Band_tickit_period = 4;    // 趋势选出股票的期限      TFD
-	var Band_Max_LENGTH = 11;    // 趋势选出股票画出的长度。    SED + TFD
-	var Band_miss_tickit_period = 7;    //趋势检查断板的期限     SED
-	var Band_MA_NUM = 5;    //MA5
-	
-		/**
+		
+	/**
      * 格式化excel传递的时间
      * @param numb 需转化的时间 43853
      * @param format 分隔符 "-"
@@ -213,15 +180,60 @@ var Configure = (function(){
 	var title2 = {
 		date: '日期',
 		erban: '二板数',
-		high:'高度',
+		height:'高度',
 		lianban:'连板',
 		jinji:'连板晋级率',
 		lianbanzhishu:'连板指数',
 		ma5:'5日线',
 		beili:'背离率',
 		sz:'SZ',
-		echelons:'echelon'   // 记录当天echelon排名
+		echelons:'echelon',   // 记录当天echelon排名
+		boardHeight: 'height',   // 记录当天echelon排名
+		dragon: 'dragon'   // 记录当天的龙头
 	}
+	
+	var site_color = 'black';
+	var sz_color = 'purple';
+	var boardHeight_color = 'black';
+	var line_color = 'red';
+	var echelon_color = ['orange', '#8BEDD9', '#E89AF5', '#6F65DE', '#9D97FF', '#F597C0'];
+	
+	var MIN_LB_NUMBER = 2;
+	var MIN_KAINIAN = 2;     // 最少出现的次数
+	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
+	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
+	var winFactor = 0.4;    // 两个窗口的比率
+	
+	var Draw_sz = false;
+	var SZ_zero = 3200;    // sz 0轴坐标
+	var SZ_MaxOffset = 200;   // 纵轴
+	
+	var Draw_BH = true;
+	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
+	var BH_zero = BH_Draw_title == title2.height ? 
+							 	4 : 4 * 65537;    // boardHeight 0轴坐标
+	var BH_MaxOffset = BH_Draw_title == title2.height ? 
+							6 : 6 * 65537;   // boardHeight 纵轴
+
+	
+	var Min_echelon_score = 0;    //draw 的条件
+	var Max_echelon_score = 40;
+	
+	// 左右窗口
+	var WinXFactor = 0.5;     //  左边窗口占比
+	
+	var Echelons_Draw_NUM = 2;
+	var Echelons_ticket_NUM = 7;     // 画出来的数量
+	var Echelons_handover_factor = 2; // 换手放大便于观察
+	
+	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
+	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
+	var Echelons_show_min_score = 3;  // 最小显示限制
+	
+	var Band_tickit_period = 4;    // 趋势选出股票的期限      TFD
+	var Band_Max_LENGTH = 11;    // 趋势选出股票画出的长度。    SED + TFD
+	var Band_miss_tickit_period = 7;    //趋势检查断板的期限     SED
+	var Band_MA_NUM = 5;    //MA5
 	
 	return {
 		date: date,
@@ -237,6 +249,11 @@ var Configure = (function(){
 		MAX_BEILI:MAX_BEILI,
 		SZ_zero:SZ_zero,
 		SZ_MaxOffset:SZ_MaxOffset,
+		Draw_sz:Draw_sz,
+		BH_zero:BH_zero,
+		BH_MaxOffset:BH_MaxOffset,
+		Draw_BH:Draw_BH,
+		BH_Draw_title:BH_Draw_title,
 		WinXFactor:WinXFactor,
 		Min_echelon_score:Min_echelon_score,
 		Max_echelon_score:Max_echelon_score,
@@ -251,6 +268,7 @@ var Configure = (function(){
 		Echelons_ticket_NUM:Echelons_ticket_NUM,
 		Echelons_handover_factor:Echelons_handover_factor,
 		site_color:site_color,
+		boardHeight_color:boardHeight_color,
 		sz_color:sz_color,
 		line_color:line_color,
 		echelon_color:echelon_color,

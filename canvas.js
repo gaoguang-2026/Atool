@@ -48,9 +48,15 @@ var canvas = (function(canvas) {
 		Days.forEach((d)=>{
 			var dateStr = Configure.formatExcelDate(d[Configure.title2.date], '');
 			if (workbook.sheetExist(dateStr)) {
-				d[Configure.title2.echelons] = parser.getEchelons( dateStr );
+				d[Configure.title2.echelons] = parser.getEchelons(dateStr);
+				var objBH = parser.getBoardHeight(dateStr);
+				if (objBH) {
+					d[Configure.title2.boardHeight] = objBH.value;
+					d[Configure.title2.dragon] = objBH.name;
+				}
 			} else {
 				d[Configure.title2.echelons] = [];
+				d[Configure.title2.boardHeight] = 0;
 			}
 		});
 	};
@@ -96,10 +102,19 @@ var canvas = (function(canvas) {
 		ctx.fillStyle = Configure.line_color;
 		ctx.fillText('0', siteX - 20, siteY + siteHeight);
 		ctx.fillText('(1)', siteX - 20, siteY + siteHeight * (1- winFactor) + 10);
-		ctx.fillStyle = Configure.sz_color;
-		ctx.fillText(Configure.SZ_zero + Configure.SZ_MaxOffset, siteX - 30, siteY);
-		ctx.fillText(Configure.SZ_zero, siteX - 30, siteY + siteHeight * (1- winFactor));
 		
+		if(Configure.Draw_sz) {
+			ctx.fillStyle = Configure.sz_color;
+			ctx.fillText(Configure.SZ_zero + Configure.SZ_MaxOffset, siteX - 30, siteY);
+			ctx.fillText(Configure.SZ_zero, siteX - 30, siteY + siteHeight * (1- winFactor));
+		}
+		if (Configure.Draw_BH) {
+			ctx.fillStyle = Configure.boardHeight_color;
+			var temp = Configure.BH_zero > 65537 ? 65537 : 1;
+			ctx.fillText(parseInt((Configure.BH_zero + Configure.BH_MaxOffset)/temp), siteX - 20, siteY - 15);
+			ctx.fillText(parseInt(Configure.BH_zero/temp), siteX - 20, siteY + siteHeight * (1- winFactor) - 15);
+		}
+
 		ctx.fillStyle = Configure.line_color;
 		ctx.fillText('0', siteX + siteWidth + 10, siteY + siteHeight * (1- winFactor));
 		ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth, siteY);
@@ -109,7 +124,31 @@ var canvas = (function(canvas) {
 		ctx.stroke(); 
 
 	};
-	var drawLine = function() {
+	var drawLine = function(color, zero, max, title, draw = true) {
+		var ctx = drawing.getContext("2d");		
+		ctx.beginPath();
+		ctx.fillStyle= color;
+		var pointH = siteHeight * (1-winFactor) * 
+			(parseFloat(Days[i][title])- zero)/max;
+		var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
+				y: siteY + siteHeight*(1-winFactor) - pointH};
+		//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
+		if (draw) {
+			if (i < Days.length - 1) {// 不是最后一个点
+				var pointNextH = siteHeight * (1-winFactor) * 
+					(parseFloat(Days[i + 1][title]) - zero)/max;
+				var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
+								y: siteY + siteHeight*(1-winFactor) - pointNextH};
+				ctx.lineWidth="1";
+				ctx.strokeStyle = color;
+				ctx.moveTo(szPoint.x, szPoint.y);
+				ctx.lineTo(szpointNext.x, szpointNext.y);
+				ctx.stroke();
+			}
+		}
+		return szPoint;
+	};
+	var drawIndicators = function() {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
 		for(i = 0; i < Days.length; i ++) {
@@ -164,29 +203,26 @@ var canvas = (function(canvas) {
 			}
 			
 			// 画SZ
-			ctx.fillStyle=Configure.sz_color;
-			var szPointH = siteHeight * (1-winFactor) * 
-				(parseFloat(Days[i][Configure.title2.sz])- Configure.SZ_zero)/Configure.SZ_MaxOffset;
-			var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
-					y: siteY + siteHeight*(1-winFactor) - szPointH};
-			szPoints.push({point:szPoint, value:parseFloat(Days[i][Configure.title2.sz]), 
-						date:Days[i][Configure.title2.date]});
-		//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
-			if (i < Days.length - 1) {// 不是最后一个点
-				var pointNextH = siteHeight * (1-winFactor) * 
-					(parseFloat(Days[i + 1][Configure.title2.sz]) - Configure.SZ_zero)/Configure.SZ_MaxOffset;
-				var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
-								y: siteY + siteHeight*(1-winFactor) - pointNextH};
-				ctx.lineWidth="1";
-				ctx.strokeStyle = Configure.sz_color;
-				ctx.moveTo(szPoint.x, szPoint.y);
-				ctx.lineTo(szpointNext.x, szpointNext.y);
-				ctx.stroke();
-			} else {
+			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
+						Configure.SZ_MaxOffset, Configure.title2.sz , Configure.Draw_sz);
+			szPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.sz]),
+                             date:Days[i][Configure.title2.date]});
+			if(Configure.Draw_sz && i == Days.length - 1){   // 最后一个点
 				ctx.font="14px Times new Roman";
-				ctx.fillText(parseFloat(Days[i][Configure.title2.sz]) + '', szPoint.x - 30, szPoint.y + 10);
+				ctx.fillText(parseFloat(Days[i][Configure.title2.sz]) + '', point.x - 30, point.y + 10);
+				ctx.stroke();
 			}
-			
+			//画晋级率线debug
+			//	drawLine(Configure.boardHeight_color, 20, 70, Configure.title2.jinji, true);
+			//画连扳高度
+			point = drawLine(Configure.boardHeight_color, Configure.BH_zero,
+						Configure.BH_MaxOffset, Configure.BH_Draw_title, Configure.Draw_BH);
+			if (Configure.Draw_BH && i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
+			   Days[i][Configure.BH_Draw_title] > Days[i+1][Configure.BH_Draw_title] &&
+			   Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
+				ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + '', point.x - 10, point.y - 5);
+				ctx.stroke();
+			}
 		};
 		ctx.stroke();
 	};
@@ -259,7 +295,7 @@ var canvas = (function(canvas) {
 	var draw = function(echelonNames) {
 		if (drawing.getContext){
 			drawSite();
-			drawLine();
+			drawIndicators();
 			drawEchelon(echelonNames);
 		}
 	}
