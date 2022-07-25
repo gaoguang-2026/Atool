@@ -1,5 +1,5 @@
 var Configure = (function(){
-	var debug = false;
+	var debug = true;
 	var date = new Date();
 	
 		// echelon 
@@ -177,6 +177,11 @@ var Configure = (function(){
 					'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
 	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','selectDate','reason'];
 	
+	var selectIndicators = [{name:'--请选择--', value: -1},
+							{name:'上证指数', value: 0}, 
+							{name:'连扳高度', value: 1},
+							{name:'连扳数量', value: 2}];
+	
 	var title2 = {
 		date: '日期',
 		erban: '二板数',
@@ -203,12 +208,11 @@ var Configure = (function(){
 	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
 	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
 	var winFactor = 0.4;    // 两个窗口的比率
+	var Days_Max_lengh = 40;   // canvas 显示的最大期限
 	
-	var Draw_sz = false;
 	var SZ_zero = 3200;    // sz 0轴坐标
 	var SZ_MaxOffset = 200;   // 纵轴
 	
-	var Draw_BH = true;
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
 	var BH_zero = BH_Draw_title == title2.height ? 
 							 	4 : 4 * 65537;    // boardHeight 0轴坐标
@@ -245,14 +249,14 @@ var Configure = (function(){
 		HIGH_factor:HIGH_factor,
 		title:title,
 		title2:title2,
+		Days_Max_lengh:Days_Max_lengh,
 		echelons:echelons,
+		selectIndicators:selectIndicators,
 		MAX_BEILI:MAX_BEILI,
 		SZ_zero:SZ_zero,
 		SZ_MaxOffset:SZ_MaxOffset,
-		Draw_sz:Draw_sz,
 		BH_zero:BH_zero,
 		BH_MaxOffset:BH_MaxOffset,
-		Draw_BH:Draw_BH,
 		BH_Draw_title:BH_Draw_title,
 		WinXFactor:WinXFactor,
 		Min_echelon_score:Min_echelon_score,

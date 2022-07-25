@@ -11,10 +11,9 @@
 		oStrong.appendChild(oTxt);
 		oDiv.appendChild(oStrong);
 	};
-	var drawimage = function(echelonNames = []) {
-		var sheet = workbook.getSheet('情绪');
-		canvas.init(document.getElementById("drawing"), sheet, Configure.WinXFactor);
-		canvas.draw(echelonNames);
+	var drawimage = function(echelonNames = [], indecator = '') {
+		canvas.init(document.getElementById("drawing"), Configure.WinXFactor);
+		canvas.draw(echelonNames, indecator);
 	};
 	
 	
@@ -58,11 +57,11 @@
 		table.createTable(d, highlightTichets);
 	};
 	
-	
-	$('#date').val(Configure.getDateStr(Configure.date, '-'));
 	var init = function() {
 		var dateArr = workbook.getDateArr(()=>{}, '-');
 		$('#date').val(dateArr[dateArr.length - 1]);
+		document.getElementById('date').min = dateArr[0];
+
 		dragons.init();
 		table.updateForm();
 	};
@@ -83,8 +82,9 @@
 					} 
 				});
 			}
+			
 			// canvas update
-			drawimage(paramEchelons);
+			drawimage(paramEchelons, document.getElementById('indecator').value);
 			// Echelon update
 			var type = document.getElementById('form1').gtype[3].checked ? 
 						3 : 0;   // 画趋势还是连扳
@@ -96,6 +96,7 @@
 			
 		$('#form1').change(formUpdate);
 		$('#form2').change(formUpdate);
+		$('#indecator').change(formUpdate);
 	};
 	
     $('#excel-file').change(function(e) {
@@ -123,3 +124,20 @@
         // 以二进制方式打开文件
         fileReader.readAsBinaryString(files[0]);
     });
+	
+	window.onload = function(){
+		$('#date').val(Configure.getDateStr(Configure.date, '-'));
+		
+		var indecator = document.getElementById('indecator');
+		var options = indecator.getElementsByTagName("option");
+		for(var i = 0; i < options.length; i++) {
+			indecator.removeChild(options[i]);
+			i--;
+		}
+		for(var i = 0; i < Configure.selectIndicators.length; i++) {
+			var option1 = document.createElement("option");
+			var text1 = document.createTextNode(Configure.selectIndicators[i].name);
+			option1.appendChild(text1);
+			indecator.appendChild(option1);
+		}
+	};

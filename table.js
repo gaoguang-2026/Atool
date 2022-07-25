@@ -202,10 +202,11 @@ var table = (function(){
 						break;
 					case 'realHandoverPercent':
 						var txtshow = '前' + (parseInt(ticket[Configure.title.dayNumber]) - 1) +  '天实际换手率：';
-						for(var i = parseInt(ticket[Configure.title.dayNumber]) - 1; i ; i --){
+						for(var i = parseInt(ticket[Configure.title.dayNumber]) - 1; i > 0 ; i --){
 							var param = {sheetName:dateArr[i],
 								ticketCode:ticket[Configure.title.code]};
 							var tkt = workbook.getValue(param);
+							console.log(ticket[Configure.title.code] + ' i = ' + i);
 							if (tkt) {
 								txtshow += parseFloat(tkt[Configure.replaceTitleDate(Configure.title.handoverPercent, dateArr[i])] 
 										/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';

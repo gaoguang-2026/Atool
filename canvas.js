@@ -19,9 +19,9 @@ var canvas = (function(canvas) {
 	var cell_factor = 0.9;
 	var winFactor = 0.4;
 	
-	var init = function(c, sheet, winXfactor = 1) {
+	var init = function(c, winXfactor = 1) {
 		drawing = c;
-		Days = sheet;
+		Days = workbook.getDatesSheet();
 		
 		width = c.width * winXfactor;
 		height = c.height;
@@ -61,7 +61,7 @@ var canvas = (function(canvas) {
 		});
 	};
 
-	var drawSite = function() {
+	var drawSite = function(indecatorName) {
 		//画线
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
@@ -103,26 +103,38 @@ var canvas = (function(canvas) {
 		ctx.fillText('0', siteX - 20, siteY + siteHeight);
 		ctx.fillText('(1)', siteX - 20, siteY + siteHeight * (1- winFactor) + 10);
 		
-		if(Configure.Draw_sz) {
-			ctx.fillStyle = Configure.sz_color;
-			ctx.fillText(Configure.SZ_zero + Configure.SZ_MaxOffset, siteX - 30, siteY);
-			ctx.fillText(Configure.SZ_zero, siteX - 30, siteY + siteHeight * (1- winFactor));
-		}
-		if (Configure.Draw_BH) {
-			ctx.fillStyle = Configure.boardHeight_color;
-			var temp = Configure.BH_zero > 65537 ? 65537 : 1;
-			ctx.fillText(parseInt((Configure.BH_zero + Configure.BH_MaxOffset)/temp), siteX - 20, siteY - 15);
-			ctx.fillText(parseInt(Configure.BH_zero/temp), siteX - 20, siteY + siteHeight * (1- winFactor) - 15);
-		}
-
 		ctx.fillStyle = Configure.line_color;
 		ctx.fillText('0', siteX + siteWidth + 10, siteY + siteHeight * (1- winFactor));
 		ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth, siteY);
 		ctx.fillStyle = Configure.echelon_color[0];
 		ctx.fillText('(' + Configure.Min_echelon_score + ')', siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor) + 15);
 		ctx.fillText('(' + Configure.Max_echelon_score + ')', siteX + siteWidth, siteY + 15);
+		
+		var zero, max;
+		switch(indecatorName) {
+			case '上证指数':
+				ctx.fillStyle = Configure.sz_color;
+				zero = Configure.SZ_zero;
+				max = Configure.SZ_zero + Configure.SZ_MaxOffset;
+				break;
+			case '连扳高度':
+				ctx.fillStyle = Configure.boardHeight_color;
+				var temp = Configure.BH_zero > 65537 ? 65537 : 1;
+				zero = parseInt(Configure.BH_zero/temp);
+				max = parseInt((Configure.BH_zero + Configure.BH_MaxOffset)/temp);
+				break;
+			case '连扳数量':
+				zero = 0;
+				max = 30;
+				break;
+			default:
+				break;
+		};
+		if(zero && max) {
+			ctx.fillText(zero, siteX - 30, siteY + siteHeight * (1- winFactor));
+			ctx.fillText(max, siteX - 30, siteY);
+		}
 		ctx.stroke(); 
-
 	};
 	var drawLine = function(color, zero, max, title, draw = true) {
 		var ctx = drawing.getContext("2d");		
@@ -144,11 +156,15 @@ var canvas = (function(canvas) {
 				ctx.moveTo(szPoint.x, szPoint.y);
 				ctx.lineTo(szpointNext.x, szpointNext.y);
 				ctx.stroke();
+			} else {
+				ctx.font="14px Times new Roman"
+				ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
+				ctx.stroke();
 			}
 		}
 		return szPoint;
 	};
-	var drawIndicators = function() {
+	var drawIndicators = function(indecatorName) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
 		for(i = 0; i < Days.length; i ++) {
@@ -201,28 +217,33 @@ var canvas = (function(canvas) {
 				ctx.fillText(parseFloat(Days[i][Configure.title2.beili]) + '%', point.x + 10, point.y);
 				ctx.stroke();
 			}
-			
-			// 画SZ
+			// 画sz,  需要保存点给AI使用
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
-						Configure.SZ_MaxOffset, Configure.title2.sz , Configure.Draw_sz);
+								Configure.SZ_MaxOffset, Configure.title2.sz , indecatorName == '上证指数');
 			szPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.sz]),
-                             date:Days[i][Configure.title2.date]});
-			if(Configure.Draw_sz && i == Days.length - 1){   // 最后一个点
-				ctx.font="14px Times new Roman";
-				ctx.fillText(parseFloat(Days[i][Configure.title2.sz]) + '', point.x - 30, point.y + 10);
-				ctx.stroke();
+									 date:Days[i][Configure.title2.date]});
+				
+			switch(indecatorName) {
+				case '上证指数':
+					break;
+				case '连扳高度':
+					//画连扳高度
+					point = drawLine(Configure.boardHeight_color, Configure.BH_zero,
+								Configure.BH_MaxOffset, Configure.BH_Draw_title);
+					if (i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
+					   Days[i][Configure.BH_Draw_title] > Days[i+1][Configure.BH_Draw_title] &&
+					   Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
+						ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + '', point.x - 10, point.y - 5);
+						ctx.stroke();
+					}
+					break;
+				case '连扳数量':
+					drawLine(Configure.boardHeight_color, 0, 30, Configure.title2.lianban);
+					break;
+				default:
+					break;
 			}
-			//画晋级率线debug
-			//	drawLine(Configure.boardHeight_color, 20, 70, Configure.title2.jinji, true);
-			//画连扳高度
-			point = drawLine(Configure.boardHeight_color, Configure.BH_zero,
-						Configure.BH_MaxOffset, Configure.BH_Draw_title, Configure.Draw_BH);
-			if (Configure.Draw_BH && i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
-			   Days[i][Configure.BH_Draw_title] > Days[i+1][Configure.BH_Draw_title] &&
-			   Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
-				ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + '', point.x - 10, point.y - 5);
-				ctx.stroke();
-			}
+
 		};
 		ctx.stroke();
 	};
@@ -292,10 +313,10 @@ var canvas = (function(canvas) {
 		return retP;
 	};
 	
-	var draw = function(echelonNames) {
+	var draw = function(echelonNames, indecatorName) {
 		if (drawing.getContext){
-			drawSite();
-			drawIndicators();
+			drawSite(indecatorName);
+			drawIndicators(indecatorName);
 			drawEchelon(echelonNames);
 		}
 	}

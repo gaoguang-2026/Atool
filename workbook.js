@@ -21,7 +21,7 @@
 		var persons = [];  // 存储要使用的表
         // 遍历每张表读取
         for (var sheet in Book.Sheets) {
-            if (Book.Sheets.hasOwnProperty(sheet) && name.includes(sheet)) {
+            if (Book.Sheets.hasOwnProperty(sheet) && name && name.includes(sheet)) {
 				fromTo = Book.Sheets[sheet]['!ref'];
                 persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[sheet]));
                 //  break; // 如果只取第一张表，就取消注释这行
@@ -41,8 +41,15 @@
 		return BandTickets;
 	};
 	
-	var getDateArr = function(sort, separator = '') {
+	var getDatesSheet= function() {
 		var sheet = getSheet('情绪');
+		var start = sheet.length > Configure.Days_Max_lengh ? 
+						sheet.length - Configure.Days_Max_lengh : 0;
+		return  sheet.slice(start);
+	};
+	
+	var getDateArr = function(sort, separator = '') {
+		var sheet = getDatesSheet();
 		var retArr = [];
 		sheet.forEach((d)=>{
 			 retArr.push(Configure.formatExcelDate(d[Configure.title2.date], separator));
@@ -72,6 +79,7 @@
 		getSheet:getSheet,
 		sheetExist:sheetExist,
 		getDateArr:getDateArr,
+		getDatesSheet:getDatesSheet,
 		getValue:getValue,
 		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,
