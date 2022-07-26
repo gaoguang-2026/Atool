@@ -1,5 +1,5 @@
 var Configure = (function(){
-	var debug = true;
+	var debug = false;
 	var date = new Date();
 	
 		// echelon 
@@ -239,6 +239,9 @@ var Configure = (function(){
 	var Band_miss_tickit_period = 7;    //趋势检查断板的期限     SED
 	var Band_MA_NUM = 5;    //MA5
 	
+	var AI_Default_Factor = 50;        // 超短选票默认因子   越大结构权重越大，越小题材权重越大
+	var AI_Default_Band_Factor = 180;   // 趋势选票默认因子  越大涨速权重越大，越小题材权重越大
+	
 	return {
 		date: date,
 		debug: debug,
@@ -258,6 +261,8 @@ var Configure = (function(){
 		BH_zero:BH_zero,
 		BH_MaxOffset:BH_MaxOffset,
 		BH_Draw_title:BH_Draw_title,
+		AI_Default_Factor:AI_Default_Factor,
+		AI_Default_Band_Factor:AI_Default_Band_Factor,
 		WinXFactor:WinXFactor,
 		Min_echelon_score:Min_echelon_score,
 		Max_echelon_score:Max_echelon_score,

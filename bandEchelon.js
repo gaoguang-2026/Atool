@@ -6,12 +6,12 @@
 	var handOverBar_h = 30;
 	
 		// 根据 题材、涨速 算最后的得分    
-	var GetBandFinalScroe = function(t) {
+	var GetBandFinalScroe = function(t, scoreFactor = Configure.AI_Default_Band_Factor) {
 		var dateArr = workbook.getDateArr((a,b)=>{
 				return b - a;
 		});
 		 // 日涨幅 5%左右， 太高容易回落，太低没有活性
-		return parseInt(t[Configure.title.score] * (1-(Math.abs(t.increaseRate *100 - 5)/5))) *   
+		return parseInt(t[Configure.title.score] - scoreFactor * ((Math.abs(t.increaseRate *100 - 5)/5))) *   
 					(dateArr.indexOf(t.startDate) - dateArr.indexOf(t.selectDate) + 1);
 	};
 

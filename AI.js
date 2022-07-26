@@ -6,11 +6,12 @@ var AI = (function(){
 		emotion:'',
 		tickits:[],
 		sucessRate:0,
-		scoreFator: 50,         // 默认值，localstorage没有值使用它； 越大结构权重越大，越小题材权重越大
+		scoreFator: Configure.AI_Default_Factor,         // 默认值，localstorage没有值使用它；
 		
 		sz_average_angle:0,
 		sz_ma_beili : 0,
-		band_ticktes:[],
+		bandScoreFator: Configure.AI_Default_Band_Factor,   // 默认值，localstorage没有值使用它； 
+		band_ticktes:[]
 	};
 	
 	var RectifyDay_num = 30;
@@ -51,18 +52,41 @@ var AI = (function(){
 		var total = 0;
 		for (var i = 0; i < RectifyDay_num; i ++) {
 			var obj = objStorage[dateArr[i]];
-			if(obj && obj.sucessRate > 0.5) {
+			if(obj && obj.sucessRate >= 0.5) {
 				total += obj.scoreFator;
 				num ++;
 			}
 		}
 		// 计算 scoreFator
 		var aveage = total/num;
-		if (objStorage[preDatestr].sucessRate) {
-			dataStorage.scoreFator = objStorage[preDatestr].scoreFator - aveage > 0 ? 
-					aveage - Rectify_factor : aveage + Rectify_factor;
+		if (objStorage[preDatestr] && objStorage[preDatestr].sucessRate) {
+			dataStorage.scoreFator = aveage && objStorage[preDatestr].scoreFator - aveage > 0 ? 
+										aveage  - Rectify_factor : aveage + Rectify_factor;
 		} else {
-			dataStorage.scoreFator +=  Rectify_factor;
+			dataStorage.scoreFator += Rectify_factor;
+		}
+		// 计算 bandScoreFator
+		var param = {
+			hotpointArr: [],
+			type:2,
+			sort:1
+		}
+		var tickets =  parser.getTickets(datestr, param);
+		for(var i = 0; i < Configure.Band_miss_tickit_period, objStorage[dateArr[i]]; i ++) {   
+			// 检查过去Band_miss_tickit_period天内是否有票出现在今天的首板
+			objStorage[dateArr[i]].band_ticktes.forEach((bandTicket)=>{
+				tickets.forEach((t)=>{
+					if(bandTicket.name == t[Configure.title.name]) {
+						var priceIncrease = (t[Configure.title.price] - bandTicket.price)/bandTicket.price;
+						var startFator = objStorage[dateArr[i]].bandScoreFator;
+						var preFaotor = objStorage[preDatestr].bandScoreFator;
+						dataStorage.bandScoreFator = preFaotor - startFator >= 0 ? 
+										preFaotor + parseInt(startFator * priceIncrease) : 
+										preFaotor - parseInt(startFator * priceIncrease);
+								
+					}
+				})
+			})
 		}
 	};
 	
@@ -163,7 +187,8 @@ var AI = (function(){
 			txt += '趋势：';
 			var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
 			tickets.sort((a, b)=>{
-				return window.GetBandFinalScroe(b) - window.GetBandFinalScroe(a);
+				return window.GetBandFinalScroe(b, dataStorage.bandScoreFator) - 
+							window.GetBandFinalScroe(a, dataStorage.bandScoreFator);
 			});
 			if (Configure.debug) {
 				console.log('AI趋势得分排名:');
@@ -175,7 +200,7 @@ var AI = (function(){
 			var num = tickets.length > 1 ? 1 : tickets.length;
 			for(var i = 0; i < num; i ++ ) {
 				txt += tickets[i][Configure.title.name];
-				dataStorage.band_ticktes.push(tickets[i][Configure.title.name]);
+				dataStorage.band_ticktes.push({name:tickets[i][Configure.title.name], price: tickets[i][Configure.title.price]});
 			}
 		}
 		return txt;

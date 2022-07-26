@@ -206,7 +206,6 @@ var table = (function(){
 							var param = {sheetName:dateArr[i],
 								ticketCode:ticket[Configure.title.code]};
 							var tkt = workbook.getValue(param);
-							console.log(ticket[Configure.title.code] + ' i = ' + i);
 							if (tkt) {
 								txtshow += parseFloat(tkt[Configure.replaceTitleDate(Configure.title.handoverPercent, dateArr[i])] 
 										/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';
