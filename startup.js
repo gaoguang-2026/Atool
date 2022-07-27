@@ -12,7 +12,6 @@
 		oDiv.appendChild(oStrong);
 	};
 	var drawimage = function(echelonNames = [], indecator = '') {
-		canvas.init(document.getElementById("drawing"), Configure.WinXFactor);
 		canvas.draw(echelonNames, indecator);
 	};
 	
@@ -64,6 +63,8 @@
 
 		dragons.init();
 		table.updateForm();
+		
+		canvas.init(document.getElementById("drawing"), Configure.WinXFactor);
 	};
 	
 	var addEvent = function() {

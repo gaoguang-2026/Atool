@@ -79,10 +79,7 @@ var canvas = (function(canvas) {
 		
 		width = c.width * winXfactor;
 		height = c.height;
-		
-		var ctx = drawing.getContext("2d");
-		ctx.clearRect(0, 0, width, height);
-		
+
 		siteX = width * (1 - width_factor)/2;
 		siteY = height * (1 - height_factor)/2;
 		siteWidth = width * width_factor;
@@ -377,6 +374,8 @@ var canvas = (function(canvas) {
 	
 	var draw = function(echelonNames, indecatorName) {
 		if (drawing.getContext){
+			var ctx = drawing.getContext("2d");
+			ctx.clearRect(0, 0, width, height);
 			drawSite(indecatorName);
 			drawIndicators(indecatorName);
 			drawEchelon(echelonNames);
