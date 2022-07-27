@@ -35,7 +35,7 @@ var canvas = (function(canvas) {
 		var dayIndex = dateArr.indexOf(Configure.formatExcelDate(day[Configure.title2.date], ''));
 		var predayDate  = dateArr[dayIndex + 1];
 		// 连扳数 和晋级率
-		if (!day[Configure.title2.erban]) {
+		if (!day[Configure.title2.erban] || !day[Configure.title2.boardnum]) {
 			var param = {
 				hotpointArr: [],
 				type:2,
@@ -58,6 +58,7 @@ var canvas = (function(canvas) {
 				day[Configure.title2.jinji] = parseFloat((day[Configure.title2.lianban] -  day[Configure.title2.erban]) * 100/
 												preDay[Configure.title2.lianban]).toFixed(2);
 			}
+			day[Configure.title2.boardnum] = tickets.length;
 		}
 		// 连扳指数 ma5和背离率
 		if(!day[Configure.title2.ma5]) {
@@ -178,13 +179,19 @@ var canvas = (function(canvas) {
 				max = parseInt((Configure.BH_zero + Configure.BH_MaxOffset)/temp);
 				break;
 			case '连扳数量':
+				ctx.fillStyle =Configure.boardHeight_color;
 				zero = 0;
 				max = 30;
+				break;
+			case '涨停数量':
+				ctx.fillStyle =Configure.boardHeight_color;
+				zero = 0;
+				max = 100;
 				break;
 			default:
 				break;
 		};
-		if(zero && max) {
+		if(max) {
 			ctx.fillText(zero, siteX - 30, siteY + siteHeight * (1- winFactor));
 			ctx.fillText(max, siteX - 30, siteY);
 		}
@@ -298,6 +305,9 @@ var canvas = (function(canvas) {
 					break;
 				case '连扳数量':
 					drawLine(Configure.boardHeight_color, 0, 30, Configure.title2.lianban);
+					break;
+				case '涨停数量':
+					drawLine(Configure.boardHeight_color, 0, 100, Configure.title2.boardnum);
 					break;
 				default:
 					break;

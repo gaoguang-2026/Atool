@@ -180,7 +180,8 @@ var Configure = (function(){
 	var selectIndicators = [{name:'--请选择--', value: -1},
 							{name:'上证指数', value: 0}, 
 							{name:'连扳高度', value: 1},
-							{name:'连扳数量', value: 2}];
+							{name:'连扳数量', value: 2},
+							{name:'涨停数量', value: 3}];
 	
 	var title2 = {
 		date: '日期',
@@ -194,7 +195,8 @@ var Configure = (function(){
 		sz:'SZ',
 		echelons:'echelon',   // 记录当天echelon排名
 		boardHeight: 'height',   // 记录当天echelon排名
-		dragon: 'dragon'   // 记录当天的龙头
+		dragon: 'dragon',   // 记录当天的龙头
+		boardnum: '涨停数'
 	}
 	
 	var site_color = 'black';
