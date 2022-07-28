@@ -25,8 +25,9 @@ td,tr	{}.green{background-color: green}
 #AI {
 	color: red;
 	background-color: blink;
-	font-weight:bold;
-	font-family:"微软雅黑"; 
+	font-weight:900;
+	font-family:"楷体"; 
+	font-size: 17px;
 	float:right; 
 	border:red 1px solid;
 	white-space: pre;

@@ -20,12 +20,13 @@ var AI = (function(){
 	var cangMap = new Map([
 		['修复', '加仓，5成以上，盯住龙头'],
 		['持续修复', '关注高位缠打型品种'],
-		['高潮', '注意分化，关注低位补涨'],
-		['继续高潮', '注意兑现风险，止盈'],
+		['高潮', '注意中位分化，关注低位补涨和龙头'],
+		['继续高潮', '注意兑现风险，高位减仓止盈'],
 		['高位分化', '减仓至二成以下，避免中位吹哨人'],
 		['退潮', '空仓，尝试低位补涨'],
 		['持续退潮', '空仓，尝试低吸中位大长腿'],
-		['冰点', '提防二次冰点，打板龙头，预期修复']
+		['冰点', '提防二次冰点，打板确认龙头，预期修复'],
+		['二次冰点', '冰点衰竭，打板确认龙头，预期修复']
 	]);
 	
 	var getAndUpdateLoacalstorage = function() {
@@ -122,11 +123,11 @@ var AI = (function(){
 			}
 		}
 		
-		return num == 0 ? '' : '前' + total + '天内出现' + 
-			num + '次,平均成功率' + parseInt(totalValue * 100/num) + '%。';
+		return num == 0 ? '' : '前' +  total + '天出现' + 
+			num + '次,成功率' + parseInt(totalValue * 100/num) + '%。';
 	};
 	var getEmotions = function() {
-		var emotionPoints = canvas.getLastEmotionPoints(2);    
+		var emotionPoints = canvas.getLastEmotionPoints(3);    
 		var angle = getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var value = parseFloat(emotionPoints[0].value);
 		if (angle > 45) {
@@ -142,7 +143,13 @@ var AI = (function(){
 				dataStorage.emotion = '退潮';
 			}
 		} else if (Math.abs(angle) < 30) {
-			if(value < 2.5) dataStorage.emotion = '冰点';
+			if(value < 2.5) {
+				dataStorage.emotion = '冰点';
+				if (parseFloat(emotionPoints[1].value) < 2.5 && 
+					parseFloat(emotionPoints[2].value)){
+						dataStorage.emotion = '二次冰点';
+					}
+			}
 			else if (value > 7) dataStorage.emotion = '继续高潮';
 			else if (angle > 0) dataStorage.emotion = '持续修复';
 			else dataStorage.emotion = '持续退潮';
@@ -184,7 +191,6 @@ var AI = (function(){
 			|| Configure.debug) {
 		//	txt += '上证背离率' + dataStorage.sz_ma_beili*100 + '%(angle:' + dataStorage.sz_average_angle + '),趋势关注：';
 			//选出趋势票
-			txt += '趋势：';
 			var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
 			tickets.sort((a, b)=>{
 				return window.GetBandFinalScroe(b, dataStorage.bandScoreFator) - 
@@ -235,20 +241,22 @@ var AI = (function(){
 		
 		var bandTxt = getBandtickets();
 		var num = bandTxt == '' ?  3 : 2;
-		var txt = '今日关注：';
+		var txt = '';
 		for(var i = 0; i < num; i ++ ) {
 			dataStorage.tickits.push(tickets[i][Configure.title.name]);
 			txt += tickets[i][Configure.title.name] + ' ';
 		}
-		return bandTxt == '' ? txt : txt + ' ' +bandTxt;
+		return txt;
 	};
 	var getRecommend = function() {
 		// 更新获取storage的数据
 		getAndUpdateLoacalstorage();
 		
-		recommendText = 'AI 提示：';
+		recommendText = '【AI 提示】';
 		recommendText += getEmotions();
+		recommendText += '今日关注：';
 		recommendText += getTickits();
+		recommendText += '(~)' + getBandtickets() + ' ';
 		
 		saveLoacalstorage(dataStorage);
 		return recommendText;
