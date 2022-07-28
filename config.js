@@ -33,6 +33,10 @@ var Configure = (function(){
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
+	
+	var isKechuangTicket = function(code) {
+		return code.substr(2, 2) == '30' || code.substr(2, 2) == '68';
+	};
 		
 	/**
      * 格式化excel传递的时间
@@ -234,7 +238,7 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 5;  // 最小显示限制
+	var Echelons_show_min_score = 7;  // 最小显示限制
 	
 	var Band_tickit_period = 4;    // 趋势选出股票的期限      TFD
 	var Band_Max_LENGTH = 11;    // 趋势选出股票画出的长度。    SED + TFD
@@ -288,6 +292,7 @@ var Configure = (function(){
 		formatExcelDate:formatExcelDate,
 		updatetitle:updatetitle,
 		replaceTitleDate:replaceTitleDate,
-		getDayBoard:getDayBoard
+		getDayBoard:getDayBoard,
+		isKechuangTicket:isKechuangTicket
 	}	
 })();

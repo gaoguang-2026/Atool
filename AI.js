@@ -1,6 +1,6 @@
 
 var AI = (function(){
-	var recommendText = 'AI 提示：';
+	var recommendText;
 	var objStorage = LocalStore.getAll();
 	var dataStorage = {
 		emotion:'',
@@ -80,7 +80,7 @@ var AI = (function(){
 						var priceIncrease = (t[Configure.title.price] - bandTicket.price)/bandTicket.price;
 						var startFator = objStorage[dateArr[i]].bandScoreFator;
 						var preFaotor = objStorage[preDatestr].bandScoreFator;
-						dataStorage.bandScoreFator = preFaotor - startFator >= 0 ? 
+						dataStorage.bandScoreFator = preFaotor - startFator > 0 ? 
 										preFaotor + parseInt(startFator * priceIncrease) : 
 										preFaotor - parseInt(startFator * priceIncrease);
 								
@@ -246,6 +246,7 @@ var AI = (function(){
 		// 更新获取storage的数据
 		getAndUpdateLoacalstorage();
 		
+		recommendText = 'AI 提示：';
 		recommendText += getEmotions();
 		recommendText += getTickits();
 		

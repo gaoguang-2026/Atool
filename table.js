@@ -133,7 +133,8 @@ var table = (function(){
 		var isOther = fr2.all[1].checked;  // other 选项
 		var param = {
 			hotpointArr: isOther ? paramGainianForOther : paramGainian,
-			type: fr.gtype[3].checked ? 3 :
+			type: fr.gtype[4].checked ? 4 :
+				fr.gtype[3].checked ? 3 :
 				fr.gtype[2].checked ? 2 : 
 				fr.gtype[0].checked ? 0 : 1,   
 			sort: fr.sort[2].checked ? 2 :

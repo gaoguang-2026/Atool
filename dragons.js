@@ -51,7 +51,7 @@ var dragons = (function() {
 	} ;
 	
 	var getDragonStandard = function(boardNum, code) {
-		var f = code.substr(2, 2) == '30' ? 1.2 : 1.1;
+		var f = Configure.isKechuangTicket(code) ? 1.2 : 1.1;
 		return {
 			price : parseFloat(dragon.price * Math.pow(f, boardNum -2)).toFixed(2),
 			realCirculateValue : parseInt(dragon.realCirculateValue * Math.pow(f, boardNum -2)),
