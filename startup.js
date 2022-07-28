@@ -68,11 +68,6 @@
 	};
 	
 	var addEvent = function() {
-		$('#date').change(function(e) {
-			fillTicketsTable();
-			table.updateForm();
-		});
-		
 		var formUpdate = function() {
 			var fr2 = document.getElementById('form2');
 			var paramEchelons = [];
@@ -94,7 +89,10 @@
 			// table update
 			fillTicketsTable();
 		};
-			
+		$('#date').change(function(e) {
+			table.updateForm();
+			formUpdate();
+		});
 		$('#form1').change(formUpdate);
 		$('#form2').change(formUpdate);
 		$('#indecator').change(formUpdate);

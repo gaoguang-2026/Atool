@@ -188,7 +188,7 @@ var parser = (function(){
 			var e = {};
 			e.score = 0;
 			e.name = echelon.name;
-			e.hotPoints = echelon.hotPoints;
+			e.hotPoints = echelon.hotPoints.slice();
 			echelon.hotPoints.forEach((hot)=>{
 				if (gaiNian.has(hot)) {
 					e.score += parseInt(gaiNian.get(hot).weight);
@@ -199,6 +199,29 @@ var parser = (function(){
 		echelons.sort((a, b) => {
 			return b.score - a.score;
 		})
+		//如果某个概念大于echelons前三名得分，分离出来单独做echelon.
+		var newEchelons = [];
+		for (var [name, value] of gaiNian) {
+			if(value.weight > echelons[2].score &&        //得分大于第三名
+				value.weight > Configure.Echelons_show_min_score ){ 
+				var newEche = {};
+				echelons.forEach((e)=>{
+					if(e.hotPoints.indexOf(name) != -1) {
+						e.hotPoints.splice(e.hotPoints.indexOf(name), 1);
+						e.score -=  parseInt(value.weight);
+					}
+				})
+				newEche.name = '*' + name;
+				newEche.score = parseInt(value.weight);
+				newEche.hotPoints = [name];
+				newEchelons.push(newEche);
+			}
+
+		}
+		echelons = echelons.concat(newEchelons);
+		echelons.sort((a, b) => {
+			return b.score - a.score;
+		})   
 		return echelons;
 	};
 	

@@ -350,7 +350,7 @@ var canvas = (function(canvas) {
 							}
 						});
 					}
-					if (!drawNameDone) {  // 没有连线，画名称
+					if (!drawNameDone && i == Days.length - 1) {  // 没有连线，画名称
 						drawNameDone = true;
 						ctx.beginPath();
 						ctx.fillStyle= color;

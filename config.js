@@ -6,8 +6,8 @@ var Configure = (function(){
 	var echelons = [
 		//赛道
 		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '充电桩']},
-		{name: '风光电', hotPoints:['光伏','有机硅概念','风电', 'HJT电池']},
-		{name: '电力', hotPoints:['智能电网', '特高压', '虚拟电厂', '电力']},
+		{name: '风光电', hotPoints:['光伏','有机硅概念','风电', '绿电']},
+		{name: '电力', hotPoints:['智能电网', '特高压', '虚拟电厂', '电力', 'TOPCON电池', 'HJT电池']},
 		{name: '储能', hotPoints:[ '储能', 'HJT电池','锂电池']},
 		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', '第三代半导体', '中芯国际概念','芯片']},
 		
@@ -234,7 +234,7 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 3;  // 最小显示限制
+	var Echelons_show_min_score = 5;  // 最小显示限制
 	
 	var Band_tickit_period = 4;    // 趋势选出股票的期限      TFD
 	var Band_Max_LENGTH = 11;    // 趋势选出股票画出的长度。    SED + TFD
