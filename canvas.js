@@ -249,7 +249,7 @@ var canvas = (function(canvas) {
 			ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 			if (i == Days.length - 1) {
 				ctx.font="14px Times new Roman";
-				ctx.fillText('0.' + parseFloat(Days[i][Configure.title2.jinji]), rect.x + 5, rect.y - 10);
+				ctx.fillText(parseFloat(Days[i][Configure.title2.jinji]) + '%', rect.x + 5, rect.y - 10);
 				ctx.stroke();
 			}
 						
