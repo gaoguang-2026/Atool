@@ -177,7 +177,7 @@ var AI = (function(){
 		dataStorage.sz_average_angle = parseFloat(sumAngle / Configure.Band_MA_NUM).toFixed(2);
 		// 算sz和MA的背离率
 		var MA_value = (sumValue + parseInt(szPoinsts[Configure.Band_MA_NUM - 1].value))/Configure.Band_MA_NUM;
-		dataStorage.sz_ma_beili = parseFloat((szPoinsts[Configure.Band_MA_NUM - 1].value - MA_value) / MA_value).toFixed(4);
+		dataStorage.sz_ma_beili = parseFloat((szPoinsts[0].value - MA_value) / MA_value).toFixed(4);
 		
 		var txt = '';
 		if(dataStorage.sz_average_angle > 0 && dataStorage.sz_ma_beili > 0 
