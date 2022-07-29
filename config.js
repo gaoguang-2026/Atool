@@ -198,8 +198,8 @@ var Configure = (function(){
 		beili:'背离率',
 		sz:'SZ',
 		echelons:'echelon',   // 记录当天echelon排名
-		boardHeight: 'height',   // 记录当天echelon排名
-		dragon: 'dragon',   // 记录当天的龙头
+		boardHeight: 'height',   // 记录当天最高高度   BH_Draw_title
+		dragon: 'dragon',   // 记录当天的龙头名字
 		boardnum: '涨停数'
 	}
 	

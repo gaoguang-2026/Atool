@@ -14,7 +14,7 @@ var AI = (function(){
 		band_ticktes:[]
 	};
 	
-	var RectifyDay_num = 30;
+	var RectifyDay_num = Configure.Days_Max_lengh;
 	var Rectify_factor = 7;
 	
 	var cangMap = new Map([
@@ -130,13 +130,13 @@ var AI = (function(){
 		var emotionPoints = canvas.getLastEmotionPoints(3);    
 		var angle = getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var value = parseFloat(emotionPoints[0].value);
-		if (angle > 45) {
+		if (angle > 30) {
 			if (value < 5) {
 				dataStorage.emotion = '修复';
 			} else {
 				dataStorage.emotion = '高潮';
 			}
-		} else if(angle < -45) {
+		} else if(angle < -30) {
 			if (value > 5) {
 				dataStorage.emotion = '高位分化';
 			} else {
@@ -151,12 +151,10 @@ var AI = (function(){
 					}
 			}
 			else if (value > 7) dataStorage.emotion = '继续高潮';
-			else if (angle > 0) dataStorage.emotion = '持续修复';
-			else dataStorage.emotion = '持续退潮';
-		} else {
-			dataStorage.emotion = angle > 0 ?  '持续修复' : '持续退潮';
-		};
-		
+			else {
+				dataStorage.emotion = angle > 0 ?'持续修复' :  dataStorage.emotion = '持续退潮';
+			}
+		}
 		
 		return '短线情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion) + '。' +
 				getEmotionSuccessRate(dataStorage.emotion);
@@ -256,7 +254,8 @@ var AI = (function(){
 		recommendText += getEmotions();
 		recommendText += '今日关注：';
 		recommendText += getTickits();
-		recommendText += '(~)' + getBandtickets() + ' ';
+		recommendText += getBandtickets() == '' ?  '' : 
+					'(~)' + getBandtickets() + ' ';
 		
 		saveLoacalstorage(dataStorage);
 		return recommendText;

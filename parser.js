@@ -250,12 +250,12 @@ var parser = (function(){
 		return combinedEchelon;
 	};
 	
-	var getBoardHeight = function(dateStr) {
+	var getBoardHeight = function(dateStr, titleName) {
 		loadSheet(dateStr);
 		tickets.sort((a, b) => {
-			return b[Configure.title.boardAndDay] - a[Configure.title.boardAndDay];
+			return b[titleName] - a[titleName];
 		})
-		return {name: tickets[0][Configure.title.name], value:tickets[0][Configure.title.boardAndDay]};
+		return {name: tickets[0][Configure.title.name], value:tickets[0][titleName]};
 	};
 	
 	var clear = function() {

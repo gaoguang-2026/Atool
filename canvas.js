@@ -104,7 +104,7 @@ var canvas = (function(canvas) {
 				// Echelons
 				d[Configure.title2.echelons] = parser.getEchelons(dateStr);
 				// boardHeight
-				var objBH = parser.getBoardHeight(dateStr);
+				var objBH = parser.getBoardHeight(dateStr, Configure.title2.BH_Draw_title );
 				if (objBH) {
 					d[Configure.title2.boardHeight] = objBH.value;
 					d[Configure.title2.dragon] = objBH.name;
@@ -112,6 +112,7 @@ var canvas = (function(canvas) {
 			} else {
 				d[Configure.title2.echelons] = [];
 				d[Configure.title2.boardHeight] = 0;
+				d[Configure.title2.dragon] = '';
 			}
 		});
 	};
@@ -297,7 +298,7 @@ var canvas = (function(canvas) {
 					point = drawLine(Configure.boardHeight_color, Configure.BH_zero,
 								Configure.BH_MaxOffset, Configure.BH_Draw_title);
 					if (i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
-					   Days[i][Configure.BH_Draw_title] > Days[i+1][Configure.BH_Draw_title] &&
+					   Days[i][Configure.BH_Draw_title] >= Days[i+1][Configure.BH_Draw_title] &&
 					   Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
 						ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + '', point.x - 10, point.y - 5);
 						ctx.stroke();
