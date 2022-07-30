@@ -41,6 +41,31 @@
 		return BandTickets;
 	};
 	
+	var getEmotionalCycles = function(dateStr) {
+		var sheet = getSheet('周期');
+		var index = -1;
+		var retCycle;
+		for(var i = 0; i < sheet.length; i ++) {
+			// 定位到那里年
+			if(sheet[i][Configure.titleCycles.cycles] &&
+				sheet[i][Configure.titleCycles.cycles].indexOf(dateStr.substr(0,4)) >= 0) {
+				index = i;
+			}
+			if(index && 
+				dateStr.indexOf(Configure.formatExcelDate(sheet[i][Configure.titleCycles.date])) != -1) {
+				retCycle = sheet[i][Configure.titleCycles.cycles];
+			}
+		}
+		return retCycle;
+	};
+	
+	var getTactics = function(name) {
+		var sheet = getSheet('交易模式');
+		return sheet.find((item)=> {
+			return item[Configure.titleTactics.name] === name;
+		});
+	};
+	
 	var getDatesSheet= function() {
 		var sheet = getSheet('情绪');
 		var start = sheet.length > Configure.Days_Max_lengh ? 
@@ -81,6 +106,8 @@
 		getDateArr:getDateArr,
 		getDatesSheet:getDatesSheet,
 		getValue:getValue,
+		getEmotionalCycles:getEmotionalCycles,
+		getTactics:getTactics,
 		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,
 		getBandTickets:getBandTickets

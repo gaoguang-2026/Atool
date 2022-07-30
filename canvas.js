@@ -117,7 +117,7 @@ var canvas = (function(canvas) {
 		});
 	};
 
-	var drawSite = function(indecatorName) {
+	var drawSite = function(indecatorName, echelonNames) {
 		//画线
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
@@ -146,6 +146,13 @@ var canvas = (function(canvas) {
 			ctx.moveTo(siteX + cellWidth  * i,siteY);
 			ctx.lineTo(siteX + cellWidth  * i,siteY + siteHeight);*/
 			
+			//画大周期
+			var cycle = workbook.getEmotionalCycles(Configure.formatExcelDate(Days[i][Configure.title2.date]));
+			if (cycle && cycle != '') {
+				ctx.font="12px Times new Roman";
+				ctx.fillStyle = Configure.site_color;
+				ctx.fillText(cycle, siteX + cellWidth  * i, siteY -5);
+			}
 		};		
 		
 		// 画0轴
@@ -159,13 +166,17 @@ var canvas = (function(canvas) {
 		ctx.fillText('0', siteX - 20, siteY + siteHeight);
 		ctx.fillText('(1)', siteX - 20, siteY + siteHeight * (1- winFactor) + 10);
 		
-		ctx.fillStyle = Configure.line_color;
-		ctx.fillText('0', siteX + siteWidth + 10, siteY + siteHeight * (1- winFactor));
-		ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth, siteY);
-		ctx.fillStyle = Configure.echelon_color[0];
-		ctx.fillText('(' + Configure.Min_echelon_score + ')', siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor) + 15);
-		ctx.fillText('(' + Configure.Max_echelon_score + ')', siteX + siteWidth, siteY + 15);
-		
+
+		if (echelonNames.length) {
+			ctx.fillStyle = Configure.echelon_color[0];
+			ctx.fillText(Configure.Min_echelon_score, siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor));
+			ctx.fillText(Configure.Max_echelon_score, siteX + siteWidth, siteY);
+		} else {
+			ctx.fillStyle = Configure.line_color;
+			ctx.fillText('0', siteX + siteWidth + 10, siteY + siteHeight * (1- winFactor));
+			ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth, siteY);
+		}
+
 		var zero, max;
 		switch(indecatorName) {
 			case '上证指数':
@@ -225,6 +236,35 @@ var canvas = (function(canvas) {
 			}
 		}
 		return szPoint;
+	};
+	var drawEmotionCycle = function(emotions, curEmotion) { 
+		var ctx = drawing.getContext("2d");		
+		ctx.beginPath();
+		
+		var center = Math.floor(emotions.length/2);
+		for(var i = 0; i < emotions.length; i ++) {
+			var xLv = i-center < 0 ? 0 : 1;
+			var yLv = i-center >= 0 ?  Math.abs(i-center) + 0.5 :  Math.abs(i-center);
+		//	var yLv = Math.abs(i-center) + 1;
+			console.log('x = ' + xLv + '  y = ' + yLv);
+			var x = siteX + siteWidth + 15 * xLv;
+			var y = siteY + 5 + 30 * yLv;
+			var txt = '';
+			if(emotions[i] == curEmotion) {
+				ctx.beginPath();
+				ctx.font="bold 14px 楷体";
+				ctx.fillStyle = 'red';
+		//		ctx.strokeStyle = 'red';
+			//	ctx.rect(x, y - 12, 12 * 2, 12);
+				txt = curEmotion + (xLv == 0 ? '  <' : '<');
+			} else {
+				ctx.font="bold 12px 楷体";
+				ctx.fillStyle = 'grey';
+				txt = emotions[i];
+			}
+			ctx.fillText(txt, x, y);
+			ctx.stroke();
+		}
 	};
 	var drawIndicators = function(indecatorName) {
 		var ctx = drawing.getContext("2d");		
@@ -387,7 +427,7 @@ var canvas = (function(canvas) {
 		if (drawing.getContext){
 			var ctx = drawing.getContext("2d");
 			ctx.clearRect(0, 0, width, height);
-			drawSite(indecatorName);
+			drawSite(indecatorName, echelonNames);
 			drawIndicators(indecatorName);
 			drawEchelon(echelonNames);
 		}
@@ -396,6 +436,7 @@ var canvas = (function(canvas) {
 	return {
 		init: init,
 		draw: draw,
+		drawEmotionCycle:drawEmotionCycle,
 		getLastEmotionPoints:getLastEmotionPoints,
 		getLastSZPoints:getLastSZPoints
 	}

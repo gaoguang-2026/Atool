@@ -17,16 +17,17 @@ var AI = (function(){
 	var RectifyDay_num = Configure.Days_Max_lengh;
 	var Rectify_factor = 7;
 	
+	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
 	var cangMap = new Map([
-		['冰点', '（退三）提防二次冰点，打板确认龙头，预期修复'],   // 退三
-		['二冰', '（退三）冰点衰竭，打板确认龙头，预期修复'],
-		['修复', '（启动）加仓，5成以上，盯住龙头和低位首发'],    	// 启动
-		['持续修复', '（发酵）去弱留强，尝试低位补涨'],				// 发酵
-		['高潮', '（加速）注意中位分化，关注低位补涨和龙头'],		// 加速
-		['继续高潮', '（加速）注意兑现风险，高位减仓止盈'],			// 中位
-		['分化', '（分歧）减仓至二成以下，避免中位吹哨人'],			// 分歧
-		['退潮', '（退一）空仓，关注缠打趋势型品种'],				// 退一
-		['持续退潮', '（退二）空仓，尝试低吸中位大长腿']			// 退二
+		['冰点', {tips:'提防二次冰点，打板确认龙头，预期修复', stage:'退二', tactics:['龙头买法','看高做低']}],    
+		['二冰', {tips:'冰点衰竭，打板确认龙头，预期修复', stage:'退三', tactics:['龙头买法','看高做低']}],			
+		['修复', {tips:'加仓，5成以上，盯住龙头和低位首发', stage:'启动', tactics:['龙头买法','看高做低']}],    	// 启动
+		['持续修复', {tips:'去弱留强，尝试低位补涨', stage:'发酵', tactics:['龙头买法','看高做低']}],				// 发酵
+		['高潮', {tips:'注意中位分化，关注低位补涨和龙头', stage:'加速', tactics:['龙头买法','看高做低']}],		// 加速
+		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'加速', tactics:['看高做低']}],			
+		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['中位接力','杀回马枪']}],			// 分歧
+		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['断板反包', '鸭头上翘']}],				// 退一
+		['持续退潮', {tips:'空仓，尝试低吸中位大长腿', stage:'退二', tactics:['中位接力']}]			// 退二
 	]);
 	
 	var getAndUpdateLoacalstorage = function() {
@@ -156,7 +157,7 @@ var AI = (function(){
 			}
 		}
 		
-		return '短线情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion) + '。' +
+		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion).tips + '。' +
 				getEmotionSuccessRate(dataStorage.emotion);
 		
 	};
@@ -246,6 +247,17 @@ var AI = (function(){
 		}
 		return txt;
 	};
+	var getTaticsTxt = function() {
+		var retTxt = '';
+		cangMap.get(dataStorage.emotion).tactics.forEach((t)=>{
+			var tactic = workbook.getTactics(t);
+			for (var prop in tactic) {
+				retTxt += '【' + prop + '】:  ' + tactic[prop] + '<br>';
+			}
+			retTxt += '<br>';
+		});
+		return retTxt;
+	};
 	var getRecommend = function() {
 		// 更新获取storage的数据
 		getAndUpdateLoacalstorage();
@@ -258,7 +270,9 @@ var AI = (function(){
 					'(~)' + getBandtickets() + ' ';
 		
 		saveLoacalstorage(dataStorage);
-		return recommendText;
+		
+		canvas.drawEmotionCycle(dragonStage, cangMap.get(dataStorage.emotion).stage);
+		return {txt: recommendText, tatics: getTaticsTxt()};
 	};
 	
 	return {

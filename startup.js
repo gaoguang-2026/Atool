@@ -1,5 +1,5 @@
 
-	var displayAI = function (text) {
+	var displayAI = function (recommend) {
 		var oDiv = document.getElementById("AI");
 		//remove child
 		while(oDiv.hasChildNodes()) {
@@ -7,7 +7,9 @@
 		};
 			
         var oStrong = document.createElement("div");
-        var oTxt = document.createTextNode(text);
+        var oTxt = document.createTextNode(recommend.txt);
+		Tip.show(oDiv, recommend.tatics);
+		
 		oStrong.appendChild(oTxt);
 		oDiv.appendChild(oStrong);
 	};
@@ -88,6 +90,8 @@
 			
 			// table update
 			fillTicketsTable();
+			
+			displayAI(AI.getRecommend());
 		};
 		$('#date').change(function(e) {
 			table.updateForm();

@@ -201,6 +201,23 @@ var Configure = (function(){
 		boardHeight: 'height',   // 记录当天最高高度   BH_Draw_title
 		dragon: 'dragon',   // 记录当天的龙头名字
 		boardnum: '涨停数'
+	};
+	
+	var titleCycles = {
+		cycles: '时间周期',
+		hotpoint: '热点',
+		date: '日期',
+		dragon:'龙头'
+	};
+	var titleTactics = {
+		name:'名称',
+		condition: '能见度',
+		selectTicket:'选股',
+		buy:'买点',
+		stop:'止损',
+		sell: '止盈',
+		description: '说明',
+		word: '道'
 	}
 	
 	var site_color = 'black';
@@ -258,6 +275,8 @@ var Configure = (function(){
 		HIGH_factor:HIGH_factor,
 		title:title,
 		title2:title2,
+		titleCycles:titleCycles,
+		titleTactics:titleTactics,
 		Days_Max_lengh:Days_Max_lengh,
 		echelons:echelons,
 		selectIndicators:selectIndicators,
