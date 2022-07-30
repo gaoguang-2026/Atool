@@ -20,7 +20,8 @@ th,td {
 
 td,tr	{}.green{background-color: green}
 		.grey{background-color: grey}
-		.red{background-color: rgba(255, 128, 0, 0.3)}
+		.red{background-color: red}
+		.highlight{background-color: rgba(255, 128, 0, 0.3)}
 
 #AI {
 	color: red;

@@ -196,8 +196,11 @@ var table = (function(){
 						break;
 					case 'totalDivergence':
 						Tip.show(td, '价格：' + ticket[Configure.title.price] + '<br>' +
-								'筹码: ' + ticket[Configure.title.profitProportion]);
-						if (ticket[Configure.title.totalDivergence] > 3) {
+								(ticket[Configure.title.profitProportion] ? 
+								'筹码: ' + ticket[Configure.title.profitProportion] : ''));
+						if (ticket[Configure.title.totalDivergence] > 18) {
+							td.className = 'red';
+						} else if(ticket[Configure.title.totalDivergence] > 3){
 							td.className = 'green';
 						}
 						break;
@@ -239,7 +242,7 @@ var table = (function(){
 					
 				highlightTichets.forEach((t)=>{
 					if(t[Configure.title.code] == ticket[Configure.title.code]) {
-						tr.className = 'red';
+						tr.className = 'highlight';
 					}
 				})
 				tr.appendChild(td);

@@ -179,7 +179,7 @@ var Configure = (function(){
 	};
 	var showInTableTitile = ['name',  'realValue','score','totalDivergence',
 					'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
-	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','selectDate','reason'];
+	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence','selectDate','reason'];
 	
 	var selectIndicators = [{name:'--请选择--', value: -1},
 							{name:'上证指数', value: 0}, 
