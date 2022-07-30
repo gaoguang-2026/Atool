@@ -89,11 +89,11 @@
 	bandEchelon.prototype.drawTitle = function () {
 		var ctx = this.canvas.getContext("2d");	
 		ctx.lineWidth="2";
-		ctx.font="16px Times new Roman";
+		ctx.font="16px 楷体";
 		ctx.fillStyle = 'Orange';
 		ctx.fillText(this.echelon.name , this.rect.x + 5, this.rect.y + 15);
 		
-		ctx.font="12px Times new Roman";
+		ctx.font="14px 楷体";
 		ctx.fillStyle = 'Orange';
 		ctx.fillText('<' + Configure.Band_miss_tickit_period + '天趋势>', this.rect.x + 5, this.rect.y + 30);
 	};

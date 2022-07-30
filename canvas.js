@@ -134,7 +134,7 @@ var canvas = (function(canvas) {
 			if ((i % 5 == 0 && (Days.length - i > 8)) || i == Days.length -1) {
 				//日期
 			//	ctx.rotate(310*Math.PI/180);
-				ctx.font="14px Times new Roman";
+				ctx.font="14px 楷体";
 				ctx.fillStyle = Configure.site_color;
 				ctx.fillText(Configure.formatExcelDate(Days[i][Configure.title2.date], '').substr(4,4),
 					 siteX + cellWidth  * i, siteY + siteHeight + 20);
@@ -149,7 +149,7 @@ var canvas = (function(canvas) {
 			//画大周期
 			var cycle = workbook.getEmotionalCycles(Configure.formatExcelDate(Days[i][Configure.title2.date]));
 			if (cycle && cycle != '') {
-				ctx.font="12px Times new Roman";
+				ctx.font="14px 楷体";
 				ctx.fillStyle = Configure.site_color;
 				ctx.fillText(cycle, siteX + cellWidth  * i, siteY -5);
 			}
@@ -161,7 +161,7 @@ var canvas = (function(canvas) {
 		ctx.moveTo(siteX,siteY + siteHeight * (1-winFactor));
 		ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor));
 		
-		ctx.font="14px Times new Roman";
+		ctx.font="14px 楷体";
 		ctx.fillStyle = Configure.line_color;
 		ctx.fillText('0', siteX - 20, siteY + siteHeight);
 		ctx.fillText('(1)', siteX - 20, siteY + siteHeight * (1- winFactor) + 10);
@@ -230,7 +230,7 @@ var canvas = (function(canvas) {
 				ctx.lineTo(szpointNext.x, szpointNext.y);
 				ctx.stroke();
 			} else {
-				ctx.font="14px Times new Roman"
+				ctx.font="14px 楷体"
 				ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
 				ctx.stroke();
 			}
@@ -252,13 +252,13 @@ var canvas = (function(canvas) {
 			var txt = '';
 			if(emotions[i] == curEmotion) {
 				ctx.beginPath();
-				ctx.font="bold 14px 楷体";
+				ctx.font="bold 16px 楷体";
 				ctx.fillStyle = 'red';
 		//		ctx.strokeStyle = 'red';
 			//	ctx.rect(x, y - 12, 12 * 2, 12);
 				txt = curEmotion + (xLv == 0 ? '  <' : '<');
 			} else {
-				ctx.font="bold 12px 楷体";
+				ctx.font="bold 14px 楷体";
 				ctx.fillStyle = 'grey';
 				txt = emotions[i];
 			}
@@ -289,7 +289,7 @@ var canvas = (function(canvas) {
 			ctx.fillStyle=grd;
 			ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 			if (i == Days.length - 1) {
-				ctx.font="14px Times new Roman";
+				ctx.font="14px 楷体";
 				ctx.fillText(parseFloat(Days[i][Configure.title2.jinji]) + '%', rect.x + 5, rect.y - 10);
 				ctx.stroke();
 			}
@@ -320,7 +320,7 @@ var canvas = (function(canvas) {
 				ctx.lineTo(pointNext.x, pointNext.y);
 				ctx.stroke();
 			} else {
-				ctx.font="14px Times new Roman";
+				ctx.font="14px 楷体";
 				ctx.fillText(parseFloat(Days[i][Configure.title2.beili]) + '%', point.x + 10, point.y);
 				ctx.stroke();
 			}
@@ -395,7 +395,7 @@ var canvas = (function(canvas) {
 						drawNameDone = true;
 						ctx.beginPath();
 						ctx.fillStyle= color;
-						ctx.font="12px Times new Roman";
+						ctx.font="14px 楷体";
 						ctx.fillText('<' + g.name + '>', point.x + 5, point.y);
 						ctx.stroke();
 					};

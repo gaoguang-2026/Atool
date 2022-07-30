@@ -196,11 +196,11 @@
 		ctx.beginPath();
 		if (index != 0) {
 			ctx.lineWidth="2";
-			ctx.font="14px Times new Roman";
+			ctx.font="14px 楷体";
 			ctx.fillStyle = 'green';
 		} else {
 			ctx.lineWidth="2";
-			ctx.font="14px Times new Roman";
+			ctx.font="14px 楷体";
 			ctx.fillStyle = 'red';
 		}
 		ctx.fillText(ticket[Configure.title.name], startPoint.x, startPoint.y - 3);
@@ -208,11 +208,11 @@
 	Echelon.prototype.drawTitle = function() {
 		var ctx = this.canvas.getContext("2d");	
 		ctx.lineWidth="2";
-		ctx.font="16px Times new Roman";
+		ctx.font="16px 楷体";
 		ctx.fillStyle = 'orange';
 		ctx.fillText(this.echelon.name, this.rect.x + 5, this.rect.y + 15);
 		
-		ctx.font="12px Times new Roman";
+		ctx.font="14px 楷体";
 		ctx.fillStyle = 'orange';
 		ctx.fillText('<' + Configure.Echelons_miss_tickit_period + '天连板>', this.rect.x + 5, this.rect.y + 30);
 	};
