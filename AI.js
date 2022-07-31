@@ -19,10 +19,11 @@ var AI = (function(){
 	
 	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
 	var cangMap = new Map([
-		['冰点', {tips:'提防二次冰点，打板确认龙头，预期修复', stage:'退二', tactics:['龙头买法','看高做低']}],    
-		['二冰', {tips:'冰点衰竭，打板确认龙头，预期修复', stage:'退三', tactics:['龙头买法','看高做低']}],			
-		['修复', {tips:'加仓，5成以上，盯住龙头和低位首发', stage:'启动', tactics:['龙头买法','看高做低']}],    	// 启动
-		['持续修复', {tips:'去弱留强，尝试低位补涨', stage:'发酵', tactics:['龙头买法','看高做低']}],				// 发酵
+		['冰点', {tips:'提防二次冰点，打板确认龙头，预期修复', stage:'退三', tactics:['龙头买法','断板反包','看高做低']}],    // 退三
+		['二次冰点', {tips:'冰点衰竭，打板确认龙头，预期修复', stage:'启动', tactics:['龙头买法','看高做低']}],			
+		['修复', {tips:'加仓，5成以上，盯住龙头和低位首发', stage:'发酵', tactics:['龙头买法','看高做低']}],    	// 启动
+		['持续修复', {tips:'去弱留强，尝试低位补涨', stage:'加速', tactics:['龙头买法','看高做低']}],				// 发酵
+		['分歧', {tips:'多空博弈, 选择方向', stage:'分歧', tactics:['龙头买法', '中位接力']}],    						
 		['高潮', {tips:'注意中位分化，关注低位补涨和龙头', stage:'加速', tactics:['二波缠打','看高做低']}],		// 加速
 		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'加速', tactics:['看高做低']}],			
 		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['中位接力','杀回马枪','二波缠打']}],			// 分歧
@@ -129,34 +130,47 @@ var AI = (function(){
 	};
 	var getEmotions = function() {
 		var emotionPoints = canvas.getLastEmotionPoints(3);    
+		var sumLevel = 0;
+		var getLevel = function(point) {
+			return Math.floor(point.value/2.5);
+		}
+		for(var i = 0; i < 3; i ++){
+			sumLevel += getLevel(emotionPoints[i]);
+		}
 		var angle = getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var value = parseFloat(emotionPoints[0].value);
-		if (angle > 30) {
-			if (value < 5) {
-				dataStorage.emotion = '修复';
-			} else {
-				dataStorage.emotion = '高潮';
+		var level = getLevel(emotionPoints[0]) - sumLevel/3;
+		if(value < 2.5) {
+			dataStorage.emotion = '冰点';
+			if (parseFloat(emotionPoints[1].value) < 2.5 || 
+				parseFloat(emotionPoints[2].value) < 2.5){
+					dataStorage.emotion = '二次冰点';
 			}
-		} else if(angle < -30) {
-			if (value > 5) {
-				dataStorage.emotion = '分化';
-			} else {
-				dataStorage.emotion = '退潮';
-			}
-		} else if (Math.abs(angle) < 30) {
-			if(value < 2.5) {
-				dataStorage.emotion = '冰点';
-				if (parseFloat(emotionPoints[1].value) < 2.5 && 
-					parseFloat(emotionPoints[2].value)){
-						dataStorage.emotion = '二次冰点';
-					}
-			}
-			else if (value > 7) dataStorage.emotion = '继续高潮';
+		} else if(value < 5) {
+			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
 			else {
-				dataStorage.emotion = angle > 0 ?'持续修复' :  dataStorage.emotion = '持续退潮';
+				if(angle > 0) {
+					dataStorage.emotion =  level > 0 ?  '修复' : '分歧';
+				} else {
+					dataStorage.emotion = level < 0 ?  '持续退潮' : '分歧';
+				}
+			}   
+		} else if(value < 7.5) {
+			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
+			else  {
+				if(angle > 0) {
+					dataStorage.emotion = level > 0 ?  '持续修复' : '分歧';
+				} else {
+					dataStorage.emotion = level < 0 ?  '退潮' : '分歧';
+				}
 			}
-		}
-		
+		} else {
+			dataStorage.emotion = '高潮';
+			if (parseFloat(emotionPoints[1].value) > 7 || 
+				parseFloat(emotionPoints[2].value) > 7){
+				dataStorage.emotion = angle > 0 ? '继续高潮' : '分化';
+			}
+		}		
 		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion).tips + '。' +
 				getEmotionSuccessRate(dataStorage.emotion);
 		

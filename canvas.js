@@ -123,29 +123,27 @@ var canvas = (function(canvas) {
 		ctx.beginPath();
 		ctx.lineWidth="2";
 		ctx.strokeStyle = Configure.site_color;
-		ctx.moveTo(siteX,siteY);
-		ctx.lineTo(siteX ,siteY + siteHeight);
+	//	ctx.moveTo(siteX,siteY);
+		ctx.moveTo(siteX ,siteY + siteHeight);
 		ctx.lineTo(siteX + siteWidth, siteY + siteHeight);
 		ctx.lineTo(siteX + siteWidth, siteY);
 		ctx.lineTo(siteX,siteY);
 		
 		// 画日期
 		for(i = 0; i < Days.length; i ++) {
-			if ((i % 5 == 0 && (Days.length - i > 8)) || i == Days.length -1) {
-				//日期
-			//	ctx.rotate(310*Math.PI/180);
+			// 日期网格
+			var d = new Date(Configure.formatExcelDate(Days[i][Configure.title2.date], '/'));
+			if (d.getDay() == 1) {   // 星期一
 				ctx.font="14px 楷体";
 				ctx.fillStyle = Configure.site_color;
 				ctx.fillText(Configure.formatExcelDate(Days[i][Configure.title2.date], '').substr(4,4),
 					 siteX + cellWidth  * i, siteY + siteHeight + 20);
-			//	ctx.rotate(50*Math.PI/180);
+					 
+				ctx.lineWidth="0.5";
+				ctx.strokeStyle = Configure.site_color;
+				ctx.moveTo(siteX + cellWidth  * i,siteY);
+				ctx.lineTo(siteX + cellWidth  * i,siteY + siteHeight);
 			}
-			// 网格
-			/*ctx.lineWidth="0.5";
-			ctx.strokeStyle = "blue";
-			ctx.moveTo(siteX + cellWidth  * i,siteY);
-			ctx.lineTo(siteX + cellWidth  * i,siteY + siteHeight);*/
-			
 			//画大周期
 			var cycle = workbook.getEmotionalCycles(Configure.formatExcelDate(Days[i][Configure.title2.date]));
 			if (cycle && cycle != '') {
@@ -245,8 +243,7 @@ var canvas = (function(canvas) {
 		for(var i = 0; i < emotions.length; i ++) {
 			var xLv = i-center < 0 ? 0 : 1;
 			var yLv = i-center >= 0 ?  Math.abs(i-center) + 0.5 :  Math.abs(i-center);
-		//	var yLv = Math.abs(i-center) + 1;
-			console.log('x = ' + xLv + '  y = ' + yLv);
+		//	console.log('x = ' + xLv + '  y = ' + yLv);
 			var x = siteX + siteWidth + 15 * xLv;
 			var y = siteY + 5 + 30 * yLv;
 			var txt = '';
@@ -254,8 +251,6 @@ var canvas = (function(canvas) {
 				ctx.beginPath();
 				ctx.font="bold 16px 楷体";
 				ctx.fillStyle = 'red';
-		//		ctx.strokeStyle = 'red';
-			//	ctx.rect(x, y - 12, 12 * 2, 12);
 				txt = curEmotion + (xLv == 0 ? '  <' : '<');
 			} else {
 				ctx.font="bold 14px 楷体";
