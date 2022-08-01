@@ -7,8 +7,8 @@ var Configure = (function(){
 		//赛道
 		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '充电桩']},
 		{name: '风光电', hotPoints:['光伏','有机硅概念','风电', '绿电']},
-		{name: '电力', hotPoints:['智能电网', '特高压', '虚拟电厂', '电力', 'TOPCON电池', 'HJT电池']},
-		{name: '储能', hotPoints:[ '储能', 'HJT电池','锂电池']},
+		{name: '电力', hotPoints:['智能电网', '特高压', '虚拟电厂', '电力']},
+		{name: '储能', hotPoints:[ '储能', 'HJT电池','锂电池', 'TOPCON电池', 'HJT电池']},
 		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', '第三代半导体', '中芯国际概念','芯片']},
 		
 		// 消费
@@ -27,7 +27,7 @@ var Configure = (function(){
 		{name: '传媒', hotPoints:['传媒', '元宇宙', '虚拟现实', '人工智能', '游戏', '云游戏', '云计算', '东数西算', '计算机软件','手机游戏']},
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航']},
 		
-		{name: '机器人', hotPoints:['机器人', '智能制造']},
+		{name: '机器人', hotPoints:['机器人', '智能制造', '减速器']},
 		{name: '一体化压铸', hotPoints:['一体化压铸']},
 		{name: '钒电池', hotPoints:['钒电池']},
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},

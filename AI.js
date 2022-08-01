@@ -19,14 +19,14 @@ var AI = (function(){
 	
 	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
 	var cangMap = new Map([
-		['冰点', {tips:'提防二次冰点，打板确认龙头，预期修复', stage:'退三', tactics:['龙头买法','断板反包','看高做低']}],    // 退三
+		['冰点', {tips:'提防二次冰点，打板确认龙头，预期修复', stage:'退三', tactics:['龙头买法','看高做低']}],    // 退三
 		['二次冰点', {tips:'冰点衰竭，打板确认龙头，预期修复', stage:'启动', tactics:['龙头买法','看高做低']}],			
 		['修复', {tips:'加仓，5成以上，盯住龙头和低位首发', stage:'发酵', tactics:['龙头买法','看高做低']}],    	// 启动
 		['持续修复', {tips:'去弱留强，尝试低位补涨', stage:'加速', tactics:['龙头买法','看高做低']}],				// 发酵
 		['分歧', {tips:'多空博弈, 选择方向', stage:'分歧', tactics:['龙头买法', '中位接力']}],    						
 		['高潮', {tips:'注意中位分化，关注低位补涨和龙头', stage:'加速', tactics:['二波缠打','看高做低']}],		// 加速
-		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'加速', tactics:['看高做低']}],			
-		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['中位接力','杀回马枪','二波缠打']}],			// 分歧
+		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['看高做低']}],			
+		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['看高做低','杀回马枪','二波缠打']}],			// 分歧
 		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['断板反包', '鸭头上翘','二波缠打']}],				// 退一
 		['持续退潮', {tips:'空仓，尝试低吸中位大长腿', stage:'退二', tactics:['中位接力', '二波缠打']}]			// 退二
 	]);
@@ -140,7 +140,7 @@ var AI = (function(){
 		var angle = getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var value = parseFloat(emotionPoints[0].value);
 		var level = getLevel(emotionPoints[0]) - sumLevel/3;
-		if(value < 2.5) {
+		if(value < 3) {
 			dataStorage.emotion = '冰点';
 			if (parseFloat(emotionPoints[1].value) < 2.5 || 
 				parseFloat(emotionPoints[2].value) < 2.5){
@@ -155,7 +155,7 @@ var AI = (function(){
 					dataStorage.emotion = level < 0 ?  '持续退潮' : '分歧';
 				}
 			}   
-		} else if(value < 7.5) {
+		} else if(value < 7) {
 			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
 			else  {
 				if(angle > 0) {
@@ -181,7 +181,8 @@ var AI = (function(){
 		var emotionPoints = canvas.getLastEmotionPoints(1); 
 		return parseInt(parseInt(t[Configure.title.score]) - 
 				t[Configure.title.totalDivergence] * dataStorage.scoreFator + 
-				(10 - emotionPoints[0].value)* Configure.getDayBoard(t[Configure.title.boardAndDay]).b + 
+				// 情绪高位，板块越向低位找
+				(5 - emotionPoints[0].value)* Configure.getDayBoard(t[Configure.title.boardAndDay]).b + 
 				t[Configure.title.boardStrength].v * 10);   // 封板强度 X10
 	};
 	
@@ -245,12 +246,12 @@ var AI = (function(){
 		tickets.sort((a, b)=>{
 			return getFinalScroe(b) - getFinalScroe(a);
 		});
-		if (Configure.debug) {
+	//	if (Configure.debug) {
 			console.log('AI超短得分排名:');
 			tickets.forEach((t)=>{
 				console.log(t[Configure.title.name] + '  ' + getFinalScroe(t));
 			})
-		}
+	//	}
 		
 		var bandTxt = getBandtickets();
 		var num = bandTxt == '' ?  3 : 2;
