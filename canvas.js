@@ -261,7 +261,7 @@ var canvas = (function(canvas) {
 			ctx.stroke();
 		}
 	};
-	var drawIndicators = function(indecatorName) {
+	var drawIndicators = function(indecatorName, echelonNames) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
 		for(i = 0; i < Days.length; i ++) {
@@ -290,35 +290,38 @@ var canvas = (function(canvas) {
 			}
 						
 			// 画背离率
-			ctx.fillStyle="black";
-			ctx.strokeStyle = "black";
-			var pointH = siteHeight * (1-winFactor) * parseFloat(Days[i][Configure.title2.beili])/Configure.MAX_BEILI;
-			var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
-						y: siteY + siteHeight*(1-winFactor) - pointH};	
-						
-			emotionPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.beili]), 
-						date:Days[i][Configure.title2.date]});
-						
-			grd=ctx.createLinearGradient(siteX, siteY + siteHeight * (1-winFactor), 
-											siteX, siteY);
-			grd.addColorStop(0,"green");
-			grd.addColorStop(0.3,"orange");
-			grd.addColorStop(1,Configure.line_color);  
-			ctx.fillStyle = grd;
-			ctx.strokeStyle = grd;
-			if (i < Days.length - 1) {// 不是最后一个点
-				var pointNextH = siteHeight * (1-winFactor) * parseFloat(Days[i + 1][Configure.title2.beili])/Configure.MAX_BEILI;
-				var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
-								y: siteY + siteHeight*(1-winFactor) - pointNextH};
-				ctx.lineWidth="3";
-				ctx.moveTo(point.x, point.y);
-				ctx.lineTo(pointNext.x, pointNext.y);
-				ctx.stroke();
-			} else {
-				ctx.font="14px 楷体";
-				ctx.fillText(parseFloat(Days[i][Configure.title2.beili]) + '%', point.x + 10, point.y);
-				ctx.stroke();
+			if (echelonNames.length < 2) {
+				ctx.fillStyle="black";
+				ctx.strokeStyle = "black";
+				var pointH = siteHeight * (1-winFactor) * parseFloat(Days[i][Configure.title2.beili])/Configure.MAX_BEILI;
+				var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
+							y: siteY + siteHeight*(1-winFactor) - pointH};	
+							
+				emotionPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.beili]), 
+							date:Days[i][Configure.title2.date]});
+							
+				grd=ctx.createLinearGradient(siteX, siteY + siteHeight * (1-winFactor), 
+												siteX, siteY);
+				grd.addColorStop(0,"green");
+				grd.addColorStop(0.3,"orange");
+				grd.addColorStop(1,Configure.line_color);  
+				ctx.fillStyle = grd;
+				ctx.strokeStyle = grd;
+				if (i < Days.length - 1) {// 不是最后一个点
+					var pointNextH = siteHeight * (1-winFactor) * parseFloat(Days[i + 1][Configure.title2.beili])/Configure.MAX_BEILI;
+					var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
+									y: siteY + siteHeight*(1-winFactor) - pointNextH};
+					ctx.lineWidth="4";
+					ctx.moveTo(point.x, point.y);
+					ctx.lineTo(pointNext.x, pointNext.y);
+					ctx.stroke();
+				} else {
+					ctx.font="14px 楷体";
+					ctx.fillText(parseFloat(Days[i][Configure.title2.beili]) + '%', point.x + 10, point.y);
+					ctx.stroke();
+				}
 			}
+
 			// 画sz,  需要保存点给AI使用
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
 								Configure.SZ_MaxOffset, Configure.title2.sz , indecatorName == '上证指数');
@@ -377,7 +380,7 @@ var canvas = (function(canvas) {
 								var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 													y: siteY + siteHeight*(1-winFactor) - pointNextH};
 								ctx.beginPath();
-								ctx.lineWidth="2";
+								ctx.lineWidth="3";
 								ctx.strokeStyle = color;
 								ctx.moveTo(point.x, point.y);
 								ctx.lineTo(pointNext.x, pointNext.y);
@@ -423,7 +426,7 @@ var canvas = (function(canvas) {
 			var ctx = drawing.getContext("2d");
 			ctx.clearRect(0, 0, width, height);
 			drawSite(indecatorName, echelonNames);
-			drawIndicators(indecatorName);
+			drawIndicators(indecatorName, echelonNames);
 			drawEchelon(echelonNames);
 		}
 	}

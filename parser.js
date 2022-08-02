@@ -211,12 +211,12 @@ var parser = (function(){
 			if(value.weight > echelons[2].score &&        //得分大于第三名
 				value.weight > Configure.Echelons_show_min_score ){ 
 				var newEche = {};
-				echelons.forEach((e)=>{
+			/*	echelons.forEach((e)=>{
 					if(e.hotPoints.indexOf(name) != -1) {
 						e.hotPoints.splice(e.hotPoints.indexOf(name), 1);
 						e.score -=  parseInt(value.weight);
 					}
-				})
+				}) */
 				newEche.name = '*' + name;
 				newEche.score = parseInt(value.weight);
 				newEche.hotPoints = [name];

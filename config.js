@@ -5,9 +5,9 @@ var Configure = (function(){
 		// echelon 
 	var echelons = [
 		//赛道
-		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理', '充电桩']},
+		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理']},
 		{name: '风光电', hotPoints:['光伏','有机硅概念','风电', '绿电']},
-		{name: '电力', hotPoints:['智能电网', '特高压', '虚拟电厂', '电力']},
+		{name: '电力', hotPoints:['智能电网', '特高压', '虚拟电厂', '电力', '充电桩']},
 		{name: '储能', hotPoints:[ '储能', 'HJT电池','锂电池', 'TOPCON电池', 'HJT电池']},
 		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', '第三代半导体', '中芯国际概念','芯片']},
 		
@@ -224,7 +224,7 @@ var Configure = (function(){
 	var sz_color = 'purple';
 	var boardHeight_color = 'black';
 	var line_color = 'red';
-	var echelon_color = ['orange', '#8BEDD9', '#E89AF5', '#6F65DE', '#9D97FF', '#F597C0'];
+	var echelon_color = ['orange', '#E89AF5', '#6F65DE', '#9D97FF', '#F597C0', '#8BEDD9'];
 	
 	var MIN_LB_NUMBER = 2;
 	var MIN_KAINIAN = 2;     // 最少出现的次数
