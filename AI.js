@@ -244,8 +244,9 @@ var AI = (function(){
 		}
 		var tickets =  parser.getTickets(dateStr, param);
 		tickets = tickets.filter((t)=>{
-			return t[Configure.title.realHandoverPercent] < Configure.Dead_Handover && 
-					t[Configure.title.realHandoverPercent] > Configure.Min_handover; 
+			return t[Configure.title.realHandoverPercent] < Configure.Dead_Handover &&       // 过滤掉换手率不符合的票
+					t[Configure.title.realHandoverPercent] > Configure.Min_handover &&
+					t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] > 1;   //过滤掉1连扳的票，只能做趋势
 		}); 
 		tickets.sort((a, b)=>{
 			return getFinalScroe(b) - getFinalScroe(a);
