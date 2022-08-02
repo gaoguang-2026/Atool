@@ -2,17 +2,7 @@
 var AI = (function(){
 	var recommendText;
 	var objStorage = LocalStore.getAll();
-	var dataStorage = {
-		emotion:'',
-		tickits:[],
-		sucessRate:0,
-		scoreFator: Configure.AI_Default_Factor,         // 默认值，localstorage没有值使用它；
-		
-		sz_average_angle:0,
-		sz_ma_beili : 0,
-		bandScoreFator: Configure.AI_Default_Band_Factor,   // 默认值，localstorage没有值使用它； 
-		band_ticktes:[]
-	};
+	var dataStorage = {};
 	
 	var RectifyDay_num = Configure.Days_Max_lengh;
 	var Rectify_factor = 7;
@@ -278,7 +268,21 @@ var AI = (function(){
 		});
 		return retTxt;
 	};
+	var clearAndInit = function() {
+		dataStorage = {
+		emotion:'',
+		tickits:[],
+		sucessRate:0,
+		scoreFator: Configure.AI_Default_Factor,         // 默认值，localstorage没有值使用它；
+		
+		sz_average_angle:0,
+		sz_ma_beili : 0,
+		bandScoreFator: Configure.AI_Default_Band_Factor,   // 默认值，localstorage没有值使用它； 
+		band_ticktes:[]
+		};
+	};
 	var getRecommend = function() {
+		clearAndInit();
 		// 更新获取storage的数据
 		getAndUpdateLoacalstorage();
 		
