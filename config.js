@@ -264,6 +264,8 @@ var Configure = (function(){
 	
 	var AI_Default_Factor = 50;        // 超短选票默认因子   越大结构权重越大，越小题材权重越大
 	var AI_Default_Band_Factor = 180;   // 趋势选票默认因子  越大涨速权重越大，越小题材权重越大
+	var Dead_Handover = 55;				// 过滤掉死亡换手
+	var Min_handover = 3;				// 过滤掉太低的换手，买不进去
 	
 	return {
 		date: date,
@@ -288,6 +290,8 @@ var Configure = (function(){
 		BH_Draw_title:BH_Draw_title,
 		AI_Default_Factor:AI_Default_Factor,
 		AI_Default_Band_Factor:AI_Default_Band_Factor,
+		Dead_Handover:Dead_Handover,
+		Min_handover:Min_handover,
 		WinXFactor:WinXFactor,
 		Min_echelon_score:Min_echelon_score,
 		Max_echelon_score:Max_echelon_score,

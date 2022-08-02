@@ -182,7 +182,7 @@ var AI = (function(){
 		return parseInt(parseInt(t[Configure.title.score]) - 
 				t[Configure.title.totalDivergence] * dataStorage.scoreFator + 
 				// 情绪高位，板块越向低位找
-				(5 - emotionPoints[0].value)* Configure.getDayBoard(t[Configure.title.boardAndDay]).b + 
+				((5 - emotionPoints[0].value) * 3)* Configure.getDayBoard(t[Configure.title.boardAndDay]).b +
 				t[Configure.title.boardStrength].v * 10);   // 封板强度 X10
 	};
 	
@@ -243,15 +243,19 @@ var AI = (function(){
 			sort:1
 		}
 		var tickets =  parser.getTickets(dateStr, param);
+		tickets = tickets.filter((t)=>{
+			return t[Configure.title.realHandoverPercent] < Configure.Dead_Handover && 
+					t[Configure.title.realHandoverPercent] > Configure.Min_handover; 
+		}); 
 		tickets.sort((a, b)=>{
 			return getFinalScroe(b) - getFinalScroe(a);
 		});
-	//	if (Configure.debug) {
+		if (Configure.debug) {
 			console.log('AI超短得分排名:');
 			tickets.forEach((t)=>{
 				console.log(t[Configure.title.name] + '  ' + getFinalScroe(t));
 			})
-	//	}
+		}
 		
 		var bandTxt = getBandtickets();
 		var num = bandTxt == '' ?  3 : 2;

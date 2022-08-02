@@ -216,7 +216,7 @@ var table = (function(){
 							}
 						}
 						Tip.show(td, txtshow);
-						if (ticket[Configure.title.realHandoverPercent] > 55) {
+						if (ticket[Configure.title.realHandoverPercent] > Configure.Dead_Handover) {
 							td.className = 'green';
 						}
 						break;
