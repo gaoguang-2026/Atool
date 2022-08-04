@@ -18,7 +18,7 @@ var AI = (function(){
 		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['看高做低']}],			
 		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['看高做低','杀回马枪','二波缠打']}],			// 分歧
 		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['断板反包', '鸭头上翘','二波缠打']}],				// 退一
-		['持续退潮', {tips:'空仓', stage:'退二', tactics:['二波缠打','鸭头上翘']}]			// 退二
+		['持续退潮', {tips:'空仓，选强低吸反核', stage:'退二', tactics:['二波缠打','断板反包']}]			// 退二
 	]);
 	
 	var getAndUpdateLoacalstorage = function() {
