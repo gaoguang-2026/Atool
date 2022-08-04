@@ -12,13 +12,13 @@ var AI = (function(){
 		['冰点', {tips:'提防二次冰点，打板确认龙头，预期修复', stage:'退三', tactics:['龙头买法','看高做低']}],    // 退三
 		['二次冰点', {tips:'冰点衰竭，打板确认龙头，预期修复', stage:'启动', tactics:['龙头买法','看高做低']}],			
 		['修复', {tips:'加仓，5成以上，盯住龙头和低位首发', stage:'发酵', tactics:['龙头买法','看高做低']}],    	// 启动
-		['持续修复', {tips:'去弱留强，尝试低位补涨', stage:'加速', tactics:['龙头买法','看高做低']}],				// 发酵
-		['分歧', {tips:'多空博弈, 选择方向', stage:'分歧', tactics:['龙头买法', '中位接力']}],    						
+		['持续修复', {tips:'去弱留强', stage:'加速', tactics:['龙头买法','看高做低']}],				// 发酵
+		['分歧', {tips:'多空博弈,关注中位大长腿', stage:'分歧', tactics:['中位接力']}],    						
 		['高潮', {tips:'注意中位分化，关注低位补涨和龙头', stage:'加速', tactics:['二波缠打','看高做低']}],		// 加速
 		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['看高做低']}],			
 		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['看高做低','杀回马枪','二波缠打']}],			// 分歧
 		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['断板反包', '鸭头上翘','二波缠打']}],				// 退一
-		['持续退潮', {tips:'空仓，尝试低吸中位大长腿', stage:'退二', tactics:['中位接力', '二波缠打']}]			// 退二
+		['持续退潮', {tips:'空仓', stage:'退二', tactics:['二波缠打','鸭头上翘']}]			// 退二
 	]);
 	
 	var getAndUpdateLoacalstorage = function() {
@@ -167,12 +167,12 @@ var AI = (function(){
 	};
 	
 	// 根据题材、背离率、连扳和 封板强度 算最后的得分    
-	var getFinalScroe = function(t) {
+	var getFinalScroe = function(t, dateStr) {
 		var emotionPoints = canvas.getLastEmotionPoints(1); 
 		return parseInt(parseInt(t[Configure.title.score]) - 
 				t[Configure.title.totalDivergence] * dataStorage.scoreFator + 
 				// 情绪高位，板块越向低位找
-				((5 - emotionPoints[0].value) * 3)* Configure.getDayBoard(t[Configure.title.boardAndDay]).b +
+				((5 - emotionPoints[0].value) * 3)* t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] +
 				t[Configure.title.boardStrength].v * 10);   // 封板强度 X10
 	};
 	
@@ -239,7 +239,7 @@ var AI = (function(){
 					t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] > 1;   //过滤掉1连扳的票，只能做趋势
 		}); 
 		tickets.sort((a, b)=>{
-			return getFinalScroe(b) - getFinalScroe(a);
+			return getFinalScroe(b, dateStr) - getFinalScroe(a, dateStr);
 		});
 		if (Configure.debug) {
 			console.log('AI超短得分排名:');
