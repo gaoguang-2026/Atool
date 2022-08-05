@@ -191,8 +191,10 @@ var table = (function(){
 						break;
 					case 'boardAndDay':
 						var db = Configure.getDayBoard(ticket[Configure.title.boardAndDay]);
-						var txt = db.d == db.b ? db.b : db.d + '/' + db.b;
+						var txt = db.d == db.b ? db.b : db.d + '/' + db.b  + 
+							'/' + Configure.replaceTitleDate(ticket[Configure.title.dayNumber], datetoload);
 						td.innerHTML = txt ? txt : ticket[Configure.title.boardAndDay];
+						
 						break;
 					case 'totalDivergence':
 						Tip.show(td, '价格：' + ticket[Configure.title.price] + '<br>' +
@@ -205,8 +207,9 @@ var table = (function(){
 						}
 						break;
 					case 'realHandoverPercent':
-						var txtshow = '前' + (parseInt(ticket[Configure.title.dayNumber]) - 1) +  '天实际换手率：';
-						for(var i = parseInt(ticket[Configure.title.dayNumber]) - 1; i > 0 ; i --){
+						var dayNum = parseInt(Configure.replaceTitleDate(ticket[Configure.title.dayNumber]));
+						var txtshow = dayNum > 1 ? '前' + (dayNum - 1) +  '天实际换手率：' : '';
+						for(var i = dayNum - 1; i > 0 ; i --){
 							var param = {sheetName:dateArr[i],
 								ticketCode:ticket[Configure.title.code]};
 							var tkt = workbook.getValue(param);
@@ -215,7 +218,9 @@ var table = (function(){
 										/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';
 							}
 						}
-						Tip.show(td, txtshow);
+						if(txtshow && txtshow != '') {
+							Tip.show(td, txtshow);
+						}
 						if (ticket[Configure.title.realHandoverPercent] > Configure.Dead_Handover) {
 							td.className = 'green';
 						}
