@@ -166,6 +166,11 @@ var Configure = (function(){
 				getDateStr(date) +
 				']' ,
 		boardAndDay:'几天几板',
+		// 涨幅排名独有
+		totalValue:'总市值',
+		rase_20:'20日涨幅',
+		industry:'所属行业',
+		gainian:'所属概念',
 		
 		score:'题材得分',                //根据reasion 算出来的概念评分
 		realValue: '实际流通市值',
@@ -181,6 +186,8 @@ var Configure = (function(){
 	var showInTableTitile = ['name',  'realValue','score','totalDivergence',
 					'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
 	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence','selectDate','reason'];
+	var industryShowInTableTitile = ['index', 'name', 'value_100','value_250','value_500','rise_d20_0',
+								'rise_d20_10','rise_d20_20','total', 'totalValue', 'average_20_rise'];
 	
 	var selectIndicators = [{name:'--请选择--', value: -1},
 							{name:'上证指数', value: 0}, 
@@ -219,7 +226,20 @@ var Configure = (function(){
 		sell: '止盈',
 		description: '说明',
 		word: '道'
-	}
+	};
+	var titleIndustry = {
+		index: '索引',
+		name: '行业名称',
+		value_100: '市值<100亿',
+		value_250: '100-500亿',
+		value_500: '市值>500亿',
+		rise_d20_0: '20日涨幅<0',
+		rise_d20_10: '0<涨幅<20%',
+		rise_d20_20: '20日涨幅>20%',
+		average_20_rise:'合计涨幅%',
+		totalValue: '总市值（亿）',
+		total: '合计(个)'
+	};
 	
 	var site_color = 'black';
 	var sz_color = 'purple';
@@ -273,6 +293,7 @@ var Configure = (function(){
 		debug: debug,
 		showInTableTitile:showInTableTitile,
 		bandShowInTableTitile:bandShowInTableTitile,
+		industryShowInTableTitile:industryShowInTableTitile,
 		MIN_LB_NUMBER:MIN_LB_NUMBER,	
 		MIN_KAINIAN:MIN_KAINIAN,
 		HIGH_factor:HIGH_factor,
@@ -280,6 +301,7 @@ var Configure = (function(){
 		title2:title2,
 		titleCycles:titleCycles,
 		titleTactics:titleTactics,
+		titleIndustry:titleIndustry,
 		Days_Max_lengh:Days_Max_lengh,
 		echelons:echelons,
 		selectIndicators:selectIndicators,

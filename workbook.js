@@ -88,6 +88,10 @@
 		})[0];
 	};
 	
+	var getAllTickets = function() {
+		return getSheet('涨幅排名8-5');
+	};
+	
 	// param = {sheetName: '0707',ticketCode:'SZ002527'}}
 	var getValue = function(param) {
 		var s = getSheet(param.sheetName);
@@ -110,6 +114,7 @@
 		getTactics:getTactics,
 		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,
-		getBandTickets:getBandTickets
+		getBandTickets:getBandTickets,
+		getAllTickets:getAllTickets
 	}
  })();

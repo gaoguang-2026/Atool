@@ -230,8 +230,76 @@ var parser = (function(){
 		})   
 		return echelons;
 	};
+	// 获取行业
+	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
+	/*hotpointArr  热点概念排序的索引 
+	/*type  0 首板 ， 1 连板 , 2 全部, 3 趋势  4 科创 5 行业
+	/*sort  0 得分 ， 1 高度,  2 涨速
+	/*other  true 热点外的其他票
+	//*/
+	var getIndustry = function(param) {
+		var ticketsArr = workbook.getAllTickets();
+		if (param.hotpointArr && param.hotpointArr.length != 0) {
+			ticketsArr = ticketsArr.filter((t)=>{
+				return param.hotpointArr.find((hotpoint)=>{
+					return t[Configure.title.gainian].includes(hotpoint);
+				});
+			});
+		}
+		
+		var retArr = [];
+		ticketsArr.forEach((ticket)=>{
+			var industry = retArr.find((item)=>{
+				return item[Configure.titleIndustry.name] == ticket[Configure.title.industry];
+			});
+			if(!industry) {
+				//初始化这个行业
+				industry = {};
+				industry[Configure.titleIndustry.name] = ticket[Configure.title.industry];
+				industry[Configure.titleIndustry.value_100] = 0;
+				industry[Configure.titleIndustry.value_250] = 0;
+				industry[Configure.titleIndustry.value_500] = 0;
+				industry[Configure.titleIndustry.totalValue] = 0;
+				industry[Configure.titleIndustry.rise_d20_0] = 0;
+				industry[Configure.titleIndustry.rise_d20_10] = 0;
+				industry[Configure.titleIndustry.rise_d20_20] = 0;
+				industry[Configure.titleIndustry.average_20_rise] = 0;
+				industry[Configure.titleIndustry.total] = 0;
+				retArr.push(industry);
+			} 
+			if(parseInt(ticket[Configure.title.totalValue]) < 100 * 100000000)  industry[Configure.titleIndustry.value_100] ++;
+			else if(parseInt(ticket[Configure.title.totalValue]) < 500 * 100000000) industry[Configure.titleIndustry.value_250] ++;
+			else  industry[Configure.titleIndustry.value_500] ++;
+			industry[Configure.titleIndustry.totalValue] += parseInt(ticket[Configure.title.totalValue]) ? 
+											parseInt(ticket[Configure.title.totalValue]/100000000) : 0;
+			if(parseInt(ticket[Configure.title.rase_20]) < 0) industry[Configure.titleIndustry.rise_d20_0]++;
+			else if(parseInt(ticket[Configure.title.rase_20]) < 10) industry[Configure.titleIndustry.rise_d20_10]++;
+			else industry[Configure.titleIndustry.rise_d20_20] ++;
+			industry[Configure.titleIndustry.average_20_rise] += parseInt(ticket[Configure.title.rase_20]) ? 
+														parseInt(ticket[Configure.title.rase_20]) : 0;
+			industry[Configure.titleIndustry.total]++;
+		});
+		
+		retArr.sort((a, b)=>{
+			var title;
+			switch(param.sort) {
+				case 1:
+					title = Configure.titleIndustry.totalValue;
+					break;
+				case 2:
+					title = Configure.titleIndustry.average_20_rise;
+					break;
+				case 0:
+				default:
+					title = Configure.titleIndustry.total;
+					break;
+			}
+			return parseInt(b[title]) - parseInt(a[title]);
+		});
+		return retArr;
+	};
 	
-		// 根据hotpoint算出echelons
+	// 根据hotpoint算出echelons
 	var getCombinedEchelon = function(dateStr, echelonNames) {
 		var echelons = getEchelons(dateStr);
 		var combinedEchelon = {
@@ -271,6 +339,7 @@ var parser = (function(){
 		getBandTickets:getBandTickets,
 		getEchelons:getEchelons,
 		getCombinedEchelon:getCombinedEchelon,
+		getIndustry:getIndustry,
 		getBoardHeight:getBoardHeight
 	}
 })();

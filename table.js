@@ -95,8 +95,11 @@ var table = (function(){
 				tr.appendChild(td);
 			}
 		} else {
-			var titleArr = document.getElementById('form1').gtype[3].checked ? 
+			var titleArr = document.getElementById('form1').gtype[5].checked ?  Configure.industryShowInTableTitile :
+						document.getElementById('form1').gtype[3].checked ? 
 						Configure.bandShowInTableTitile : Configure.showInTableTitile;
+			var titleConfig = document.getElementById('form1').gtype[5].checked ? 
+							Configure.titleIndustry : Configure.title;
 			titleArr.forEach((t)=> {
 				var td = document.createElement('td');
 				if (t == 'reason') {
@@ -104,7 +107,7 @@ var table = (function(){
 				} else if (t == 'dayNumber') {
 					td.innerHTML = '连板数'
 				} else {
-					td.innerHTML = Configure.title[t];
+					td.innerHTML = titleConfig[t];
 				}
 				td.dataset.titleProp = t;
 				tr.appendChild(td);
@@ -113,49 +116,11 @@ var table = (function(){
 
 		tHead.appendChild(tr);
 	}
-	var createTable = function (datetoload, highlightTichets) {
-		var fr = document.getElementById('form1');
-		var fr2 = document.getElementById('form2');
-		
-		var paramGainian = [];
-		var paramGainianForOther = [];
-		if (fr2.gainian) {
-			fr2.gainian.forEach((input)=> {
-				if(input.checked) {
-					paramGainian =paramGainian.concat(input.dataset.titleProp.split(','));
-				} else {
-					paramGainianForOther= paramGainianForOther.concat(input.dataset.titleProp.split(','));
-				}
-			});
-		}
-
-	//	var gainian = fr.gainian;
-		var isOther = fr2.all[1].checked;  // other 选项
-		var param = {
-			hotpointArr: isOther ? paramGainianForOther : paramGainian,
-			type: fr.gtype[4].checked ? 4 :
-				fr.gtype[3].checked ? 3 :
-				fr.gtype[2].checked ? 2 : 
-				fr.gtype[0].checked ? 0 : 1,   
-			sort: fr.sort[2].checked ? 2 :
-				fr.sort[0].checked ? 0 : 1,
-			other: fr2.all[1].checked
-		};
+	var createTicketRow = function(tBody,tHeadtds, datetoload, param) {
 		var tks = parser.getTickets(datetoload,param);
 		var dateArr = workbook.getDateArr((a,b)=>{
 			return b - a;
 		});
-		createTableHead();
-		
-		// create body
-		var tBody = tbl.tBodies[0];
-		var tHead = tbl.tHead;
-		var tHeadtds = Array.from(document.getElementById('tbl').tHead.getElementsByTagName('td'));
-		//remove all tr
-		while(tBody.hasChildNodes()) {
-			tBody.removeChild(tBody.lastChild);
-		};
-		
 		tks.forEach((ticket)=> {
 			var tr = document.createElement('tr');
 			tHeadtds.forEach((t)=> {
@@ -165,12 +130,14 @@ var table = (function(){
 									ticket[Configure.title[t.dataset.titleProp]];
 				switch (t.dataset.titleProp) {
 					case 'name':
-						var ty = ticket[Configure.title.code].substr(2,2);
-						if( ty == '30') {
-							td.innerHTML += '(创)';
-						} else if (ty == '68') {
-							td.innerHTML += '(科)';
-							tr.className = 'grey';
+						if(ticket[Configure.title.code]) {
+							var ty = ticket[Configure.title.code].substr(2,2);
+							if( ty == '30') {
+								td.innerHTML += '(创)';
+							} else if (ty == '68') {
+								td.innerHTML += '(科)';
+								tr.className = 'grey';
+							}
 						}
 						break;
 					case 'realValue':
@@ -275,6 +242,96 @@ var table = (function(){
 			tr.appendChild(tDel);
 			tBody.appendChild(tr);
 		});
+	};
+	
+	var createIndustryRow = function(tBody,tHeadtds, datetoload, param) {
+		var industrys = parser.getIndustry(param);
+		var index = 1;
+		industrys.forEach((industry)=> {
+			var tr = document.createElement('tr');
+			tHeadtds.forEach((t)=> {
+				var td = document.createElement('td');
+				var value = industry[Configure.titleIndustry[t.dataset.titleProp]];
+				td.innerHTML = value;
+				
+				switch (t.dataset.titleProp) {
+					case 'index':
+						td.innerHTML = index++;
+						break;
+					case 'name':
+						break;
+					default :
+						t.dataset.total ? t.dataset.total= parseInt(value) + parseInt(t.dataset.total) : 
+												t.dataset.total = value;
+						break;
+				}
+				tr.appendChild(td);
+			});
+			tBody.appendChild(tr);
+		});
+		
+		// 合计
+		var tr = document.createElement('tr');
+		tHeadtds.forEach((t)=> {
+			var td = document.createElement('td');
+			switch (t.dataset.titleProp) {
+				case 'index':
+					td.innerHTML = '合计';
+					break;
+				case 'name':
+					td.innerHTML = '--';
+					break;
+				default :
+					td.innerHTML =  t.dataset.total;
+					break;
+			}
+			tr.appendChild(td);
+		});
+		tBody.appendChild(tr); 
+	};
+	var createTable = function (datetoload, highlightTichets) {
+		var fr = document.getElementById('form1');
+		var fr2 = document.getElementById('form2');
+		
+		var paramGainian = [];
+		var paramGainianForOther = [];
+		if (fr2.gainian) {
+			fr2.gainian.forEach((input)=> {
+				if(input.checked) {
+					paramGainian =paramGainian.concat(input.dataset.titleProp.split(','));
+				} else {
+					paramGainianForOther= paramGainianForOther.concat(input.dataset.titleProp.split(','));
+				}
+			});
+		}
+
+	//	var gainian = fr.gainian;
+		var isOther = fr2.all[1].checked;  // other 选项
+		var param = {
+			hotpointArr: isOther ? paramGainianForOther : paramGainian,
+			type: fr.gtype[5].checked ? 5 :
+				fr.gtype[4].checked ? 4 :
+				fr.gtype[3].checked ? 3 :
+				fr.gtype[2].checked ? 2 : 
+				fr.gtype[0].checked ? 0 : 1,   
+			sort: fr.sort[2].checked ? 2 :
+				fr.sort[0].checked ? 0 : 1,
+			other: fr2.all[1].checked
+		};
+
+		createTableHead();
+		
+		// create body
+		var tBody = tbl.tBodies[0];
+		var tHead = tbl.tHead;
+		var tHeadtds = Array.from(document.getElementById('tbl').tHead.getElementsByTagName('td'));
+		//remove all tr
+		while(tBody.hasChildNodes()) {
+			tBody.removeChild(tBody.lastChild);
+		};
+		fr.gtype[5].checked ? createIndustryRow(tBody,tHeadtds, datetoload, param) : 
+								createTicketRow(tBody,tHeadtds, datetoload, param); 
+
 	};
 	
 	return {
