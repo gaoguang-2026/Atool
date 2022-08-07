@@ -113,7 +113,7 @@ var table = (function(){
 				tr.appendChild(td);
 			});
 		}
-
+		tr.className = 'bold';
 		tHead.appendChild(tr);
 	}
 	var createTicketRow = function(tBody,tHeadtds, datetoload, param) {
@@ -257,9 +257,15 @@ var table = (function(){
 				switch (t.dataset.titleProp) {
 					case 'index':
 						td.innerHTML = index++;
-						break;
 					case 'name':
 						break;
+					case 'totalValue':
+						td.className = 'bold';
+						var greyV = param.hotpointArr.length ? 500 : 5000;
+						if(td.innerHTML < greyV) {
+							tr.className = 'grey';
+						}
+					case 'total':
 					default :
 						t.dataset.total ? t.dataset.total= parseInt(value) + parseInt(t.dataset.total) : 
 												t.dataset.total = value;
@@ -285,6 +291,7 @@ var table = (function(){
 					td.innerHTML =  t.dataset.total;
 					break;
 			}
+			tr.className = 'yellow';
 			tr.appendChild(td);
 		});
 		tBody.appendChild(tr); 

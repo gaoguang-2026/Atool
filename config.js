@@ -186,8 +186,8 @@ var Configure = (function(){
 	var showInTableTitile = ['name',  'realValue','score','totalDivergence',
 					'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
 	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence','selectDate','reason'];
-	var industryShowInTableTitile = ['index', 'name', 'value_100','value_250','value_500','rise_d20_0',
-								'rise_d20_10','rise_d20_20','total', 'totalValue', 'average_20_rise'];
+	var industryShowInTableTitile = ['index', 'name', 'value_100','value_250','value_500', 'totalValue','rise_d20_0',
+								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
 	
 	var selectIndicators = [{name:'--请选择--', value: -1},
 							{name:'上证指数', value: 0}, 
@@ -233,11 +233,11 @@ var Configure = (function(){
 		value_100: '市值<100亿',
 		value_250: '100-500亿',
 		value_500: '市值>500亿',
+		totalValue: '总市值（亿）',
 		rise_d20_0: '20日涨幅<0',
 		rise_d20_10: '0<涨幅<20%',
 		rise_d20_20: '20日涨幅>20%',
-		average_20_rise:'合计涨幅%',
-		totalValue: '总市值（亿）',
+		average_20_rise:'20日平均涨幅%',
 		total: '合计(个)'
 	};
 	

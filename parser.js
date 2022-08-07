@@ -279,7 +279,11 @@ var parser = (function(){
 														parseInt(ticket[Configure.title.rase_20]) : 0;
 			industry[Configure.titleIndustry.total]++;
 		});
-		
+		//算平均涨幅
+		retArr.forEach((industry)=>{
+			industry[Configure.titleIndustry.average_20_rise] = parseFloat(industry[Configure.titleIndustry.average_20_rise]/
+								industry[Configure.titleIndustry.total]).toFixed(2);
+		})
 		retArr.sort((a, b)=>{
 			var title;
 			switch(param.sort) {

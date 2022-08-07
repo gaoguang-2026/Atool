@@ -43,17 +43,12 @@
 	
 	var getEmotionalCycles = function(dateStr) {
 		var sheet = getSheet('周期');
-		var index = -1;
 		var retCycle;
 		for(var i = 0; i < sheet.length; i ++) {
-			// 定位到那里年
-			if(sheet[i][Configure.titleCycles.cycles] &&
-				sheet[i][Configure.titleCycles.cycles].indexOf(dateStr.substr(0,4)) >= 0) {
-				index = i;
-			}
-			if(index && 
-				dateStr.indexOf(Configure.formatExcelDate(sheet[i][Configure.titleCycles.date])) != -1) {
+			if(sheet[i][Configure.titleCycles.cycles] && 
+				dateStr == Configure.formatExcelDate(sheet[i][Configure.titleCycles.date])) {
 				retCycle = sheet[i][Configure.titleCycles.cycles];
+				break;
 			}
 		}
 		return retCycle;
