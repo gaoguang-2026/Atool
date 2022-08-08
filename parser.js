@@ -147,7 +147,12 @@ var parser = (function(){
 		// sort
 		tickets.sort((a, b) => {
 			if (obj && obj.sort == 1) {
-				return b[Configure.title.boardAndDay] - a[Configure.title.boardAndDay];
+				if(obj.type == 0) {
+					return  b[Configure.title.boardAndDay] - a[Configure.title.boardAndDay];
+				} else {
+					return Configure.replaceTitleDate(b[Configure.title.dayNumber], dateStr)  - 
+						Configure.replaceTitleDate(a[Configure.title.dayNumber], dateStr) ;
+				}
 			} else {
 				return b[Configure.title.score] - a[Configure.title.score];
 			}
@@ -158,8 +163,8 @@ var parser = (function(){
 		var retArr = tickets;
 		if (obj.type == 0 || obj.type == 1) {
 			retArr= tickets.filter((t)=>{
-				return obj.type === 1 ? t[Configure.title.boardAndDay] > 65537 : 
-									t[Configure.title.boardAndDay] == 65537;
+				return obj.type === 1 ?  Configure.replaceTitleDate(t[Configure.title.dayNumber], dateStr) > 1 : 
+									Configure.replaceTitleDate(t[Configure.title.dayNumber], dateStr) == 1;
 			});			
 		} else if (obj.type == 4) { // 科创
 			retArr= tickets.filter((t)=>{
