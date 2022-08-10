@@ -38,6 +38,12 @@ var Configure = (function(){
 	var isKechuangTicket = function(code) {
 		return code.substr(2, 2) == '30' || code.substr(2, 2) == '68';
 	};
+	var isSHTicket = function(code) {
+		return code.substr(2, 2) == '60' ;
+	};
+	var isSZTicket = function(code) {
+		return code.substr(2, 2) == '00' ;
+	};
 		
 	/**
      * 格式化excel传递的时间
@@ -339,6 +345,8 @@ var Configure = (function(){
 		updatetitle:updatetitle,
 		replaceTitleDate:replaceTitleDate,
 		getDayBoard:getDayBoard,
-		isKechuangTicket:isKechuangTicket
+		isKechuangTicket:isKechuangTicket,
+		isSHTicket:isSHTicket,
+		isSZTicket:isSZTicket
 	}	
 })();

@@ -139,6 +139,9 @@ var table = (function(){
 								tr.className = 'grey';
 							}
 						}
+						if(Configure.isSHTicket(ticket[Configure.title.code])){
+							td.innerHTML += '(SH)';
+						};
 						break;
 					case 'realValue':
 						td.innerHTML = parseFloat(ticket[t.innerHTML]/100000000).toFixed(2);

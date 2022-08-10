@@ -173,7 +173,8 @@ var AI = (function(){
 				t[Configure.title.totalDivergence] * dataStorage.scoreFator + 
 				// 情绪高位，板块越向低位找
 				((5 - emotionPoints[0].value) * 3)* t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] +
-				t[Configure.title.boardStrength].v * 10);   // 封板强度 X10
+				t[Configure.title.boardStrength].v * 10) +    // 封板强度 X10
+				(Configure.isSZTicket(t[Configure.title.code]) ? 100 : 0);   // 深市票
 	};
 	
 	var getBandtickets = function() {
@@ -241,7 +242,7 @@ var AI = (function(){
 		tickets.sort((a, b)=>{
 			return getFinalScroe(b, dateStr) - getFinalScroe(a, dateStr);
 		});
-		if (Configure.debug) {
+		if (/*Configure.debug*/false) {
 			console.log('AI超短得分排名:');
 			tickets.forEach((t)=>{
 				console.log(t[Configure.title.name] + '  ' + getFinalScroe(t, dateStr));
