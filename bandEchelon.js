@@ -117,6 +117,10 @@
 					< this.get_tickit_period() ) {
 				isSelect = false;
 			} 
+			//市值
+			if(t[Configure.title.value] < Configure.Band_Min_Value) {
+				isSelect = false;
+			}
 			return isSelect;
 		});  
 		

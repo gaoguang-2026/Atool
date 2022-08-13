@@ -201,7 +201,7 @@ var AI = (function(){
 				return window.GetBandFinalScroe(b, dataStorage.bandScoreFator) - 
 							window.GetBandFinalScroe(a, dataStorage.bandScoreFator);
 			});
-			if (Configure.debug) {
+			if (/*Configure.debug*/false) {
 				console.log('AI趋势得分排名:');
 				tickets.forEach((t)=>{
 					console.log(t[Configure.title.name] + '  ' + window.GetBandFinalScroe(t));

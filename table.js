@@ -116,7 +116,7 @@ var table = (function(){
 		tr.className = 'bold';
 		tHead.appendChild(tr);
 	}
-	var createTicketRow = function(tBody,tHeadtds, datetoload, param) {
+	var createTicketRow = function(tBody,tHeadtds, datetoload, param, highlightTichets) {
 		var tks = parser.getTickets(datetoload,param);
 		var dateArr = workbook.getDateArr((a,b)=>{
 			return b - a;
@@ -340,7 +340,7 @@ var table = (function(){
 			tBody.removeChild(tBody.lastChild);
 		};
 		fr.gtype[5].checked ? createIndustryRow(tBody,tHeadtds, datetoload, param) : 
-								createTicketRow(tBody,tHeadtds, datetoload, param); 
+								createTicketRow(tBody,tHeadtds, datetoload, param, highlightTichets); 
 
 	};
 	

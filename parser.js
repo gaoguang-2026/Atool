@@ -111,8 +111,10 @@ var parser = (function(){
 		retArr.sort((a, b) => {
 			if (obj && obj.sort == 2) {
 				return b.increaseRate - a.increaseRate;
-			} else {
+			} else if (obj.sort == 0){
 				return b[Configure.title.score] - a[Configure.title.score];
+			} else {
+				return b[Configure.title.realValue] - a[Configure.title.realValue];
 			}
 			
 		});
