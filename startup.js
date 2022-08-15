@@ -28,6 +28,7 @@
 			});
 		var echelons = echelonNames.length ?  
 						[(parser.getCombinedEchelon(dateArr[0], echelonNames))] : [];
+		echelons = echelons.concat([(parser.getCombinedEchelon(dateArr[0]))]);
 		echelons = echelons.concat(parser.getEchelons(dateArr[0]));
 
 		for (var i = 0; i < Configure.Echelons_Draw_NUM; i ++) {

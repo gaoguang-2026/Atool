@@ -314,18 +314,27 @@ var parser = (function(){
 	var getCombinedEchelon = function(dateStr, echelonNames) {
 		var echelons = getEchelons(dateStr);
 		var combinedEchelon = {
-			name: echelonNames.toString(),
+			name:'',
 			hotPoints: [],
 			score: 0
 		};
-		echelonNames.forEach((name)=>{
-			echelons.forEach((echelon)=>{
-				if (echelon.name == name) {
-					combinedEchelon.hotPoints = combinedEchelon.hotPoints.concat(echelon.hotPoints);
-					combinedEchelon.score += parseInt(echelon.score);
-				}
+		if (echelonNames) {
+			combinedEchelon.name = echelonNames.toString();
+			echelonNames.forEach((name)=>{
+				echelons.forEach((echelon)=>{
+					if (echelon.name == name) {
+						combinedEchelon.hotPoints = combinedEchelon.hotPoints.concat(echelon.hotPoints);
+						combinedEchelon.score += parseInt(echelon.score);
+					}
+				});
 			});
-		})
+		} else {
+			combinedEchelon.name = '全部';
+			echelons.forEach((echelon)=>{
+				combinedEchelon.hotPoints = combinedEchelon.hotPoints.concat(echelon.hotPoints);
+				combinedEchelon.score += parseInt(echelon.score);
+			});
+		}
 		return combinedEchelon;
 	};
 	
