@@ -237,9 +237,9 @@ var table = (function(){
 			//执行删除表格行操作
 			var oA = tDel.children[0];
 			oA.onclick = function(){
-				if(confirm("确定删除吗？")){
+		//		if(confirm("确定删除吗？")){
 					tBody.removeChild(this.parentNode.parentNode);
-				}
+		//		}
 			};
 			tr.appendChild(tDetail);
 			tr.appendChild(tDel);
