@@ -283,7 +283,7 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 7;  // 最小显示限制
+	var Echelons_show_min_score = 5;  // 最小显示限制
 	
 	var Band_tickit_period = 7;    // 趋势选出股票的期限      SED
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2

@@ -75,7 +75,7 @@
 			var fr2 = document.getElementById('form2');
 			var paramEchelons = [];
 			if (fr2.gainian) {
-				fr2.gainian.forEach((input)=> {
+				Array.from(fr2.gainian).forEach((input)=> {
 					if(input.checked) {
 						paramEchelons = paramEchelons.concat(input.dataset.titleName);
 					} 

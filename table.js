@@ -22,7 +22,7 @@ var table = (function(){
 		inputAll.onchange = function(e){
 			if (e.target.checked) {
 				if (fr.gainian) {
-					fr.gainian.forEach((input)=>{
+					Array.from(fr.gainian).forEach((input)=>{
 						input.checked = false;
 						inputOther.checked = false;
 					})
@@ -38,7 +38,7 @@ var table = (function(){
 		inputOther.onchange = function(e){
 			if (e.target.checked) {
 				if (fr.gainian) {
-					fr.gainian.forEach((input)=>{
+					Array.from(fr.gainian).forEach((input)=>{
 						input.checked = false;
 						inputAll.checked = false;
 					})
@@ -306,7 +306,7 @@ var table = (function(){
 		var paramGainian = [];
 		var paramGainianForOther = [];
 		if (fr2.gainian) {
-			fr2.gainian.forEach((input)=> {
+			Array.from(fr2.gainian).forEach((input)=> {
 				if(input.checked) {
 					paramGainian =paramGainian.concat(input.dataset.titleProp.split(','));
 				} else {
