@@ -26,7 +26,7 @@ var Configure = (function(){
 		{name: '金融', hotPoints:['银行', '保险', '证券', '券商']},
 		
 		{name: '环保', hotPoints:['环保', '污水处理','固废处理','绿色发电']},		
-		{name: '传媒', hotPoints:['传媒', '元宇宙', '虚拟现实', '人工智能', '游戏', '云游戏', '云计算', '东数西算', '计算机软件','手机游戏']},
+		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', '人工智能', '游戏', '云游戏', '云计算', '东数西算', '计算机软件','手机游戏']},
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航']},
 		
 		{name: '机器人', hotPoints:['机器人', '智能制造', '减速器']},
@@ -283,7 +283,7 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 5;  // 最小显示限制
+	var Echelons_show_min_score = 7;  // 最小显示限制
 	
 	var Band_tickit_period = 7;    // 趋势选出股票的期限      SED
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2
