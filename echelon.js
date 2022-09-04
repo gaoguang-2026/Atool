@@ -35,7 +35,7 @@
 		for (var i = 0; i < this.get_tickit_period(); i ++ ) {
 			var param = {
 				hotpointArr: [],
-				type:2,
+				type:1,
 				sort:1
 			}
 			var tArr = parser.getTickets(this.dateArr[i],param);
