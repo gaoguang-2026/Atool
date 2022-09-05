@@ -118,7 +118,7 @@
             }
 			init();
 			
-			drawimage();
+			drawimage([], document.getElementById('indecator').value);
 			drawEchelons();
 			fillTicketsTable();
 			

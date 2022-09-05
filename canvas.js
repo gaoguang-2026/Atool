@@ -60,17 +60,25 @@ var canvas = (function(canvas) {
 			}
 			day[Configure.title2.boardnum] = tickets.length;
 		}
-		// 连扳指数 ma5和背离率
-		if(!day[Configure.title2.ma5]) {
-			var sum = parseInt(day[Configure.title2.lianbanzhishu]);
-			// 当天和过去4天的和
-			for(var i = 0; i < 4; i ++) {
-				sum += parseInt(getDayFromDateStr(dateArr[dayIndex + i + 1])[Configure.title2.lianbanzhishu]);
+		
+		var calMa5AndBeili = function( ZHISHU_TITLE ,MA5Title,BEILItitle) {
+			if(!day[MA5Title]) {
+				var sum = parseInt(day[ZHISHU_TITLE]);
+				// 当天和过去4天的和
+				for(var i = 0; i < 4; i ++) {
+					if (dateArr[dayIndex + i + 1]) {
+						sum += parseInt(getDayFromDateStr(dateArr[dayIndex + i + 1])[ZHISHU_TITLE]);
+					}
+				}
+				day[MA5Title] = parseInt(sum/5);
+				day[BEILItitle] = parseFloat((day[ZHISHU_TITLE] - day[MA5Title]) * 100/
+												day[ZHISHU_TITLE]).toFixed(2);
 			}
-			day[Configure.title2.ma5] = parseInt(sum/5);
-			day[Configure.title2.beili] = parseFloat((day[Configure.title2.lianbanzhishu] - day[Configure.title2.ma5]) * 100/
-											day[Configure.title2.lianbanzhishu]).toFixed(2);
 		}
+		// 连扳指数 ma5和背离率
+		calMa5AndBeili(Configure.ZHISHU_TITLE, Configure.title2.ma5, Configure.title2.beili);
+		// 涨停板 MA5 和 背离率
+		calMa5AndBeili(Configure.ZHISHU_SUB_TITLE, Configure.title2.subMa5, Configure.title2.subBeili);
 		return day;
 	};
 
@@ -264,6 +272,7 @@ var canvas = (function(canvas) {
 	var drawIndicators = function(indecatorName, echelonNames) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
+		var enableDrawLine = echelonNames.length < 2 ? true : false;
 		for(i = 0; i < Days.length; i ++) {
 			// 画连扳晋级率
 			ctx.beginPath();
@@ -290,7 +299,7 @@ var canvas = (function(canvas) {
 			}
 						
 			// 画背离率
-			if (echelonNames.length < 2) {
+			if (enableDrawLine) {
 				ctx.fillStyle="black";
 				ctx.strokeStyle = "black";
 				var pointH = siteHeight * (1-winFactor) * parseFloat(Days[i][Configure.title2.beili])/Configure.MAX_BEILI;
@@ -324,7 +333,7 @@ var canvas = (function(canvas) {
 
 			// 画sz,  需要保存点给AI使用
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
-								Configure.SZ_MaxOffset, Configure.title2.sz , indecatorName == '上证指数');
+								Configure.SZ_MaxOffset, Configure.title2.sz , indecatorName == '上证指数' && enableDrawLine);
 			szPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.sz]),
 									 date:Days[i][Configure.title2.date]});
 				
@@ -334,7 +343,7 @@ var canvas = (function(canvas) {
 				case '连扳高度':
 					//画连扳高度
 					point = drawLine(Configure.boardHeight_color, Configure.BH_zero,
-								Configure.BH_MaxOffset, Configure.BH_Draw_title);
+								Configure.BH_MaxOffset, Configure.BH_Draw_title, enableDrawLine);
 					if (i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
 					   Days[i][Configure.BH_Draw_title] >= Days[i+1][Configure.BH_Draw_title] &&
 					   Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
@@ -343,10 +352,13 @@ var canvas = (function(canvas) {
 					}
 					break;
 				case '连扳数量':
-					drawLine(Configure.boardHeight_color, 0, 30, Configure.title2.lianban);
+					drawLine(Configure.boardHeight_color, 0, 30, Configure.title2.lianban, enableDrawLine);
 					break;
 				case '涨停数量':
-					drawLine(Configure.boardHeight_color, 0, 100, Configure.title2.boardnum);
+					drawLine(Configure.boardHeight_color, 0, 100, Configure.title2.boardnum, enableDrawLine);
+					break;
+				case '涨停背离':
+					drawLine(Configure.line_color, 0, 10, Configure.title2.subBeili, enableDrawLine);
 					break;
 				default:
 					break;

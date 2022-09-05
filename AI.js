@@ -18,7 +18,8 @@ var AI = (function(){
 		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['二波缠打']}],			
 		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['杀回马枪']}],			// 分歧
 		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['鸭头上翘']}],				// 退一
-		['持续退潮', {tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['断板反包']}]			// 退二
+		['持续退潮', {tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['断板反包']}],			// 退二
+		['混沌', {tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['尾盘绝技']}]
 	]);
 	
 	var getAndUpdateLoacalstorage = function() {
@@ -115,7 +116,7 @@ var AI = (function(){
 			}
 		}
 		
-		return num == 0 ? '' : '前' +  total + '天出现' + 
+		return num == 0 || 'NaN' ? '' : '前' +  total + '天出现' + 
 			num + '次,成功率' + parseInt(totalValue * 100/num) + '%。';
 	};
 	var getEmotions = function() {
@@ -130,7 +131,13 @@ var AI = (function(){
 		var angle = getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var value = parseFloat(emotionPoints[0].value);
 		var level = getLevel(emotionPoints[0]) - sumLevel/3;
-		if(value < 3) {
+		if(value < 0) {
+			dataStorage.emotion = '冰点';
+			if (parseFloat(emotionPoints[1].value) < 0 || 
+				parseFloat(emotionPoints[2].value) < 0){
+					dataStorage.emotion = '混沌';
+			}
+		} else if(value < 3) {
 			dataStorage.emotion = '冰点';
 			if (parseFloat(emotionPoints[1].value) < 2.5 || 
 				parseFloat(emotionPoints[2].value) < 2.5){
@@ -192,8 +199,9 @@ var AI = (function(){
 		dataStorage.sz_ma_beili = parseFloat((szPoinsts[0].value - MA_value) / MA_value).toFixed(4);
 		
 		var txt = '';
-		if(dataStorage.sz_average_angle > 0 && dataStorage.sz_ma_beili > 0 
-			|| Configure.debug) {
+		if(dataStorage.sz_average_angle > 0 && dataStorage.sz_ma_beili > 0 ||
+			dataStorage.emotion == '混沌' ||
+			Configure.debug) {
 		//	txt += '上证背离率' + dataStorage.sz_ma_beili*100 + '%(angle:' + dataStorage.sz_average_angle + '),趋势关注：';
 			//选出趋势票
 			var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
@@ -208,9 +216,10 @@ var AI = (function(){
 				})
 			}
 
-			var num = tickets.length > 1 ? 1 : tickets.length;
+			var num = dataStorage.emotion == '混沌' ? 2 : 1;
+			num = tickets.length >= num ? num : tickets.length;
 			for(var i = 0; i < num; i ++ ) {
-				txt += tickets[i][Configure.title.name];
+				txt += ' (~)' + tickets[i][Configure.title.name];
 				dataStorage.band_ticktes.push({name:tickets[i][Configure.title.name], price: tickets[i][Configure.title.price]});
 			}
 		}
@@ -290,9 +299,13 @@ var AI = (function(){
 		recommendText = '【AI 提示】';
 		recommendText += getEmotions();
 		recommendText += '今日关注：';
-		recommendText += getTickits();
-		recommendText += getBandtickets() == '' ?  '' : 
-					'(~)' + getBandtickets() + ' ';
+		if(dataStorage.emotion == '混沌') {
+			recommendText += getBandtickets();
+		} else {
+			recommendText += getTickits();
+			recommendText += getBandtickets() == '' ?  '' : getBandtickets();
+		}
+		
 		
 		saveLoacalstorage(dataStorage);
 		

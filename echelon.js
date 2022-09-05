@@ -35,7 +35,7 @@
 		for (var i = 0; i < this.get_tickit_period(); i ++ ) {
 			var param = {
 				hotpointArr: [],
-				type:1,
+				type:2,
 				sort:1
 			}
 			var tArr = parser.getTickets(this.dateArr[i],param);
@@ -70,12 +70,12 @@
 			});
 			isSelect = isInEchelon;
 			//首板
-		/*	var dayNumber = t[Configure.replaceTitleDate(Configure.title.dayNumber, t.selectDate)];
+			var dayNumber = t[Configure.replaceTitleDate(Configure.title.dayNumber, t.selectDate)];
 			if (dayNumber == 1 &&   
 				parseInt(this.dateArr.indexOf(t.startDate)) - 
 				this.dateArr.indexOf(t.selectDate) < this.get_tickit_period()) {
 				isSelect = false;
-			} */
+			} 
 			
 			// 背离率大于3， 断板大于6的
 			if ((parseInt(this.dateArr.indexOf(t.startDate)) - 

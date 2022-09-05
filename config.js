@@ -196,11 +196,13 @@ var Configure = (function(){
 	var industryShowInTableTitile = ['index', 'name', 'value_100','value_250','value_500', 'totalValue','rise_d20_0',
 								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
 	
-	var selectIndicators = [{name:'--请选择--', value: -1},
-							{name:'上证指数', value: 0}, 
-							{name:'连扳高度', value: 1},
-							{name:'连扳数量', value: 2},
-							{name:'涨停数量', value: 3}];
+	var selectIndicators = [
+								{name:'涨停背离', value: -1},
+								{name:'上证指数', value: 0}, 
+								{name:'连扳高度', value: 1},
+								{name:'连扳数量', value: 2},
+								{name:'涨停数量', value: 3}
+							];
 	
 	var title2 = {
 		date: '日期',
@@ -209,13 +211,17 @@ var Configure = (function(){
 		lianban:'连板',
 		jinji:'连板晋级率',
 		lianbanzhishu:'连板指数',
+		zhangtingzhishu:'涨停指数',
 		ma5:'5日线',
 		beili:'背离率',
 		sz:'SZ',
 		echelons:'echelon',   // 记录当天echelon排名
 		boardHeight: 'height',   // 记录当天最高高度   BH_Draw_title
 		dragon: 'dragon',   // 记录当天的龙头名字
-		boardnum: '涨停数'
+		boardnum: '涨停数',
+		
+		subBeili:'涨停指标背离率',
+		subMa5:'涨停指标5日线',
 	};
 	
 	var titleCycles = {
@@ -258,8 +264,10 @@ var Configure = (function(){
 	var MIN_KAINIAN = 2;     // 最少出现的次数
 	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
 	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
+	var ZHISHU_TITLE = title2.lianbanzhishu;    // 情绪指标， title2.lianbanzhishu 
+	var ZHISHU_SUB_TITLE = title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
 	var winFactor = 0.4;    // 两个窗口的比率
-	var Days_Max_lengh = 40;   // canvas 显示的最大期限
+	var Days_Max_lengh = 50;   // canvas 显示的最大期限
 	
 	var SZ_zero = 3200;    // sz 0轴坐标
 	var SZ_MaxOffset = 200;   // 纵轴
@@ -314,6 +322,8 @@ var Configure = (function(){
 		echelons:echelons,
 		selectIndicators:selectIndicators,
 		MAX_BEILI:MAX_BEILI,
+		ZHISHU_TITLE:ZHISHU_TITLE,
+		ZHISHU_SUB_TITLE:ZHISHU_SUB_TITLE,
 		SZ_zero:SZ_zero,
 		SZ_MaxOffset:SZ_MaxOffset,
 		BH_zero:BH_zero,
