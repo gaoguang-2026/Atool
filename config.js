@@ -5,12 +5,18 @@ var Configure = (function(){
 		// echelon 
 	var echelons = [
 		//赛道
-		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理']},
-		{name: '风光电', hotPoints:['光伏','有机硅概念','风电', '绿电']},
+		{name: '风光', hotPoints:['光伏','有机硅概念','风电', '绿电']},
 		{name: '电力', hotPoints:['智能电网', '特高压', '虚拟电厂', '电力', '充电桩']},
-		{name: '储能', hotPoints:[ '储能', 'HJT电池','锂电池', 'TOPCON电池', 'HJT电池']},
+		{name: '储能', hotPoints:[ '储能', 'HJT电池','钒电池', 'TOPCON电池', 'HJT电池']},
+		{name: '锂电池', hotPoints:[ '盐湖提锂', '锂电池']},
+		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理','一体化压铸']},
+		
+		//大科技
 		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', 
 				'第三代半导体', '中芯国际概念','芯片','集成电路', 'pcb']},
+		{name: '机器人', hotPoints:['机器人', '智能制造', '减速器']},
+		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', '人工智能', '游戏', '云游戏',
+			'云计算', '东数西算', '计算机软件','手机游戏']},
 		
 		// 消费
 		{name: '白酒', hotPoints:['白酒','啤酒概念','白酒概念', '烟草']},
@@ -18,20 +24,17 @@ var Configure = (function(){
 		{name: '消费电子', hotPoints:['消费电子','智能穿戴','无线耳机', '智能音箱', 'VR', '虚拟现实', 'OLED']},
 		
 		//周期能源
-		{name: '能源', hotPoints:['煤炭','石油','天然气']},
-		{name: '金属', hotPoints:['有色金属','黄金','小金属概念', '钴', '金属锌', '金属铜', '金属铅', '金属镍', '盐湖提锂']},
+		{name: '老能源', hotPoints:['煤炭','石油','天然气']},
+		{name: '金属', hotPoints:['有色金属','黄金','小金属概念', '钴', '金属锌', '金属铜', '金属铅', '金属镍', '']},
 		
 		{name: '基建', hotPoints:['建筑材料', '建筑装饰', '水利', '装配式建筑', '公路铁路运输']},
 		{name: '房地产', hotPoints:['房地产开发', '房地产', '物业管理', '新型城镇化']},
 		{name: '金融', hotPoints:['银行', '保险', '证券', '券商']},
 		
 		{name: '环保', hotPoints:['环保', '污水处理','固废处理','绿色发电']},		
-		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', '人工智能', '游戏', '云游戏', '云计算', '东数西算', '计算机软件','手机游戏']},
+		{name: '化工', hotPoints:['化工']},	
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
 		
-		{name: '机器人', hotPoints:['机器人', '智能制造', '减速器']},
-		{name: '一体化压铸', hotPoints:['一体化压铸']},
-		{name: '钒电池', hotPoints:['钒电池']},
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
@@ -293,11 +296,12 @@ var Configure = (function(){
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
 	var Echelons_show_min_score = 7;  // 最小显示限制
 	
-	var Band_tickit_period = 7;    // 趋势选出股票的期限      SED
+	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2
-	var Band_miss_tickit_period = 7;    //趋势检查断板的期限     SED
+	var Band_miss_tickit_period = 11;    //趋势检查断板的期限     SED + TFD
+	var Band_tickit_filter_period = 0;   //趋势票涨停过滤期限     0 是一个涨停
 	var Band_MA_NUM = 5;    //MA5
-	var Band_Min_Value = 3000000000;  // 趋势票最小流通市值
+	var Band_Min_Value = 5000000000;  // 趋势票最小流通市值
 	
 	var AI_Default_Factor = 50;        // 超短选票默认因子   越大结构权重越大，越小题材权重越大
 	var AI_Default_Band_Factor = 180;   // 趋势选票默认因子  越大涨速权重越大，越小题材权重越大
@@ -342,6 +346,7 @@ var Configure = (function(){
 		Band_tickit_period:Band_tickit_period,
 		Echelons_miss_tickit_period:Echelons_miss_tickit_period,
 		Band_miss_tickit_period:Band_miss_tickit_period,
+		Band_tickit_filter_period:Band_tickit_filter_period,
 		Band_Max_LENGTH:Band_Max_LENGTH,
 		Band_MA_NUM:Band_MA_NUM,
 		Band_Min_Value:Band_Min_Value,

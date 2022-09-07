@@ -114,7 +114,7 @@
 			//首板
 			var dayNumber = t[Configure.replaceTitleDate(Configure.title.dayNumber, t.selectDate)];
 			if (dayNumber > 1 || this.dateArr.indexOf(t.startDate) - this.dateArr.indexOf(t.selectDate)
-					< this.get_tickit_period() ) {
+					< Configure.Band_tickit_filter_period ) {
 				isSelect = false;
 			} 
 			//市值
@@ -134,7 +134,7 @@
 			var tktStart = workbook.getValue(param);
 			var priceStart = tktStart ? tktStart[Configure.title.price] : 0;
 			var dayNum = this.dateArr.indexOf(ticket.startDate) - this.dateArr.indexOf(ticket.selectDate);
-			ticket.increaseRate = (!priceStart || priceStart == 0) ? 0 : 
+			ticket.increaseRate = (!priceStart || priceStart == 0 || dayNum == 0) ? 0 : 
 				parseFloat((parseFloat(ticket[Configure.title.price]) - priceStart) / (priceStart * dayNum)).toFixed(4);
 		});
 		workbook.setBandTicket(this.tickets);   // 显示剔除前保存

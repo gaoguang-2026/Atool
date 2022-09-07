@@ -215,7 +215,7 @@ var parser = (function(){
 		//如果某个概念大于echelons前三名得分，分离出来单独做echelon.
 		var newEchelons = [];
 		for (var [name, value] of gaiNian) {
-			if(value.weight > echelons[2].score &&        //得分大于第三名
+			if(value.weight >= echelons[2].score &&        //得分大于等于第三名
 				value.weight > Configure.Echelons_show_min_score ){ 
 				var newEche = {};
 			/*	echelons.forEach((e)=>{
