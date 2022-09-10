@@ -10,6 +10,7 @@ var Configure = (function(){
 		{name: '储能', hotPoints:[ '储能', 'HJT电池','钒电池', 'TOPCON电池', 'HJT电池']},
 		{name: '锂电池', hotPoints:[ '盐湖提锂', '锂电池']},
 		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理','一体化压铸']},
+		{name: '环保', hotPoints:['环保', '污水处理','固废处理','绿色发电']},
 		
 		//大科技
 		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', 
@@ -17,24 +18,31 @@ var Configure = (function(){
 		{name: '机器人', hotPoints:['机器人', '智能制造', '减速器']},
 		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', '人工智能', '游戏', '云游戏',
 			'云计算', '东数西算', '计算机软件','手机游戏']},
+		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
 		
 		// 消费
 		{name: '白酒', hotPoints:['白酒','啤酒概念','白酒概念', '烟草']},
 		{name: '医药', hotPoints:['新冠预防药', '医药商业', '医药', '中药', '新冠治疗', '生物医药', '医药电商', '医美', '医疗器械']},
 		{name: '消费电子', hotPoints:['消费电子','智能穿戴','无线耳机', '智能音箱', 'VR', '虚拟现实', 'OLED']},
+		{name: '家电', hotPoints:['白色家电','黑色家电', '小家电']},
+		{name: '农业', hotPoints:['农业种植', '大豆', '玉米', '农产品加工', '养殖']},	
 		
 		//周期能源
 		{name: '老能源', hotPoints:['煤炭','石油','天然气']},
 		{name: '金属', hotPoints:['有色金属','黄金','小金属概念', '钴', '金属锌', '金属铜', '金属铅', '金属镍', '']},
+		{name: '化工', hotPoints:['化工']},	
 		
+		//大金融
 		{name: '基建', hotPoints:['建筑材料', '建筑装饰', '水利', '装配式建筑', '公路铁路运输']},
 		{name: '房地产', hotPoints:['房地产开发', '房地产', '物业管理', '新型城镇化']},
 		{name: '金融', hotPoints:['银行', '保险', '证券', '券商']},
 		
-		{name: '环保', hotPoints:['环保', '污水处理','固废处理','绿色发电']},		
-		{name: '化工', hotPoints:['化工']},	
-		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
+		// 服务
+		{name: '服装', hotPoints:['服装加工']},	
+		{name: '酒店旅游', hotPoints:['酒店及餐饮']},	
+		{name: '航运', hotPoints:['机场航运', '港口航运']},
 		
+		// 风格
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
@@ -270,7 +278,7 @@ var Configure = (function(){
 	var ZHISHU_TITLE = title2.lianbanzhishu;    // 情绪指标， title2.lianbanzhishu 
 	var ZHISHU_SUB_TITLE = title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
 	var winFactor = 0.4;    // 两个窗口的比率
-	var Days_Max_lengh = 50;   // canvas 显示的最大期限
+	var Days_Max_lengh = 60;   // canvas 显示的最大期限
 	
 	var SZ_zero = 3200;    // sz 0轴坐标
 	var SZ_MaxOffset = 200;   // 纵轴
