@@ -194,13 +194,11 @@
 		// 名字
 		var ctx = this.canvas.getContext("2d");		
 		ctx.beginPath();
+		ctx.lineWidth="2";
+		ctx.font="16px 楷体";
 		if (index != 0) {
-			ctx.lineWidth="2";
-			ctx.font="14px 楷体";
 			ctx.fillStyle = 'green';
 		} else {
-			ctx.lineWidth="2";
-			ctx.font="14px 楷体";
 			ctx.fillStyle = 'red';
 		}
 		ctx.fillText(ticket[Configure.title.name], startPoint.x, startPoint.y - 3);

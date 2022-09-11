@@ -4,6 +4,7 @@ var canvas = (function(canvas) {
 	var Days;
 
 	var emotionPoints = [];   // 保存背离率的点
+	var stEmotionPoints = []; // 保存涨停背离率的点
 	var szPoints = [];   // 保存sz的点
 
 	var width = 0;
@@ -331,10 +332,14 @@ var canvas = (function(canvas) {
 				}
 			}
 
-			// 画sz,  需要保存点给AI使用
+			// 画sz和涨停背离率,  需要保存点给AI使用
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
 								Configure.SZ_MaxOffset, Configure.title2.sz , indecatorName == '上证指数' && enableDrawLine);
 			szPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.sz]),
+									 date:Days[i][Configure.title2.date]});
+			var point2 = drawLine(Configure.line_color, 0, 10, Configure.title2.subBeili, 
+							indecatorName == '涨停背离' && enableDrawLine);
+			stEmotionPoints.push({point:point2, value:parseFloat(Days[i][Configure.title2.subBeili]),
 									 date:Days[i][Configure.title2.date]});
 				
 			switch(indecatorName) {
@@ -358,7 +363,6 @@ var canvas = (function(canvas) {
 					drawLine(Configure.boardHeight_color, 0, 100, Configure.title2.boardnum, enableDrawLine);
 					break;
 				case '涨停背离':
-					drawLine(Configure.line_color, 0, 10, Configure.title2.subBeili, enableDrawLine);
 					break;
 				default:
 					break;
@@ -414,12 +418,13 @@ var canvas = (function(canvas) {
 
 		};
 	};
-	
-	var getLastEmotionPoints = function(num) {
-		var n = num > emotionPoints.length ? emotionPoints.length : num;
+	// type = 'LB'  or 'ZT'    
+	var getLastEmotionPoints = function(num, type = 'LB') {
+		var ePoints = type == 'LB' ?  emotionPoints : stEmotionPoints;
+		var n = num > ePoints.length ? ePoints.length : num;
 		var retP = [];
-		for(var i = emotionPoints.length - 1; i > emotionPoints.length - 1 - n; i --) {
-			retP.push(emotionPoints[i]);
+		for(var i = ePoints.length - 1; i > ePoints.length - 1 - n; i --) {
+			retP.push(ePoints[i]);
 		}
 		return retP;
 	};

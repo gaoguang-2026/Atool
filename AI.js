@@ -198,31 +198,28 @@ var AI = (function(){
 		var MA_value = (sumValue + parseInt(szPoinsts[Configure.Band_MA_NUM - 1].value))/Configure.Band_MA_NUM;
 		dataStorage.sz_ma_beili = parseFloat((szPoinsts[0].value - MA_value) / MA_value).toFixed(4);
 		
-		var txt = '';
-		if(dataStorage.sz_average_angle > 0 && dataStorage.sz_ma_beili > 0 ||
-			dataStorage.emotion == '混沌' ||
-			Configure.debug) {
-		//	txt += '上证背离率' + dataStorage.sz_ma_beili*100 + '%(angle:' + dataStorage.sz_average_angle + '),趋势关注：';
-			//选出趋势票
-			var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
-			tickets.sort((a, b)=>{
-				return window.GetBandFinalScroe(b, dataStorage.bandScoreFator) - 
-							window.GetBandFinalScroe(a, dataStorage.bandScoreFator);
-			});
-			if (/*Configure.debug*/false) {
-				console.log('AI趋势得分排名:');
-				tickets.forEach((t)=>{
-					console.log(t[Configure.title.name] + '  ' + window.GetBandFinalScroe(t));
-				})
-			}
-
-			var num = dataStorage.emotion == '混沌' ? 2 : 1;
-			num = tickets.length >= num ? num : tickets.length;
-			for(var i = 0; i < num; i ++ ) {
-				txt += ' (~)' + tickets[i][Configure.title.name];
-				dataStorage.band_ticktes.push({name:tickets[i][Configure.title.name], price: tickets[i][Configure.title.price]});
-			}
+		var txt = 'sz趋势' + (dataStorage.sz_average_angle > 0 ? '向上' : '向下，') + 'MA' + 
+				Configure.Band_MA_NUM + '背离率' + (dataStorage.sz_ma_beili*100).toFixed(2) + '(%)。';
+		//选出趋势票
+		var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
+		tickets.sort((a, b)=>{
+			return window.GetBandFinalScroe(b, dataStorage.bandScoreFator) - 
+						window.GetBandFinalScroe(a, dataStorage.bandScoreFator);
+		});
+		if (/*Configure.debug*/false) {
+			console.log('AI趋势得分排名:');
+			tickets.forEach((t)=>{
+				console.log(t[Configure.title.name] + '  ' + window.GetBandFinalScroe(t));
+			})
 		}
+
+		var num = tickets.length >= 2 ? 2 : tickets.length;
+		txt += '关注趋势票：';
+		for(var i = 0; i < num; i ++ ) {
+			txt += tickets[i][Configure.title.name] + ' ';
+			dataStorage.band_ticktes.push({name:tickets[i][Configure.title.name], price: tickets[i][Configure.title.price]});
+		}
+		
 		return txt;
 	};
 	var getTickits = function() {
@@ -257,11 +254,8 @@ var AI = (function(){
 				console.log(t[Configure.title.name] + '  ' + getFinalScroe(t, dateStr));
 			})
 		}
-		
-		var bandTxt = getBandtickets();
-		var num = bandTxt == '' ?  3 : 2;
-		var txt = '';
-		for(var i = 0; i < num; i ++ ) {
+		var txt = '关注短线：';
+		for(var i = 0; i < 3; i ++ ) {
 			dataStorage.tickits.push(tickets[i][Configure.title.name]);
 			txt += tickets[i][Configure.title.name] + ' ';
 		}
@@ -291,6 +285,12 @@ var AI = (function(){
 		band_ticktes:[]
 		};
 	};
+	var isBandInCharge = function() {
+		var ePoints = canvas.getLastEmotionPoints(1, 'LB'); 
+		var ztEPoints = canvas.getLastEmotionPoints(1, 'ZT'); 
+		return dataStorage.emotion == '混沌' ||  
+			ztEPoints[0].value - ePoints[0].value > 0;
+	};
 	var getRecommend = function() {
 		clearAndInit();
 		// 更新获取storage的数据
@@ -298,15 +298,7 @@ var AI = (function(){
 		
 		recommendText = '【AI 提示】';
 		recommendText += getEmotions();
-		recommendText += '今日关注：';
-		if(dataStorage.emotion == '混沌') {
-			recommendText += getBandtickets();
-		} else {
-			recommendText += getTickits();
-			recommendText += getBandtickets() == '' ?  '' : getBandtickets();
-		}
-		
-		
+		recommendText += isBandInCharge() ? getBandtickets() : getTickits();
 		saveLoacalstorage(dataStorage);
 		
 		canvas.drawEmotionCycle(dragonStage, cangMap.get(dataStorage.emotion).stage);
