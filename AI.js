@@ -255,7 +255,8 @@ var AI = (function(){
 			})
 		}
 		var txt = '关注短线：';
-		for(var i = 0; i < 3; i ++ ) {
+		var num = tickets.length >= 3 ? 3 : tickets.length;
+		for(var i = 0; i < num; i ++ ) {
 			dataStorage.tickits.push(tickets[i][Configure.title.name]);
 			txt += tickets[i][Configure.title.name] + ' ';
 		}
