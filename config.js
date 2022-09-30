@@ -280,8 +280,8 @@ var Configure = (function(){
 	var winFactor = 0.4;    // 两个窗口的比率
 	var Days_Max_lengh = 60;   // canvas 显示的最大期限
 	
-	var SZ_zero = 3200;    // sz 0轴坐标
-	var SZ_MaxOffset = 200;   // 纵轴
+	var SZ_zero = 3000;    // sz 0轴坐标
+	var SZ_MaxOffset = 300;   // 纵轴
 	
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
 	var BH_zero = BH_Draw_title == title2.height ? 
