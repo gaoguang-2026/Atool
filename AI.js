@@ -9,17 +9,17 @@ var AI = (function(){
 	
 	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
 	var cangMap = new Map([
-		['冰点', {tips:'提防二次冰点，低位潜伏', stage:'退三', tactics:['点石成金']}],    // 退三
-		['二次冰点', {tips:'冰点衰竭，打板确认龙头', stage:'启动', tactics:['龙头买法']}],			
-		['修复', {tips:'加仓，打板龙头和低位首发', stage:'发酵', tactics:['看高做低']}],    	// 启动
-		['持续修复', {tips:'去弱留强', stage:'加速', tactics:['中位接力']}],				// 发酵
-		['分歧', {tips:'关注中位大长腿', stage:'分歧', tactics:['中位接力']}],    						
-		['高潮', {tips:'注意中位分化，关注低位补涨', stage:'加速', tactics:['看高做低']}],		// 加速
-		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['二波缠打']}],			
-		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['杀回马枪']}],			// 分歧
-		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['鸭头上翘']}],				// 退一
-		['持续退潮', {tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['断板反包']}],			// 退二
-		['混沌', {tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['尾盘绝技']}]
+		['冰点', {tips:'提防二次冰点，低位潜伏', stage:'退三', tactics:['打板']}],    // 退三
+		['二次冰点', {tips:'冰点衰竭，打板确认龙头', stage:'启动', tactics:['打板']}],			
+		['修复', {tips:'加仓，打板龙头和低位首发', stage:'发酵', tactics:['打板']}],    	// 启动
+		['持续修复', {tips:'去弱留强', stage:'加速', tactics:['打板']}],				// 发酵
+		['分歧', {tips:'关注中位大长腿', stage:'分歧', tactics:['打板']}],    						
+		['高潮', {tips:'注意中位分化，关注低位补涨', stage:'加速', tactics:['打板']}],		// 加速
+		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['打板']}],			
+		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['打板']}],			// 分歧
+		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['高位缠打']}],				// 退一
+		['持续退潮', {tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['高位缠打']}],			// 退二
+		['混沌', {tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['趋势波段']}]
 	]);
 	
 	var getAndUpdateLoacalstorage = function() {
@@ -168,9 +168,22 @@ var AI = (function(){
 				dataStorage.emotion = angle > 0 ? '继续高潮' : '分化';
 			}
 		}		
-		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion).tips + '。' +
-				getEmotionSuccessRate(dataStorage.emotion);
-		
+		// 混沌期 前5个交易日连扳背离率小于涨停背离率出现3次以上且值小于5为混沌期。
+		var ePoints = canvas.getLastEmotionPoints(5, 'LB'); 
+		var ztEPoints = canvas.getLastEmotionPoints(5, 'ZT'); 
+		var n = 0;
+		for(var i = 0 ; i < 5 ; i ++) {
+			if(ztEPoints[i].value - ePoints[i].value > 0 &&
+				ePoints[i].value < 5) {
+				n ++;
+			}
+		}
+		if(n >= 3) {
+			dataStorage.emotion = '混沌';
+		}
+		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion).tips + '。' + 
+				getEmotionSuccessRate(dataStorage.emotion) + ' 模式：[' + 
+				cangMap.get(dataStorage.emotion).tactics.toString() + ']，';
 	};
 	
 	// 根据题材、背离率、连扳和 封板强度 算最后的得分    
@@ -199,7 +212,7 @@ var AI = (function(){
 		dataStorage.sz_ma_beili = parseFloat((szPoinsts[0].value - MA_value) / MA_value).toFixed(4);
 		
 		var txt = 'sz趋势' + (dataStorage.sz_average_angle > 0 ? '向上' : '向下，') + 'MA' + 
-				Configure.Band_MA_NUM + '背离率' + (dataStorage.sz_ma_beili*100).toFixed(2) + '(%)。';
+				Configure.Band_MA_NUM + '背离率' + (dataStorage.sz_ma_beili*100).toFixed(2) + '(%)，';
 		//选出趋势票
 		var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
 		tickets.sort((a, b)=>{
@@ -214,7 +227,7 @@ var AI = (function(){
 		}
 
 		var num = tickets.length >= 2 ? 2 : tickets.length;
-		txt += '关注趋势票：';
+		txt += '关注：';
 		for(var i = 0; i < num; i ++ ) {
 			txt += tickets[i][Configure.title.name] + ' ';
 			dataStorage.band_ticktes.push({name:tickets[i][Configure.title.name], price: tickets[i][Configure.title.price]});
@@ -287,10 +300,7 @@ var AI = (function(){
 		};
 	};
 	var isBandInCharge = function() {
-		var ePoints = canvas.getLastEmotionPoints(1, 'LB'); 
-		var ztEPoints = canvas.getLastEmotionPoints(1, 'ZT'); 
-		return dataStorage.emotion == '混沌' ||  
-			ztEPoints[0].value - ePoints[0].value > 0;
+		return dataStorage.emotion == '混沌';
 	};
 	var getRecommend = function() {
 		clearAndInit();

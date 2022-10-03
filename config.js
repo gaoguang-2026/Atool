@@ -242,14 +242,17 @@ var Configure = (function(){
 		dragon:'龙头'
 	};
 	var titleTactics = {
+		tractic:'模式',
+		ticket:'个股形态',
+		market:'指数和题材',
+		emotion:'市场情绪',
 		name:'名称',
 		condition: '能见度',
 		selectTicket:'选股',
 		buy:'买点',
 		stop:'止损',
 		sell: '止盈',
-		description: '说明',
-		word: '道'
+		description: '说明'
 	};
 	var titleIndustry = {
 		index: '索引',

@@ -54,10 +54,11 @@
 		return retCycle;
 	};
 	
-	var getTactics = function(name) {
+	var getTactics = function(t) {
 		var sheet = getSheet('交易模式');
 		return sheet.find((item)=> {
-			return item[Configure.titleTactics.name] === name;
+			return item[Configure.titleTactics.tractic] && 
+					item[Configure.titleTactics.tractic].includes(t);
 		});
 	};
 	
