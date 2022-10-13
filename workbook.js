@@ -43,11 +43,12 @@
 	
 	var getEmotionalCycles = function(dateStr) {
 		var sheet = getSheet('周期');
-		var retCycle;
+		var retCycle = {};
 		for(var i = 0; i < sheet.length; i ++) {
 			if(sheet[i][Configure.titleCycles.cycles] && 
 				dateStr == Configure.formatExcelDate(sheet[i][Configure.titleCycles.date])) {
-				retCycle = sheet[i][Configure.titleCycles.cycles];
+				retCycle.cycles = sheet[i][Configure.titleCycles.cycles];
+				retCycle.hotpoint = sheet[i][Configure.titleCycles.hotpoint];
 				break;
 			}
 		}

@@ -155,10 +155,15 @@ var canvas = (function(canvas) {
 			}
 			//画大周期
 			var cycle = workbook.getEmotionalCycles(Configure.formatExcelDate(Days[i][Configure.title2.date]));
-			if (cycle && cycle != '') {
+			if (cycle && !!cycle.cycles) {
 				ctx.font="14px 楷体";
 				ctx.fillStyle = Configure.site_color;
-				ctx.fillText(cycle, siteX + cellWidth  * i, siteY -5);
+				ctx.fillText(cycle.cycles, siteX + cellWidth  * i, siteY -5);
+				
+				if (!!cycle.hotpoint) {
+					ctx.fillStyle = 'orange';
+					ctx.fillText('<' + cycle.hotpoint + '>', siteX + cellWidth  * i + 50, siteY -5);
+				}
 			}
 		};		
 		
