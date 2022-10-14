@@ -226,6 +226,11 @@ var Configure = (function(){
 		ma5:'5日线',
 		beili:'背离率',
 		sz:'SZ',
+		
+		context:'指数与情绪',
+		currentOpt:'今日操作',
+		nextOpt:'明日交易计划',
+		
 		echelons:'echelon',   // 记录当天echelon排名
 		boardHeight: 'height',   // 记录当天最高高度   BH_Draw_title
 		dragon: 'dragon',   // 记录当天的龙头名字
