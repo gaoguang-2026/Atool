@@ -22,7 +22,8 @@ var Configure = (function(){
 		
 		// 消费
 		{name: '白酒', hotPoints:['白酒','啤酒概念','白酒概念', '烟草']},
-		{name: '医药', hotPoints:['新冠预防药', '医药商业', '医药', '中药', '新冠治疗', '生物医药', '医药电商', '医美', '医疗器械']},
+		{name: '医药', hotPoints:['新冠预防药', '医药商业', '医药', '中药', '新冠治疗',
+				'生物医药', '医药电商', '医美', '医疗器械', '医疗']},
 		{name: '消费电子', hotPoints:['消费电子','智能穿戴','无线耳机', '智能音箱', 'VR', '虚拟现实', 'OLED']},
 		{name: '家电', hotPoints:['白色家电','黑色家电', '小家电']},
 		{name: '农业', hotPoints:['农业种植', '大豆', '玉米', '农产品加工', '养殖']},	
@@ -39,7 +40,8 @@ var Configure = (function(){
 		
 		// 服务
 		{name: '服装', hotPoints:['服装加工']},	
-		{name: '酒店旅游', hotPoints:['酒店及餐饮']},	
+		{name: '酒店旅游', hotPoints:['酒店及餐饮']},
+		{name: '教育', hotPoints:['在线教育', '职业教育', '教育信息化']},		
 		{name: '航运', hotPoints:['机场航运', '港口航运']},
 		
 		// 风格
@@ -286,7 +288,7 @@ var Configure = (function(){
 	var ZHISHU_TITLE = title2.lianbanzhishu;    // 情绪指标， title2.lianbanzhishu 
 	var ZHISHU_SUB_TITLE = title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
 	var winFactor = 0.4;    // 两个窗口的比率
-	var Days_Max_lengh = 60;   // canvas 显示的最大期限
+	var Days_Max_lengh = 70;   // canvas 显示的最大期限
 	
 	var SZ_zero = 3000;    // sz 0轴坐标
 	var SZ_MaxOffset = 300;   // 纵轴
