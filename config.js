@@ -46,6 +46,7 @@ var Configure = (function(){
 		
 		// 风格
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
+		{name: '供销社', hotPoints:['供销社', '乡村振兴']},
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
 	

@@ -143,6 +143,19 @@ var AI = (function(){
 				parseFloat(emotionPoints[2].value) < 2.5){
 					dataStorage.emotion = '二次冰点';
 			}
+			// 混沌期 前5个交易日连扳背离率小于涨停背离率出现3次以上且值小于5为混沌期。
+			var ePoints = canvas.getLastEmotionPoints(5, 'LB'); 
+			var ztEPoints = canvas.getLastEmotionPoints(5, 'ZT'); 
+			var n = 0;
+			for(var i = 0 ; i < 5 ; i ++) {
+				if(ztEPoints[i].value - ePoints[i].value > 0 &&
+					ePoints[i].value < 5) {
+					n ++;
+				}
+			}
+			if(n >= 3) {
+				dataStorage.emotion = '混沌';
+			}
 		} else if(value < 5) {
 			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
 			else {
@@ -168,19 +181,6 @@ var AI = (function(){
 				dataStorage.emotion = angle > 0 ? '继续高潮' : '分化';
 			}
 		}		
-		// 混沌期 前5个交易日连扳背离率小于涨停背离率出现3次以上且值小于5为混沌期。
-		var ePoints = canvas.getLastEmotionPoints(5, 'LB'); 
-		var ztEPoints = canvas.getLastEmotionPoints(5, 'ZT'); 
-		var n = 0;
-		for(var i = 0 ; i < 5 ; i ++) {
-			if(ztEPoints[i].value - ePoints[i].value > 0 &&
-				ePoints[i].value < 5) {
-				n ++;
-			}
-		}
-		if(n >= 3) {
-			dataStorage.emotion = '混沌';
-		}
 		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion).tips + '。' + 
 				getEmotionSuccessRate(dataStorage.emotion) + ' 模式：[' + 
 				cangMap.get(dataStorage.emotion).tactics.toString() + ']，';
