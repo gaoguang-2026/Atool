@@ -282,7 +282,8 @@ var canvas = (function(canvas) {
 		for(i = 0; i < Days.length; i ++) {
 			// 画连扳晋级率
 			ctx.beginPath();
-			var rectHeight = siteHeight * winFactor * parseFloat(Days[i][Configure.title2.jinji])/100;
+			var rectHeight = Days[i][Configure.title2.jinji] ? 
+						siteHeight * winFactor * parseFloat(Days[i][Configure.title2.jinji])/100 : 0;
 			var rect = {x: siteX + cellWidth  * i,
 						y: siteY + siteHeight - rectHeight,
 						width: cellWidth*0.9,
