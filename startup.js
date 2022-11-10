@@ -32,7 +32,7 @@
 		echelons = echelons.concat(parser.getEchelons(dateArr[0]));
 
 		for (var i = 0; i < Configure.Echelons_Draw_NUM; i ++) {
-			var rect = {x: elCanvas.width * Configure.WinXFactor + 
+			var rect = {x: elCanvas.width * Configure.WinXFactor + 30 +
 								i * elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM, 
 							y:0,
 							width:elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM,
