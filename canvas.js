@@ -142,7 +142,7 @@ var canvas = (function(canvas) {
 		for(i = 0; i < Days.length; i ++) {
 			// 日期网格
 			var d = new Date(Configure.formatExcelDate(Days[i][Configure.title2.date], '/'));
-			if (d.getDay() == 1) {   // 星期一
+			if (d.getDate() == 1) {   // 星期一
 				ctx.font="14px 楷体";
 				ctx.fillStyle = Configure.site_color;
 				ctx.fillText(Configure.formatExcelDate(Days[i][Configure.title2.date], '').substr(4,4),

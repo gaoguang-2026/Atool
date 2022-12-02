@@ -280,8 +280,8 @@ var AI = (function(){
 		// 获取明天的交易计划
 		var arr = workbook.getDatesSheet();
 		var d = arr[arr.length-1];
-		var titles = [Configure.title2.context, Configure.title2.currentOpt, 
-				Configure.title2.nextOpt];
+		var titles = [Configure.title2.context, Configure.title2.currentOpt, Configure.title2.objOpt,
+				 Configure.title2.optReason, Configure.title2.nextOpt];
 		titles.forEach((t)=> {
 			retTxt += '【' + t + '】:  ' + d[t] + '<br>';
 		});

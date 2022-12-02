@@ -47,6 +47,7 @@ var Configure = (function(){
 		// 风格
 		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
 		{name: '供销社', hotPoints:['供销社', '乡村振兴']},
+		{name: '抗病毒', hotPoints:['抗原检测', '抗病毒材料', '抗病毒面料']},
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
 	
@@ -211,6 +212,7 @@ var Configure = (function(){
 								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
 	
 	var selectIndicators = [
+								{name:'--请选择--', value: -2},
 								{name:'涨停背离', value: -1},
 								{name:'上证指数', value: 0}, 
 								{name:'连扳高度', value: 1},
@@ -232,7 +234,10 @@ var Configure = (function(){
 		
 		context:'指数与情绪',
 		currentOpt:'今日操作',
+		objOpt:'目标操作',
+		optReason:'原因',
 		nextOpt:'明日交易计划',
+		
 		
 		echelons:'echelon',   // 记录当天echelon排名
 		boardHeight: 'height',   // 记录当天最高高度   BH_Draw_title
@@ -289,7 +294,7 @@ var Configure = (function(){
 	var ZHISHU_TITLE = title2.lianbanzhishu;    // 情绪指标， title2.lianbanzhishu 
 	var ZHISHU_SUB_TITLE = title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
 	var winFactor = 0.4;    // 两个窗口的比率
-	var Days_Max_lengh = 70;   // canvas 显示的最大期限
+	var Days_Max_lengh = 120;   // canvas 显示的最大期限
 	
 	var SZ_zero = 3000;    // sz 0轴坐标
 	var SZ_MaxOffset = 300;   // 纵轴
@@ -305,7 +310,7 @@ var Configure = (function(){
 	var Max_echelon_score = 40;
 	
 	// 左右窗口
-	var WinXFactor = 0.5;     //  左边窗口占比
+	var WinXFactor = 0.6;     //  左边窗口占比
 	
 	var Echelons_Draw_NUM = 2;
 	var Echelons_ticket_NUM = 7;     // 画出来的数量
