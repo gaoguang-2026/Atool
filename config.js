@@ -16,7 +16,7 @@ var Configure = (function(){
 				'第三代半导体', '中芯国际概念','芯片','集成电路', 'pcb']},
 		{name: '机器人', hotPoints:['机器人', '智能制造', '减速器']},
 		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', 'VR', '虚拟现实', '人工智能', '游戏', '云游戏','手机游戏']},
-		{name: '数字产业', hotPoints:['数据要素','数据确权','信创','数据中心','云计算', '数字经济', '东数西算', 
+		{name: '数据要素', hotPoints:['数据要素','数据确权','信创','数据中心','云计算', '数字经济', '东数西算', 
 						'Web3.0','计算机软件', '国产操作系统']},
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
 		
@@ -212,7 +212,6 @@ var Configure = (function(){
 								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
 	
 	var selectIndicators = [
-								{name:'--请选择--', value: -2},
 								{name:'涨停背离', value: -1},
 								{name:'上证指数', value: 0}, 
 								{name:'连扳高度', value: 1},
@@ -293,8 +292,9 @@ var Configure = (function(){
 	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
 	var ZHISHU_TITLE = title2.lianbanzhishu;    // 情绪指标， title2.lianbanzhishu 
 	var ZHISHU_SUB_TITLE = title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
-	var winFactor = 0.4;    // 两个窗口的比率
-	var Days_Max_lengh = 120;   // canvas 显示的最大期限
+	var winFactor = 0.4;    // 两个窗口的比率 
+	var Days_Max_Show_lengh = 60; // canvas 显示的最大期限
+	var Days_Max_lengh = Days_Max_Show_lengh + 5;  
 	
 	var SZ_zero = 3000;    // sz 0轴坐标
 	var SZ_MaxOffset = 300;   // 纵轴
@@ -347,6 +347,7 @@ var Configure = (function(){
 		titleTactics:titleTactics,
 		titleIndustry:titleIndustry,
 		Days_Max_lengh:Days_Max_lengh,
+		Days_Max_Show_lengh:Days_Max_Show_lengh,
 		echelons:echelons,
 		selectIndicators:selectIndicators,
 		MAX_BEILI:MAX_BEILI,

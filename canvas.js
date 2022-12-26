@@ -17,7 +17,7 @@ var canvas = (function(canvas) {
 	var siteWidth;
 	var cellWidth = 0;
 	//var cellHeight;
-	var cell_factor = 0.9;
+	var cell_factor = 0.95;
 	var winFactor = 0.4;
 
 	var getDayFromDateStr = function(dateStr) {
@@ -142,7 +142,7 @@ var canvas = (function(canvas) {
 		for(i = 0; i < Days.length; i ++) {
 			// 日期网格
 			var d = new Date(Configure.formatExcelDate(Days[i][Configure.title2.date], '/'));
-			if (d.getDate() == 1) {   // 星期一
+			if (d.getDay () == 1) {   // 星期一
 				ctx.font="14px 楷体";
 				ctx.fillStyle = Configure.site_color;
 				ctx.fillText(Configure.formatExcelDate(Days[i][Configure.title2.date], '').substr(4,4),
@@ -204,13 +204,13 @@ var canvas = (function(canvas) {
 				break;
 			case '连扳数量':
 				ctx.fillStyle =Configure.boardHeight_color;
-				zero = 0;
-				max = 30;
+				zero = 5;
+				max = 15;
 				break;
 			case '涨停数量':
 				ctx.fillStyle =Configure.boardHeight_color;
-				zero = 0;
-				max = 100;
+				zero = 30;
+				max = 70;
 				break;
 			default:
 				break;
@@ -363,10 +363,10 @@ var canvas = (function(canvas) {
 					}
 					break;
 				case '连扳数量':
-					drawLine(Configure.boardHeight_color, 0, 30, Configure.title2.lianban, enableDrawLine);
+					drawLine(Configure.boardHeight_color, 5, 15, Configure.title2.lianban, enableDrawLine);
 					break;
 				case '涨停数量':
-					drawLine(Configure.boardHeight_color, 0, 100, Configure.title2.boardnum, enableDrawLine);
+					drawLine(Configure.boardHeight_color, 30, 70, Configure.title2.boardnum, enableDrawLine);
 					break;
 				case '涨停背离':
 					break;
@@ -448,6 +448,9 @@ var canvas = (function(canvas) {
 		if (drawing.getContext){
 			var ctx = drawing.getContext("2d");
 			ctx.clearRect(0, 0, width, height);
+			
+			//cut Days to display
+			Days = Days.slice(Days.length - Configure.Days_Max_Show_lengh, Days.length);
 			drawSite(indecatorName, echelonNames);
 			drawIndicators(indecatorName, echelonNames);
 			drawEchelon(echelonNames);
