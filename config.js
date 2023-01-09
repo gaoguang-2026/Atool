@@ -1,3 +1,17 @@
+/**
+Sub 一键批量取消工作表隐藏()
+
+Dim sht As Worksheet
+
+For Each sht In Worksheets
+
+sht.Visible = xlSheetVisible
+
+Next
+
+End Sub
+*/
+
 var Configure = (function(){
 	var debug = false;
 	var date = new Date();
@@ -212,7 +226,8 @@ var Configure = (function(){
 								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
 	
 	var selectIndicators = [
-								{name:'涨停背离', value: -1},
+								{name:'情绪指数', value: -1},
+							//	{name:'涨停背离', value: -1},
 								{name:'上证指数', value: 0}, 
 								{name:'连扳高度', value: 1},
 								{name:'连扳数量', value: 2},
@@ -225,8 +240,9 @@ var Configure = (function(){
 		height:'高度',
 		lianban:'连板',
 		jinji:'连板晋级率',
+		qingxuzhishu:'情绪指数',
 		lianbanzhishu:'连板指数',
-		zhangtingzhishu:'涨停指数',
+		zhangtingzhishu:'涨停指数',	
 		ma5:'5日线',
 		beili:'背离率',
 		sz:'SZ',

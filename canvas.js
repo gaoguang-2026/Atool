@@ -191,6 +191,11 @@ var canvas = (function(canvas) {
 
 		var zero, max;
 		switch(indecatorName) {
+			case '情绪指数':
+				ctx.fillStyle = Configure.boardHeight_color;
+				zero = 850;
+				max = 950;
+				break;
 			case '上证指数':
 				ctx.fillStyle = Configure.sz_color;
 				zero = Configure.SZ_zero;
@@ -347,8 +352,11 @@ var canvas = (function(canvas) {
 							indecatorName == '涨停背离' && enableDrawLine);
 			stEmotionPoints.push({point:point2, value:parseFloat(Days[i][Configure.title2.subBeili]),
 									 date:Days[i][Configure.title2.date]});
-				
+			
 			switch(indecatorName) {
+				case '情绪指数':
+					drawLine(Configure.line_color, 850, 100, Configure.title2.qingxuzhishu, true);
+					break;
 				case '上证指数':
 					break;
 				case '连扳高度':
@@ -363,10 +371,10 @@ var canvas = (function(canvas) {
 					}
 					break;
 				case '连扳数量':
-					drawLine(Configure.boardHeight_color, 5, 15, Configure.title2.lianban, enableDrawLine);
+					drawLine(Configure.boardHeight_color, 5, 10, Configure.title2.lianban, enableDrawLine);
 					break;
 				case '涨停数量':
-					drawLine(Configure.boardHeight_color, 30, 70, Configure.title2.boardnum, enableDrawLine);
+					drawLine(Configure.boardHeight_color, 30, 40, Configure.title2.boardnum, enableDrawLine);
 					break;
 				case '涨停背离':
 					break;
