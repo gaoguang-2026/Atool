@@ -2,14 +2,14 @@
 
 (function(exports){	
 	var handOverBar_w = 8;
-	var handOverBar_h = 30;
+	var handOverBar_h = 20;
 	
 	let Echelon = function (canvas, e, rect) {
 		this.canvas = canvas;
 		this.echelon = e;
 		this.rect = rect;
 		
-		this.points1 = [[1/2, 1/12],[1/8, 3/12],[1/2, 3/12],[7/8, 3/12],[1/4,3/12],[3/4, 3/12]];
+		this.points1 = [[1/2, 2/12],[1/8, 3/12],[7/8, 3/12],[1/4,3/12],[3/4, 3/12]];
 		this.points2 = [[3/8, 5/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12],[3/4, 3/12],[1/4, 7/12], [7/8, 3/12],[3/4, 7/12],];
 		this.points3 = [[3/8, 9/12],[5/8, 9/12],[1/8, 9/12], [1/2, 7/12],[1/4, 7/12], [3/4, 7/12], [7/8, 9/12],
 						[3/4, 11/12], [1/2,11/12], [1/4, 11/12]];
@@ -194,7 +194,7 @@
 		// 名字
 		var ctx = this.canvas.getContext("2d");		
 		ctx.beginPath();
-		ctx.lineWidth="2";
+		ctx.lineWidth="3";
 		ctx.font="16px 楷体";
 		if (index != 0) {
 			ctx.fillStyle = 'green';

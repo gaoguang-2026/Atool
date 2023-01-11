@@ -226,9 +226,9 @@ var Configure = (function(){
 								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
 	
 	var selectIndicators = [
-								{name:'情绪指数', value: -1},
-							//	{name:'涨停背离', value: -1},
-								{name:'上证指数', value: 0}, 
+							//	{name:'情绪指数', value: -2},								
+								{name:'上证指数', value: -1}, 
+								{name:'涨停背离', value: 0},
 								{name:'连扳高度', value: 1},
 								{name:'连扳数量', value: 2},
 								{name:'涨停数量', value: 3}

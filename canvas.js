@@ -241,7 +241,7 @@ var canvas = (function(canvas) {
 					(parseFloat(Days[i + 1][title]) - zero)/max;
 				var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 								y: siteY + siteHeight*(1-winFactor) - pointNextH};
-				ctx.lineWidth="1";
+				ctx.lineWidth="2";
 				ctx.strokeStyle = color;
 				ctx.moveTo(szPoint.x, szPoint.y);
 				ctx.lineTo(szpointNext.x, szpointNext.y);
@@ -352,10 +352,9 @@ var canvas = (function(canvas) {
 							indecatorName == '涨停背离' && enableDrawLine);
 			stEmotionPoints.push({point:point2, value:parseFloat(Days[i][Configure.title2.subBeili]),
 									 date:Days[i][Configure.title2.date]});
-			
+			drawLine('blue', 850, 100, Configure.title2.qingxuzhishu, true);
 			switch(indecatorName) {
 				case '情绪指数':
-					drawLine(Configure.line_color, 850, 100, Configure.title2.qingxuzhishu, true);
 					break;
 				case '上证指数':
 					break;
