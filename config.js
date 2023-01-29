@@ -248,14 +248,14 @@ var Configure = (function(){
 		sz:'SZ',
 		
 		context:'指数与情绪',
-		qst1:'1.趋势还是连扳？',
+		qst1:'1.趋势连扳和特点？',
 		qst2:'2主流和次主流？',
 		qst3:'3情绪周期及锚定？',
 		qst4:'4龙头阶段及买点',
-		currentOpt:'今日操作',
-		objOpt:'目标操作',
-		optReason:'原因',
-		nextOpt:'明日交易计划',
+		currentOpt:'5今日操作',
+		objOpt:'6目标操作',
+		optReason:'7原因',
+		nextOpt:'8明日交易计划',
 		
 		
 		echelons:'echelon',   // 记录当天echelon排名
