@@ -247,15 +247,15 @@ var Configure = (function(){
 		beili:'背离率',
 		sz:'SZ',
 		
-		context:'指数与情绪',
-		qst1:'1.趋势连扳和特点？',
-		qst2:'2主流和次主流？',
-		qst3:'3情绪周期及锚定？',
-		qst4:'4龙头阶段及买点',
-		currentOpt:'5今日操作',
-		objOpt:'6目标操作',
-		optReason:'7原因',
-		nextOpt:'8明日交易计划',
+		context:'1指数与情绪',
+		qst1:'2.趋势连扳和特点？',
+		qst2:'3主流和次主流？',
+		qst3:'4情绪周期及锚定？',
+		qst4:'5龙头阶段及买点',
+		currentOpt:'6今日操作',
+		objOpt:'7目标操作',
+		optReason:'8原因',
+		nextOpt:'9明日交易计划',
 		
 		
 		echelons:'echelon',   // 记录当天echelon排名
