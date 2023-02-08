@@ -194,7 +194,7 @@ var canvas = (function(canvas) {
 			case '情绪指数':
 				ctx.fillStyle = Configure.boardHeight_color;
 				zero = 850;
-				max = 950;
+				max = 1000;
 				break;
 			case '上证指数':
 				ctx.fillStyle = Configure.sz_color;
@@ -352,7 +352,7 @@ var canvas = (function(canvas) {
 							indecatorName == '涨停背离' && enableDrawLine);
 			stEmotionPoints.push({point:point2, value:parseFloat(Days[i][Configure.title2.subBeili]),
 									 date:Days[i][Configure.title2.date]});
-			drawLine('blue', 850, 100, Configure.title2.qingxuzhishu, true);
+			drawLine('blue', 850, 150, Configure.title2.qingxuzhishu, true);
 			switch(indecatorName) {
 				case '情绪指数':
 					break;
