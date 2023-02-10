@@ -144,8 +144,8 @@ var AI = (function(){
 					dataStorage.emotion = '二次冰点';
 			}
 			// 混沌期 前5个交易日连扳背离率小于涨停背离率出现3次以上且值小于5为混沌期。
-			var ePoints = canvas.getLastEmotionPoints(5, 'LB'); 
-			var ztEPoints = canvas.getLastEmotionPoints(5, 'ZT'); 
+			var ePoints = canvas.getLastEmotionPoints(5, Configure.title2.lianbanzhishu); 
+			var ztEPoints = canvas.getLastEmotionPoints(5, Configure.title2.zhangtingzhishu); 
 			var n = 0;
 			for(var i = 0 ; i < 5 ; i ++) {
 				if(ztEPoints[i].value - ePoints[i].value > 0 &&

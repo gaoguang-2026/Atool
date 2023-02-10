@@ -35,15 +35,16 @@ var canvas = (function(canvas) {
 			});
 		var dayIndex = dateArr.indexOf(Configure.formatExcelDate(day[Configure.title2.date], ''));
 		var predayDate  = dateArr[dayIndex + 1];
-		// 连扳数 和晋级率
+		// 连扳数、晋级率   涨停数 跌停数 和炸板率
 		if (!day[Configure.title2.erban] || !day[Configure.title2.boardnum]) {
 			var param = {
 				hotpointArr: [],
-				type:2,
+				type:5,
 				sort:1
 			};
 			var tickets =  parser.getTickets(dateArr[dayIndex], param);
 			var dayNumberTitle = Configure.replaceTitleDate(Configure.title.dayNumber, dateArr[dayIndex]);
+			var boardTimeTilte = Configure.replaceTitleDate(Configure.title.boardTime, dateArr[dayIndex]);
 			day[Configure.title2.erban] = tickets.filter((t) => {
 				return t[dayNumberTitle] == 2;
 			}).length;
@@ -59,7 +60,18 @@ var canvas = (function(canvas) {
 				day[Configure.title2.jinji] = parseFloat((day[Configure.title2.lianban] -  day[Configure.title2.erban]) * 100/
 												preDay[Configure.title2.lianban]).toFixed(2);
 			}
-			day[Configure.title2.boardnum] = tickets.length;
+			// 涨停数、跌停数 和炸板数  亏钱效应
+			day[Configure.title2.boardnum] = tickets.filter((t)=>{
+				return t[dayNumberTitle] >= 1;
+			}).length;
+			day[Configure.title2.floornum] = tickets.filter((t)=>{
+				return t[dayNumberTitle] == 0 && t[boardTimeTilte] == '--';
+			}).length;
+			day[Configure.title2.failednum] = tickets.filter((t)=>{
+				return t[dayNumberTitle] == 0 && t[boardTimeTilte] != '--';
+			}).length;
+			day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
+						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
 		}
 		
 		var calMa5AndBeili = function( ZHISHU_TITLE ,MA5Title,BEILItitle) {
@@ -185,60 +197,24 @@ var canvas = (function(canvas) {
 			ctx.fillText(Configure.Max_echelon_score, siteX + siteWidth, siteY);
 		} else {
 			ctx.fillStyle = Configure.line_color;
-			ctx.fillText('0', siteX + siteWidth + 10, siteY + siteHeight * (1- winFactor));
-			ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth, siteY);
-		}
-
-		var zero, max;
-		switch(indecatorName) {
-			case '情绪指数':
-				ctx.fillStyle = Configure.boardHeight_color;
-				zero = 850;
-				max = 1000;
-				break;
-			case '上证指数':
-				ctx.fillStyle = Configure.sz_color;
-				zero = Configure.SZ_zero;
-				max = Configure.SZ_zero + Configure.SZ_MaxOffset;
-				break;
-			case '连扳高度':
-				ctx.fillStyle = Configure.boardHeight_color;
-				var temp = Configure.BH_zero > 65537 ? 65537 : 1;
-				zero = parseInt(Configure.BH_zero/temp);
-				max = parseInt((Configure.BH_zero + Configure.BH_MaxOffset)/temp);
-				break;
-			case '连扳数量':
-				ctx.fillStyle =Configure.boardHeight_color;
-				zero = 5;
-				max = 15;
-				break;
-			case '涨停数量':
-				ctx.fillStyle =Configure.boardHeight_color;
-				zero = 30;
-				max = 70;
-				break;
-			default:
-				break;
-		};
-		if(max) {
-			ctx.fillText(zero, siteX - 30, siteY + siteHeight * (1- winFactor));
-			ctx.fillText(max, siteX - 30, siteY);
+			ctx.fillText('0', siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor));
+			ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth - 20, siteY);
 		}
 		ctx.stroke(); 
 	};
-	var drawLine = function(color, zero, max, title, draw = true) {
+	var drawLine = function(color, zero, maxOffset, title, draw = true) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
 		ctx.fillStyle= color;
 		var pointH = siteHeight * (1-winFactor) * 
-			(parseFloat(Days[i][title])- zero)/max;
+			(parseFloat(Days[i][title])- zero)/maxOffset;
 		var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
 				y: siteY + siteHeight*(1-winFactor) - pointH};
 		//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
 		if (draw) {
 			if (i < Days.length - 1) {// 不是最后一个点
 				var pointNextH = siteHeight * (1-winFactor) * 
-					(parseFloat(Days[i + 1][title]) - zero)/max;
+					(parseFloat(Days[i + 1][title]) - zero)/maxOffset;
 				var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 								y: siteY + siteHeight*(1-winFactor) - pointNextH};
 				ctx.lineWidth="2";
@@ -249,6 +225,9 @@ var canvas = (function(canvas) {
 			} else {
 				ctx.font="14px 楷体"
 				ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
+				// 画坐标
+				ctx.fillText(zero, siteX - 30, siteY + siteHeight * (1- winFactor));
+				ctx.fillText(zero + maxOffset, siteX - 30, siteY);
 				ctx.stroke();
 			}
 		}
@@ -343,20 +322,28 @@ var canvas = (function(canvas) {
 				}
 			}
 
-			// 画sz和涨停背离率,  需要保存点给AI使用
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
-								Configure.SZ_MaxOffset, Configure.title2.sz , indecatorName == '上证指数' && enableDrawLine);
+								Configure.SZ_MaxOffset, Configure.title2.sz , 
+								indecatorName == '上证指数' && enableDrawLine);
 			szPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.sz]),
 									 date:Days[i][Configure.title2.date]});
-			var point2 = drawLine(Configure.line_color, 0, 10, Configure.title2.subBeili, 
-							indecatorName == '涨停背离' && enableDrawLine);
+									 
+			var point2 = drawLine('#DC143C', 0, 10, Configure.title2.subBeili, 
+							indecatorName == '连扳背离' && enableDrawLine);
 			stEmotionPoints.push({point:point2, value:parseFloat(Days[i][Configure.title2.subBeili]),
 									 date:Days[i][Configure.title2.date]});
-			drawLine('blue', 850, 150, Configure.title2.qingxuzhishu, true);
+									 
+			drawLine('blue', 850, 150, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName && enableDrawLine);
+			drawLine('green', 0, 1, Configure.title2.failedRate, /*'亏钱效应' == indecatorName &&*/ enableDrawLine);
+			
 			switch(indecatorName) {
 				case '情绪指数':
 					break;
+				case '亏钱效应':
+					break;
 				case '上证指数':
+					break;
+				case '连扳背离':
 					break;
 				case '连扳高度':
 					//画连扳高度
@@ -375,7 +362,11 @@ var canvas = (function(canvas) {
 				case '涨停数量':
 					drawLine(Configure.boardHeight_color, 30, 40, Configure.title2.boardnum, enableDrawLine);
 					break;
-				case '涨停背离':
+				case '跌停数量':
+					drawLine('#20B2AA', 0, 15, Configure.title2.floornum, enableDrawLine);
+					break;
+				case '炸板数量':
+					drawLine('#20B2AA', 0, 15, Configure.title2.failednum, enableDrawLine);
 					break;
 				default:
 					break;
@@ -431,9 +422,9 @@ var canvas = (function(canvas) {
 
 		};
 	};
-	// type = 'LB'  or 'ZT'    
-	var getLastEmotionPoints = function(num, type = 'LB') {
-		var ePoints = type == 'LB' ?  emotionPoints : stEmotionPoints;
+	// type = Configure.title2.lianbanzhishu  or Configure.title2.zhangtingzhishu
+	var getLastEmotionPoints = function(num, type) {
+		var ePoints = type == Configure.ZHISHU_TITLE ? emotionPoints : stEmotionPoints;
 		var n = num > ePoints.length ? ePoints.length : num;
 		var retP = [];
 		for(var i = ePoints.length - 1; i > ePoints.length - 1 - n; i --) {

@@ -227,12 +227,15 @@ var Configure = (function(){
 								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
 	
 	var selectIndicators = [
-							//	{name:'情绪指数', value: -2},								
-								{name:'上证指数', value: -1}, 
-								{name:'涨停背离', value: 0},
-								{name:'连扳高度', value: 1},
-								{name:'连扳数量', value: 2},
-								{name:'涨停数量', value: 3}
+								{name:'上证指数'}, 
+								{name:'情绪指数'},
+							//	{name:'亏钱效应'},	
+								{name:'连扳背离'},
+								{name:'连扳高度'},
+								{name:'连扳数量'},
+								{name:'涨停数量'},
+								{name:'跌停数量'},
+								{name:'炸板数量'},
 							];
 	
 	var title2 = {
@@ -263,6 +266,9 @@ var Configure = (function(){
 		boardHeight: 'height',   // 记录当天最高高度   BH_Draw_title
 		dragon: 'dragon',   // 记录当天的龙头名字
 		boardnum: '涨停数',
+		floornum: '跌停数',
+		failednum: '炸板数',
+		failedRate: '亏钱效应',   // （炸板+跌停板）/ （炸板+跌停板 + 涨停板）
 		
 		subBeili:'涨停指标背离率',
 		subMa5:'涨停指标5日线',
@@ -310,9 +316,9 @@ var Configure = (function(){
 	var MIN_LB_NUMBER = 2;
 	var MIN_KAINIAN = 2;     // 最少出现的次数
 	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
-	var MAX_BEILI = 10;    //最大背离率 ,  影响canvas纵坐标
-	var ZHISHU_TITLE = title2.lianbanzhishu;    // 情绪指标， title2.lianbanzhishu 
-	var ZHISHU_SUB_TITLE = title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
+	var MAX_BEILI = 7;    //最大背离率 ,  影响canvas纵坐标
+	var ZHISHU_TITLE = title2.zhangtingzhishu;    // 情绪指标， title2.lianbanzhishu 
+	var ZHISHU_SUB_TITLE = title2.lianbanzhishu;   // 情绪指标 title2.zhangtingzhishu
 	var winFactor = 0.4;    // 两个窗口的比率 
 	var Days_Max_Show_lengh = 60; // canvas 显示的最大期限
 	var Days_Max_lengh = Days_Max_Show_lengh + 5;  
