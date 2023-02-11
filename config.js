@@ -225,20 +225,7 @@ var Configure = (function(){
 	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence','selectDate','reason'];
 	var industryShowInTableTitile = ['index', 'name', 'value_100','value_250','value_500', 'totalValue','rise_d20_0',
 								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
-	
-	var selectIndicators = [
-								{name:'短线资金'}, 
-								{name:'上证指数'}, 
-								{name:'情绪指数'},
-							//	{name:'亏钱效应'},	
-								{name:'连扳背离'},
-								{name:'连扳高度'},
-								{name:'连扳数量'},
-								{name:'涨停数量'},
-								{name:'跌停数量'},
-								{name:'炸板数量'},
-							];
-	
+
 	var title2 = {
 		date: '日期',
 		erban: '二板数',
@@ -309,7 +296,7 @@ var Configure = (function(){
 		average_20_rise:'20日平均涨幅%',
 		total: '合计(个)'
 	};
-	
+		
 	var site_color = 'black';
 	var sz_color = 'purple';
 	var boardHeight_color = 'black';
@@ -319,9 +306,12 @@ var Configure = (function(){
 	var MIN_LB_NUMBER = 2;
 	var MIN_KAINIAN = 2;     // 最少出现的次数
 	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
-	var MAX_BEILI = 7;    //最大背离率 ,  影响canvas纵坐标
+
 	var ZHISHU_TITLE = title2.zhangtingzhishu;    // 情绪指标， title2.lianbanzhishu 
-	var ZHISHU_SUB_TITLE = title2.lianbanzhishu;   // 情绪指标 title2.zhangtingzhishu
+	var ZHISHU_SUB_TITLE = ZHISHU_TITLE == title2.zhangtingzhishu ?
+			title2.lianbanzhishu : title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
+	var MAX_BEILI = ZHISHU_TITLE == title2.zhangtingzhishu ? 7 : 10;    //最大背离率 ,  影响canvas纵坐标
+	
 	var winFactor = 0.4;    // 两个窗口的比率 
 	var Days_Max_Show_lengh = 60; // canvas 显示的最大期限
 	var Days_Max_lengh = Days_Max_Show_lengh + 5;  
@@ -351,7 +341,7 @@ var Configure = (function(){
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
 	var Echelons_show_min_score = 7;  // 最小显示限制
-	var Echelons_show_type = 'fund';   //  'fund' or 'score'
+	var Echelons_show_type = 'score';   //  'fund' or 'score'
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2
@@ -364,6 +354,20 @@ var Configure = (function(){
 	var AI_Default_Band_Factor = 180;   // 趋势选票默认因子  越大涨速权重越大，越小题材权重越大
 	var Dead_Handover = 55;				// 过滤掉死亡换手
 	var Min_handover = 3;				// 过滤掉太低的换手，买不进去
+	
+	var selectIndicators = [
+						//		{name:'亏钱效应'},
+								{name:'上证指数'}, 
+								{name:'情绪指数'},						
+								{name:'涨停数量'},
+								{name:'跌停数量'},
+								{name:'炸板数量'},
+								{name:'连扳背离'},
+								{name:'连扳高度'},
+								{name:'连扳数量'},
+							];  
+	ZHISHU_TITLE == title2.zhangtingzhishu ? 
+		selectIndicators.push({name:'连扳晋级'}) : selectIndicators.unshift({name:'短线资金'});
 	
 	return {
 		date: date,

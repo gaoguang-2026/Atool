@@ -196,13 +196,7 @@ var canvas = (function(canvas) {
 		ctx.lineWidth="0.5";
 		ctx.strokeStyle = Configure.site_color;
 		ctx.moveTo(siteX,siteY + siteHeight * (1-winFactor));
-		ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor));
-		
-		ctx.font="14px 楷体";
-		ctx.fillStyle = Configure.line_color;
-		ctx.fillText('0', siteX - 20, siteY + siteHeight);
-		ctx.fillText('(1)', siteX - 20, siteY + siteHeight * (1- winFactor) + 10);
-		
+		ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor));	
 
 		if (echelonNames.length) {
 			ctx.fillStyle = Configure.echelon_color[0];
@@ -220,40 +214,7 @@ var canvas = (function(canvas) {
 		}
 		ctx.stroke(); 
 	};
-	var drawLine = function(color, zero, maxOffset, title, draw = true) {
-		var ctx = drawing.getContext("2d");		
-		ctx.beginPath();
-		ctx.fillStyle= color;
-		var pointH = siteHeight * (1-winFactor) * 
-			(parseFloat(Days[i][title])- zero)/maxOffset;
-		var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
-				y: siteY + siteHeight*(1-winFactor) - pointH};
-		//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
-		if (draw) {
-			if (i < Days.length - 1) {// 不是最后一个点
-				var pointNextH = siteHeight * (1-winFactor) * 
-					(parseFloat(Days[i + 1][title]) - zero)/maxOffset;
-				var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
-								y: siteY + siteHeight*(1-winFactor) - pointNextH};
-				ctx.lineWidth="2";
-				ctx.strokeStyle = color;
-				ctx.moveTo(szPoint.x, szPoint.y);
-				ctx.lineTo(szpointNext.x, szpointNext.y);
-				ctx.stroke();
-			} else {
-				ctx.font="14px 楷体"
-				ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
-				// 写坐标值
-				if(title != Configure.title2.failedRate ) {  // failedRate 不写
-					ctx.fillText(zero, siteX - 30, siteY + siteHeight * (1- winFactor));
-					ctx.fillText(zero + maxOffset, siteX - 30, siteY);
-					ctx.stroke();
-				}
 
-			}
-		}
-		return szPoint;
-	};
 	var drawEmotionCycle = function(emotions, curEmotion) { 
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
@@ -283,19 +244,17 @@ var canvas = (function(canvas) {
 	var drawIndicators = function(indecatorName, echelonNames) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
-		var enableDrawLine = echelonNames.length < 2 ? true : false;
-		for(i = 0; i < Days.length; i ++) {
-			// 画连扳晋级率
-			ctx.beginPath();
-			var rectHeight = Days[i][Configure.title2.jinji] ? 
-						siteHeight * winFactor * parseFloat(Days[i][Configure.title2.jinji])/100 : 0;
+		
+		function drawBottom(title, maxOffset) {
+			var rectHeight = Days[i][title] ? 
+						siteHeight * winFactor * parseFloat(Days[i][title]) /maxOffset : 0;
 			var rect = {x: siteX + cellWidth  * i,
 						y: siteY + siteHeight - rectHeight,
 						width: cellWidth*0.9,
 						height: rectHeight};
 			var grd=ctx.createLinearGradient(rect.x, rect.y + + siteHeight * winFactor * 0.5, 
 											rect.x, rect.y);
-			if(parseFloat(Days[i][Configure.title2.jinji]) < 33) {
+			if(parseFloat(Days[i][title]) < maxOffset/3) {
 				grd.addColorStop(0,"yellow");
 				grd.addColorStop(1,"green");
 			} else {
@@ -306,43 +265,92 @@ var canvas = (function(canvas) {
 			ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 			if (i == Days.length - 1) {
 				ctx.font="14px 楷体";
-				ctx.fillText(parseFloat(Days[i][Configure.title2.jinji]) + '%', rect.x + 5, rect.y - 10);
+				ctx.fillText(parseFloat(Days[i][title]), rect.x + 5, rect.y - 10);
+			}
+			ctx.font="14px 楷体";
+			ctx.fillStyle = Configure.line_color;
+			ctx.fillText('0', siteX - 20, siteY + siteHeight + 10);
+			ctx.fillText(maxOffset, siteX - 30, siteY + siteHeight * (1- winFactor) + 10);
+			ctx.stroke();
+		}
+		function drawUp() {
+			ctx.fillStyle="black";
+			ctx.strokeStyle = "black";
+			var pointH = siteHeight * (1-winFactor) * parseFloat(Days[i][Configure.title2.beili])/Configure.MAX_BEILI;
+			var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
+						y: siteY + siteHeight*(1-winFactor) - pointH};	
+							
+			emotionPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.beili]), 
+						date:Days[i][Configure.title2.date]});
+							
+			grd=ctx.createLinearGradient(siteX, siteY + siteHeight * (1-winFactor), 
+												siteX, siteY);
+			grd.addColorStop(0,"green");
+			grd.addColorStop(0.3,"orange");
+			grd.addColorStop(1,Configure.line_color);  
+			ctx.fillStyle = grd;
+			ctx.strokeStyle = grd;
+			if (i < Days.length - 1) {// 不是最后一个点
+				var pointNextH = siteHeight * (1-winFactor) * parseFloat(Days[i + 1][Configure.title2.beili])/Configure.MAX_BEILI;
+				var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
+								y: siteY + siteHeight*(1-winFactor) - pointNextH};
+				ctx.lineWidth="4";
+				ctx.moveTo(point.x, point.y);
+				ctx.lineTo(pointNext.x, pointNext.y);
+				ctx.stroke();
+			} else {
+				ctx.font="14px 楷体";
+				ctx.fillText(parseFloat(Days[i][Configure.title2.beili]) + '%', point.x + 10, point.y);
 				ctx.stroke();
 			}
-						
-			// 画背离率
-			if (enableDrawLine) {
-				ctx.fillStyle="black";
-				ctx.strokeStyle = "black";
-				var pointH = siteHeight * (1-winFactor) * parseFloat(Days[i][Configure.title2.beili])/Configure.MAX_BEILI;
-				var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
-							y: siteY + siteHeight*(1-winFactor) - pointH};	
-							
-				emotionPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.beili]), 
-							date:Days[i][Configure.title2.date]});
-							
-				grd=ctx.createLinearGradient(siteX, siteY + siteHeight * (1-winFactor), 
-												siteX, siteY);
-				grd.addColorStop(0,"green");
-				grd.addColorStop(0.3,"orange");
-				grd.addColorStop(1,Configure.line_color);  
-				ctx.fillStyle = grd;
-				ctx.strokeStyle = grd;
+		}
+		
+		function drawLine(color, zero, maxOffset, title, draw = true) {
+			var ctx = drawing.getContext("2d");		
+			ctx.beginPath();
+			ctx.fillStyle= color;
+			var pointH = siteHeight * (1-winFactor) * 
+				(parseFloat(Days[i][title])- zero)/maxOffset;
+			var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
+					y: siteY + siteHeight*(1-winFactor) - pointH};
+			//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
+			if (draw) {
 				if (i < Days.length - 1) {// 不是最后一个点
-					var pointNextH = siteHeight * (1-winFactor) * parseFloat(Days[i + 1][Configure.title2.beili])/Configure.MAX_BEILI;
-					var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
+					var pointNextH = siteHeight * (1-winFactor) * 
+						(parseFloat(Days[i + 1][title]) - zero)/maxOffset;
+					var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 									y: siteY + siteHeight*(1-winFactor) - pointNextH};
-					ctx.lineWidth="4";
-					ctx.moveTo(point.x, point.y);
-					ctx.lineTo(pointNext.x, pointNext.y);
+					ctx.lineWidth="2";
+					ctx.strokeStyle = color;
+					ctx.moveTo(szPoint.x, szPoint.y);
+					ctx.lineTo(szpointNext.x, szpointNext.y);
 					ctx.stroke();
 				} else {
-					ctx.font="14px 楷体";
-					ctx.fillText(parseFloat(Days[i][Configure.title2.beili]) + '%', point.x + 10, point.y);
-					ctx.stroke();
+					ctx.font="14px 楷体"
+					ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
+					// 写坐标值
+					if(title != Configure.title2.failedRate ) {  // failedRate 不写
+						ctx.fillText(zero, siteX - 30, siteY + siteHeight * (1- winFactor));
+						ctx.fillText(zero + maxOffset, siteX - 30, siteY);
+						ctx.stroke();
+					}
+
 				}
 			}
-
+			return szPoint;
+		};
+		
+		var enableDrawLine = echelonNames.length < 1 ? true : false;
+		for(i = 0; i < Days.length; i ++) {
+			ctx.beginPath();
+			if (enableDrawLine) {
+				Configure.ZHISHU_TITLE == Configure.title2.lianbanzhishu ? 
+					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, 600);
+			} 
+			if (enableDrawLine || echelonNames.length == 1) {
+				drawUp();
+			}
+			
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
 								Configure.SZ_MaxOffset, Configure.title2.sz , 
 								indecatorName == '上证指数' && enableDrawLine);
@@ -356,10 +364,14 @@ var canvas = (function(canvas) {
 									 
 			drawLine('blue', 850, 150, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName && enableDrawLine);
 			drawLine('green', 0, 1, Configure.title2.failedRate, /*'亏钱效应' == indecatorName &&*/ enableDrawLine);
-			drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName && enableDrawLine);
+		
 			
 			switch(indecatorName) {
+				case '连扳晋级':
+					drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName && enableDrawLine);
+					break;
 				case '短线资金':
+					drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName && enableDrawLine);
 					break;
 				case '情绪指数':
 					break;
@@ -409,12 +421,46 @@ var canvas = (function(canvas) {
 				siteHeight * (1-winFactor) * parseFloat(g[Configure.Echelons_show_type] - Configure.Min_echelon_fund)
 						/ Configure.Max_echelon_fund;
 		}
+		
+		function drawBottom(bund, maxOffset) {
+			var rectHeight = bund ? 
+						siteHeight * winFactor * parseFloat(bund) /maxOffset : 0;
+			var rect = {x: siteX + cellWidth  * i,
+						y: siteY + siteHeight - rectHeight,
+						width: cellWidth*0.9,
+						height: rectHeight};
+			var grd=ctx.createLinearGradient(rect.x, rect.y + + siteHeight * winFactor * 0.5, 
+											rect.x, rect.y);
+			if(parseFloat(bund) < maxOffset/3) {
+				grd.addColorStop(0,"yellow");
+				grd.addColorStop(1,"green");
+			} else {
+				grd.addColorStop(0,"orange");
+				grd.addColorStop(1,"red");
+			} 
+			ctx.fillStyle=grd;
+			ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+			if (i == Days.length - 1) {
+				ctx.font="14px 楷体";
+				ctx.fillText(parseFloat(bund), rect.x + 5, rect.y - 10);
+			}
+			ctx.font="14px 楷体";
+			ctx.fillStyle = Configure.line_color;
+			ctx.fillText('0', siteX - 20, siteY + siteHeight + 10);
+			ctx.fillText(maxOffset, siteX - 30, siteY + siteHeight * (1- winFactor) + 10);
+			ctx.stroke();
+		}
+		
+		var bottomData = 0;
 		for(i = 0; i < Days.length; i ++) {
 			var echelonArr = Days[i][Configure.title2.echelons];
 			echelonArr.forEach((g)=> {    //  g : {name:'', hotPoints:[], score:'', fund:''};
 				if(echelonNames.indexOf(g.name) != -1) {
 					var drawNameDone = false;	
 					var pointH =  calPointHeight(g);
+					// 记录底部数据
+					bottomData = Configure.Echelons_show_type == 'score' ? g.fund : g.score;
+					/////
 					var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
 							y: siteY + siteHeight*(1-winFactor) - pointH};	
 							
@@ -448,7 +494,9 @@ var canvas = (function(canvas) {
 					};
 				}
 			});
-
+			if (bottomData != 0) {
+				drawBottom(bottomData, 100);
+			}
 		};
 	};
 	// type = Configure.title2.lianbanzhishu  or Configure.title2.zhangtingzhishu
