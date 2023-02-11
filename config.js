@@ -227,6 +227,7 @@ var Configure = (function(){
 								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
 	
 	var selectIndicators = [
+								{name:'短线资金'}, 
 								{name:'上证指数'}, 
 								{name:'情绪指数'},
 							//	{name:'亏钱效应'},	
@@ -269,6 +270,8 @@ var Configure = (function(){
 		floornum: '跌停数',
 		failednum: '炸板数',
 		failedRate: '亏钱效应',   // （炸板+跌停板）/ （炸板+跌停板 + 涨停板）
+		totalFund: '短线资金',
+		
 		
 		subBeili:'涨停指标背离率',
 		subMa5:'涨停指标5日线',
@@ -333,8 +336,10 @@ var Configure = (function(){
 							6 : 6 * 65537;   // boardHeight 纵轴
 
 	
-	var Min_echelon_score = 0;    //draw 的条件
+	var Min_echelon_score = 0;    //Echelons_show_type == 'score' 时draw 的条件  
 	var Max_echelon_score = 40;
+	var Min_echelon_fund = 0;    //Echelons_show_type == 'fund' 时draw 的条件  
+	var Max_echelon_fund = 150;
 	
 	// 左右窗口
 	var WinXFactor = 0.6;     //  左边窗口占比
@@ -346,6 +351,7 @@ var Configure = (function(){
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
 	var Echelons_show_min_score = 7;  // 最小显示限制
+	var Echelons_show_type = 'fund';   //  'fund' or 'score'
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2
@@ -392,9 +398,12 @@ var Configure = (function(){
 		WinXFactor:WinXFactor,
 		Min_echelon_score:Min_echelon_score,
 		Max_echelon_score:Max_echelon_score,
+		Min_echelon_fund:Min_echelon_fund,
+		Max_echelon_fund:Max_echelon_fund,
 		Echelons_Draw_NUM:Echelons_Draw_NUM,
 		Echelons_tickit_period:Echelons_tickit_period,
 		Echelons_show_min_score:Echelons_show_min_score,
+		Echelons_show_type:Echelons_show_type,
 		Band_tickit_period:Band_tickit_period,
 		Echelons_miss_tickit_period:Echelons_miss_tickit_period,
 		Band_miss_tickit_period:Band_miss_tickit_period,

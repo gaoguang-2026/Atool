@@ -72,6 +72,19 @@ var canvas = (function(canvas) {
 			}).length;
 			day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
 						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
+			// 资金总量  涨停的总和-跌停的总和
+			day[Configure.title2.totalFund] = 0;
+			tickets.forEach((ticket)=>{
+				if(ticket[dayNumberTitle] >= 1) {
+					day[Configure.title2.totalFund] += 
+					ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100;
+				} else if(ticket[dayNumberTitle] == 0 && ticket[boardTimeTilte] == '--') {
+					day[Configure.title2.totalFund] -= 
+						ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100;
+				}
+			});
+			day[Configure.title2.totalFund] = (day[Configure.title2.totalFund] / 100000000).toFixed(2);   // 亿为单位
+			
 		}
 		
 		var calMa5AndBeili = function( ZHISHU_TITLE ,MA5Title,BEILItitle) {
@@ -193,8 +206,13 @@ var canvas = (function(canvas) {
 
 		if (echelonNames.length) {
 			ctx.fillStyle = Configure.echelon_color[0];
-			ctx.fillText(Configure.Min_echelon_score, siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor));
-			ctx.fillText(Configure.Max_echelon_score, siteX + siteWidth, siteY);
+			if (Configure.Echelons_show_type == 'score') {
+				ctx.fillText(Configure.Min_echelon_score, siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor));
+				ctx.fillText(Configure.Max_echelon_score, siteX + siteWidth, siteY);
+			} else {
+				ctx.fillText(Configure.Min_echelon_fund, siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor));
+				ctx.fillText(Configure.Max_echelon_fund, siteX + siteWidth, siteY);
+			}
 		} else {
 			ctx.fillStyle = Configure.line_color;
 			ctx.fillText('0', siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor));
@@ -225,10 +243,13 @@ var canvas = (function(canvas) {
 			} else {
 				ctx.font="14px 楷体"
 				ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
-				// 画坐标
-				ctx.fillText(zero, siteX - 30, siteY + siteHeight * (1- winFactor));
-				ctx.fillText(zero + maxOffset, siteX - 30, siteY);
-				ctx.stroke();
+				// 写坐标值
+				if(title != Configure.title2.failedRate ) {  // failedRate 不写
+					ctx.fillText(zero, siteX - 30, siteY + siteHeight * (1- winFactor));
+					ctx.fillText(zero + maxOffset, siteX - 30, siteY);
+					ctx.stroke();
+				}
+
 			}
 		}
 		return szPoint;
@@ -335,8 +356,11 @@ var canvas = (function(canvas) {
 									 
 			drawLine('blue', 850, 150, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName && enableDrawLine);
 			drawLine('green', 0, 1, Configure.title2.failedRate, /*'亏钱效应' == indecatorName &&*/ enableDrawLine);
+			drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName && enableDrawLine);
 			
 			switch(indecatorName) {
+				case '短线资金':
+					break;
 				case '情绪指数':
 					break;
 				case '亏钱效应':
@@ -378,13 +402,19 @@ var canvas = (function(canvas) {
 	
 	var drawEchelon = function(echelonNames) {
 		var ctx = drawing.getContext("2d");		
+		function calPointHeight(g) {
+			return Configure.Echelons_show_type == 'score' ? 
+				siteHeight * (1-winFactor) * parseFloat(g[Configure.Echelons_show_type] - Configure.Min_echelon_score)
+						/ Configure.Max_echelon_score  : 
+				siteHeight * (1-winFactor) * parseFloat(g[Configure.Echelons_show_type] - Configure.Min_echelon_fund)
+						/ Configure.Max_echelon_fund;
+		}
 		for(i = 0; i < Days.length; i ++) {
 			var echelonArr = Days[i][Configure.title2.echelons];
-			echelonArr.forEach((g)=> {    //  g : {name:'', hotPoints:[], score:''};
+			echelonArr.forEach((g)=> {    //  g : {name:'', hotPoints:[], score:'', fund:''};
 				if(echelonNames.indexOf(g.name) != -1) {
 					var drawNameDone = false;	
-					var pointH = siteHeight * (1-winFactor) * 
-									parseFloat(g.score - Configure.Min_echelon_score)/Configure.Max_echelon_score;
+					var pointH =  calPointHeight(g);
 					var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
 							y: siteY + siteHeight*(1-winFactor) - pointH};	
 							
@@ -395,8 +425,7 @@ var canvas = (function(canvas) {
 						
 						echelonsNext.forEach((gNext)=>{
 							if (gNext.name == g.name){
-								var pointNextH = siteHeight * (1-winFactor) * 
-										parseFloat(gNext.score - Configure.Min_echelon_score)/Configure.Max_echelon_score;
+								var pointNextH = calPointHeight(gNext);
 								var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 													y: siteY + siteHeight*(1-winFactor) - pointNextH};
 								ctx.beginPath();
@@ -414,7 +443,7 @@ var canvas = (function(canvas) {
 						ctx.beginPath();
 						ctx.fillStyle= color;
 						ctx.font="14px 楷体";
-						ctx.fillText('<' + g.name + '>', point.x + 5, point.y);
+						ctx.fillText(g.name + g[Configure.Echelons_show_type] , point.x + 5, point.y);
 						ctx.stroke();
 					};
 				}
@@ -423,7 +452,7 @@ var canvas = (function(canvas) {
 		};
 	};
 	// type = Configure.title2.lianbanzhishu  or Configure.title2.zhangtingzhishu
-	var getLastEmotionPoints = function(num, type) {
+	var getLastEmotionPoints = function(num, type = Configure.title2.lianbanzhishu) {
 		var ePoints = type == Configure.ZHISHU_TITLE ? emotionPoints : stEmotionPoints;
 		var n = num > ePoints.length ? ePoints.length : num;
 		var retP = [];

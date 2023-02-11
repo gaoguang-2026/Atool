@@ -202,6 +202,23 @@ var parser = (function(){
 		loadSheet(dateStr);
 		if (!gaiNian) return [];
 		var echelons = [];
+		// 计算梯队的短线资金量
+		function calEchelonFund(hotPoints) {
+			var fundtotal = 0;
+			var param = {
+				hotpointArr: hotPoints,
+				type:2,
+				sort:1
+			}
+			var tickets = getTickets(dateStr, param);
+			tickets.forEach((t)=>{
+				fundtotal += t[Configure.title.realHandoverPercent] * t[Configure.title.realValue] / 100;
+			})
+			fundtotal = (fundtotal / 100000000).toFixed(2);
+			return fundtotal;
+		};
+		//////
+		
 		Configure.echelons.forEach((echelon)=>{
 			var e = {};
 			e.score = 0;
@@ -212,6 +229,7 @@ var parser = (function(){
 					e.score += parseInt(gaiNian.get(hot).weight);
 				}
 			});
+			e.fund = calEchelonFund(e.hotPoints);
 			echelons.push(e);
 		});
 		echelons.sort((a, b) => {
@@ -232,6 +250,7 @@ var parser = (function(){
 				newEche.name = '*' + name;
 				newEche.score = parseInt(value.weight);
 				newEche.hotPoints = [name];
+				newEche.fund = calEchelonFund(newEche.hotPoints);
 				newEchelons.push(newEche);
 			}
 
