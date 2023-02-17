@@ -362,7 +362,7 @@ var canvas = (function(canvas) {
 			stEmotionPoints.push({point:point2, value:parseFloat(Days[i][Configure.title2.subBeili]),
 									 date:Days[i][Configure.title2.date]});
 									 
-			drawLine('blue', 850, 150, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName && enableDrawLine);
+			drawLine('blue', 900, 100, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName && enableDrawLine);
 			drawLine('green', 0, 1, Configure.title2.failedRate, /*'亏钱效应' == indecatorName &&*/ enableDrawLine);
 		
 			
@@ -402,7 +402,7 @@ var canvas = (function(canvas) {
 					drawLine('#20B2AA', 0, 15, Configure.title2.floornum, enableDrawLine);
 					break;
 				case '炸板数量':
-					drawLine('#20B2AA', 0, 15, Configure.title2.failednum, enableDrawLine);
+					drawLine('#20B2AA', 0, 20, Configure.title2.failednum, enableDrawLine);
 					break;
 				default:
 					break;
@@ -495,7 +495,7 @@ var canvas = (function(canvas) {
 				}
 			});
 			if (bottomData != 0) {
-				drawBottom(bottomData, 100);
+				drawBottom(bottomData, 200);
 			}
 		};
 	};

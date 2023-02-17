@@ -29,10 +29,10 @@ var Configure = (function(){
 		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', 
 				'第三代半导体', '中芯国际概念','芯片','集成电路', 'pcb']},
 		{name: '机器人', hotPoints:['机器人', '智能制造', '减速器']},
-		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', 'VR', '虚拟现实', '人工智能', '游戏', '云游戏','手机游戏']},
+		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', 'VR', '虚拟现实', '游戏', '云游戏','手机游戏']},
 		{name: '数据要素', hotPoints:['数据要素','数据确权','信创','数据中心','云计算', '数字经济', '东数西算', 
 						'Web3.0','计算机软件', '国产操作系统']},
-		{name: 'AI', hotPoints:['人工智能','AIGC','ChatGPT']},
+		{name: 'AI', hotPoints:['人工智能','AIGC','ChatGPT', '算力']},
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
 		
 		// 消费
@@ -42,6 +42,7 @@ var Configure = (function(){
 		{name: '消费电子', hotPoints:['消费电子','智能穿戴','无线耳机', '智能音箱', 'OLED']},
 		{name: '家电', hotPoints:['白色家电','黑色家电', '小家电']},
 		{name: '农业', hotPoints:['农业种植', '大豆', '玉米', '农产品加工', '养殖']},	
+		{name: '大消费', hotPoints:['酒店旅游', '乳业', '食品饮料']},	
 		
 		//周期能源
 		{name: '老能源', hotPoints:['煤炭','石油','天然气']},
@@ -316,8 +317,8 @@ var Configure = (function(){
 	var Days_Max_Show_lengh = 60; // canvas 显示的最大期限
 	var Days_Max_lengh = Days_Max_Show_lengh + 5;  
 	
-	var SZ_zero = 3000;    // sz 0轴坐标
-	var SZ_MaxOffset = 300;   // 纵轴
+	var SZ_zero = 3100;    // sz 0轴坐标
+	var SZ_MaxOffset = 200;   // 纵轴
 	
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
 	var BH_zero = BH_Draw_title == title2.height ? 

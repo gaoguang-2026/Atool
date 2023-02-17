@@ -21,11 +21,14 @@ var table = (function(){
 		inputAll.checked = false;
 		inputAll.onchange = function(e){
 			if (e.target.checked) {
-				if (fr.gainian) {
+				if (fr.gainian.length > 1) {
 					Array.from(fr.gainian).forEach((input)=>{
 						input.checked = false;
 						inputOther.checked = false;
 					})
+				} else {
+					fr.gainian.checked = false;
+					inputOther.checked = false;
 				}
 			}
 		};
@@ -37,11 +40,14 @@ var table = (function(){
 		inputOther.checked = false;
 		inputOther.onchange = function(e){
 			if (e.target.checked) {
-				if (fr.gainian) {
+				if (fr.gainian.length > 1) {
 					Array.from(fr.gainian).forEach((input)=>{
 						input.checked = false;
 						inputAll.checked = false;
 					})
+				} else {
+					fr.gainian.checked = false;
+					inputAll.checked = false;
 				}
 			}
 		};
@@ -305,7 +311,7 @@ var table = (function(){
 		
 		var paramGainian = [];
 		var paramGainianForOther = [];
-		if (fr2.gainian) {
+		if (fr2.gainian.length > 1) {
 			Array.from(fr2.gainian).forEach((input)=> {
 				if(input.checked) {
 					paramGainian =paramGainian.concat(input.dataset.titleProp.split(','));
@@ -313,6 +319,12 @@ var table = (function(){
 					paramGainianForOther= paramGainianForOther.concat(input.dataset.titleProp.split(','));
 				}
 			});
+		} else {
+			if (fr2.gainian.checked) {
+				paramGainian =paramGainian.concat(fr2.gainian.dataset.titleProp.split(','));
+			} else {
+				paramGainianForOther= paramGainianForOther.concat(fr2.gainian.dataset.titleProp.split(','));
+			}
 		}
 
 	//	var gainian = fr.gainian;

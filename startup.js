@@ -74,12 +74,16 @@
 		var formUpdate = function() {
 			var fr2 = document.getElementById('form2');
 			var paramEchelons = [];
-			if (fr2.gainian) {
+			if (fr2.gainian.length > 1) {
 				Array.from(fr2.gainian).forEach((input)=> {
 					if(input.checked) {
 						paramEchelons = paramEchelons.concat(input.dataset.titleName);
 					} 
 				});
+			} else {
+				if(fr2.gainian.checked) {
+					paramEchelons = paramEchelons.concat(fr2.gainian.dataset.titleName);
+				} 
 			}
 			
 			// canvas update
