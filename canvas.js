@@ -524,9 +524,7 @@ var canvas = (function(canvas) {
 			ctx.clearRect(0, 0, width, height);
 			
 			//cut Days to display
-			var tmplengh = Days.length > Configure.Days_Max_lengh ? Configure.Days_Max_Show_lengh : 
-						Days.length - (Configure.Days_Max_lengh - Configure.Days_Max_Show_lengh);
-			Days = Days.slice(Days.length - tmplengh, Days.length);
+			Days = Days.slice(Days.length - Configure.Days_Max_Show_lengh, Days.length);
 			drawSite(indecatorName, echelonNames);
 			drawIndicators(indecatorName, echelonNames);
 			drawEchelon(echelonNames);
