@@ -2,6 +2,7 @@
 var canvas = (function(canvas) {
 	var drawing;
 	var Days;
+	var showDaysNumber = Configure.Days_Max_Show_lengh;
 
 	var emotionPoints = [];   // 保存背离率的点
 	var stEmotionPoints = []; // 保存涨停背离率的点
@@ -149,6 +150,8 @@ var canvas = (function(canvas) {
 				d[Configure.title2.dragon] = '';
 			}
 		});
+		showDaysNumber = Days.length > Configure.Days_Max_lengh ? Configure.Days_Max_Show_lengh : 
+						Days.length - (Configure.Days_Max_lengh - Configure.Days_Max_Show_lengh);
 	};
 
 	var drawSite = function(indecatorName, echelonNames) {
@@ -524,7 +527,7 @@ var canvas = (function(canvas) {
 			ctx.clearRect(0, 0, width, height);
 			
 			//cut Days to display
-			Days = Days.slice(Days.length - Configure.Days_Max_Show_lengh, Days.length);
+			Days = Days.slice(Days.length - showDaysNumber, Days.length);
 			drawSite(indecatorName, echelonNames);
 			drawIndicators(indecatorName, echelonNames);
 			drawEchelon(echelonNames);
