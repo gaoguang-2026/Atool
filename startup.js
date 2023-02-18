@@ -63,6 +63,7 @@
 		var dateArr = workbook.getDateArr(()=>{}, '-');
 		$('#date').val(dateArr[dateArr.length - 1]);
 		document.getElementById('date').min = dateArr[0];
+		document.getElementById('date').max = dateArr[dateArr.length - 1];
 
 		dragons.init();
 		table.updateForm();
@@ -74,13 +75,13 @@
 		var formUpdate = function() {
 			var fr2 = document.getElementById('form2');
 			var paramEchelons = [];
-			if (fr2.gainian.length > 1) {
+			if (fr2.gainian && fr2.gainian.length > 1) {
 				Array.from(fr2.gainian).forEach((input)=> {
 					if(input.checked) {
 						paramEchelons = paramEchelons.concat(input.dataset.titleName);
 					} 
 				});
-			} else {
+			} else if(fr2.gainian){
 				if(fr2.gainian.checked) {
 					paramEchelons = paramEchelons.concat(fr2.gainian.dataset.titleName);
 				} 
