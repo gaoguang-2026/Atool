@@ -32,7 +32,7 @@ var Configure = (function(){
 		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', 'VR', '虚拟现实', '游戏', '云游戏','手机游戏']},
 		{name: '数据要素', hotPoints:['数据要素','数据确权','信创','数据中心','云计算', '数字经济', '东数西算', 
 						'Web3.0','计算机软件', '国产操作系统']},
-		{name: 'AI', hotPoints:['人工智能','AIGC','ChatGPT', '算力']},
+		{name: 'AI', hotPoints:['AI','人工智能','AIGC','ChatGPT', '算力']},
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
 		
 		// 消费
@@ -124,7 +124,7 @@ var Configure = (function(){
 	
 	// 封板力度算法
 	var getBoardStrength = function(bType, bPercent, bTime = '') {
-		var retObj = {v:0, description:'@~@'};
+		var retObj = {v:0, description:'--'};
 		switch (bType) {
 			case '一字板':
 				if (bPercent > 5) {
@@ -341,7 +341,7 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 7;  // 最小显示限制
+	var Echelons_show_min_score = 5;  // 最小显示限制
 	var Echelons_show_type = 'score';   //  'fund' or 'score'
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD

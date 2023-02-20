@@ -156,6 +156,9 @@ var table = (function(){
 						break;
 					case 'boardStrength':
 						td.innerHTML = ticket[Configure.title.boardStrength].description;
+						if (ticket[Configure.title.boardStrength].description == '很强') {
+							td.className = 'red';
+						} 
 						Tip.show(td, '封板类型：' + ticket[Configure.title.boardType] + '<br>' +
 								'封板时间: ' + ticket[Configure.title.boardTime] + '<br>' + 
 								'封成比: ' + ticket[Configure.title.boardPercent] + '%');
@@ -177,7 +180,7 @@ var table = (function(){
 								(ticket[Configure.title.profitProportion] ? 
 								'筹码: ' + ticket[Configure.title.profitProportion] : ''));
 						if (ticket[Configure.title.totalDivergence] > 18) {
-							td.className = 'red';
+							td.className = 'grey';
 						} else if(ticket[Configure.title.totalDivergence] > 3){
 							td.className = 'green';
 						}
