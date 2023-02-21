@@ -190,7 +190,7 @@ var canvas = (function(canvas) {
 				
 				if (!!cycle.hotpoint) {
 					ctx.fillStyle = 'orange';
-					ctx.fillText('<' + cycle.hotpoint + '>', siteX + cellWidth  * i + 50, siteY -5);
+					ctx.fillText('<' + cycle.hotpoint + '>', siteX + cellWidth  * i + 20, siteY -5);
 				}
 			}
 		};		

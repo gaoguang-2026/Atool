@@ -318,11 +318,11 @@ var Configure = (function(){
 	var Days_Max_lengh = Days_Max_Show_lengh + 5;  
 	
 	var SZ_zero = 3100;    // sz 0轴坐标
-	var SZ_MaxOffset = 200;   // 纵轴
+	var SZ_MaxOffset = 300;   // 纵轴
 	
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
 	var BH_zero = BH_Draw_title == title2.height ? 
-							 	4 : 4 * 65537;    // boardHeight 0轴坐标
+							 	3 : 3 * 65537;    // boardHeight 0轴坐标
 	var BH_MaxOffset = BH_Draw_title == title2.height ? 
 							6 : 6 * 65537;   // boardHeight 纵轴
 
