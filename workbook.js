@@ -21,7 +21,7 @@
 		var persons = [];  // 存储要使用的表
         // 遍历每张表读取
         for (var sheet in Book.Sheets) {
-            if (Book.Sheets.hasOwnProperty(sheet) && name && name.includes(sheet)) {
+            if (Book.Sheets.hasOwnProperty(sheet) && name && name.substr(-4) == (sheet)) {
 				fromTo = Book.Sheets[sheet]['!ref'];
                 persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[sheet]));
                 //  break; // 如果只取第一张表，就取消注释这行
