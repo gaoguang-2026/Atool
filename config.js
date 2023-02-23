@@ -22,7 +22,7 @@ var Configure = (function(){
 		{name: '风光', hotPoints:['光伏','有机硅概念','风电', '绿电']},
 		{name: '电力', hotPoints:['智能电网', '特高压', '虚拟电厂', '电力', '充电桩']},
 		{name: '储能', hotPoints:[ '储能', 'HJT电池','钒电池', 'TOPCON电池','盐湖提锂', '锂电池', 'HJT电池']},
-		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理','一体化压铸', '比亚迪']},
+		{name: '新能源车', hotPoints:['新能源汽车', '汽车零部件', '汽车热管理','一体化压铸', '比亚迪', '毫米波雷达']},
 		{name: '环保', hotPoints:['环保', '污水处理','固废处理','绿色发电']},
 		
 		//大科技
@@ -314,8 +314,8 @@ var Configure = (function(){
 	var MAX_BEILI = ZHISHU_TITLE == title2.zhangtingzhishu ? 7 : 10;    //最大背离率 ,  影响canvas纵坐标
 	
 	var winFactor = 0.4;    // 两个窗口的比率 
-	var Days_Max_Show_lengh = 60; // canvas 显示的最大期限
-	var Days_Max_lengh = Days_Max_Show_lengh + 5;  
+	var Days_Show_reserved_lengh = 5;  //预留的天数，为了算显示第一天的MA5
+	var Days_Max_lengh = 125;   // 最大期限
 	
 	var SZ_zero = 3100;    // sz 0轴坐标
 	var SZ_MaxOffset = 300;   // 纵轴
@@ -385,7 +385,7 @@ var Configure = (function(){
 		titleTactics:titleTactics,
 		titleIndustry:titleIndustry,
 		Days_Max_lengh:Days_Max_lengh,
-		Days_Max_Show_lengh:Days_Max_Show_lengh,
+		Days_Show_reserved_lengh:Days_Show_reserved_lengh,
 		echelons:echelons,
 		selectIndicators:selectIndicators,
 		MAX_BEILI:MAX_BEILI,

@@ -13,8 +13,9 @@
 		oStrong.appendChild(oTxt);
 		oDiv.appendChild(oStrong);
 	};
-	var drawimage = function(echelonNames = [], indecator = '') {
-		canvas.draw(echelonNames, indecator);
+	var drawimage = function(echelonNames = []) {
+		canvas.draw(echelonNames, document.getElementById('indecator').value, 
+				document.getElementById('showdays').value);
 	};
 	
 	
@@ -64,7 +65,7 @@
 		$('#date').val(dateArr[dateArr.length - 1]);
 		document.getElementById('date').min = dateArr[0];
 		document.getElementById('date').max = dateArr[dateArr.length - 1];
-
+		
 		dragons.init();
 		table.updateForm();
 		
@@ -88,7 +89,7 @@
 			}
 			
 			// canvas update
-			drawimage(paramEchelons, document.getElementById('indecator').value);
+			drawimage(paramEchelons);
 			// Echelon update
 			var type = document.getElementById('form1').gtype[3].checked ? 
 						3 : 0;   // 画趋势还是连扳
@@ -106,6 +107,7 @@
 		$('#form1').change(formUpdate);
 		$('#form2').change(formUpdate);
 		$('#indecator').change(formUpdate);
+		$('#showdays').change(formUpdate);
 	};
 	
     $('#excel-file').change(function(e) {
@@ -123,7 +125,7 @@
             }
 			init();
 			
-			drawimage([], document.getElementById('indecator').value);
+			drawimage();
 			drawEchelons();
 			fillTicketsTable();
 			
