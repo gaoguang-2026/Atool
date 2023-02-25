@@ -19,7 +19,7 @@ var canvas = (function(canvas) {
 	var cellWidth = 0;
 	//var cellHeight;
 	var cell_factor = 0.92;
-	var winFactor = 0.4;
+	var winFactor = Configure.winFactor;
 
 	var getDayFromDateStr = function(dateStr) {
 		if (!AllDays || !AllDays.length ) {
@@ -76,16 +76,15 @@ var canvas = (function(canvas) {
 			// 资金总量  涨停的总和-跌停的总和
 			day[Configure.title2.totalFund] = 0;
 			tickets.forEach((ticket)=>{
+				var fund = ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100 ?
+							ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100 : 0;
 				if(ticket[dayNumberTitle] >= 1) {
-					day[Configure.title2.totalFund] += 
-					ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100;
+					day[Configure.title2.totalFund] += fund;
 				} else if(ticket[dayNumberTitle] == 0 && ticket[boardTimeTilte] == '--') {
-					day[Configure.title2.totalFund] -= 
-						ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100;
+					day[Configure.title2.totalFund] -= fund;
 				}
 			});
 			day[Configure.title2.totalFund] = (day[Configure.title2.totalFund] / 100000000).toFixed(2);   // 亿为单位
-			
 		}
 		
 		var calMa5AndBeili = function( ZHISHU_TITLE ,MA5Title,BEILItitle) {
@@ -108,11 +107,11 @@ var canvas = (function(canvas) {
 		calMa5AndBeili(Configure.ZHISHU_SUB_TITLE, Configure.title2.subMa5, Configure.title2.subBeili);
 		return day;
 	};
+	
+	var resize = function(c, winXfactor) {
+		var ctx = c.getContext("2d");
+		ctx.clearRect(0, 0, width, height);
 
-	var init = function(c, winXfactor = 1) {
-		drawing = c;
-		AllDays = workbook.getDatesSheet();
-		
 		width = c.width * winXfactor;
 		height = c.height;
 
@@ -126,7 +125,13 @@ var canvas = (function(canvas) {
 					' siteY:' + siteY +
 					' siteWidth:' + siteWidth + 
 					' siteHeight:' + siteHeight);
-					
+	};
+
+	var init = function(c, winXfactor = 1) {
+		drawing = c;
+		resize(c, winXfactor);
+		
+		AllDays = workbook.getDatesSheet();			
 		// 通过parser分析出当天的echelon
 		AllDays.forEach((d)=>{
 			var dateStr = Configure.formatExcelDate(d[Configure.title2.date], '');
@@ -535,6 +540,7 @@ var canvas = (function(canvas) {
 	
 	return {
 		init: init,
+		resize:resize,
 		draw: draw,
 		drawEmotionCycle:drawEmotionCycle,
 		getLastEmotionPoints:getLastEmotionPoints,

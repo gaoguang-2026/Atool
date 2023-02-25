@@ -90,15 +90,27 @@
 			
 			// canvas update
 			drawimage(paramEchelons);
-			// Echelon update
-			var type = document.getElementById('form1').gtype[3].checked ? 
-						3 : 0;   // 画趋势还是连扳
-			drawEchelons(paramEchelons, type);
+			if (document.getElementById('showdays').value < 120 ) { //canvas显示大于等于120天时不显示Echelons
+				// Echelon update 
+				var type = document.getElementById('form1').gtype[3].checked ? 
+							3 : 0;   // 画趋势还是连扳
+				drawEchelons(paramEchelons, type);
+			}
 			
 			// table update
 			fillTicketsTable();
 			
 			displayAI(AI.getRecommend());
+		};
+		
+		var showDaysUpdate = function() {
+			if (document.getElementById('showdays').value >= 120 ) {  // canvas显示大于等于120天时resize宽度
+				canvas.resize(document.getElementById("drawing"), 1);
+				drawimage([]);
+			} else {
+				canvas.resize(document.getElementById("drawing"), Configure.WinXFactor);
+				formUpdate();
+			}
 		};
 		$('#date').change(function(e) {
 			table.updateForm();
@@ -107,7 +119,7 @@
 		$('#form1').change(formUpdate);
 		$('#form2').change(formUpdate);
 		$('#indecator').change(formUpdate);
-		$('#showdays').change(formUpdate);
+		$('#showdays').change(showDaysUpdate);
 	};
 	
     $('#excel-file').change(function(e) {

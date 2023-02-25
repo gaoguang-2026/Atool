@@ -314,9 +314,8 @@ var Configure = (function(){
 			title2.lianbanzhishu : title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
 	var MAX_BEILI = ZHISHU_TITLE == title2.zhangtingzhishu ? 7 : 10;    //最大背离率 ,  影响canvas纵坐标
 	
-	var winFactor = 0.4;    // 两个窗口的比率 
 	var Days_Show_reserved_lengh = 5;  //预留的天数，为了算显示第一天的MA5
-	var Days_Max_lengh = 125;   // 最大期限
+	var Days_Max_lengh = 250;   // 最大期限
 	
 	var SZ_zero = 3100;    // sz 0轴坐标
 	var SZ_MaxOffset = 300;   // 纵轴
@@ -335,6 +334,7 @@ var Configure = (function(){
 	
 	// 左右窗口
 	var WinXFactor = 0.6;     //  左边窗口占比
+	var winFactor = 0.4;    // 上下窗口的比率 
 	
 	var Echelons_Draw_NUM = 2;
 	var Echelons_ticket_NUM = 7;     // 画出来的数量
@@ -402,6 +402,7 @@ var Configure = (function(){
 		Dead_Handover:Dead_Handover,
 		Min_handover:Min_handover,
 		WinXFactor:WinXFactor,
+		winFactor:winFactor,
 		Min_echelon_score:Min_echelon_score,
 		Max_echelon_score:Max_echelon_score,
 		Min_echelon_fund:Min_echelon_fund,
