@@ -118,7 +118,7 @@
 				isSelect = false;
 			} 
 			//市值
-			if(t[Configure.title.value] < Configure.Band_Min_Value) {
+			if(t[Configure.title.realValue] < Configure.Band_Min_Value) {
 				isSelect = false;
 			}
 			return isSelect;

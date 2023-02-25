@@ -86,7 +86,7 @@
 	};
 	
 	var getAllTickets = function() {
-		return getSheet('涨幅排名8-5');
+		return getSheet('涨幅排名');
 	};
 	
 	// param = {sheetName: '0707',ticketCode:'SZ002527'}}
