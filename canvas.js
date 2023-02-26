@@ -10,7 +10,7 @@ var canvas = (function(canvas) {
 
 	var width = 0;
 	var height = 0;
-	var width_factor = 0.9;
+	var width_factor = 0.85;
 	var height_factor = 0.8;
 	var siteX;
 	var siteY;
