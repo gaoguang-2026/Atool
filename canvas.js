@@ -126,11 +126,8 @@ var canvas = (function(canvas) {
 					' siteWidth:' + siteWidth + 
 					' siteHeight:' + siteHeight);
 	};
-
-	var init = function(c, winXfactor = 1) {
-		drawing = c;
-		resize(c, winXfactor);
-		
+	
+	var reload = function() {	
 		AllDays = workbook.getDatesSheet();			
 		// 通过parser分析出当天的echelon
 		AllDays.forEach((d)=>{
@@ -151,6 +148,12 @@ var canvas = (function(canvas) {
 				d[Configure.title2.dragon] = '';
 			}
 		});
+	}
+
+	var init = function(c, winXfactor = 1) {
+		drawing = c;
+		resize(c, winXfactor);
+		reload();
 	};
 
 	var drawSite = function(indecatorName, echelonNames) {
@@ -541,6 +544,7 @@ var canvas = (function(canvas) {
 	return {
 		init: init,
 		resize:resize,
+		reload:reload,
 		draw: draw,
 		drawEmotionCycle:drawEmotionCycle,
 		getLastEmotionPoints:getLastEmotionPoints,

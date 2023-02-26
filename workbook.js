@@ -67,7 +67,11 @@
 		var sheet = getSheet('情绪');
 		var start = sheet.length > Configure.Days_Max_lengh ? 
 						sheet.length - Configure.Days_Max_lengh : 0;
-		return  sheet.slice(start);
+		var lastDate = Configure.getDateStr(Configure.date, '-');
+		var end = sheet.findIndex((d)=>{
+			return Configure.formatExcelDate(d[Configure.title2.date]) > lastDate;
+		});
+		return  end > start ? sheet.slice(start, end) : sheet.slice(start);
 	};
 	
 	var getDateArr = function(sort, separator = '') {

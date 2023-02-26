@@ -64,7 +64,7 @@
 		var dateArr = workbook.getDateArr(()=>{}, '-');
 		$('#date').val(dateArr[dateArr.length - 1]);
 		document.getElementById('date').min = dateArr[0];
-		document.getElementById('date').max = dateArr[dateArr.length - 1];
+	//	document.getElementById('date').max = dateArr[dateArr.length - 1];
 		
 		dragons.init();
 		table.updateForm();
@@ -112,14 +112,33 @@
 				formUpdate();
 			}
 		};
-		$('#date').change(function(e) {
-			table.updateForm();
-			formUpdate();
-		});
 		$('#form1').change(formUpdate);
 		$('#form2').change(formUpdate);
 		$('#indecator').change(formUpdate);
 		$('#showdays').change(showDaysUpdate);
+		
+		var dateChange = function(e) {
+			Configure.date = new Date($('#date')[0].value);
+	//		if (document.getElementById('showdays').value < 120 ) {  // canvas显示大于等于120天时不reload
+				canvas.reload();
+	//		}
+			table.updateForm();
+			formUpdate();
+		}
+		
+		var dateOnclick = function(e) {
+			var date = new Date($('#date')[0].value);
+			date = e.currentTarget.id == 'next' ? 
+					date.setDate(date.getDate() + 1) : date.setDate(date.getDate() - 1);
+			if(date <= new Date()) {
+				$('#date').val(Configure.getDateStr(new Date(date), '-'));
+				dateChange();
+			}
+		};
+		
+		$('#date').change(dateChange);
+		$('#pre').click(dateOnclick);
+		$('#next').click(dateOnclick);
 	};
 	
     $('#excel-file').change(function(e) {
