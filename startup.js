@@ -5,7 +5,8 @@
 		while(oDiv.hasChildNodes()) {
 			oDiv.removeChild(oDiv.lastChild);
 		};
-			
+		
+		oDiv.style.color = oDiv.style.borderColor  = recommend.color;
         var oStrong = document.createElement("div");
         var oTxt = document.createTextNode(recommend.txt);
 		Tip.show(oDiv, recommend.tatics);

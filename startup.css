@@ -26,6 +26,8 @@ td,tr	{}.green{background-color: green}
 		.bold { font-weight:bold}
 		.highlight{background-color: rgba(255, 128, 0, 0.3)}
 		
+
+		
 #core {
 	font-weight:900;
 	font-family:"楷体"; 
@@ -36,7 +38,6 @@ td,tr	{}.green{background-color: green}
 }
 
 #AI {
-	color: red;
 	background-color: blink;
 	font-weight:900;
 	font-family:"楷体"; 

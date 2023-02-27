@@ -9,17 +9,17 @@ var AI = (function(){
 	
 	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
 	var cangMap = new Map([
-		['冰点', {tips:'提防二次冰点，低位潜伏', stage:'退三', tactics:['打板']}],    // 退三
-		['二次冰点', {tips:'冰点衰竭，打板确认龙头', stage:'启动', tactics:['打板']}],			
-		['修复', {tips:'加仓，打板龙头和低位首发', stage:'发酵', tactics:['打板']}],    	// 启动
-		['持续修复', {tips:'去弱留强', stage:'加速', tactics:['打板']}],				// 发酵
-		['分歧', {tips:'关注中位大长腿', stage:'分歧', tactics:['打板']}],    						
-		['高潮', {tips:'注意中位分化，关注低位补涨', stage:'加速', tactics:['打板']}],		// 加速
-		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['打板']}],			
-		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['打板']}],			// 分歧
-		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['高位缠打']}],				// 退一
-		['持续退潮', {tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['高位缠打']}],			// 退二
-		['混沌', {tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['趋势波段']}]
+		['冰点', {tips:'提防二次冰点，低位潜伏', stage:'退三', tactics:['博弈']}],    // 退三
+		['二次冰点', {tips:'冰点衰竭，打板确认龙头', stage:'启动', tactics:['博弈']}],			
+		['修复', {tips:'加仓，打板龙头和低位首发', stage:'发酵', tactics:['博弈']}],    	// 启动
+		['持续修复', {tips:'去弱留强', stage:'加速', tactics:['主升']}],				// 发酵
+		['分歧', {tips:'关注中位大长腿', stage:'分歧', tactics:['主升']}],    						
+		['高潮', {tips:'注意中位分化，关注低位补涨', stage:'加速', tactics:['主升']}],		// 加速
+		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['主升']}],			
+		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['主升']}],			// 分歧
+		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['退潮']}],				// 退一
+		['持续退潮', {tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['退潮']}],			// 退二
+		['混沌', {tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['博弈']}]
 	]);
 	
 	var getAndUpdateLoacalstorage = function() {
@@ -123,7 +123,7 @@ var AI = (function(){
 		var emotionPoints = canvas.getLastEmotionPoints(3);    
 		var sumLevel = 0;
 		var getLevel = function(point) {
-			return Math.floor(point.value/2.5);
+			return Math.floor(point.value * 4/Configure.MAX_BEILI);
 		}
 		for(var i = 0; i < 3; i ++){
 			sumLevel += getLevel(emotionPoints[i]);
@@ -131,16 +131,16 @@ var AI = (function(){
 		var angle = getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var value = parseFloat(emotionPoints[0].value);
 		var level = getLevel(emotionPoints[0]) - sumLevel/3;
-		if(value < 0) {
+		if(value < Configure.MAX_BEILI / 8) {
 			dataStorage.emotion = '冰点';
-			if (parseFloat(emotionPoints[1].value) < 0 || 
-				parseFloat(emotionPoints[2].value) < 0){
+			if (parseFloat(emotionPoints[1].value) < Configure.MAX_BEILI / 4 || 
+				parseFloat(emotionPoints[2].value) < Configure.MAX_BEILI / 4){
 					dataStorage.emotion = '混沌';
 			}
-		} else if(value < 3) {
+		} else if(value < Configure.MAX_BEILI / 4) {
 			dataStorage.emotion = '冰点';
-			if (parseFloat(emotionPoints[1].value) < 2.5 || 
-				parseFloat(emotionPoints[2].value) < 2.5){
+			if (parseFloat(emotionPoints[1].value) < Configure.MAX_BEILI / 4 || 
+				parseFloat(emotionPoints[2].value) < Configure.MAX_BEILI / 4){
 					dataStorage.emotion = '二次冰点';
 			}
 			// 混沌期 前5个交易日连扳背离率小于涨停背离率出现3次以上且值小于5为混沌期。
@@ -148,15 +148,15 @@ var AI = (function(){
 			var ztEPoints = canvas.getLastEmotionPoints(5, Configure.title2.zhangtingzhishu); 
 			var n = 0;
 			for(var i = 0 ; i < 5 ; i ++) {
-				if(ztEPoints[i].value - ePoints[i].value > 0 &&
-					ePoints[i].value < 5) {
+				if(ztEPoints[i].value - ePoints[i].value > Configure.MAX_BEILI / 8 &&
+					ePoints[i].value < Configure.MAX_BEILI / 2) {
 					n ++;
 				}
 			}
 			if(n >= 3) {
 				dataStorage.emotion = '混沌';
 			}
-		} else if(value < 5) {
+		} else if(value < Configure.MAX_BEILI / 2) {
 			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
 			else {
 				if(angle > 0) {
@@ -165,7 +165,7 @@ var AI = (function(){
 					dataStorage.emotion = level < 0 ?  '持续退潮' : '分歧';
 				}
 			}   
-		} else if(value < 7) {
+		} else if(value < Configure.MAX_BEILI * 3 / 4) {
 			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
 			else  {
 				if(angle > 0) {
@@ -176,13 +176,13 @@ var AI = (function(){
 			}
 		} else {
 			dataStorage.emotion = '高潮';
-			if (parseFloat(emotionPoints[1].value) > 7 || 
-				parseFloat(emotionPoints[2].value) > 7){
+			if (parseFloat(emotionPoints[1].value) > Configure.MAX_BEILI * 3 / 4 || 
+				parseFloat(emotionPoints[2].value) > Configure.MAX_BEILI * 3 / 4){
 				dataStorage.emotion = angle > 0 ? '继续高潮' : '分化';
 			}
 		}		
 		return '情绪' + dataStorage.emotion + '，' + cangMap.get(dataStorage.emotion).tips + '。' + 
-				getEmotionSuccessRate(dataStorage.emotion) + ' 模式：[' + 
+				getEmotionSuccessRate(dataStorage.emotion) + ' 窗口：[' + 
 				cangMap.get(dataStorage.emotion).tactics.toString() + ']，';
 	};
 	
@@ -192,7 +192,7 @@ var AI = (function(){
 		return parseInt(parseInt(t[Configure.title.score]) - 
 				t[Configure.title.totalDivergence] * dataStorage.scoreFator + 
 				// 情绪高位，板块越向低位找
-				((5 - emotionPoints[0].value) * 3)* t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] +
+				((Configure.MAX_BEILI / 2 - emotionPoints[0].value) * 3)* t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] +
 				t[Configure.title.boardStrength].v * 10) +    // 封板强度 X10
 				(Configure.isSZTicket(t[Configure.title.code]) ? 100 : 0);   // 深市票
 	};
@@ -326,7 +326,10 @@ var AI = (function(){
 		saveLoacalstorage(dataStorage);
 		
 		canvas.drawEmotionCycle(dragonStage, cangMap.get(dataStorage.emotion).stage);
-		return {txt: recommendText, tatics: getTaticsTxt()};
+		
+		var displayColor = cangMap.get(dataStorage.emotion).tactics == '博弈' ? 'blue' :
+					cangMap.get(dataStorage.emotion).tactics == '主升' ? 'red' : 'green';
+		return {color: displayColor, txt: recommendText, tatics: getTaticsTxt()};
 	};
 	
 	return {

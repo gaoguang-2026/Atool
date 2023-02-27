@@ -187,7 +187,9 @@ var canvas = (function(canvas) {
 			var cycle = workbook.getEmotionalCycles(Configure.formatExcelDate(Days[i][Configure.title2.date]));
 			if (cycle && !!cycle.cycles) {
 				ctx.font="14px 楷体";
-				ctx.fillStyle = Configure.site_color;
+				ctx.fillStyle = cycle.cycles.includes('M') ? 'red' : 
+					cycle.cycles.includes('m') ? 'green' :
+					cycle.cycles.includes('H') || cycle.cycles.includes('P') ? 'blue' : Configure.site_color;
 				ctx.fillText(cycle.cycles, siteX + cellWidth  * i, siteY -5);
 				
 				if (!!cycle.hotpoint) {
@@ -202,6 +204,12 @@ var canvas = (function(canvas) {
 		ctx.strokeStyle = Configure.site_color;
 		ctx.moveTo(siteX,siteY + siteHeight * (1-winFactor));
 		ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor));	
+		// 画内部网格
+		for(var i = 1; i <= 3; i ++) {
+			ctx.moveTo(siteX,siteY + siteHeight * (1-winFactor)*i/4);
+			ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor)*i/4);	
+		}
+		///
 
 		if (echelonNames.length) {
 			ctx.fillStyle = Configure.echelon_color[0];
@@ -504,7 +512,7 @@ var canvas = (function(canvas) {
 		};
 	};
 	// type = Configure.title2.lianbanzhishu  or Configure.title2.zhangtingzhishu
-	var getLastEmotionPoints = function(num, type = Configure.title2.lianbanzhishu) {
+	var getLastEmotionPoints = function(num, type = Configure.title2.zhangtingzhishu) {
 		var ePoints = type == Configure.ZHISHU_TITLE ? emotionPoints : stEmotionPoints;
 		var n = num > ePoints.length ? ePoints.length : num;
 		var retP = [];

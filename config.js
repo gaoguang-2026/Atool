@@ -274,9 +274,9 @@ var Configure = (function(){
 	};
 	var titleTactics = {
 		tractic:'模式',
-		ticket:'个股形态',
 		market:'指数和题材',
 		emotion:'市场情绪',
+		ticket:'个股形态',
 		name:'名称',
 		condition: '能见度',
 		selectTicket:'选股',
@@ -312,19 +312,19 @@ var Configure = (function(){
 	var ZHISHU_TITLE = title2.zhangtingzhishu;    // 情绪指标， title2.lianbanzhishu 
 	var ZHISHU_SUB_TITLE = ZHISHU_TITLE == title2.zhangtingzhishu ?
 			title2.lianbanzhishu : title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
-	var MAX_BEILI = ZHISHU_TITLE == title2.zhangtingzhishu ? 7 : 10;    //最大背离率 ,  影响canvas纵坐标
+	var MAX_BEILI = ZHISHU_TITLE == title2.zhangtingzhishu ? 8 : 10;    //最大背离率 ,  影响canvas纵坐标
 	
 	var Days_Show_reserved_lengh = 5;  //预留的天数，为了算显示第一天的MA5
 	var Days_Max_lengh = 250;   // 最大期限
 	
-	var SZ_zero = 3100;    // sz 0轴坐标
-	var SZ_MaxOffset = 300;   // 纵轴
+	var SZ_zero = 3000;    // sz 0轴坐标
+	var SZ_MaxOffset = 400;   // 纵轴
 	
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
 	var BH_zero = BH_Draw_title == title2.height ? 
-							 	3 : 3 * 65537;    // boardHeight 0轴坐标
+							 	2 : 2 * 65537;    // boardHeight 0轴坐标
 	var BH_MaxOffset = BH_Draw_title == title2.height ? 
-							6 : 6 * 65537;   // boardHeight 纵轴
+							8 : 8 * 65537;   // boardHeight 纵轴
 
 	
 	var Min_echelon_score = 0;    //Echelons_show_type == 'score' 时draw 的条件  
@@ -334,7 +334,7 @@ var Configure = (function(){
 	
 	// 左右窗口
 	var WinXFactor = 0.6;     //  左边窗口占比
-	var winFactor = 0.4;    // 上下窗口的比率 
+	var winFactor = 0.3;    // 上下窗口的比率 
 	
 	var Echelons_Draw_NUM = 2;
 	var Echelons_ticket_NUM = 7;     // 画出来的数量
