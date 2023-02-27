@@ -6,7 +6,8 @@ var canvas = (function(canvas) {
 
 	var emotionPoints = [];   // 保存背离率的点
 	var stEmotionPoints = []; // 保存涨停背离率的点
-	var szPoints = [];   // 保存sz的点
+	
+	var zbPoints = {};   // 保存其他指标的点
 
 	var width = 0;
 	var height = 0;
@@ -350,6 +351,11 @@ var canvas = (function(canvas) {
 
 				}
 			}
+			if (!zbPoints[title]) {
+				zbPoints[title] = [];
+			}
+			zbPoints[title].push({point:szPoint, value:parseFloat(Days[i][title]),
+									 date:Days[i][Configure.title2.date]});		
 			return szPoint;
 		};
 		
@@ -363,63 +369,35 @@ var canvas = (function(canvas) {
 				drawUp();
 			}
 			
+			var pointLB = drawLine('#DC143C', 0, 10, Configure.title2.subBeili, 
+							indecatorName == '连扳背离');
+			stEmotionPoints.push({point:pointLB, value:parseFloat(Days[i][Configure.title2.subBeili]),
+									 date:Days[i][Configure.title2.date]});
+			
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
 								Configure.SZ_MaxOffset, Configure.title2.sz , 
-								indecatorName == '上证指数');
-			szPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.sz]),
-									 date:Days[i][Configure.title2.date]});
-									 
-			var point2 = drawLine('#DC143C', 0, 10, Configure.title2.subBeili, 
-							indecatorName == '连扳背离');
-			stEmotionPoints.push({point:point2, value:parseFloat(Days[i][Configure.title2.subBeili]),
-									 date:Days[i][Configure.title2.date]});
-									 
+								indecatorName == '上证指数');	
+
+			drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);
+			drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName);
 			drawLine('blue', 900, 100, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName );
 			drawLine('green', 0, 1, Configure.title2.failedRate, /*'亏钱效应' == indecatorName &&*/ echelonNames.length == 0);
-		
+			drawLine(Configure.boardHeight_color, 5, 10, Configure.title2.lianban, '连扳数量' == indecatorName);
+			drawLine(Configure.boardHeight_color, 30, 40, Configure.title2.boardnum, '涨停数量' == indecatorName);
+			drawLine('#20B2AA', 0, 15, Configure.title2.floornum, '跌停数量' == indecatorName);
+			drawLine('#20B2AA', 0, 20, Configure.title2.failednum, '炸板数量' == indecatorName);
 			
-			switch(indecatorName) {
-				case '连扳晋级':
-					drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);
-					break;
-				case '短线资金':
-					drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName);
-					break;
-				case '情绪指数':
-					break;
-				case '亏钱效应':
-					break;
-				case '上证指数':
-					break;
-				case '连扳背离':
-					break;
-				case '连扳高度':
-					//画连扳高度
-					point = drawLine(Configure.boardHeight_color, Configure.BH_zero,
-								Configure.BH_MaxOffset, Configure.BH_Draw_title);
-					if (i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
-					   Days[i][Configure.BH_Draw_title] >= Days[i+1][Configure.BH_Draw_title] &&
-					   Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
-						ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + '', point.x - 10, point.y - 5);
-						ctx.stroke();
-					}
-					break;
-				case '连扳数量':
-					drawLine(Configure.boardHeight_color, 5, 10, Configure.title2.lianban);
-					break;
-				case '涨停数量':
-					drawLine(Configure.boardHeight_color, 30, 40, Configure.title2.boardnum);
-					break;
-				case '跌停数量':
-					drawLine('#20B2AA', 0, 15, Configure.title2.floornum);
-					break;
-				case '炸板数量':
-					drawLine('#20B2AA', 0, 20, Configure.title2.failednum);
-					break;
-				default:
-					break;
+			//画连扳高度
+			point = drawLine(Configure.boardHeight_color, Configure.BH_zero,
+					Configure.BH_MaxOffset, Configure.BH_Draw_title, '连扳高度' == indecatorName);
+			if ('连扳高度' == indecatorName &&
+				i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
+				Days[i][Configure.BH_Draw_title] >= Days[i+1][Configure.BH_Draw_title] &&
+					Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
+				ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + '', point.x - 10, point.y - 5);
+				ctx.stroke();
 			}
-
+			////连扳高度
 		};
 		ctx.stroke();
 	};
@@ -522,11 +500,12 @@ var canvas = (function(canvas) {
 		return retP;
 	};
 	
-	var getLastSZPoints = function(num) {
-		var n = num > szPoints.length ? szPoints.length : num;
+	var getLastZBPoints = function(num, indecatorName = Configure.title2.sz) {
+		var pArray = zbPoints[indecatorName] ? zbPoints[indecatorName] : [];
+		var n = num > pArray.length ? pArray.length : num;
 		var retP = [];
-		for(var i = szPoints.length - 1; i > szPoints.length - 1 - n; i --) {
-			retP.push(szPoints[i]);
+		for(var i = pArray.length - 1; i > pArray.length - 1 - n; i --) {
+			retP.push(pArray[i]);
 		}
 		return retP;
 	};
@@ -556,6 +535,6 @@ var canvas = (function(canvas) {
 		draw: draw,
 		drawEmotionCycle:drawEmotionCycle,
 		getLastEmotionPoints:getLastEmotionPoints,
-		getLastSZPoints:getLastSZPoints
+		getLastZBPoints:getLastZBPoints
 	}
 })();

@@ -119,6 +119,34 @@ var AI = (function(){
 		return num == 0 || 'NaN' ? '' : '前' +  total + '天出现' + 
 			num + '次,成功率' + parseInt(totalValue * 100/num) + '%。';
 	};
+	
+	var checkZBHigherDays = function(title, days, minDays, threshold) {
+		var zbPoints = canvas.getLastZBPoints(days, title);   
+		var n = 0;
+		for(var i = 0 ; i < days ; i ++) {
+			if(zbPoints[i].value > threshold) {
+				n ++;
+			}
+		}
+		if(n >= minDays) {
+			return true;
+		}
+		return false;
+	};
+	var checkZBUnderDays = function(title, days, maxDays, threshold) {
+		var zbPoints = canvas.getLastZBPoints(days, title);   
+		var n = 0;
+		for(var i = 0 ; i < days ; i ++) {
+			if(zbPoints[i].value < threshold) {
+				n ++;
+			}
+		}
+		if(n >= maxDays) {
+			return true;
+		}
+		return false;
+	};
+	
 	var getEmotions = function() {
 		var emotionPoints = canvas.getLastEmotionPoints(3);    
 		var sumLevel = 0;
@@ -133,13 +161,16 @@ var AI = (function(){
 		var level = getLevel(emotionPoints[0]) - sumLevel/3;
 		if(value < Configure.MAX_BEILI / 8) {
 			dataStorage.emotion = '冰点';
-			if (parseFloat(emotionPoints[1].value) < Configure.MAX_BEILI / 4 || 
-				parseFloat(emotionPoints[2].value) < Configure.MAX_BEILI / 4){
+			if (checkZBHigherDays(Configure.BH_Draw_title, 7, 3, 4) &&
+				(parseFloat(emotionPoints[1].value) < Configure.MAX_BEILI / 4 || 
+					parseFloat(emotionPoints[2].value) < Configure.MAX_BEILI / 4 )
+					){
 					dataStorage.emotion = '混沌';
 			}
 		} else if(value < Configure.MAX_BEILI / 4) {
 			dataStorage.emotion = '冰点';
-			if (parseFloat(emotionPoints[1].value) < Configure.MAX_BEILI / 4 || 
+			if (checkZBHigherDays(Configure.title2.failedRate, 4, 3, 0.25) &&
+				parseFloat(emotionPoints[1].value) < Configure.MAX_BEILI / 4 || 
 				parseFloat(emotionPoints[2].value) < Configure.MAX_BEILI / 4){
 					dataStorage.emotion = '二次冰点';
 			}
@@ -153,9 +184,11 @@ var AI = (function(){
 					n ++;
 				}
 			}
-			if(n >= 3) {
+			if(checkZBUnderDays(Configure.title2.totalFund, 7, 5, 200) || 
+				(n >= 3 && checkZBHigherDays(Configure.title2.lianban, 1, 1, 7))) {
 				dataStorage.emotion = '混沌';
 			}
+			//////
 		} else if(value < Configure.MAX_BEILI / 2) {
 			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
 			else {
@@ -171,7 +204,8 @@ var AI = (function(){
 				if(angle > 0) {
 					dataStorage.emotion = level > 0 ?  '持续修复' : '分歧';
 				} else {
-					dataStorage.emotion = level < 0 ?  '退潮' : '分歧';
+					dataStorage.emotion = level < 0 && 
+						checkZBunderDays(Configure.BH_Draw_title, 2, 2, 5) ?  '退潮' : '分歧';
 				}
 			}
 		} else {
@@ -199,7 +233,7 @@ var AI = (function(){
 	
 	var getBandtickets = function() {
 		// 算斜率
-		var szPoinsts = canvas.getLastSZPoints(Configure.Band_MA_NUM);    
+		var szPoinsts = canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.sz);    
 		var sumAngle = 0;
 		var sumValue = 0;
 		for(var i = 0; i < Configure.Band_MA_NUM - 1; i ++){
@@ -313,7 +347,10 @@ var AI = (function(){
 		};
 	};
 	var isBandInCharge = function() {
-		return dataStorage.emotion == '混沌';
+		return dataStorage.emotion == '混沌' || 
+				checkZBUnderDays(Configure.title2.lianban, 5, 4, 7) ||
+				checkZBUnderDays(Configure.BH_Draw_title, 5, 4, 4) ||
+				checkZBUnderDays(Configure.title2.boardnum, 5, 4, 30);
 	};
 	var getRecommend = function() {
 		clearAndInit();
