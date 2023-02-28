@@ -7,6 +7,7 @@ var AI = (function(){
 	var RectifyDay_num = Configure.Days_Max_lengh;
 	var Rectify_factor = 7;
 	
+	// emotion v1
 	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
 	var cangMap = new Map([
 		['冰点', {tips:'提防二次冰点，低位潜伏', stage:'退三', tactics:['退潮']}],    // 退三
@@ -21,6 +22,16 @@ var AI = (function(){
 		['持续退潮', {tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['退潮']}],			// 退二
 		['混沌', {tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['博弈']}]
 	]);
+	////////
+	
+	var EnableEmotionalogicV2 = false;
+	/*
+	/ emotion   趋势
+	/  主升      上
+	/  退潮      下
+	/  博弈
+	/
+	*/
 	
 	var getAndUpdateLoacalstorage = function() {
 		var dateArr = workbook.getDateArr((a,b)=>{
@@ -93,12 +104,6 @@ var AI = (function(){
 		LocalStore.set(datestr, dataStorage);
 	};
 	
-	var getAngle = function(p2, p1) {
-		var radian = Math.atan2(p1.y - p2.y, p2.x - p1.x); // 返回来的是弧度
-		var angle = 180 / Math.PI * radian; // 根据弧度计算角度
-		return angle;
-	};
-	
 	var getEmotionSuccessRate = function(emotion) {
 		var dateArr = workbook.getDateArr((a,b)=>{
 			return b - a;
@@ -119,6 +124,30 @@ var AI = (function(){
 		return num == 0 || 'NaN' ? '' : '前' +  total + '天出现' + 
 			num + '次,成功率' + parseInt(totalValue * 100/num) + '%。';
 	};
+	
+	var getAngle = function(p2, p1) {
+		var radian = Math.atan2(p1.y - p2.y, p2.x - p1.x); // 返回来的是弧度
+		var angle = 180 / Math.PI * radian; // 根据弧度计算角度
+		return angle;
+	};
+	
+	/*
+	* param pArray: [{point: {x: 714.4060000000001, y: 89.64}, value: 3258, date: '44984'}]
+	*/
+	var sumAngleFromPoints = function(pArray) {  
+		var sumAngle = 0;
+		for(var i = 0; i < pArray.length - 1; i ++){
+			sumAngle += getAngle(pArray[i].point, pArray[i+1].point);
+		}
+		return sumAngle;
+	}
+	var sumValueFromPoints = function(pArray) {  
+		var sumValue = 0;
+		for(var i = 0; i < pArray.length - 1; i ++){
+			sumValue +=  pArray[i].value;    
+		}
+		return sumValue;
+	}
 	
 	var checkZBHigherDays = function(title, days, minDays, threshold) {
 		var zbPoints = canvas.getLastZBPoints(days, title);   
@@ -146,9 +175,12 @@ var AI = (function(){
 		}
 		return false;
 	};
+	var getEmotions2 = function() {
+		return 'To be continued  ....  ';
+	};
 	
 	var getEmotions = function() {
-		var emotionPoints = canvas.getLastEmotionPoints(3);    
+		var emotionPoints = canvas.getLastEmotionPoints(3, Configure.title2.zhangtingzhishu);    
 		var sumLevel = 0;
 		var getLevel = function(point) {
 			return Math.floor(point.value * 4/Configure.MAX_BEILI);
@@ -234,12 +266,8 @@ var AI = (function(){
 	var getBandtickets = function() {
 		// 算斜率
 		var szPoinsts = canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.sz);    
-		var sumAngle = 0;
-		var sumValue = 0;
-		for(var i = 0; i < Configure.Band_MA_NUM - 1; i ++){
-			sumAngle += getAngle(szPoinsts[i].point, szPoinsts[i+1].point);
-			sumValue +=  szPoinsts[i].value;    // 前Configure.Band_MA_NUM - 1天的和，还要加最后一天
-		}
+		var sumAngle = sumAngleFromPoints(szPoinsts);
+		var sumValue = sumValueFromPoints(szPoinsts);
 		dataStorage.sz_average_angle = parseFloat(sumAngle / Configure.Band_MA_NUM).toFixed(2);
 		// 算sz和MA的背离率
 		var MA_value = (sumValue + parseInt(szPoinsts[Configure.Band_MA_NUM - 1].value))/Configure.Band_MA_NUM;
@@ -358,7 +386,8 @@ var AI = (function(){
 		getAndUpdateLoacalstorage();
 		
 		recommendText = '【AI 提示】';
-		recommendText += getEmotions();
+		var emotionTxt = getEmotions();
+		recommendText += EnableEmotionalogicV2 ? getEmotions2() : emotionTxt;  
 		recommendText += isBandInCharge() ? getBandtickets() : getTickits();
 		saveLoacalstorage(dataStorage);
 		
