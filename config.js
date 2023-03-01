@@ -167,7 +167,13 @@ var Configure = (function(){
 	var getDayBoard = function(number){
 		return {d: parseInt( number % 65537 + number / 65537), 
 			b: parseInt(number / 65537)};
-	}
+	};
+	
+	var getAngle = function(p2, p1) {
+		var radian = Math.atan2(p1.y - p2.y, p2.x - p1.x); // 返回来的是弧度
+		var angle = 180 / Math.PI * radian; // 根据弧度计算角度
+		return angle;
+	};
 	
 	var title = {
 		code: '代码',
@@ -347,6 +353,8 @@ var Configure = (function(){
 	var Dead_Handover = 55;				// 过滤掉死亡换手
 	var Min_handover = 3;				// 过滤掉太低的换手，买不进去
 	
+	var EmotionAngleDeafultDays = 7;    //情绪指标计算拐点的期限
+	
 	var selectIndicators = [
 							//	{name:'亏钱效应'},
 								{name:'上证指数'}, 
@@ -424,12 +432,14 @@ var Configure = (function(){
 		Band_Min_Value:Band_Min_Value,
 		Echelons_ticket_NUM:Echelons_ticket_NUM,
 		Echelons_handover_factor:Echelons_handover_factor,
+		EmotionAngleDeafultDays:EmotionAngleDeafultDays,
 		site_color:site_color,
 		boardHeight_color:boardHeight_color,
 		sz_color:sz_color,
 		line_color:line_color,
 		echelon_color:echelon_color,
 		getDateStr:getDateStr,
+		getAngle:getAngle,
 		getBoardStrength:getBoardStrength,
 		formatExcelDate:formatExcelDate,
 		updatetitle:updatetitle,

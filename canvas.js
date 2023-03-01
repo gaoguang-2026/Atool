@@ -234,7 +234,6 @@ var canvas = (function(canvas) {
 		ctx.beginPath();
 		// 标记转点
 		emotionPoints.forEach((p)=> {
-			ctx.beginPath();
 			if(p.angleA5) {
 				ctx.fillStyle = p.angleA5 > 0 ?  'green' : 'red';
 				ctx.fillRect(p.point.x - 4, p.point.y -4, 8, 8);
@@ -525,10 +524,48 @@ var canvas = (function(canvas) {
 		return retP;
 	};
 	
+	/*
+	* param pArray: [{point: {x: 714.4060000000001, y: 89.64}, value: 3258, date: '44984'}]
+	*/
+	var sumAngleFromPoints = function(pArray) {  
+		var sumAngle = 0;
+		for(var i = 0; i < pArray.length - 1; i ++){
+			sumAngle += Configure.getAngle(pArray[i].point, pArray[i+1].point);
+		}
+		return sumAngle;
+	}
+	var sumValueFromPoints = function(pArray) {  
+		var sumValue = 0;
+		for(var i = 0; i < pArray.length - 1; i ++){
+			sumValue +=  pArray[i].value;    
+		}
+		return sumValue;
+	}
+	
+	var findTurnintPoint = function(pArray, maNum) {
+		var tmpTrend = 0;   // 趋势 >0向上  <0向下
+		for(var i = 0; i < pArray.length-maNum; i ++){
+			var pointArr = pArray.slice(i, i + maNum);
+			var averageSum = sumAngleFromPoints(pointArr)/(maNum-1);
+			if(tmpTrend * averageSum < 0 && Math.abs(averageSum) > 10) {  // 转点
+				pArray[i].angleA5 = averageSum;     // pArray 是从最近一个点往前
+				tmpTrend = averageSum;
+			} else if (tmpTrend == 0) {
+				tmpTrend = averageSum;
+			}
+		}
+	};
+	
+	var clear = function() {
+		emotionPoints = [];   // 保存背离率的点
+		stEmotionPoints = []; // 保存涨停背离率的点
+		zbPoints = {};   // 保存其他指标的点
+	};
 	var draw = function(echelonNames, indecatorName, showDaysNumber) {
 		if (drawing.getContext){
 			var ctx = drawing.getContext("2d");
 			ctx.clearRect(0, 0, width, height);
+			clear();
 			
 			//cut Days to display
 			var maxShowLengh = AllDays.length - Configure.Days_Show_reserved_lengh;
@@ -540,6 +577,10 @@ var canvas = (function(canvas) {
 			drawSite(indecatorName, echelonNames);
 			drawIndicators(indecatorName, echelonNames);
 			drawEchelon(echelonNames);
+			
+			var emotionPoints = getLastEmotionPoints(Configure.Days_Max_lengh);    
+			findTurnintPoint(emotionPoints, Configure.EmotionAngleDeafultDays + 1);
+			drawEmotionTurning();
 		}
 	}
 	
@@ -550,6 +591,8 @@ var canvas = (function(canvas) {
 		draw: draw,
 		drawEmotionCycle:drawEmotionCycle,
 		drawEmotionTurning:drawEmotionTurning,
+		sumAngleFromPoints:sumAngleFromPoints,
+		sumValueFromPoints:sumValueFromPoints,
 		getLastEmotionPoints:getLastEmotionPoints,
 		getLastZBPoints:getLastZBPoints
 	}

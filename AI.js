@@ -35,28 +35,26 @@ var AI = (function(){
 	/	i连扳背离	j连扳高度	k连扳数量	l连扳晋级(M10,2.5)
 	*/
 	var cangMap2 = new Map([
-		['发酵', {condition:{a:{min:10}, b:{min:0,max:1}, f:{min:30}, k:{min:10}},
+		['发酵', {condition:{a:{min:0}, b:{min:0,max:1}, f:{min:30}, k:{min:10}},
 								tips:'加仓，打板龙头和低位首发', stage:'发酵', tactics:['主升']}],  
-		['加速', {condition:{a:{min:10}, b:{min:1,max:2},i:{min:5}, j:{min:5}, l:{min:2.5, max:10}},
+		['加速', {condition:{a:{min:0}, b:{min:1,max:2},i:{min:5}, j:{min:5}, l:{min:2.5, max:10}},
 			tips:'去弱留强', stage:'加速', tactics:['主升']}],
-		['分化', {condition:{a:{min:10}, b:{min:2,max:3}, c:{min:0.3}, h:{min:7}},
+		['分化', {condition:{a:{min:0}, b:{min:2,max:3}, c:{min:0.3}, h:{min:7}},
 			tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['主升']}],
 		
-		['盘顶',{condition:{a:{max:-10}, b:{min:2,max:3}},
+		['盘顶',{condition:{a:{max:0}, b:{min:2,max:3}},
 			tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['退潮']}],
-		['退一', {condition:{a:{max:-10}, b:{min:2,max:2}},f:{max:30},
+		['退一', {condition:{a:{max:0}, b:{min:2,max:2}},f:{max:30},
 			tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['退潮']}],
-		['退二', {condition:{a:{max:-10}, b:{min:0,max:1}},
+		['退二', {condition:{a:{max:0}, b:{min:0,max:1}},
 			tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['退潮']}],
 			
-		['退三', {condition:{a:{min:-10, max:10}, b:{min:0,max:1}},
+		['退三', {condition:{ b:{min:0,max:1}},
 			tips:'提防二次冰点，低位潜伏', stage:'退三', tactics:['博弈']}], 
-		['启动', {condition:{a:{min:-10, max:10}, b:{min:0,max:0}},e:{min:0},
+		['启动', {condition:{ b:{min:0,max:0}},e:{min:0},
 			tips:'冰点衰竭，打板确认龙头', stage:'启动', tactics:['博弈']}],	
-		['混沌', {condition:{a:{min:-10, max:10}, b:{min:0,max:1}},c:{max:0.4},g:{max:3},j:{max:5},k:{max:10},
-			tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['博弈']}],
-		['混沌2', {condition:{},
-			tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['博弈']}] 
+		['混沌', {condition:{ b:{min:0,max:1}},c:{max:0.4},g:{max:3},j:{max:5},k:{max:10},
+			tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['博弈']}]
 	]);
 	/// 
 	
@@ -157,35 +155,12 @@ var AI = (function(){
 	var getLevel = function(point) {
 		return Math.floor(point.value * 4/Configure.MAX_BEILI);
 	}
-	var getAngle = function(p2, p1) {
-		var radian = Math.atan2(p1.y - p2.y, p2.x - p1.x); // 返回来的是弧度
-		var angle = 180 / Math.PI * radian; // 根据弧度计算角度
-		return angle;
-	};
-	
-	/*
-	* param pArray: [{point: {x: 714.4060000000001, y: 89.64}, value: 3258, date: '44984'}]
-	*/
-	var sumAngleFromPoints = function(pArray) {  
-		var sumAngle = 0;
-		for(var i = 0; i < pArray.length - 1; i ++){
-			sumAngle += getAngle(pArray[i].point, pArray[i+1].point);
-		}
-		return sumAngle;
-	}
-	var sumValueFromPoints = function(pArray) {  
-		var sumValue = 0;
-		for(var i = 0; i < pArray.length - 1; i ++){
-			sumValue +=  pArray[i].value;    
-		}
-		return sumValue;
-	}
 	
 	var checkZBHigherDays = function(title, days, minDays, threshold) {
 		var zbPoints = canvas.getLastZBPoints(days, title);   
 		var n = 0;
 		for(var i = 0 ; i < days ; i ++) {
-			if(zbPoints[i].value >= threshold) {
+			if(zbPoints[i].value > threshold) {
 				n ++;
 			}
 		}
@@ -198,7 +173,7 @@ var AI = (function(){
 		var zbPoints = canvas.getLastZBPoints(days, title);   
 		var n = 0;
 		for(var i = 0 ; i < days ; i ++) {
-			if(zbPoints[i].value <= threshold) {
+			if(zbPoints[i].value < threshold) {
 				n ++;
 			}
 		}
@@ -208,27 +183,14 @@ var AI = (function(){
 		return false;
 	};
 	
-	var findTurnintPoint = function(pArray, maNum) {
-		var tmpTrend = 0;   // 趋势 >0向上  <0向下
-		for(var i = 0; i < pArray.length-maNum; i ++){
-			var pointArr = pArray.slice(i, i + maNum);
-			var averageSum = sumAngleFromPoints(pointArr)/(maNum-1);
-			if(tmpTrend * averageSum < 0 && Math.abs(averageSum) > 10) {  // 转点
-				pArray[i].angleA5 = averageSum;     // pArray 是从最近一个点往前
-				tmpTrend = averageSum;
-			} else if (tmpTrend == 0) {
-				tmpTrend = averageSum;
-			}
-		}
-	};
 	var checkCondition = function(condition) {
 		var ret = true;
 		var emotionPoints = canvas.getLastEmotionPoints(emotionAngleDeafultDays + 1);  
-		var emotionAngle = sumAngleFromPoints(emotionPoints);
+		var emotionAngle = canvas.sumAngleFromPoints(emotionPoints);
 		var emotionLevel = getLevel(emotionPoints[0]);
 		
-		var szAngle = sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.sz));
-		var eAngle = sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qingxuzhishu));
+		var szAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.sz));
+		var eAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qingxuzhishu));
 		for (var i in condition) {
 			var min = max = -1;
 			var title;
@@ -273,33 +235,39 @@ var AI = (function(){
 					break;
 			}
 			// min and max
-			if(condition[i].min && min !=-1 && min <= condition[i].min ||
-				(condition[i].max && max != -1 && max >= condition[i].max)) {
-					console.log('checkCondition ' + condition.stage + ' failed for ' + i);
+			if(condition[i].min && min !=-1 && min < condition[i].min ||
+				(condition[i].max && max != -1 && max > condition[i].max)) {
+					console.log('checkCondition ' + condition.stage + 
+						' failed for ' + i =='a' ? '情绪角度' : '情绪level');
 					ret = false;
 			}
 			if(title && condition[i].min && 
 				checkZBUnderDays(title, 1, 1, condition[i].min)) {
-				console.log('checkCondition ' + condition.stage + ' failed for ' + i);
-				ret = false;
+				console.log('checkCondition failed for ' + title);
+		//		ret = false;
 			}
 			if(title && condition[i].max && 
 				checkZBHigherDays(title, 1, 1, condition[i].max)) {
-				console.log('checkCondition ' + condition.stage + ' failed for ' + i);
-				ret = false;
+				console.log('checkCondition failed for ' + title);
+		//		ret = false;
 			} 
 		}
 		return ret;
 	};
 	var getEmotions2 = function() {
-		var emotionPoints = canvas.getLastEmotionPoints(Configure.Days_Max_lengh);    
-		findTurnintPoint(emotionPoints, emotionAngleDeafultDays + 1);
 		dataStorage.emotion = ''
-		cangMap2.forEach(function(item){
-			if(checkCondition(item.condition)) {
-				dataStorage.emotion = item.stage;
-			};
-		});
+		try {
+			cangMap2.forEach(function(item){
+				console.log('=> start check ' + item.stage);
+				if(checkCondition(item.condition)) {
+					dataStorage.emotion = item.stage;
+					throw new Error('LoopInterrupt')
+				};
+				console.log('check end');
+			});
+		} catch(e) {
+			if(e.message != 'LoopInterrupt') throw e;
+		}
 		
 		return '情绪' + dataStorage.emotion + '，' + cangMap2.get(dataStorage.emotion).tips + '。' + 
 				getEmotionSuccessRate(dataStorage.emotion) + ' 窗口：[' + 
@@ -312,7 +280,7 @@ var AI = (function(){
 		for(var i = 0; i < 3; i ++){
 			sumLevel += getLevel(emotionPoints[i]);
 		}
-		var angle = getAngle(emotionPoints[0].point, emotionPoints[1].point);
+		var angle = Configure.getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var value = parseFloat(emotionPoints[0].value);
 		var level = getLevel(emotionPoints[0]) - sumLevel/3;
 		if(value < Configure.MAX_BEILI / 8) {
@@ -390,8 +358,8 @@ var AI = (function(){
 	var getBandtickets = function() {
 		// 算斜率
 		var szPoinsts = canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.sz);    
-		var sumAngle = sumAngleFromPoints(szPoinsts);
-		var sumValue = sumValueFromPoints(szPoinsts);
+		var sumAngle = canvas.sumAngleFromPoints(szPoinsts);
+		var sumValue = canvas.sumValueFromPoints(szPoinsts);
 		dataStorage.sz_average_angle = parseFloat(sumAngle / Configure.Band_MA_NUM).toFixed(2);
 		// 算sz和MA的背离率
 		var MA_value = (sumValue + parseInt(szPoinsts[Configure.Band_MA_NUM - 1].value))/Configure.Band_MA_NUM;
@@ -516,7 +484,6 @@ var AI = (function(){
 		saveLoacalstorage(dataStorage);
 		
 		canvas.drawEmotionCycle(dragonStage, cangMap.get(dataStorage.emotion).stage);
-		EnableEmotionalogicV2 ? canvas.drawEmotionTurning() : null;
 		
 		var displayColor = cangMap.get(dataStorage.emotion).tactics == '博弈' ? 'blue' :
 					cangMap.get(dataStorage.emotion).tactics == '主升' ? 'red' : 'green';
