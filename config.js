@@ -68,16 +68,6 @@ var Configure = (function(){
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
 	
-	var isKechuangTicket = function(code) {
-		return code.substr(2, 2) == '30' || code.substr(2, 2) == '68';
-	};
-	var isSHTicket = function(code) {
-		return code.substr(2, 2) == '60' ;
-	};
-	var isSZTicket = function(code) {
-		return code.substr(2, 2) == '00' ;
-	};
-		
 	/**
      * 格式化excel传递的时间
      * @param numb 需转化的时间 43853
@@ -370,6 +360,20 @@ var Configure = (function(){
 							];  
 	ZHISHU_TITLE == title2.zhangtingzhishu ? 
 		selectIndicators.push({name:'连扳晋级'}) : selectIndicators.unshift({name:'短线资金'});
+		
+	var isKechuangTicket = function(code) {
+		return code.substr(2, 2) == '30' || code.substr(2, 2) == '68';
+	};
+	var isSHTicket = function(code) {
+		return code.substr(2, 2) == '60' ;
+	};
+	var isSZTicket = function(code) {
+		return code.substr(2, 2) == '00' ;
+	};
+	var isFloorOrFailed = function(ticket, dateStr) {
+		return ticket[replaceTitleDate(title.dayNumber, dateStr)] > 0;
+	};
+		
 	
 	return {
 		date: date,
@@ -433,6 +437,7 @@ var Configure = (function(){
 		getDayBoard:getDayBoard,
 		isKechuangTicket:isKechuangTicket,
 		isSHTicket:isSHTicket,
-		isSZTicket:isSZTicket
+		isSZTicket:isSZTicket,
+		isFloorOrFailed:isFloorOrFailed,
 	}	
 })();

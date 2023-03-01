@@ -108,12 +108,12 @@
 			var param = {sheetName:this.dateArr[startIndex + i],
 				ticketCode:ticket[Configure.title.code]};
 			obj.tkt = workbook.getValue(param);
-			if(obj.tkt) {
+			if(obj.tkt && Configure.isFloorOrFailed(obj.tkt, this.dateArr[startIndex + i])) {
 				obj.date = this.dateArr[startIndex + i];
 				break;
 			}
 		}
-		if (obj.tkt) {
+		if (obj.tkt && Configure.isFloorOrFailed(obj.tkt, this.dateArr[startIndex + i])) {
 			startIndex = this.getBoardDateIndex(obj.tkt, obj.date);
 		}
 		return startIndex;

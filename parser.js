@@ -152,8 +152,8 @@ var parser = (function(){
 				if(obj.type == 0) {
 					return  b[Configure.title.boardAndDay] - a[Configure.title.boardAndDay];
 				} else {
-					return Configure.replaceTitleDate(b[Configure.title.dayNumber], dateStr)  - 
-						Configure.replaceTitleDate(a[Configure.title.dayNumber], dateStr) ;
+					return b[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)]  - 
+						a[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] ;
 				}
 			} else {
 				return b[Configure.title.score] - a[Configure.title.score];
@@ -165,8 +165,8 @@ var parser = (function(){
 		var retArr = tickets;
 		if (obj.type == 0 || obj.type == 1) {
 			retArr= tickets.filter((t)=>{
-				return obj.type === 1 ?  Configure.replaceTitleDate(t[Configure.title.dayNumber], dateStr) > 1 : 
-									Configure.replaceTitleDate(t[Configure.title.dayNumber], dateStr) == 1;
+				return obj.type === 1 ?  t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] > 1 : 
+									t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] == 1;
 			});			
 		} else if (obj.type == 4) { // 科创
 			retArr= tickets.filter((t)=>{
@@ -175,7 +175,7 @@ var parser = (function(){
 		} else if (obj.type == 2){
 			// type = 2, 过滤掉跌停和炸板
 			retArr= tickets.filter((t)=>{
-				return Configure.replaceTitleDate(t[Configure.title.dayNumber], dateStr) > 0;
+				return Configure.isFloorOrFailed(t, dateStr);
 			});	
 		} else {
 			// type = 5  do nothing
