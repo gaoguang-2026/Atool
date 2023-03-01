@@ -348,7 +348,7 @@ var Configure = (function(){
 	var Min_handover = 3;				// 过滤掉太低的换手，买不进去
 	
 	var selectIndicators = [
-						//		{name:'亏钱效应'},
+							//	{name:'亏钱效应'},
 								{name:'上证指数'}, 
 								{name:'情绪指数'},						
 								{name:'涨停数量'},

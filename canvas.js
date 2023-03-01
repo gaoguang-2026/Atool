@@ -229,6 +229,21 @@ var canvas = (function(canvas) {
 		ctx.stroke(); 
 	};
 
+	var drawEmotionTurning = function() { 
+		var ctx = drawing.getContext("2d");		
+		ctx.beginPath();
+		// 标记转点
+		emotionPoints.forEach((p)=> {
+			ctx.beginPath();
+			if(p.angleA5) {
+				ctx.fillStyle = p.angleA5 > 0 ?  'green' : 'red';
+				ctx.fillRect(p.point.x - 4, p.point.y -4, 8, 8);
+		//		ctx.font="bold 14px 楷体";
+		//		ctx.fillText(p.angleA5.toFixed(1), p.point.x, p.point.y);
+			}
+			ctx.stroke();
+		});
+	};
 	var drawEmotionCycle = function(emotions, curEmotion) { 
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
@@ -534,6 +549,7 @@ var canvas = (function(canvas) {
 		reload:reload,
 		draw: draw,
 		drawEmotionCycle:drawEmotionCycle,
+		drawEmotionTurning:drawEmotionTurning,
 		getLastEmotionPoints:getLastEmotionPoints,
 		getLastZBPoints:getLastZBPoints
 	}
