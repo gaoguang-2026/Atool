@@ -142,7 +142,7 @@ var table = (function(){
 								td.innerHTML += '(创)';
 							} else if (ty == '68') {
 								td.innerHTML += '(科)';
-								tr.className = 'grey';
+					//			tr.className = 'grey';
 							}
 						}
 						if(Configure.isSHTicket(ticket[Configure.title.code])){

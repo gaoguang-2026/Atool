@@ -7,7 +7,7 @@ var AI = (function(){
 	var RectifyDay_num = Configure.Days_Max_lengh;
 	var Rectify_factor = 7;
 	
-	var EnableEmotionalogicV2 = false;
+	var EnableEmotionalogicV2 = true;
 	
 	// emotion v1
 	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
@@ -27,34 +27,41 @@ var AI = (function(){
 	////////
 	
 	//emotion v2
-	var emotionAngleDeafultDays = 7;
 	/*
 	/ emotion            
 	/	a情绪角度（d7）	b情绪level(M8,2)	c亏钱效应	d上证角度(d5)	
 	/	e情绪指数角度(d5)	f涨停数量	g跌停数量	h炸板数量	
-	/	i连扳背离	j连扳高度	k连扳数量	l连扳晋级(M10,2.5)
+	/	i连扳背离	j连扳高度	k连扳数量	l连扳晋级(M10,2.5) m短线资金
+	/
+	/   Configure param :
+	/   min  max  currentMin  currentMax  days minDays
 	*/
 	var cangMap2 = new Map([
-		['发酵', {condition:{a:{min:0}, b:{min:0,max:1}, f:{min:30}, k:{min:10}},
-								tips:'加仓，打板龙头和低位首发', stage:'发酵', tactics:['主升']}],  
-		['加速', {condition:{a:{min:0}, b:{min:1,max:2},i:{min:5}, j:{min:5}, l:{min:2.5, max:10}},
+		['混沌', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
+							{a:{currentMax:45},b:{max:1},m:{days:7, minDays:4, max:100}, f:{days:3,minDays:2, min:25}}
+								],
+				tips:'资金没有主攻方向', stage:'混沌', tactics:['博弈']}],
+				
+		['二次冰点', {conditions:[{a:{max:0,currentMax: -5}, b:{max:0}, c:{days:4, minDays:3, min:0.25}}],
+				tips:'寻找新方向', stage:'退三', tactics:['博弈']}], 
+				
+		['冰点衰竭', {conditions:[{a:{currentMin:15},b:{max:0},e:{min:0}}],
+			tips:'打板确认龙头', stage:'启动', tactics:['博弈']}],	
+			
+		['修复', {conditions:[{a:{min:0, currentMin:15}, b:{max:1}, f:{min:25}, k:{min:5}}],
+								tips:'打板龙头和低位首发', stage:'发酵', tactics:['主升']}],  
+		['持续修复', {conditions:[{a:{min:0, currentMin:30}, b:{min:1,max:2},c:{max:0.3}, i:{min:5}, j:{min:3}}],
 			tips:'去弱留强', stage:'加速', tactics:['主升']}],
-		['分化', {condition:{a:{min:0}, b:{min:2,max:3}, c:{min:0.3}, h:{min:7}},
+			
+		['分化', {conditions:[{a:{min:0, currentMax:0}, b:{min:2,max:3}, c:{max:0.3}, l:{days:3, minDays:3, min:5}}],
 			tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['主升']}],
 		
-		['盘顶',{condition:{a:{max:0}, b:{min:2,max:3}},
+		['高潮',{conditions:[{a:{min:0, currentMin:0}, b:{min:2,max:3}}],
 			tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['退潮']}],
-		['退一', {condition:{a:{max:0}, b:{min:2,max:2}},f:{max:30},
+		['退潮', {conditions:[{a:{max:0, currentMax:0}, b:{min:2,max:2}, f:{max:40}}],
 			tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['退潮']}],
-		['退二', {condition:{a:{max:0}, b:{min:0,max:1}},
-			tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['退潮']}],
-			
-		['退三', {condition:{ b:{min:0,max:1}},
-			tips:'提防二次冰点，低位潜伏', stage:'退三', tactics:['博弈']}], 
-		['启动', {condition:{ b:{min:0,max:0}},e:{min:0},
-			tips:'冰点衰竭，打板确认龙头', stage:'启动', tactics:['博弈']}],	
-		['混沌', {condition:{ b:{min:0,max:1}},c:{max:0.4},g:{max:3},j:{max:5},k:{max:10},
-			tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['博弈']}]
+		['冰点', {conditions:[{a:{max:0}, b:{max:0}}],
+			tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['退潮']}]
 	]);
 	/// 
 	
@@ -156,11 +163,11 @@ var AI = (function(){
 		return Math.floor(point.value * 4/Configure.MAX_BEILI);
 	}
 	
-	var checkZBHigherDays = function(title, days, minDays, threshold) {
+	var checkZBHigherDays = function(title, days, minDays, minThreshold) {
 		var zbPoints = canvas.getLastZBPoints(days, title);   
 		var n = 0;
 		for(var i = 0 ; i < days ; i ++) {
-			if(zbPoints[i].value > threshold) {
+			if(zbPoints[i].value > minThreshold) {
 				n ++;
 			}
 		}
@@ -169,15 +176,15 @@ var AI = (function(){
 		}
 		return false;
 	};
-	var checkZBUnderDays = function(title, days, maxDays, threshold) {
+	var checkZBUnderDays = function(title, days, minDays, maxThreshold) {
 		var zbPoints = canvas.getLastZBPoints(days, title);   
 		var n = 0;
 		for(var i = 0 ; i < days ; i ++) {
-			if(zbPoints[i].value < threshold) {
+			if(zbPoints[i].value < maxThreshold) {
 				n ++;
 			}
 		}
-		if(n >= maxDays) {
+		if(n >= minDays) {
 			return true;
 		}
 		return false;
@@ -185,30 +192,32 @@ var AI = (function(){
 	
 	var checkCondition = function(condition) {
 		var ret = true;
-		var emotionPoints = canvas.getLastEmotionPoints(emotionAngleDeafultDays + 1);  
-		var emotionAngle = canvas.sumAngleFromPoints(emotionPoints);
+		var emotionPoints = canvas.getLastEmotionPoints(Configure.EmotionAngleDeafultDays + 1);  
+		var emotionSumAngle = canvas.sumAngleFromPoints(emotionPoints);
+		var emotionAngle = Configure.getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var emotionLevel = getLevel(emotionPoints[0]);
 		
 		var szAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.sz));
 		var eAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qingxuzhishu));
 		for (var i in condition) {
-			var min = max = -1;
+			var value = currentValue = -1;
 			var title;
 			switch(i) {
 				case 'a':
-					min = max = emotionAngle;
+					value = emotionSumAngle;
+					currentValue = emotionAngle;
 					break;
 				case 'b':
-					min = max = emotionLevel;
+					value = emotionLevel;
 					break;
 				case 'c':
 					title = Configure.title2.failedRate;
 					break;
 				case 'd':
-					min = max = szAngle;
+					value = szAngle;
 					break;
 				case 'e':
-					min = max = eAngle;
+					value = eAngle;
 					break;
 				case 'f':
 					title = Configure.title2.boardnum;
@@ -231,39 +240,46 @@ var AI = (function(){
 				case 'l':
 					title = Configure.title2.jinji;
 					break;
+				case 'm':
+					title = Configure.title2.totalFund;
+					break;
 				default:
 					break;
 			}
-			// min and max
-			if(condition[i].min && min !=-1 && min < condition[i].min ||
-				(condition[i].max && max != -1 && max > condition[i].max)) {
-					console.log('checkCondition ' + condition.stage + 
-						' failed for ' + i =='a' ? '情绪角度' : '情绪level');
+			// min  max  currentMin   currentMax
+			if((condition[i].min!=undefined && value !=-1 && value < condition[i].min) ||
+				(condition[i].max!=undefined && value != -1 && value > condition[i].max) ||
+				(condition[i].currentMin!=undefined && currentValue !=-1 && currentValue < condition[i].currentMin) ||
+				(condition[i].currentMax!=undefined && currentValue !=-1 && currentValue > condition[i].currentMax )) {
+					console.log('checkCondition failed for ' + (i =='a' ? '情绪角度' : '情绪level'));
 					ret = false;
 			}
-			if(title && condition[i].min && 
-				checkZBUnderDays(title, 1, 1, condition[i].min)) {
-				console.log('checkCondition failed for ' + title);
-		//		ret = false;
-			}
-			if(title && condition[i].max && 
-				checkZBHigherDays(title, 1, 1, condition[i].max)) {
-				console.log('checkCondition failed for ' + title);
-		//		ret = false;
-			} 
+			
+			// days, minDays, min max.
+			if(ret && title && (condition[i].min!=undefined || condition[i].max!=undefined)) {
+				var days = condition[i].days!=undefined ? condition[i].days : 1;
+				var minDays =  condition[i].minDays!=undefined ? condition[i].minDays : 1;
+				ret = condition[i].min!=undefined ? checkZBHigherDays(title, days, minDays, condition[i].min) : ret;
+				ret = condition[i].max!=undefined ? checkZBUnderDays(title, days, minDays, condition[i].max) : ret; 
+				if(!ret) {
+					console.log('checkCondition failed for ' + title);
+				}
+			}			
 		}
 		return ret;
 	};
 	var getEmotions2 = function() {
-		dataStorage.emotion = ''
 		try {
-			cangMap2.forEach(function(item){
-				console.log('=> start check ' + item.stage);
-				if(checkCondition(item.condition)) {
-					dataStorage.emotion = item.stage;
-					throw new Error('LoopInterrupt')
-				};
-				console.log('check end');
+			cangMap2.forEach(function(item, key){
+				item.conditions.forEach((condition, index)=>{
+					console.log('=> start check ' + item.stage + ' index ' + index);
+					if(checkCondition(condition)) {
+						dataStorage.emotion = key;
+						console.log('Check done, ' + item.stage + ' index ' + index + '  selected!');
+						throw new Error('LoopInterrupt');
+					};
+				});
+				
 			});
 		} catch(e) {
 			if(e.message != 'LoopInterrupt') throw e;
@@ -468,9 +484,9 @@ var AI = (function(){
 	};
 	var isBandInCharge = function() {
 		return dataStorage.emotion == '混沌' || 
-				checkZBUnderDays(Configure.title2.lianban, 5, 4, 7) ||
-				checkZBUnderDays(Configure.BH_Draw_title, 5, 4, 4) ||
-				checkZBUnderDays(Configure.title2.boardnum, 5, 4, 30);
+				checkZBUnderDays(Configure.title2.lianban, 5, 4, 5) ||    // 连扳数量
+				checkZBUnderDays(Configure.BH_Draw_title, 5, 4, 3) ||    // 连扳高度
+				checkZBUnderDays(Configure.title2.boardnum, 5, 4, 20);    //涨停数量
 	};
 	var getRecommend = function() {
 		clearAndInit();
