@@ -78,6 +78,10 @@ var Configure = (function(){
 	/  @param
 	/   min  max  currentMin  currentMax  days minDays
 	*/
+	var bandConditions = [{k:{days:5, minDays:4, max:5}},
+							{j:{days:5, minDays:4, max:3}}, 
+							{f:{days:5, minDays:4, max:20}}
+							];
 	var cangMap2 = new Map([
 		['混沌', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
 							{a:{currentMax:45},b:{max:1},m:{days:7, minDays:4, max:100}, f:{days:3,minDays:2, min:25}}
@@ -442,6 +446,7 @@ var Configure = (function(){
 		date: date,
 		debug: debug,
 		cangMap2: cangMap2,
+		bandConditions:bandConditions,
 		EnableEmotionalogicV2: EnableEmotionalogicV2,
 		showInTableTitile:showInTableTitile,
 		bandShowInTableTitile:bandShowInTableTitile,

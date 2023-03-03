@@ -474,10 +474,16 @@ var AI = (function(){
 		};
 	};
 	var isBandInCharge = function() {
-		return dataStorage.emotion == '混沌' || 
-				checkZBUnderDays(Configure.title2.lianban, 5, 4, 5) ||    // 连扳数量
+		var ret = false;
+		Configure.bandConditions.forEach((c)=>{
+			if(checkCondition(c)){
+				ret = true;
+			};
+		});
+		return ret;
+		/*return checkZBUnderDays(Configure.title2.lianban, 5, 4, 5) ||    // 连扳数量
 				checkZBUnderDays(Configure.BH_Draw_title, 5, 4, 3) ||    // 连扳高度
-				checkZBUnderDays(Configure.title2.boardnum, 5, 4, 20);    //涨停数量
+				checkZBUnderDays(Configure.title2.boardnum, 5, 4, 20);*/    //涨停数量
 	};
 	var getRecommend = function() {
 		clearAndInit();
