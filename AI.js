@@ -6,9 +6,7 @@ var AI = (function(){
 	
 	var RectifyDay_num = Configure.Days_Max_lengh;
 	var Rectify_factor = 7;
-	
-	var EnableEmotionalogicV2 = true;
-	
+
 	// emotion v1
 	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
 	var cangMap1 = new Map([
@@ -25,47 +23,7 @@ var AI = (function(){
 		['混沌', {tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['博弈']}]
 	]);
 	////////
-	
-	//emotion v2
-	/*
-	/ emotion            
-	/	a情绪角度（d7）	b情绪level(M8,2)	c亏钱效应	d上证角度(d5)	
-	/	e情绪指数角度(d5)	f涨停数量	g跌停数量	h炸板数量	
-	/	i连扳背离	j连扳高度	k连扳数量	l连扳晋级(M10,2.5) m短线资金
-	/
-	/   Configure param :
-	/   min  max  currentMin  currentMax  days minDays
-	*/
-	var cangMap2 = new Map([
-		['混沌', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
-							{a:{currentMax:45},b:{max:1},m:{days:7, minDays:4, max:100}, f:{days:3,minDays:2, min:25}}
-								],
-				tips:'资金没有主攻方向', stage:'混沌', tactics:['博弈']}],
-				
-		['二次冰点', {conditions:[{a:{max:0,currentMax: -5}, b:{max:0}, c:{days:4, minDays:3, min:0.25}}],
-				tips:'寻找新方向', stage:'退三', tactics:['博弈']}], 
-				
-		['冰点衰竭', {conditions:[{a:{currentMin:15},b:{max:0},e:{min:0}}],
-			tips:'打板确认龙头', stage:'启动', tactics:['博弈']}],	
-			
-		['修复', {conditions:[{a:{min:0, currentMin:15}, b:{max:1}, f:{min:25}, k:{min:5}}],
-								tips:'打板龙头和低位首发', stage:'发酵', tactics:['主升']}],  
-		['持续修复', {conditions:[{a:{min:0, currentMin:30}, b:{min:1,max:2},c:{max:0.3}, i:{min:5}, j:{min:3}}],
-			tips:'去弱留强', stage:'加速', tactics:['主升']}],
-			
-		['分化', {conditions:[{a:{min:0, currentMax:0}, b:{min:2,max:3}, c:{max:0.3}, l:{days:3, minDays:3, min:5}}],
-			tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['主升']}],
-		
-		['高潮',{conditions:[{a:{min:0, currentMin:0}, b:{min:2,max:3}}],
-			tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['退潮']}],
-		['退潮', {conditions:[{a:{max:0, currentMax:0}, b:{min:2,max:2}, f:{max:40}}],
-			tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['退潮']}],
-		['冰点', {conditions:[{a:{max:0}, b:{max:0}}],
-			tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['退潮']}]
-	]);
-	/// 
-	
-	var cangMap = EnableEmotionalogicV2 ? cangMap2 : cangMap1;
+	var cangMap = Configure.EnableEmotionalogicV2 ? Configure.cangMap2 : cangMap1;
 	
 	var getAndUpdateLoacalstorage = function() {
 		var dateArr = workbook.getDateArr((a,b)=>{
@@ -270,7 +228,7 @@ var AI = (function(){
 	};
 	var getEmotions2 = function() {
 		try {
-			cangMap2.forEach(function(item, key){
+			cangMap.forEach(function(item, key){
 				item.conditions.forEach((condition, index)=>{
 					console.log('=> start check ' + item.stage + ' index ' + index);
 					if(checkCondition(condition)) {
@@ -281,13 +239,16 @@ var AI = (function(){
 				});
 				
 			});
+			if (dataStorage.emotion == '') {
+				console.log('Failed match emotions !!!')
+			}
 		} catch(e) {
 			if(e.message != 'LoopInterrupt') throw e;
 		}
 		
-		return '情绪' + dataStorage.emotion + '，' + cangMap2.get(dataStorage.emotion).tips + '。' + 
+		return '情绪' + dataStorage.emotion + '，' + Configure.cangMap2.get(dataStorage.emotion).tips + '。' + 
 				getEmotionSuccessRate(dataStorage.emotion) + ' 窗口：[' + 
-				cangMap2.get(dataStorage.emotion).tactics.toString() + ']，';
+				Configure.cangMap2.get(dataStorage.emotion).tactics.toString() + ']，';
 	};
 	
 	var getEmotions = function() {
@@ -494,8 +455,7 @@ var AI = (function(){
 		getAndUpdateLoacalstorage();
 		
 		recommendText = '【AI 提示】';
-		var emotionTxt = getEmotions();
-		recommendText += EnableEmotionalogicV2 ? getEmotions2() : emotionTxt;  
+		recommendText += Configure.EnableEmotionalogicV2 ? getEmotions2() : getEmotions();  
 		recommendText += isBandInCharge() ? getBandtickets() : getTickits();
 		saveLoacalstorage(dataStorage);
 		

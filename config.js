@@ -68,6 +68,47 @@ var Configure = (function(){
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
 	
+
+	var EnableEmotionalogicV2 = true;
+	/* @AI emotion v2 
+	/	a情绪角度（d7）	b情绪level(M8,2)	c亏钱效应	d上证角度(d5)	
+	/	e情绪指数角度(d5)	f涨停数量	g跌停数量	h炸板数量	
+	/	i连扳背离	j连扳高度	k连扳数量	l连扳晋级(M10,2.5) m短线资金
+	/
+	/  @param
+	/   min  max  currentMin  currentMax  days minDays
+	*/
+	var cangMap2 = new Map([
+		['混沌', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
+							{a:{currentMax:45},b:{max:1},m:{days:7, minDays:4, max:100}, f:{days:3,minDays:2, min:25}}
+								],
+				tips:'资金没有主攻方向', stage:'启动', tactics:['博弈']}],
+				
+		['二次冰点', {conditions:[{a:{max:0,currentMax: -5}, b:{max:0}, c:{days:4, minDays:3, min:0.25}}],
+				tips:'寻找新方向', stage:'退三', tactics:['博弈']}], 
+				
+		['冰点衰竭', {conditions:[{a:{currentMin:15},b:{max:0},e:{min:0}}],
+			tips:'打板确认龙头', stage:'启动', tactics:['博弈']}],	
+			
+		['修复', {conditions:[{a:{min:0, currentMin:15}, b:{max:1}, f:{min:25}, k:{min:5}}],
+								tips:'打板龙头和低位首发', stage:'发酵', tactics:['主升']}],  
+		['持续修复', {conditions:[{a:{min:0, currentMin:30}, b:{min:1,max:2},c:{max:0.3}, i:{min:5}, j:{min:3}}],
+			tips:'去弱留强', stage:'加速', tactics:['主升']}],
+		['分化', {conditions:[{a:{min:0, currentMax:0}, b:{min:2,max:3}, c:{max:0.3}, l:{days:3, minDays:3, min:5}}],
+			tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['主升']}],
+		['高潮',{conditions:[{a:{min:0, currentMin:0}, b:{min:2,max:3}}],
+			tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['主升']}],
+			
+		['退潮', {conditions:[{a:{max:0, currentMax:0}, b:{min:2,max:2}, f:{max:40}}],
+			tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['退潮']}],
+		['冰点', {conditions:[{a:{max:0}, b:{max:0}}],
+			tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['退潮']}],
+			
+		['空白', {conditions:[{}],
+			tips:'Failed match emotions !', stage:'启动', tactics:['退潮']}]
+	]);
+	/// 
+	
 	/**
      * 格式化excel传递的时间
      * @param numb 需转化的时间 43853
@@ -386,6 +427,8 @@ var Configure = (function(){
 	return {
 		date: date,
 		debug: debug,
+		cangMap2: cangMap2,
+		EnableEmotionalogicV2: EnableEmotionalogicV2,
 		showInTableTitile:showInTableTitile,
 		bandShowInTableTitile:bandShowInTableTitile,
 		industryShowInTableTitile:industryShowInTableTitile,

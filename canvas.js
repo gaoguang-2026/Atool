@@ -224,7 +224,7 @@ var canvas = (function(canvas) {
 		} else {
 			ctx.fillStyle = Configure.line_color;
 			ctx.fillText('0', siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor));
-			ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth - 20, siteY);
+			ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth - 16, siteY + 12);
 		}
 		ctx.stroke(); 
 	};
