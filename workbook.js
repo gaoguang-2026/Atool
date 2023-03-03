@@ -68,18 +68,20 @@
 					item[Configure.titleTactics.tractic].includes(t);
 		});
 	};
-	var getContextTypeAndParam = function(contextStr) {
+	var getContext = function(contextStr) {
 		var sheet = getSheet('交易模式');
-		var item =  sheet.find((item)=> {
+		return sheet.find((item)=> {
 			return item[Configure.titleTactics.context] && 
 					contextStr.includes(item[Configure.titleTactics.context]);
 		});
+	};
+	var getContextTypeAndParam = function(contextStr) {
+		var item = getContext(contextStr);
 		var ret = item && item[Configure.titleTactics.contextType] ? 
 				{type:item[Configure.titleTactics.contextType], param:item[Configure.titleTactics.param]}  
 					: null;
 		return  ret;
-	}
-	
+	};
 	
 	var getDatesSheet= function() {
 		var sheet = getSheet('情绪');
@@ -131,6 +133,7 @@
 		getValue:getValue,
 		getEmotionalCycles:getEmotionalCycles,
 		getTactics:getTactics,
+		getContext:getContext,
 		getContextTypeAndParam:getContextTypeAndParam,
 		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,

@@ -431,14 +431,31 @@ var AI = (function(){
 		titles.forEach((t)=> {
 			retTxt += '【' + t + '】:  ' + d[t] + '<br>';
 		});
-		retTxt += '--------------------------------------------------------------------------------------<br><br>';
-		
+		retTxt += '--------------------------------------------------------------------------------------<br>';
+		// 获取窗口详细说明
+		var context = workbook.getEmotionalCycles(Configure.getDateStr(Configure.date, '-'));
+		var contextItem = context.cycles ? workbook.getContext(context.cycles) : null;
+		var titles = [Configure.titleTactics.tractic, Configure.titleTactics.market, 
+				Configure.titleTactics.emotion, Configure.titleTactics.ticket];
+		for (var prop in contextItem) {
+				if(titles.indexOf(prop) == -1) {
+					if(prop == Configure.titleTactics.context) {
+						retTxt += '【' + prop + '】:  ' + 
+						Configure.getContextDescription(contextItem[prop]) + '<br>';
+					} else {
+						retTxt += '【' + prop + '】:  ' + contextItem[prop] + '<br>';
+					}
+				}
+			}
 		// 获取策略
 		cangMap.get(dataStorage.emotion).tactics.forEach((t)=>{
 			var tactic = workbook.getTactics(t);
-			for (var prop in tactic) {
-				retTxt += '【' + prop + '】:  ' + tactic[prop] + '<br>';
-			}
+			
+			titles.forEach((t) => {
+				if (tactic && tactic[t]) {
+					retTxt += tactic[t] ? '【' + t + '】:  ' + tactic[t] + '<br>' : '';
+				}
+			})
 			retTxt += '<br>';
 		});
 		return retTxt;
