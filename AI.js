@@ -246,9 +246,22 @@ var AI = (function(){
 			if(e.message != 'LoopInterrupt') throw e;
 		}
 		
-		return '情绪' + dataStorage.emotion + '，' + Configure.cangMap2.get(dataStorage.emotion).tips + '。' + 
-				getEmotionSuccessRate(dataStorage.emotion) + ' 窗口：[' + 
-				Configure.cangMap2.get(dataStorage.emotion).tactics.toString() + ']，';
+		// 获取周期窗口
+		var context = workbook.getEmotionalCycles(Configure.getDateStr(Configure.date, '-'));
+		var contextstr = context.cycles ? Configure.getContextDescription(context.cycles) : '';
+		var contextTypeAndParam = context.cycles ? workbook.getContextTypeAndParam(context.cycles) : null;
+		if (contextTypeAndParam) {   // 根据窗口重新设置一下模式，如果没有使用默认的模式
+			var obj = Configure.cangMap2.get(dataStorage.emotion);
+			obj.tactics = [contextTypeAndParam.type];
+			Configure.cangMap2.set(dataStorage.emotion, obj);
+			contextstr += '[' + contextTypeAndParam.type + '],';
+			contextstr += contextTypeAndParam.param ? contextTypeAndParam.param + '.' : '';
+		}
+		contextstr += context.hotpoint ? '热点' + context.hotpoint + ',' : '';
+		var emotionstr = dataStorage.emotion == '空白' ? '' : '情绪' + dataStorage.emotion + '，';
+		emotionstr += Configure.cangMap2.get(dataStorage.emotion).tips ? 
+				Configure.cangMap2.get(dataStorage.emotion).tips + '。' : '';
+		return  contextstr  + emotionstr + getEmotionSuccessRate(dataStorage.emotion);
 	};
 	
 	var getEmotions = function() {

@@ -43,18 +43,24 @@
 	
 	var getEmotionalCycles = function(dateStr) {
 		var sheet = getSheet('周期');
+		sheet.reverse();
+		var index = sheet.findIndex((e)=>{
+				if (dateStr >= Configure.formatExcelDate(e[Configure.titleCycles.date])) return true;
+			});
 		var retCycle = {};
-		for(var i = 0; i < sheet.length; i ++) {
-			if(sheet[i][Configure.titleCycles.cycles] && 
-				dateStr == Configure.formatExcelDate(sheet[i][Configure.titleCycles.date])) {
+		for(var i = index; i < sheet.length; i ++) {
+			if(sheet[i][Configure.titleCycles.cycles]) {
 				retCycle.cycles = sheet[i][Configure.titleCycles.cycles];
 				retCycle.hotpoint = sheet[i][Configure.titleCycles.hotpoint];
+				retCycle.isTurning = false;
+				if (dateStr == Configure.formatExcelDate(sheet[i][Configure.titleCycles.date])) {
+					retCycle.isTurning = true;
+				}
 				break;
 			}
 		}
 		return retCycle;
 	};
-	
 	var getTactics = function(t) {
 		var sheet = getSheet('交易模式');
 		return sheet.find((item)=> {
@@ -62,6 +68,18 @@
 					item[Configure.titleTactics.tractic].includes(t);
 		});
 	};
+	var getContextTypeAndParam = function(contextStr) {
+		var sheet = getSheet('交易模式');
+		var item =  sheet.find((item)=> {
+			return item[Configure.titleTactics.context] && 
+					contextStr.includes(item[Configure.titleTactics.context]);
+		});
+		var ret = item && item[Configure.titleTactics.contextType] ? 
+				{type:item[Configure.titleTactics.contextType], param:item[Configure.titleTactics.param]}  
+					: null;
+		return  ret;
+	}
+	
 	
 	var getDatesSheet= function() {
 		var sheet = getSheet('情绪');
@@ -113,6 +131,7 @@
 		getValue:getValue,
 		getEmotionalCycles:getEmotionalCycles,
 		getTactics:getTactics,
+		getContextTypeAndParam:getContextTypeAndParam,
 		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,
 		getBandTickets:getBandTickets,

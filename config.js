@@ -105,7 +105,7 @@ var Configure = (function(){
 			tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['退潮']}],
 			
 		['空白', {conditions:[{}],
-			tips:'Failed match emotions !', stage:'启动', tactics:['退潮']}]
+			tips:'', stage:'启动', tactics:['主升']}]
 	]);
 	/// 
 	
@@ -138,6 +138,17 @@ var Configure = (function(){
 					'0' + d.getDate() :
 					d.getDate();
 		return d.getFullYear()+ separator + month + separator + day;
+	};
+	
+	var getContextDescription = function(str) {
+		str=str.replace('M', '周期');
+		str=str.replace('s', '阶段');
+		str=str.replace('S', '阶段');
+		str=str.replace('m', '下跌');
+		str=str.replace('b', 'b浪反弹');
+		str=str.replace('H', '混沌');
+		str=str.replace('P', '炮灰');
+		return str;
 	};
 	
 	var updatetitle = function (dateStr) {
@@ -310,6 +321,9 @@ var Configure = (function(){
 		dragon:'龙头'
 	};
 	var titleTactics = {
+		context:'窗口',
+		param:'参数',
+		contextType: '窗口类型',
 		tractic:'模式',
 		market:'指数和题材',
 		emotion:'市场情绪',
@@ -492,5 +506,6 @@ var Configure = (function(){
 		isSHTicket:isSHTicket,
 		isSZTicket:isSZTicket,
 		isFloorOrFailed:isFloorOrFailed,
+		getContextDescription:getContextDescription
 	}	
 })();

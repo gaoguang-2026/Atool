@@ -186,7 +186,7 @@ var canvas = (function(canvas) {
 			}
 			//画大周期
 			var cycle = workbook.getEmotionalCycles(Configure.formatExcelDate(Days[i][Configure.title2.date]));
-			if (cycle && !!cycle.cycles) {
+			if (cycle && !!cycle.cycles && cycle.isTurning) {
 				ctx.font="14px 楷体";
 				ctx.fillStyle = cycle.cycles.includes('M') ? 'red' : 
 					cycle.cycles.includes('m') ? 'green' :
