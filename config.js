@@ -80,7 +80,8 @@ var Configure = (function(){
 	*/
 	var bandConditions = [{k:{days:5, minDays:4, max:5}},
 							{j:{days:5, minDays:4, max:3}}, 
-							{f:{days:5, minDays:4, max:20}}
+							{f:{days:5, minDays:4, max:20}},
+							{m:{days:5, minDays:4, max:200}}
 							];
 	var cangMap2 = new Map([
 		['混沌', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
