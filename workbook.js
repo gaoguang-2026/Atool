@@ -102,6 +102,26 @@
 		});
 		return retArr.sort(sort);
 	};
+	var getPreDate = function(dateStr, separator = '') {
+		var dateArr = getDateArr(()=>{});
+		var index = dateArr.findIndex((d)=>{
+			return d >= dateStr
+		});
+		index = index > 0 ? index - 1 : 0;
+		if(separator) {
+			dateArr = getDateArr(()=>{}, separator);
+		}
+		return dateArr[index];
+	};
+	var getNextDate = function(dateStr, separator = '') {
+		var sheet = getSheet('情绪').reverse();    //获取原始的表
+		var index = sheet.findIndex((d)=>{
+			return Configure.formatExcelDate(d[Configure.title2.date], '') <= dateStr
+		});
+		index = index > 0 ?
+					index - 1 : 0;
+		return Configure.formatExcelDate(sheet[index][Configure.title2.date], separator);
+	};
 		
 	var getLastDate = function() {
 		return getDateArr((a,b)=>{
@@ -136,6 +156,8 @@
 		getContext:getContext,
 		getContextTypeAndParam:getContextTypeAndParam,
 		getLastDate:getLastDate,
+		getPreDate:getPreDate,
+		getNextDate:getNextDate,
 		setBandTicket:setBandTicket,
 		getBandTickets:getBandTickets,
 		getAllTickets:getAllTickets

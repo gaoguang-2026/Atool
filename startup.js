@@ -128,13 +128,11 @@
 		}
 		
 		var dateOnclick = function(e) {
-			var date = new Date($('#date')[0].value);
-			date = e.currentTarget.id == 'next' ? 
-					date.setDate(date.getDate() + 1) : date.setDate(date.getDate() - 1);
-			if(date <= new Date()) {
-				$('#date').val(Configure.getDateStr(new Date(date), '-'));
-				dateChange();
-			}
+			var dateStr = $('#date')[0].value.replace(/\-/g, '');
+			var retDatestr = e.currentTarget.id == 'next' ? workbook.getNextDate(dateStr, '-') : 
+													workbook.getPreDate(dateStr, '-');
+			$('#date').val(retDatestr);
+			dateChange();
 		};
 		
 		$('#date').change(dateChange);
