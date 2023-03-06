@@ -129,9 +129,8 @@
 		
 		var dateOnclick = function(e) {
 			var dateStr = $('#date')[0].value.replace(/\-/g, '');
-			var retDatestr = e.currentTarget.id ==  'last' ? workbook.getLastDate('-') :
-								e.currentTarget.id == 'next' ? workbook.getNextDate(dateStr, '-') : 
-																workbook.getPreDate(dateStr, '-');
+			var retDatestr = e.currentTarget.id == 'next' ? workbook.getNextDate(dateStr, '-') : 
+													workbook.getPreDate(dateStr, '-');
 			$('#date').val(retDatestr);
 			dateChange();
 		};
@@ -139,7 +138,6 @@
 		$('#date').change(dateChange);
 		$('#pre').click(dateOnclick);
 		$('#next').click(dateOnclick);
-		$('#last').click(dateOnclick);
 	};
 	
     $('#excel-file').change(function(e) {

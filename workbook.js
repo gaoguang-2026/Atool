@@ -122,12 +122,8 @@
 					index - 1 : 0;
 		return Configure.formatExcelDate(sheet[index][Configure.title2.date], separator);
 	};
-	var getLastDate = function(separator = '') {
-		var sheet = getSheet('情绪').reverse();    //获取原始的表
-		return  Configure.formatExcelDate(sheet[0][Configure.title2.date], separator);
-	};
 		
-	var getDisplayLastDate = function() {
+	var getLastDate = function() {
 		return getDateArr((a,b)=>{
 			return b - a;
 		})[0];
@@ -159,10 +155,9 @@
 		getTactics:getTactics,
 		getContext:getContext,
 		getContextTypeAndParam:getContextTypeAndParam,
-		getDisplayLastDate:getDisplayLastDate,
+		getLastDate:getLastDate,
 		getPreDate:getPreDate,
 		getNextDate:getNextDate,
-		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,
 		getBandTickets:getBandTickets,
 		getAllTickets:getAllTickets
