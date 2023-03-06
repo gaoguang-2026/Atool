@@ -89,7 +89,7 @@ var AI = (function(){
 	
 	var saveLoacalstorage = function(dataStorage) {
 		console.log(dataStorage);
-		var datestr = workbook.getLastDate();
+		var datestr = workbook.getDisplayLastDate();
 		if (LocalStore.get(datestr)) {
 			LocalStore.remove(datestr);
 		}
@@ -380,7 +380,7 @@ var AI = (function(){
 		return txt;
 	};
 	var getTickits = function() {
-		var dateStr = workbook.getLastDate();
+		var dateStr = workbook.getDisplayLastDate();
 		var echelons = parser.getEchelons(dateStr);
 		var hotpoints = [];
 		hotpoints = hotpoints.concat(echelons[0].hotPoints);
