@@ -136,7 +136,7 @@ var parser = (function(){
 	
 	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
 	/*hotpointArr  热点概念排序的索引 
-	/*type  0 首板 ， 1 连板 , 2 涨停, 3 趋势  4 科创 5 全部
+	/*type  0 首板 ， 1 连板 , 2 涨停, 3 趋势  4 科创 5排名 6 全部
 	/*sort  0 得分 ， 1 高度,  2 涨速
 	/*other  true 热点外的其他票
 	//*/
@@ -178,7 +178,7 @@ var parser = (function(){
 				return Configure.isFloorOrFailed(t, dateStr);
 			});	
 		} else {
-			// type = 5  do nothing
+			// type = 6  do nothing
 		}
 		
 		// gainian
@@ -261,15 +261,12 @@ var parser = (function(){
 		})   
 		return echelons;
 	};
-	// 获取行业
-	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
-	/*hotpointArr  热点概念排序的索引 
-	/*type  0 首板 ， 1 连板 , 2 全部, 3 趋势  4 科创 5 行业
-	/*sort  0 得分 ， 1 高度,  2 涨速
-	/*other  true 热点外的其他票
-	//*/
-	var getIndustry = function(param) {
-		var ticketsArr = workbook.getAllTickets();
+	
+	/* 
+	* Param 见 getTickets， type = 5 排名
+	*/
+	var getRankTickets = function(param) {
+		var ticketsArr = workbook.getRankTickets();
 		if (param.hotpointArr && param.hotpointArr.length != 0) {
 			ticketsArr = ticketsArr.filter((t)=>{
 				return param.hotpointArr.find((hotpoint)=>{
@@ -277,61 +274,56 @@ var parser = (function(){
 				});
 			});
 		}
-		
-		var retArr = [];
 		ticketsArr.forEach((ticket)=>{
-			var industry = retArr.find((item)=>{
-				return item[Configure.titleIndustry.name] == ticket[Configure.title.industry];
-			});
-			if(!industry) {
-				//初始化这个行业
-				industry = {};
-				industry[Configure.titleIndustry.name] = ticket[Configure.title.industry];
-				industry[Configure.titleIndustry.value_100] = 0;
-				industry[Configure.titleIndustry.value_250] = 0;
-				industry[Configure.titleIndustry.value_500] = 0;
-				industry[Configure.titleIndustry.totalValue] = 0;
-				industry[Configure.titleIndustry.rise_d20_0] = 0;
-				industry[Configure.titleIndustry.rise_d20_10] = 0;
-				industry[Configure.titleIndustry.rise_d20_20] = 0;
-				industry[Configure.titleIndustry.average_20_rise] = 0;
-				industry[Configure.titleIndustry.total] = 0;
-				retArr.push(industry);
-			} 
-			if(parseInt(ticket[Configure.title.totalValue]) < 100 * 100000000)  industry[Configure.titleIndustry.value_100] ++;
-			else if(parseInt(ticket[Configure.title.totalValue]) < 500 * 100000000) industry[Configure.titleIndustry.value_250] ++;
-			else  industry[Configure.titleIndustry.value_500] ++;
-			industry[Configure.titleIndustry.totalValue] += parseInt(ticket[Configure.title.totalValue]) ? 
-											parseInt(ticket[Configure.title.totalValue]/100000000) : 0;
-			if(parseInt(ticket[Configure.title.rase_20]) < 0) industry[Configure.titleIndustry.rise_d20_0]++;
-			else if(parseInt(ticket[Configure.title.rase_20]) < 10) industry[Configure.titleIndustry.rise_d20_10]++;
-			else industry[Configure.titleIndustry.rise_d20_20] ++;
-			industry[Configure.titleIndustry.average_20_rise] += parseInt(ticket[Configure.title.rase_20]) ? 
-														parseInt(ticket[Configure.title.rase_20]) : 0;
-			industry[Configure.titleIndustry.total]++;
+			// 平均涨速 = MA20 + MA10 + MA5
+			var sum_5 = 0, sum_10 = 0, sum_20 = 0;
+			sum_5 = !!parseFloat(ticket[Configure.title.rise_5]) ? parseFloat(ticket[Configure.title.rise_5]) : 0;
+			sum_10 = !!parseFloat(ticket[Configure.title.rise_10]) ? parseFloat(ticket[Configure.title.rise_10]) : 0;
+			sum_20 = !!parseFloat(ticket[Configure.title.rise_20]) ? parseFloat(ticket[Configure.title.rise_20]) : 0;
+			ticket[Configure.title.increaseRate] = parseFloat(sum_5/5 + sum_10/10 + sum_20/20).toFixed(2);
+			
+			ticket[Configure.title.riseTotal] = sum_5 + sum_10 + sum_20;
 		});
-		//算平均涨幅
-		retArr.forEach((industry)=>{
-			industry[Configure.titleIndustry.average_20_rise] = parseFloat(industry[Configure.titleIndustry.average_20_rise]/
-								industry[Configure.titleIndustry.total]).toFixed(2);
-		})
-		retArr.sort((a, b)=>{
+		
+		//  标记龙头
+		var tagDargon = function(title, tagObj){
+			ticketsArr.sort((a, b)=>{
+				return parseInt(b[title]) - parseInt(a[title]);
+			});
+			ticketsArr.forEach((t, index) => {
+				if(title == Configure.title.riseTotal) {
+					t[Configure.title.index] = index + 1;
+				}
+				if(tagObj && !Configure.isNew(t[Configure.title.time])) {
+					t[Configure.title.dragonTag] = tagObj;
+					tagObj = undefined;
+				}
+			});
+		}
+		tagDargon(Configure.title.rise_20, {tagDes:'高度龙头', style: 'orange'});
+		tagDargon(Configure.title.rise_5, {tagDes:'强度龙头', style: 'blue'});
+		tagDargon(Configure.title.riseTotal, {tagDes:'总龙', style: 'pink bold'});
+		
+		ticketsArr.sort((a, b)=>{
 			var title;
+			var reverse = false;
 			switch(param.sort) {
 				case 1:
-					title = Configure.titleIndustry.totalValue;
+					title = Configure.title.rise_20;
 					break;
 				case 2:
-					title = Configure.titleIndustry.average_20_rise;
+					title = Configure.title.rise_5;
 					break;
 				case 0:
 				default:
-					title = Configure.titleIndustry.total;
+					title = Configure.title.index;
+					reverse = true;
 					break;
 			}
-			return parseInt(b[title]) - parseInt(a[title]);
+			return reverse ? (parseInt(a[title]) - parseInt(b[title])) :
+								(parseInt(b[title]) - parseInt(a[title]));
 		});
-		return retArr;
+		return ticketsArr;
 	};
 	
 	// 根据hotpoint算出echelons
@@ -383,7 +375,7 @@ var parser = (function(){
 		getBandTickets:getBandTickets,
 		getEchelons:getEchelons,
 		getCombinedEchelon:getCombinedEchelon,
-		getIndustry:getIndustry,
+		getRankTickets:getRankTickets,
 		getBoardHeight:getBoardHeight
 	}
 })();

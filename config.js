@@ -146,6 +146,28 @@ var Configure = (function(){
 		return d.getFullYear()+ separator + month + separator + day;
 	};
 	
+	var getWeek = function (d) {
+        curYear = d.getFullYear();
+        startDate = new Date(curYear, 0, 1);
+
+		var startWeek = startDate.getDay(); // 1月1号是星期几:0-6
+		var offsetWeek = 0; //用来计算不完整的第一周，如果1月1号为星期一则为0，否则为1
+
+		if (startWeek != 1) {
+			offsetWeek = 1;
+			if (!startWeek) {
+				startDate.setDate(1);
+			} else {
+				startDate.setDate(8 - startWeek); // (7 - startWeek + 1)
+			}
+
+		}
+		var distanceTimestamp = d - startDate;
+		var days = Math.ceil(distanceTimestamp / (24 * 60 * 60 * 1000)) + startWeek;
+		var weeks = Math.ceil(days / 7) + offsetWeek;
+		return weeks;
+	}
+	
 	var getContextDescription = function(str) {
 		str=str.replace('M', '周期');
 		str=str.replace('s', '阶段');
@@ -238,6 +260,7 @@ var Configure = (function(){
 		name: '    名称',
 		price: '现价',
 		value: '流通市值',
+		totalValue:'总市值',
 		reason: '涨停原因类别' + '[' + 
 				getDateStr(date) +
 				']',
@@ -259,12 +282,6 @@ var Configure = (function(){
 				getDateStr(date) +
 				']' ,
 		boardAndDay:'几天几板',
-		// 涨幅排名独有
-		totalValue:'总市值',
-		rase_20:'20日涨幅',
-		industry:'所属行业',
-		gainian:'所属概念',
-		
 		score:'题材得分',                //根据reasion 算出来的概念评分
 		realValue: '实际流通市值',
 		realValueDivergence: '实际流通市值背离率',  //与dragon对比的背离率
@@ -274,13 +291,24 @@ var Configure = (function(){
 		realHandoverPercent: '实际换手率',
 		boardStrength: '封板力度',
 		selectDate: '最近涨停日期',
-		increaseRate: '平均涨速'
+		increaseRate: '平均涨速',
+		
+		// 涨幅排名独有
+		rise_5: '5日涨幅',
+		rise_10: '10日涨幅',
+		rise_20:'20日涨幅',
+		industry:'所属行业',
+		gainian:'所属概念',
+		time: '上市日期',
+		index: '排名',
+		dragonTag: '龙头标记',
+		riseTotal: '涨幅和',
 	};
 	var showInTableTitile = ['name',  'realValue','score','totalDivergence',
 					'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
-	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence','selectDate','reason'];
-	var industryShowInTableTitile = ['index', 'name', 'value_100','value_250','value_500', 'totalValue','rise_d20_0',
-								'rise_d20_10','rise_d20_20', 'average_20_rise','total'];
+	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
+				'selectDate','reason'];
+	var industryShowInTableTitile = ['index', 'code', 'name', 'price','value', 'increaseRate', 'industry', 'time'];
 
 	var title2 = {
 		date: '日期',
@@ -341,19 +369,6 @@ var Configure = (function(){
 		stop:'止损',
 		sell: '止盈',
 		description: '说明'
-	};
-	var titleIndustry = {
-		index: '索引',
-		name: '行业名称',
-		value_100: '市值<100亿',
-		value_250: '100-500亿',
-		value_500: '市值>500亿',
-		totalValue: '总市值（亿）',
-		rise_d20_0: '20日涨幅<0',
-		rise_d20_10: '0<涨幅<20%',
-		rise_d20_20: '20日涨幅>20%',
-		average_20_rise:'20日平均涨幅%',
-		total: '合计(个)'
 	};
 		
 	var site_color = 'black';
@@ -442,7 +457,10 @@ var Configure = (function(){
 	var isFloorOrFailed = function(ticket, dateStr) {
 		return ticket[replaceTitleDate(title.dayNumber, dateStr)] > 0;
 	};
-		
+	var isNew = function(dateStr) {   //上市时间小于10的为新股   dateStr = 20230303;
+		var  startDate = Date.parse(dateStr.slice(0,4) + '-' + dateStr.slice(5,6) + '-' + dateStr.slice(7,8));
+		return (Configure.date - startDate)/(1*24*60*60*1000) < 30;
+	};
 	
 	return {
 		date: date,
@@ -460,7 +478,6 @@ var Configure = (function(){
 		title2:title2,
 		titleCycles:titleCycles,
 		titleTactics:titleTactics,
-		titleIndustry:titleIndustry,
 		Days_Max_lengh:Days_Max_lengh,
 		Days_Show_reserved_lengh:Days_Show_reserved_lengh,
 		echelons:echelons,
@@ -503,6 +520,7 @@ var Configure = (function(){
 		line_color:line_color,
 		echelon_color:echelon_color,
 		getDateStr:getDateStr,
+		getWeek:getWeek,
 		getAngle:getAngle,
 		getBoardStrength:getBoardStrength,
 		formatExcelDate:formatExcelDate,
@@ -513,6 +531,7 @@ var Configure = (function(){
 		isSHTicket:isSHTicket,
 		isSZTicket:isSZTicket,
 		isFloorOrFailed:isFloorOrFailed,
+		isNew:isNew,
 		getContextDescription:getContextDescription
 	}	
 })();

@@ -21,7 +21,11 @@ th,td {
 
 td,tr	{}.green{background-color: green}
 		.grey{background-color: grey}
-		.red{background-color: red}
+		.lightGrey{background-color: LightGrey}
+		.red{background-color: red; color:yellow;}
+		.blue{background-color: LightSkyBlue}
+		.orange{background-color: Wheat}
+		.pink{background-color: LightPink}
 		.yellow{background-color: yellow; color:red; font-weight:bold}
 		.bold { font-weight:bold}
 		.highlight{background-color: rgba(255, 128, 0, 0.3)}

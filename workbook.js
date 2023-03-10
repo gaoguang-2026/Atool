@@ -133,11 +133,19 @@
 		})[0];
 	};
 	
-	var getAllTickets = function() {
-		return getSheet('涨幅排名');
+	// A :5日涨幅大于10%或者10日涨幅大于25%或者20日涨幅大于40%
+	var getRankTickets = function() {
+		var sheetName = 'W' + Configure.getWeek(Configure.date);
+		if (sheetExist(sheetName)) {
+			return getSheet(sheetName);
+		} else {
+			return getSheet('W11');
+		}
+		
 	};
 	
 	// param = {sheetName: '0707',ticketCode:'SZ002527'}}
+	// A : 今日非ST涨停板或者今日涨停过或者今日跌停或者今日跌停过 上市时间超过30天
 	var getValue = function(param) {
 		var s = getSheet(param.sheetName);
 		var ret ;
@@ -165,6 +173,6 @@
 		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,
 		getBandTickets:getBandTickets,
-		getAllTickets:getAllTickets
+		getRankTickets:getRankTickets
 	}
  })();

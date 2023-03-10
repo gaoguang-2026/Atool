@@ -104,8 +104,6 @@ var table = (function(){
 			var titleArr = document.getElementById('form1').gtype[5].checked ?  Configure.industryShowInTableTitile :
 						document.getElementById('form1').gtype[3].checked ? 
 						Configure.bandShowInTableTitile : Configure.showInTableTitile;
-			var titleConfig = document.getElementById('form1').gtype[5].checked ? 
-							Configure.titleIndustry : Configure.title;
 			titleArr.forEach((t)=> {
 				var td = document.createElement('td');
 				if (t == 'reason') {
@@ -113,7 +111,7 @@ var table = (function(){
 				} else if (t == 'dayNumber') {
 					td.innerHTML = '连板数'
 				} else {
-					td.innerHTML = titleConfig[t];
+					td.innerHTML =  Configure.title[t];
 				}
 				td.dataset.titleProp = t;
 				tr.appendChild(td);
@@ -256,57 +254,42 @@ var table = (function(){
 		});
 	};
 	
-	var createIndustryRow = function(tBody,tHeadtds, datetoload, param) {
-		var industrys = parser.getIndustry(param);
-		var index = 1;
-		industrys.forEach((industry)=> {
+	var createRankRow = function(tBody,tHeadtds, datetoload, param) {
+		var rankTickets = parser.getRankTickets(param);
+		rankTickets.forEach((ticket)=> {
 			var tr = document.createElement('tr');
 			tHeadtds.forEach((t)=> {
 				var td = document.createElement('td');
-				var value = industry[Configure.titleIndustry[t.dataset.titleProp]];
+				var value = ticket[Configure.title[t.dataset.titleProp]];
 				td.innerHTML = value;
 				
 				switch (t.dataset.titleProp) {
-					case 'index':
-						td.innerHTML = index++;
 					case 'name':
-						break;
-					case 'totalValue':
-						td.className = 'bold';
-						var greyV = param.hotpointArr.length ? 500 : 5000;
-						if(td.innerHTML < greyV) {
-							tr.className = 'grey';
+						if (ticket[Configure.title.dragonTag]) {
+							tr.className = ticket[Configure.title.dragonTag].style;
+							Tip.show(td, ticket[Configure.title.dragonTag].tagDes);
 						}
-					case 'total':
+						break;
+					case 'time':
+						if(Configure.isNew(value)) {
+							td.className = 'grey';
+						}
+						break;
+					case 'increaseRate':
+						Tip.show(td, '5日涨幅：' + parseFloat(ticket[Configure.title.rise_5]).toFixed(2) + '<br>' +
+									'10日涨幅：' + parseFloat(ticket[Configure.title.rise_10]).toFixed(2) + '<br>' +
+									'20日涨幅：' + parseFloat(ticket[Configure.title.rise_20]).toFixed(2) + '<br>');
+						break;
+					case 'value':
+						td.innerHTML = parseFloat(ticket[t.innerHTML]/100000000).toFixed(2);
+						break;
 					default :
-						t.dataset.total ? t.dataset.total= parseInt(value) + parseInt(t.dataset.total) : 
-												t.dataset.total = value;
 						break;
 				}
 				tr.appendChild(td);
 			});
 			tBody.appendChild(tr);
 		});
-		
-		// 合计
-		var tr = document.createElement('tr');
-		tHeadtds.forEach((t)=> {
-			var td = document.createElement('td');
-			switch (t.dataset.titleProp) {
-				case 'index':
-					td.innerHTML = '合计';
-					break;
-				case 'name':
-					td.innerHTML = '--';
-					break;
-				default :
-					td.innerHTML =  t.dataset.total;
-					break;
-			}
-			tr.className = 'yellow';
-			tr.appendChild(td);
-		});
-		tBody.appendChild(tr); 
 	};
 	var createTable = function (datetoload, highlightTichets) {
 		var fr = document.getElementById('form1');
@@ -355,7 +338,7 @@ var table = (function(){
 		while(tBody.hasChildNodes()) {
 			tBody.removeChild(tBody.lastChild);
 		};
-		fr.gtype[5].checked ? createIndustryRow(tBody,tHeadtds, datetoload, param) : 
+		fr.gtype[5].checked ? createRankRow(tBody,tHeadtds, datetoload, param) : 
 								createTicketRow(tBody,tHeadtds, datetoload, param, highlightTichets); 
 
 	};
