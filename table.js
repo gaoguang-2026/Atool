@@ -120,6 +120,29 @@ var table = (function(){
 		tr.className = 'bold';
 		tHead.appendChild(tr);
 	}
+	var addDetailAndDelete = function(tr, tBody, ticket) {
+			//添加详细超链接
+		var tDetail = document.createElement('td');
+		tDetail.innerHTML = '<a href="baidu.com" target="_blank">详细</a>';
+		var oD = tDetail.children[0];
+		oD.onclick = function(){
+			var url = "http://quote.eastmoney.com/" + ticket[Configure.title.code] + ".html#fullScreenChart"
+			window.open(url);
+		};
+		//添加删除超链接
+		var tDel = document.createElement('td');
+		tDel.innerHTML = '<a href="javascript:;">删除</a>';
+		//执行删除表格行操作
+		var oA = tDel.children[0];
+		oA.onclick = function(){
+		//	if(confirm("确定删除吗？")){
+				tBody.removeChild(this.parentNode.parentNode);
+		//	}
+			};
+		tr.appendChild(tDetail);
+		tr.appendChild(tDel);
+		tBody.appendChild(tr);
+	}
 	var createTicketRow = function(tBody,tHeadtds, datetoload, param, highlightTichets) {
 		var tks = parser.getTickets(datetoload,param);
 		var dateArr = workbook.getDateArr((a,b)=>{
@@ -229,28 +252,7 @@ var table = (function(){
 				})
 				tr.appendChild(td);
 			});
-			
-			//添加详细超链接
-			var tDetail = document.createElement('td');
-			tDetail.innerHTML = '<a href="baidu.com" target="_blank">详细</a>';
-			var oD = tDetail.children[0];
-			oD.onclick = function(){
-				var url = "http://quote.eastmoney.com/" + ticket[Configure.title.code] + ".html"
-				window.open(url);
-			};
-			//添加删除超链接
-			var tDel = document.createElement('td');
-			tDel.innerHTML = '<a href="javascript:;">删除</a>';
-			//执行删除表格行操作
-			var oA = tDel.children[0];
-			oA.onclick = function(){
-		//		if(confirm("确定删除吗？")){
-					tBody.removeChild(this.parentNode.parentNode);
-		//		}
-			};
-			tr.appendChild(tDetail);
-			tr.appendChild(tDel);
-			tBody.appendChild(tr);
+			addDetailAndDelete(tr, tBody, ticket);
 		});
 	};
 	
@@ -288,7 +290,7 @@ var table = (function(){
 				}
 				tr.appendChild(td);
 			});
-			tBody.appendChild(tr);
+			addDetailAndDelete(tr, tBody, ticket);
 		});
 	};
 	var createTable = function (datetoload, highlightTichets) {
