@@ -258,6 +258,14 @@ var table = (function(){
 	
 	var createRankRow = function(tBody,tHeadtds, datetoload, param) {
 		var rankTickets = parser.getRankTickets(param);
+		var findIndexWithNum = function(str,cha,num){
+			var x=str.indexOf(cha);
+			for(var i=0;i<num;i++){
+				x=str.indexOf(cha,x+1);
+			}
+			return x;
+		}
+	
 		rankTickets.forEach((ticket)=> {
 			var tr = document.createElement('tr');
 			tHeadtds.forEach((t)=> {
@@ -266,12 +274,17 @@ var table = (function(){
 				td.innerHTML = value;
 				
 				switch (t.dataset.titleProp) {
-					case 'name':
+					case 'code':
 						if (ticket[Configure.title.dragonTag]) {
+							td.innerHTML += '  (' + ticket[Configure.title.dragonTag].tagDes.substr(0,2) + ')';
 							tr.className = ticket[Configure.title.dragonTag].style;
 							Tip.show(td, ticket[Configure.title.dragonTag].tagDes);
 						}
-						break;
+						break
+					case 'price':
+						if(Configure.isSuspend(td.innerHTML)) {
+							tr.className = 'grey';
+						}
 					case 'time':
 						if(Configure.isNew(value)) {
 							td.className = 'grey';
@@ -282,8 +295,23 @@ var table = (function(){
 									'10日涨幅：' + parseFloat(ticket[Configure.title.rise_10]).toFixed(2) + '<br>' +
 									'20日涨幅：' + parseFloat(ticket[Configure.title.rise_20]).toFixed(2) + '<br>');
 						break;
+					case 'rise_5':
+					case 'rise_10':
+					case 'rise_20':
+						if(td.innerHTML == '--') {
+							var min = t.dataset.titleProp == 'rise_5' ? 10 : 
+									t.dataset.titleProp == 'rise_10' ? 25 : 40;
+							td.innerHTML = '<' + min;
+						}
+						break;
 					case 'value':
 						td.innerHTML = parseFloat(ticket[t.innerHTML]/100000000).toFixed(2);
+						break;
+					case 'gainianDragon':
+						td.innerHTML = td.innerHTML.substr(0,findIndexWithNum(td.innerHTML, '】', 2)+1);
+						if(td.innerHTML.length > 20) {  //大于20个字符，截取两个概念显示
+							td.innerHTML = td.innerHTML.substr(0,findIndexWithNum(td.innerHTML, '】', 1)+1);
+						}
 						break;
 					default :
 						break;

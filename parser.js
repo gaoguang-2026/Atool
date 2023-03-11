@@ -294,7 +294,8 @@ var parser = (function(){
 				if(title == Configure.title.riseTotal) {
 					t[Configure.title.index] = index + 1;
 				}
-				if(tagObj && !Configure.isNew(t[Configure.title.time])) {
+				if(tagObj && !Configure.isNew(t[Configure.title.time]) &&
+					!Configure.isSuspend(t[Configure.title.price])) {
 					t[Configure.title.dragonTag] = tagObj;
 					tagObj = undefined;
 				}

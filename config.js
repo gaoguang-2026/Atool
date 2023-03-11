@@ -114,7 +114,7 @@ var Configure = (function(){
 			tips:'', stage:'启动', tactics:['主升']}]
 	]);
 	/// 
-	
+
 	/**
      * 格式化excel传递的时间
      * @param numb 需转化的时间 43853
@@ -299,6 +299,7 @@ var Configure = (function(){
 		rise_20:'20日涨幅',
 		industry:'所属行业',
 		gainian:'所属概念',
+		gainianDragon:'概念龙头',
 		time: '上市日期',
 		index: '排名',
 		dragonTag: '龙头标记',
@@ -308,7 +309,8 @@ var Configure = (function(){
 					'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
 	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
 				'selectDate','reason'];
-	var industryShowInTableTitile = ['index', 'code', 'name', 'price','value', 'increaseRate', 'industry', 'time'];
+	var industryShowInTableTitile = ['index', 'code', 'name', 'price', 'rise_5',
+									'rise_20', 'gainianDragon','value', 'time'];
 
 	var title2 = {
 		date: '日期',
@@ -461,6 +463,9 @@ var Configure = (function(){
 		var  startDate = Date.parse(dateStr.slice(0,4) + '-' + dateStr.slice(5,6) + '-' + dateStr.slice(7,8));
 		return (Configure.date - startDate)/(1*24*60*60*1000) < 30;
 	};
+	var isSuspend = function(price) {   //停牌
+		return !price || price == '--';
+	};
 	
 	return {
 		date: date,
@@ -532,6 +537,7 @@ var Configure = (function(){
 		isSZTicket:isSZTicket,
 		isFloorOrFailed:isFloorOrFailed,
 		isNew:isNew,
+		isSuspend:isSuspend,
 		getContextDescription:getContextDescription
 	}	
 })();

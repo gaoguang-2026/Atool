@@ -135,13 +135,11 @@
 	
 	// A :5日涨幅大于10%或者10日涨幅大于25%或者20日涨幅大于40%
 	var getRankTickets = function() {
-		var sheetName = 'W' + Configure.getWeek(Configure.date);
-		if (sheetExist(sheetName)) {
-			return getSheet(sheetName);
-		} else {
-			return getSheet('W11');
+		var weeknum = Configure.getWeek(Configure.date);
+		while(!sheetExist('W' + weeknum)){
+			weeknum --;
 		}
-		
+		return getSheet('W' + weeknum);
 	};
 	
 	// param = {sheetName: '0707',ticketCode:'SZ002527'}}
