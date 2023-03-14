@@ -136,12 +136,12 @@ var parser = (function(){
 	
 	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
 	/*hotpointArr  热点概念排序的索引 
-	/*type  0 首板 ， 1 连板 , 2 涨停, 3 趋势  4 科创 5排名 6 全部
+	/*type  0 首板 ， 1 连板 , 2 涨停,  3 科创 4 趋势  5排名 6 全部
 	/*sort  0 得分 ， 1 高度,  2 涨速
 	/*other  true 热点外的其他票
 	//*/
 	var getTickets = function(dateStr, obj) {
-		if(obj.type == 3) {
+		if(obj.type == 4) {
 			return getBandTickets(obj);
 		};
 		
@@ -168,7 +168,7 @@ var parser = (function(){
 				return obj.type === 1 ?  t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] > 1 : 
 									t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] == 1;
 			});			
-		} else if (obj.type == 4) { // 科创
+		} else if (obj.type == 3) { // 科创
 			retArr= tickets.filter((t)=>{
 				return Configure.isKechuangTicket(t[Configure.title.code]);
 			});			

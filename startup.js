@@ -21,7 +21,7 @@
 	
 	
 	var highlightTichets;
-	// type = 0 画连扳， 3画趋势
+	// type = 0 画连扳， 4画趋势
 	var drawEchelons = function(echelonNames = [], type = 0){
 		// 梯队
 		var elCanvas = document.getElementById("drawing")
@@ -42,7 +42,7 @@
 			let e1;
 			if(type == 0) {
 				e1 = new window.Echelon(elCanvas, echelons[i], rect);      //连板
-			} else {  // type = 3
+			} else {  // type = 4
 				e1 = new window.bandEchelon(elCanvas, echelons[i], rect);   // 趋势，首板断板
 			}
 			e1.draw();
@@ -93,8 +93,8 @@
 			drawimage(paramEchelons);
 			if (document.getElementById('showdays').value < 120 ) { //canvas显示大于等于120天时不显示Echelons
 				// Echelon update 
-				var type = document.getElementById('form1').gtype[3].checked ? 
-							3 : 0;   // 画趋势还是连扳
+				var type = document.getElementById('form1').gtype[4].checked ? 
+							4 : 0;   // 画趋势还是连扳
 				drawEchelons(paramEchelons, type);
 			}
 			

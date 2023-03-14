@@ -102,7 +102,7 @@ var table = (function(){
 			}
 		} else {
 			var titleArr = document.getElementById('form1').gtype[5].checked ?  Configure.industryShowInTableTitile :
-						document.getElementById('form1').gtype[3].checked ? 
+						document.getElementById('form1').gtype[4].checked ? 
 						Configure.bandShowInTableTitile : Configure.showInTableTitile;
 			titleArr.forEach((t)=> {
 				var td = document.createElement('td');
