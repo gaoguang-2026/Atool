@@ -5,14 +5,18 @@
 	var handOverBar_w = 6;
 	var handOverBar_h = 30;
 	
-		// 根据 题材、涨速 算最后的得分    
+		// 根据 题材、排名涨速算最后的得分    
 	var GetBandFinalScroe = function(t, scoreFactor = Configure.AI_Default_Band_Factor) {
-		var dateArr = workbook.getDateArr((a,b)=>{
-				return b - a;
-		});
-		 // 日涨幅 5%左右， 太高容易回落，太低没有活性
-		return parseInt(t[Configure.title.score] - scoreFactor * ((Math.abs(t.increaseRate *100 - 5)/5))) *   
-					(dateArr.indexOf(t.startDate) - dateArr.indexOf(t.selectDate) + 1);
+		var ticket = workbook.getRankTicketFromCode(t[Configure.title.code]);
+		var sum = 0;
+		if(ticket) {
+			sum += !!parseFloat(ticket[Configure.title.rise_5]) ? parseFloat(ticket[Configure.title.rise_5]) : 0;
+			sum += !!parseFloat(ticket[Configure.title.rise_10]) ? parseFloat(ticket[Configure.title.rise_10]) : 0;
+			sum += !!parseFloat(ticket[Configure.title.rise_20]) ? parseFloat(ticket[Configure.title.rise_20]) : 0;
+		}
+	//	console.log('getRankTicketFromCode code ' + t[Configure.title.code] + '  t score:' + 
+	//				t[Configure.title.score] + '  sum:' + sum + '  factor:' + scoreFactor);
+		return parseInt(t[Configure.title.score] + scoreFactor * sum);
 	};
 
 	let bandEchelon = function (canvas, e, rect) {
@@ -117,8 +121,9 @@
 					< Configure.Band_tickit_filter_period ) {
 				isSelect = false;
 			} 
-			//市值
-			if(t[Configure.title.realValue] < Configure.Band_Min_Value) {
+			//市值 && 没有进入排名
+			if(t[Configure.title.value] < Configure.Band_Min_Value && 
+				!workbook.getRankTicketFromCode(t[Configure.title.code])) {
 				isSelect = false;
 			}
 			return isSelect;

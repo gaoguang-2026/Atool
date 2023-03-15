@@ -424,10 +424,10 @@ var Configure = (function(){
 	var Band_miss_tickit_period = 11;    //趋势检查断板的期限     SED + TFD
 	var Band_tickit_filter_period = 0;   //趋势票涨停过滤期限     0 是一个涨停
 	var Band_MA_NUM = 5;    //MA5
-	var Band_Min_Value = 10000000000;  // 趋势票最小流通市值
+	var Band_Min_Value = 20000000000;  // 趋势票最小流通市值
 	
 	var AI_Default_Factor = 50;        // 超短选票默认因子   越大结构权重越大，越小题材权重越大
-	var AI_Default_Band_Factor = 180;   // 趋势选票默认因子  越大涨速权重越大，越小题材权重越大
+	var AI_Default_Band_Factor = 2;   // 趋势选票默认因子  越大涨速权重越大，越小题材权重越大
 	var Dead_Handover = 55;				// 过滤掉死亡换手
 	var Min_handover = 3;				// 过滤掉太低的换手，买不进去
 	
@@ -460,6 +460,7 @@ var Configure = (function(){
 		return ticket[replaceTitleDate(title.dayNumber, dateStr)] > 0;
 	};
 	var isNew = function(dateStr) {   //上市时间小于10的为新股   dateStr = 20230303;
+		if(dateStr.length != 8) return false;
 		var  startDate = Date.parse(dateStr.slice(0,4) + '-' + dateStr.slice(5,6) + '-' + dateStr.slice(7,8));
 		return (Configure.date - startDate)/(1*24*60*60*1000) < 30;
 	};

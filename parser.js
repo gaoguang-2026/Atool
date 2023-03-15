@@ -136,7 +136,7 @@ var parser = (function(){
 	
 	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
 	/*hotpointArr  热点概念排序的索引 
-	/*type  0 首板 ， 1 连板 , 2 涨停,  3 科创 4 趋势  5排名 6 全部
+	/*type  0 首板 ， 1 连板 , 2 涨停,  3 科创 4 中军趋势  5排名 6 全部
 	/*sort  0 得分 ， 1 高度,  2 涨速
 	/*other  true 热点外的其他票
 	//*/
@@ -321,8 +321,8 @@ var parser = (function(){
 					reverse = true;
 					break;
 			}
-			return reverse ? (parseInt(a[title]) - parseInt(b[title])) :
-								(parseInt(b[title]) - parseInt(a[title]));
+			return reverse ? (parseInt(a[title] == '--' ? 0 : a[title]) - parseInt(b[title] == '--' ? 0 : b[title])) :
+								(parseInt(b[title] == '--' ? 0 : b[title]) - parseInt(a[title] == '--' ? 0 : a[title]));
 		});
 		return ticketsArr;
 	};
