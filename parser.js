@@ -288,7 +288,7 @@ var parser = (function(){
 		//  标记龙头
 		var tagDargon = function(title, tagObj){
 			ticketsArr.sort((a, b)=>{
-				return parseInt(b[title]) - parseInt(a[title]);
+				return (parseInt(b[title] == '--' ? 0 : b[title]) - parseInt(a[title] == '--' ? 0 : a[title]));
 			});
 			ticketsArr.forEach((t, index) => {
 				if(title == Configure.title.riseTotal) {
