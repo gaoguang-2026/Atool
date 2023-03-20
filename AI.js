@@ -10,17 +10,17 @@ var AI = (function(){
 	// emotion v1
 	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
 	var cangMap1 = new Map([
-		['冰点', {tips:'提防二次冰点，低位潜伏', stage:'退三', tactics:['退潮']}],    // 退三
-		['二次冰点', {tips:'冰点衰竭，打板确认龙头', stage:'启动', tactics:['博弈']}],			
-		['修复', {tips:'加仓，打板龙头和低位首发', stage:'发酵', tactics:['博弈']}],    	// 启动
-		['持续修复', {tips:'去弱留强', stage:'加速', tactics:['主升']}],				// 发酵
-		['分歧', {tips:'关注中位大长腿', stage:'分歧', tactics:['主升']}],    						
-		['高潮', {tips:'注意中位分化，关注低位补涨', stage:'加速', tactics:['主升']}],		// 加速
-		['继续高潮',{tips:'注意兑现风险，高位减仓止盈', stage:'盘顶', tactics:['主升']}],			
-		['分化', {tips:'减仓至二成以下，避免中位吹哨人', stage:'分歧', tactics:['主升']}],			// 分歧
-		['退潮', {tips:'空仓，关注缠打趋势型品种', stage:'退一', tactics:['退潮']}],				// 退一
-		['持续退潮', {tips:'空头衰竭，选强低吸反核', stage:'退二', tactics:['退潮']}],			// 退二
-		['混沌', {tips:'资金没有主攻方向，趋势低吸', stage:'退三', tactics:['博弈']}]
+		['冰点', {winCtxt:'提防二次冰点，低位潜伏', stage:'退三', context:['退潮']}],    // 退三
+		['二次冰点', {winCtxt:'冰点衰竭，打板确认龙头', stage:'启动', context:['博弈']}],			
+		['修复', {winCtxt:'加仓，打板龙头和低位首发', stage:'发酵', context:['博弈']}],    	// 启动
+		['持续修复', {winCtxt:'去弱留强', stage:'加速', context:['主升']}],				// 发酵
+		['分歧', {winCtxt:'关注中位大长腿', stage:'分歧', context:['主升']}],    						
+		['高潮', {winCtxt:'注意中位分化，关注低位补涨', stage:'加速', context:['主升']}],		// 加速
+		['继续高潮',{winCtxt:'注意兑现风险，高位减仓止盈', stage:'盘顶', context:['主升']}],			
+		['分化', {winCtxt:'减仓至二成以下，避免中位吹哨人', stage:'分歧', context:['主升']}],			// 分歧
+		['退潮', {winCtxt:'空仓，关注缠打趋势型品种', stage:'退一', context:['退潮']}],				// 退一
+		['持续退潮', {winCtxt:'空头衰竭，选强低吸反核', stage:'退二', context:['退潮']}],			// 退二
+		['混沌', {winCtxt:'资金没有主攻方向，趋势低吸', stage:'退三', context:['博弈']}]
 	]);
 	////////
 	var cangMap = Configure.EnableEmotionalogicV2 ? Configure.cangMap2 : cangMap1;
@@ -209,7 +209,8 @@ var AI = (function(){
 				(condition[i].max!=undefined && value != -1 && value > condition[i].max) ||
 				(condition[i].currentMin!=undefined && currentValue !=-1 && currentValue < condition[i].currentMin) ||
 				(condition[i].currentMax!=undefined && currentValue !=-1 && currentValue > condition[i].currentMax )) {
-					console.log('checkCondition failed for ' + (i =='a' ? '情绪角度' : '情绪level'));
+					console.log('checkCondition failed for ' + (i =='a' ? '情绪角度' : '情绪level') + 
+						' value:' + value + '  currentValue:' + currentValue);
 					ret = false;
 			}
 			
@@ -246,21 +247,22 @@ var AI = (function(){
 			if(e.message != 'LoopInterrupt') throw e;
 		}
 		
-		// 获取周期窗口
+		// 获取周期M 阶段S 环境C 窗口W 
 		var context = workbook.getEmotionalCycles(Configure.getDateStr(Configure.date, '-'));
 		var contextstr = context.cycles ? Configure.getContextDescription(context.cycles) : '';
 		var contextTypeAndParam = context.cycles ? workbook.getContextTypeAndParam(context.cycles) : null;
 		if (contextTypeAndParam) {   // 根据窗口重新设置一下模式，如果没有使用默认的模式
 			var obj = Configure.cangMap2.get(dataStorage.emotion);
-			obj.tactics = [contextTypeAndParam.type];
+			obj.context = [contextTypeAndParam.type];
 			Configure.cangMap2.set(dataStorage.emotion, obj);
 			contextstr += '[' + contextTypeAndParam.type + '],';
 			contextstr += contextTypeAndParam.param ? contextTypeAndParam.param + '.' : '';
 		}
 		contextstr += context.hotpoint ? '热点' + context.hotpoint + ',' : '';
-		var emotionstr = dataStorage.emotion == '空白' ? '' : '情绪' + dataStorage.emotion + '，';
-		emotionstr += Configure.cangMap2.get(dataStorage.emotion).tips ? 
-				Configure.cangMap2.get(dataStorage.emotion).tips + '。' : '';
+		var emotionstr = dataStorage.emotion == '空白' ? '' : '情绪' + dataStorage.emotion + '，明日预期【' + 
+				Configure.winCtxts[Configure.cangMap2.get(dataStorage.emotion).winC] + '】';
+		emotionstr += Configure.cangMap2.get(dataStorage.emotion).winCtxt ? 
+				Configure.cangMap2.get(dataStorage.emotion).winCtxt + '。' : '';
 		return  contextstr  + emotionstr + getEmotionSuccessRate(dataStorage.emotion);
 	};
 	
@@ -329,9 +331,9 @@ var AI = (function(){
 				dataStorage.emotion = angle > 0 ? '继续高潮' : '分化';
 			}
 		}		
-		return '情绪' + dataStorage.emotion + '，' + cangMap1.get(dataStorage.emotion).tips + '。' + 
+		return '情绪' + dataStorage.emotion + '，' + cangMap1.get(dataStorage.emotion).winCtxt + '。' + 
 				getEmotionSuccessRate(dataStorage.emotion) + ' 窗口：[' + 
-				cangMap1.get(dataStorage.emotion).tactics.toString() + ']，';
+				cangMap1.get(dataStorage.emotion).context.toString() + ']，';
 	};
 	
 	// 根据题材、背离率、连扳和 封板强度 算最后的得分    
@@ -448,7 +450,7 @@ var AI = (function(){
 				}
 			}
 		// 获取策略
-		cangMap.get(dataStorage.emotion).tactics.forEach((t)=>{
+		cangMap.get(dataStorage.emotion).context.forEach((t)=>{
 			var tactic = workbook.getTactics(t);
 			
 			titles.forEach((t) => {
@@ -475,7 +477,8 @@ var AI = (function(){
 	};
 	var isBandInCharge = function() {
 		var ret = false;
-		Configure.bandConditions.forEach((c)=>{
+		Configure.bandConditions.forEach((c, index)=>{
+			console.log('start check bandConditions index = ' + index);
 			if(checkCondition(c)){
 				ret = true;
 			};
@@ -497,8 +500,8 @@ var AI = (function(){
 		
 		canvas.drawEmotionCycle(dragonStage, cangMap.get(dataStorage.emotion).stage);
 		
-		var displayColor = cangMap.get(dataStorage.emotion).tactics == '博弈' ? 'blue' :
-					cangMap.get(dataStorage.emotion).tactics == '主升' ? 'red' : 'green';
+		var displayColor = cangMap.get(dataStorage.emotion).context == '博弈' ? 'blue' :
+					cangMap.get(dataStorage.emotion).context == '主升' ? 'red' : 'green';
 		return {color: displayColor, txt: recommendText, tatics: getTaticsTxt()};
 	};
 	
