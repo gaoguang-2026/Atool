@@ -170,6 +170,10 @@
 	
 	window.onload = function(){
 		$('#date').val(Configure.getDateStr(Configure.date, '-'));
+				
+		var apothegm = document.getElementById("apothegm");
+		var txt = Configure.apothegms[Math.round(Math.random() * Configure.apothegms.length)];
+		apothegm.innerHTML = txt ? txt : Configure.apothegms[0];
 		
 		var indecator = document.getElementById('indecator');
 		var options = indecator.getElementsByTagName("option");
