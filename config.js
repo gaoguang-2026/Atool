@@ -78,7 +78,7 @@ var Configure = (function(){
 		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', 'VR', '虚拟现实', '游戏', '云游戏','手机游戏']},
 		{name: '数据要素', hotPoints:['数据要素','数据确权','信创','数据中心','云计算', '数字经济', '东数西算', 
 						'Web3.0','计算机软件', '国产操作系统']},
-		{name: 'AI', hotPoints:['AI','人工智能','AIGC','ChatGPT', '算力']},
+		{name: 'AI', hotPoints:['AI','人工智能','AIGC','ChatGPT', '百度文心一言', '算力']},
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
 		{name: '6G', hotPoints:['通信设备','5G', '6G']},
 		
