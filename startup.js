@@ -157,6 +157,10 @@
             }
 			init();
 			
+			const canvas = document.getElementById('drawing');
+			const ctx = canvas.getContext('2d');
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			
 			drawimage();
 			drawEchelons();
 			fillTicketsTable();
@@ -170,6 +174,16 @@
 	
 	window.onload = function(){
 		$('#date').val(Configure.getDateStr(Configure.date, '-'));
+		
+		const canvas = document.getElementById('drawing');
+		const ctx = canvas.getContext('2d');
+		const img = new Image();
+		img.src = 'img/情绪周期.png';
+		img.onload = function() {
+			var w = canvas.width  * img.height/img.width, 
+				h = canvas.height;
+			ctx.drawImage(img, (canvas.width - w)/2, 0, w, h);
+		};
 				
 		var apothegm = document.getElementById("apothegm");
 		var txt = Configure.apothegms[Math.round(Math.random() * Configure.apothegms.length)];
