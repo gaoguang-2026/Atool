@@ -367,8 +367,8 @@ var Configure = (function(){
 					'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
 	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
 				'selectDate','reason'];
-	var industryShowInTableTitile = ['index', 'code', 'name', 'price', 'rise_5',
-									'rise_20', 'gainianDragon','value', 'time'];
+	var rankShowInTableTitile = ['index', 'name', 'price', 'value', 'rise_5',
+									'rise_20', 'gainianDragon', 'time'];
 
 	var title2 = {
 		date: '日期',
@@ -536,7 +536,7 @@ var Configure = (function(){
 		EnableEmotionalogicV2: EnableEmotionalogicV2,
 		showInTableTitile:showInTableTitile,
 		bandShowInTableTitile:bandShowInTableTitile,
-		industryShowInTableTitile:industryShowInTableTitile,
+		rankShowInTableTitile:rankShowInTableTitile,
 		MIN_LB_NUMBER:MIN_LB_NUMBER,	
 		MIN_KAINIAN:MIN_KAINIAN,
 		HIGH_factor:HIGH_factor,

@@ -101,7 +101,7 @@ var table = (function(){
 				tr.appendChild(td);
 			}
 		} else {
-			var titleArr = document.getElementById('form1').gtype[5].checked ?  Configure.industryShowInTableTitile :
+			var titleArr = document.getElementById('form1').gtype[5].checked ?  Configure.rankShowInTableTitile :
 						document.getElementById('form1').gtype[4].checked ? 
 						Configure.bandShowInTableTitile : Configure.showInTableTitile;
 			titleArr.forEach((t)=> {
@@ -274,7 +274,20 @@ var table = (function(){
 				td.innerHTML = value;
 				
 				switch (t.dataset.titleProp) {
-					case 'code':
+					case 'name':
+						if(ticket[Configure.title.code]) {
+							var ty = ticket[Configure.title.code].substr(2,2);
+							if( ty == '30') {
+								td.innerHTML += '(创)';
+							} else if (ty == '68') {
+								td.innerHTML += '(科)';
+					//			tr.className = 'grey';
+							}
+						}
+						if(Configure.isSHTicket(ticket[Configure.title.code])){
+							td.innerHTML += '(SH)';
+						};
+						
 						if (ticket[Configure.title.dragonTag]) {
 							td.innerHTML += '  (' + ticket[Configure.title.dragonTag].tagDes.substr(0,2) + ')';
 							tr.className = ticket[Configure.title.dragonTag].style;
@@ -295,7 +308,12 @@ var table = (function(){
 									'10日涨幅：' + parseFloat(ticket[Configure.title.rise_10]).toFixed(2) + '<br>' +
 									'20日涨幅：' + parseFloat(ticket[Configure.title.rise_20]).toFixed(2) + '<br>');
 						break;
-					case 'rise_5':
+					case 'rise_5':	
+						// check is new for this week;
+						if(!workbook.getRankTicketFromCode(ticket[Configure.title.code], true) &&
+						   td.innerHTML != '--') {
+							td.className = 'highlight';
+						}
 					case 'rise_10':
 					case 'rise_20':
 						if(td.innerHTML == '--') {

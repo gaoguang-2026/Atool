@@ -134,16 +134,17 @@
 	};
 	
 	// A :5日涨幅大于10%或者10日涨幅大于25%或者20日涨幅大于40%
-	var getRankTickets = function() {
+	var getRankTickets = function(preWeek = false) {
 		var weeknum = Configure.getWeek(Configure.date);
+		if(preWeek) weeknum --;
 		while(!sheetExist('W' + weeknum)){
 			weeknum --;
 		}
 		return getSheet('W' + weeknum);
 	};
 
-	var getRankTicketFromCode = function(code) {
-		var tickets = getRankTickets();
+	var getRankTicketFromCode = function(code, preWeek = false) {
+		var tickets = getRankTickets(preWeek);
 		return tickets.filter((t)=>{
 			return t[Configure.title.code] == code;
 		})[0];

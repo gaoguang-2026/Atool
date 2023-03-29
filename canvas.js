@@ -395,7 +395,7 @@ var canvas = (function(canvas) {
 			drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);
 			drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName);
 			drawLine('blue', 900, 100, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName );
-			drawLine('green', 0, 1, Configure.title2.failedRate, /*'亏钱效应' == indecatorName &&*/ echelonNames.length == 0);
+			drawLine('green', 0, 0.8, Configure.title2.failedRate, /*'亏钱效应' == indecatorName &&*/ echelonNames.length == 0);
 			drawLine(Configure.boardHeight_color, 5, 10, Configure.title2.lianban, '连扳数量' == indecatorName);
 			drawLine(Configure.boardHeight_color, 30, 40, Configure.title2.boardnum, '涨停数量' == indecatorName);
 			drawLine('#20B2AA', 0, 15, Configure.title2.floornum, '跌停数量' == indecatorName);
