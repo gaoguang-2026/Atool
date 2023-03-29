@@ -180,7 +180,7 @@
 		const img = new Image();
 		img.src = 'img/情绪周期.png';
 		img.onload = function() {
-			var w = canvas.width  * img.height/img.width, 
+			var w = img.width  * canvas.height/img.height, 
 				h = canvas.height;
 			ctx.drawImage(img, (canvas.width - w)/2, 0, w, h);
 		};
