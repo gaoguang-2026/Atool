@@ -519,10 +519,10 @@ var Configure = (function(){
 	var isFloorOrFailed = function(ticket, dateStr) {
 		return ticket[replaceTitleDate(title.dayNumber, dateStr)] > 0;
 	};
-	var isNew = function(dateStr) {   //上市时间小于10的为新股   dateStr = 20230303;
+	var isNew = function(dateStr) {   //上市时间小于60的为新股   dateStr = 20230303;
 		if(dateStr.length != 8) return false;
 		var  startDate = Date.parse(dateStr.slice(0,4) + '-' + dateStr.slice(4,6) + '-' + dateStr.slice(6,8));
-		return (Configure.date - startDate)/(1*24*60*60*1000) < 30;
+		return (Configure.date - startDate)/(1*24*60*60*1000) < 60;
 	};
 	var isSuspend = function(price) {   //停牌
 		return !price || price == '--';
