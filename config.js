@@ -15,7 +15,7 @@ End Sub
 var Configure = (function(){
 	var debug = false;
 	var date = new Date();
-	var timerDuration = 10000;
+	var timerDuration = 15000;
 	
 	var apothegms = [
 	'【连扳】--只做换手总龙, 周期为王，龙头至上。先后有序，强弱有别。择时重于择股，重势胜于重价。',
@@ -320,7 +320,7 @@ var Configure = (function(){
 				'f6':'成交额','f7':'振幅','f8':'换手率','f9':'市盈率(动态)',
 				'f10':'量比','f12':'代码','f14':'名称','f15':'最高',
 				'f16':'最低','f17':'今开','f18':'昨收','f20':'总值',
-				'f21':'流通市值','f23':'市净率'};
+				'f21':'流通市值','f23':'市净率', 'f103':'概念', 'f100':'行业'};
 	var title = {
 		code: '代码',
 		name: '    名称',
@@ -380,7 +380,7 @@ var Configure = (function(){
 							'boardStrength','reason', 'boardAndDay'];
 	var bandShowInTableTitile = ['name', 'f3', 'f8', 'f2', 'realValue','score','totalDivergence',
 				'selectDate','reason'];
-	var rankShowInTableTitile = ['index', 'name','f3', 'f8', 'f2', 'value', 'rise_5',
+	var rankShowInTableTitile = ['index', 'name','f3', 'f8', 'f2', 'value', 'rise_5','rise_10',
 									'rise_20', 'gainianDragon', 'time'];
 
 	var title2 = {
@@ -487,7 +487,7 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 5;  // 最小显示限制
+	var Echelons_show_min_score = 3;  // 最小显示限制
 	var Echelons_show_type = 'score';   //  'fund' or 'score'
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
@@ -531,7 +531,7 @@ var Configure = (function(){
 		return ticket[replaceTitleDate(title.dayNumber, dateStr)] > 0;
 	};
 	var isNew = function(dateStr) {   //上市时间小于60的为新股   dateStr = 20230303;
-		if(dateStr.length != 8) return false;
+		if(!dateStr || dateStr.length != 8) return false;
 		var  startDate = Date.parse(dateStr.slice(0,4) + '-' + dateStr.slice(4,6) + '-' + dateStr.slice(6,8));
 		return (Configure.date - startDate)/(1*24*60*60*1000) < 60;
 	};

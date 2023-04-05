@@ -15,6 +15,7 @@ var Timer = (function(){
 	};
 	
 	var stop = function() {
+		callbackArray = [];
 		clearInterval(timerId);
 	};
 	

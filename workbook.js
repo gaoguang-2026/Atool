@@ -162,6 +162,12 @@
 			return t[Configure.title.code] == code;
 		})[0];
 	};
+	// 当前涨幅大于8的
+	var getRTTicketsLeader = function() {
+		return realTimeTickets.filter((t)=>{
+			return t['f3'] > 800;   // 8%
+		});
+	};
 	
 	// param = {sheetName: '0707',ticketCode:'SZ002527'}}
 	// A : 今日非ST涨停板或者今日涨停过或者今日跌停或者今日跌停过 上市时间超过30天
@@ -195,6 +201,7 @@
 		setRTTickets:setRTTickets,
 		getRTTicketFromCode:getRTTicketFromCode,
 		getRankTickets:getRankTickets,
-		getRankTicketFromCode:getRankTicketFromCode
+		getRankTicketFromCode:getRankTicketFromCode,
+		getRTTicketsLeader:getRTTicketsLeader,
 	}
  })();

@@ -2,6 +2,9 @@ var table = (function(){
 	
 	//var tableHeadDone = false;
 	var tbl = document.getElementById('tbl');
+	var tBody = tbl.tBodies[0];
+	var tHead = tbl.tHead;
+	var tHeadtds;
 	
 	var updateForm = function() {
 		var fr = document.getElementById('form2');
@@ -84,9 +87,6 @@ var table = (function(){
 	};
 	
 	var createTableHead = function() {
-	//	if(tableHeadDone) return;
-		tableHeadDone = true;
-		var tHead = tbl.tHead;
 		//remove all tr
 		while(tHead.hasChildNodes()) {
 			tHead.removeChild(tHead.lastChild);
@@ -119,8 +119,9 @@ var table = (function(){
 		}
 		tr.className = 'bold';
 		tHead.appendChild(tr);
+		tHeadtds = Array.from(tHead.getElementsByTagName('td'));
 	}
-	var addDetailAndDelete = function(tr, tBody, ticket) {
+	var addDetailAndDelete = function(tr, ticket) {
 			//添加详细超链接
 		var tDetail = document.createElement('td');
 		tDetail.innerHTML = '<a href="baidu.com" target="_blank">详细</a>';
@@ -143,7 +144,12 @@ var table = (function(){
 		tr.appendChild(tDel);
 		tBody.appendChild(tr);
 	}
-	var createTicketRow = function(tBody,tHeadtds, datetoload, param, highlightTichets) {
+	var createTicketRow = function(datetoload, param, highlightTichets) {
+		//remove all tr
+		while(tBody.hasChildNodes()) {
+			tBody.removeChild(tBody.lastChild);
+		};
+		
 		var tks = parser.getTickets(datetoload,param);
 		var dateArr = workbook.getDateArr((a,b)=>{
 			return b - a;
@@ -254,11 +260,15 @@ var table = (function(){
 				})
 				tr.appendChild(td);
 			});
-			addDetailAndDelete(tr, tBody, ticket);
+			addDetailAndDelete(tr, ticket);
 		});
 	};
 	
-	var createRankRow = function(tBody,tHeadtds, datetoload, param) {
+	var createRankRow = function(datetoload, param) {
+		//remove all tr
+		while(tBody.hasChildNodes()) {
+			tBody.removeChild(tBody.lastChild);
+		};
 		var rankTickets = parser.getRankTickets(param);
 		var findIndexWithNum = function(str,cha,num){
 			var x=str.indexOf(cha);
@@ -338,9 +348,10 @@ var table = (function(){
 					default :
 						break;
 				}
+				td.innerHTML = td.innerHTML == 'undefined'  ?  '' : td.innerHTML;
 				tr.appendChild(td);
 			});
-			addDetailAndDelete(tr, tBody, ticket);
+			addDetailAndDelete(tr, ticket);
 		});
 	};
 	var createTable = function (datetoload, highlightTichets) {
@@ -381,30 +392,27 @@ var table = (function(){
 		};
 
 		createTableHead();
-		// create body
-		var tBody = tbl.tBodies[0];
-		var tHead = tbl.tHead;
-		var tHeadtds = Array.from(document.getElementById('tbl').tHead.getElementsByTagName('td'));
-		//remove all tr
-		while(tBody.hasChildNodes()) {
-			tBody.removeChild(tBody.lastChild);
-		};
-		Tip.remove();
-
-		fr.gtype[5].checked ? createRankRow(tBody,tHeadtds, datetoload, param) : 
-								createTicketRow(tBody,tHeadtds, datetoload, param, highlightTichets); 
-
-		// 实时更新今日数据
-		updateTd();
-		requests.start(()=>{
+		
+		if(param.type == 5) {   //排名
+			createRankRow(datetoload, param);
 			updateTd();
-		});
+			requests.stop();
+			requests.start(()=>{
+				createRankRow(datetoload, param);
+				updateTd();
+			});
+		} else {
+			createTicketRow(datetoload, param, highlightTichets); 
+			// 实时更新今日数据
+			updateTd();
+			requests.stop();
+			requests.start(()=>{
+				updateTd();
+			});
+		}
 	};
 	
 	var updateTd = function() {
-		var tBody = tbl.tBodies[0];
-		var tHead = tbl.tHead;
-		var tHeadtds = Array.from(document.getElementById('tbl').tHead.getElementsByTagName('td'));
 		Array.from(tBody.childNodes).forEach((tr)=>{
 			tHeadtds.forEach((t)=>{
 				var td = Array.from(tr.childNodes).find((td)=>{
@@ -417,13 +425,24 @@ var table = (function(){
 					case 'f2':
 						td.innerHTML = dataT ? parseFloat(dataT[t.dataset.titleProp]/100).toFixed(2) : '';
 						if(dataT && parseFloat(dataT['f3']/100) > 0) {
-							td.className = 'fontRed';
+							td.className = 'fontRed bold';
 						} else if (dataT){
-							td.className = 'fontGreen';
+							td.className = 'fontGreen bold';
 						} else {
 							// default is black
 						}
 						break;
+					case 'gainianDragon':
+						// 显示最后三个概念
+						if(dataT && dataT['f101']) {
+							var txt = dataT['f101'] + ' ';
+							var arr = dataT['f103'].split(',');
+							for(i = arr.length - 1; i >= arr.length - 2; i --) {
+								txt += '【';
+								txt += arr[i] + '】';
+							};
+							td.innerHTML = td.innerHTML != '' ? td.innerHTML : txt;
+						}
 					default:
 						break;
 				}

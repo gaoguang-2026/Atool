@@ -283,6 +283,9 @@ var parser = (function(){
 			ticket[Configure.title.increaseRate] = parseFloat(sum_5/5 + sum_10/10 + sum_20/20).toFixed(2);
 			
 			ticket[Configure.title.riseTotal] = sum_5 + sum_10 + sum_20;
+			
+			var dataT = workbook.getRTTicketFromCode(ticket[Configure.title.code]);
+			ticket[Configure.title.f3] = dataT ? parseFloat(dataT['f3']/100) : '-20';  //排名用
 		});
 		
 		//  标记龙头
@@ -305,6 +308,25 @@ var parser = (function(){
 		tagDargon(Configure.title.rise_5, {tagDes:'强度龙头', style: 'blue'});
 		tagDargon(Configure.title.riseTotal, {tagDes:'总龙', style: 'pink bold'});
 		
+		// 加上当前涨幅靠前的票
+		var tDatas = workbook.getRTTicketsLeader();
+		tDatas.forEach((tData)=>{
+			var tTemp = ticketsArr.find((t)=>{
+				return t[Configure.title.name] == tData['f14'];
+			});
+			if (!tTemp) {
+				var tnew = {};
+				tnew[Configure.title.code] = tData['f12'];
+				tnew[Configure.title.name] = tData['f14'];
+				tnew[Configure.title.price] = tData['f2'];
+				tnew[Configure.title.value] = tData['f21'];
+				tnew[Configure.title.totalValue] = tData['f20'];
+				tnew[Configure.title.handoverPercent] = tData['f8'];
+				tnew[Configure.title.f3] = parseFloat(tData['f3']/100);
+				ticketsArr.push(tnew);
+			}
+		});
+		
 		ticketsArr.sort((a, b)=>{
 			var title;
 			var reverse = false;
@@ -313,7 +335,7 @@ var parser = (function(){
 					title = Configure.title.rise_20;
 					break;
 				case 2:
-					title = Configure.title.rise_5;
+					title = Configure.title.f3;
 					break;
 				case 0:
 				default:
