@@ -15,6 +15,7 @@ End Sub
 var Configure = (function(){
 	var debug = false;
 	var date = new Date();
+	var timerDuration = 10000;
 	
 	var apothegms = [
 	'【连扳】--只做换手总龙, 周期为王，龙头至上。先后有序，强弱有别。择时重于择股，重势胜于重价。',
@@ -315,6 +316,11 @@ var Configure = (function(){
 		return angle;
 	};
 	
+	var map = {'f2':'最新价','f3':'涨跌幅','f4':'涨跌额','f5':'成交量(手)',
+				'f6':'成交额','f7':'振幅','f8':'换手率','f9':'市盈率(动态)',
+				'f10':'量比','f12':'代码','f14':'名称','f15':'最高',
+				'f16':'最低','f17':'今开','f18':'昨收','f20':'总值',
+				'f21':'流通市值','f23':'市净率'};
 	var title = {
 		code: '代码',
 		name: '    名称',
@@ -353,6 +359,11 @@ var Configure = (function(){
 		selectDate: '最近涨停日期',
 		increaseRate: '平均涨速',
 		
+		// 实时数据，通过抓取东方财富数据
+		f3: '今日涨跌幅',
+		f8: '今日换手率',
+		f2: '今日价格',
+
 		// 涨幅排名独有
 		rise_5: '5日涨幅',
 		rise_10: '10日涨幅',
@@ -365,11 +376,11 @@ var Configure = (function(){
 		dragonTag: '龙头标记',
 		riseTotal: '涨幅和',
 	};
-	var showInTableTitile = ['name',  'realValue','score','totalDivergence',
-					'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
-	var bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
+	var showInTableTitile = ['name','f3', 'f8', 'f2', 'realValue','score','totalDivergence', 
+							'boardStrength','reason', 'boardAndDay'];
+	var bandShowInTableTitile = ['name', 'f3', 'f8', 'f2', 'realValue','score','totalDivergence',
 				'selectDate','reason'];
-	var rankShowInTableTitile = ['index', 'name', 'price', 'value', 'rise_5',
+	var rankShowInTableTitile = ['index', 'name','f3', 'f8', 'f2', 'value', 'rise_5',
 									'rise_20', 'gainianDragon', 'time'];
 
 	var title2 = {
@@ -531,6 +542,7 @@ var Configure = (function(){
 	return {
 		date: date,
 		debug: debug,
+		timerDuration:timerDuration,
 		apothegms: apothegms,
 		winCtxts: winCtxts,
 		cangMap2: cangMap2,

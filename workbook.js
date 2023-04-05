@@ -1,6 +1,7 @@
  var workbook = (function() {
 	var Book;
 	
+	var realTimeTickets = [];
 	var BandTickets = [];
 	
 	var Book = function(b){
@@ -39,6 +40,18 @@
 	
 	var getBandTickets = function() {
 		return BandTickets;
+	};
+	var setRTTickets = function(ticketArr) {
+		realTimeTickets = [];
+		ticketArr.forEach((t)=>{
+			realTimeTickets.push(t);
+		});
+	};
+	
+	var getRTTicketFromCode = function(code) {
+		return realTimeTickets.find((t)=>{
+			return t['f12'] == code || code.indexOf(t['f12']) != -1;
+		})
 	};
 	
 	var getEmotionalCycles = function(dateStr) {
@@ -179,6 +192,8 @@
 		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,
 		getBandTickets:getBandTickets,
+		setRTTickets:setRTTickets,
+		getRTTicketFromCode:getRTTicketFromCode,
 		getRankTickets:getRankTickets,
 		getRankTicketFromCode:getRankTicketFromCode
 	}

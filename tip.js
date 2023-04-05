@@ -49,11 +49,17 @@
 
 var Tip = (function () {
 	var show = function(el, txt) {
+		$(this).remove();
 		el.onmouseover  = function() {
 			$(this).tip(txt);
 		};
 	};
+	
+	var remove = function() {
+		$(this).remove();
+	};
 	return {
-		show:show
+		show:show,
+		remove:remove
 	}
 })();

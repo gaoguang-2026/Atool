@@ -150,8 +150,10 @@ var table = (function(){
 		});
 		tks.forEach((ticket)=> {
 			var tr = document.createElement('tr');
+			tr.dataset.ticketCode = ticket[Configure.title.code];
 			tHeadtds.forEach((t)=> {
 				var td = document.createElement('td');
+				td.dataset.prop = t.dataset.titleProp;
 				td.innerHTML =ticket.selectDate ? 
 								ticket[Configure.replaceTitleDate(Configure.title[t.dataset.titleProp],ticket.selectDate)] :
 									ticket[Configure.title[t.dataset.titleProp]];
@@ -268,8 +270,10 @@ var table = (function(){
 	
 		rankTickets.forEach((ticket)=> {
 			var tr = document.createElement('tr');
+			tr.dataset.ticketCode = ticket[Configure.title.code];
 			tHeadtds.forEach((t)=> {
 				var td = document.createElement('td');
+				td.dataset.prop = t.dataset.titleProp;
 				var value = ticket[Configure.title[t.dataset.titleProp]];
 				td.innerHTML = value;
 				
@@ -377,7 +381,6 @@ var table = (function(){
 		};
 
 		createTableHead();
-		
 		// create body
 		var tBody = tbl.tBodies[0];
 		var tHead = tbl.tHead;
@@ -386,13 +389,51 @@ var table = (function(){
 		while(tBody.hasChildNodes()) {
 			tBody.removeChild(tBody.lastChild);
 		};
+		Tip.remove();
+
 		fr.gtype[5].checked ? createRankRow(tBody,tHeadtds, datetoload, param) : 
 								createTicketRow(tBody,tHeadtds, datetoload, param, highlightTichets); 
 
+		// 实时更新今日数据
+		updateTd();
+		requests.start(()=>{
+			updateTd();
+		});
+	};
+	
+	var updateTd = function() {
+		var tBody = tbl.tBodies[0];
+		var tHead = tbl.tHead;
+		var tHeadtds = Array.from(document.getElementById('tbl').tHead.getElementsByTagName('td'));
+		Array.from(tBody.childNodes).forEach((tr)=>{
+			tHeadtds.forEach((t)=>{
+				var td = Array.from(tr.childNodes).find((td)=>{
+							return td.dataset.prop == t.dataset.titleProp;
+						})
+				var dataT = workbook.getRTTicketFromCode(tr.dataset.ticketCode);
+				switch (t.dataset.titleProp) {
+					case 'f3' :
+					case 'f8':
+					case 'f2':
+						td.innerHTML = dataT ? parseFloat(dataT[t.dataset.titleProp]/100).toFixed(2) : '';
+						if(dataT && parseFloat(dataT['f3']/100) > 0) {
+							td.className = 'fontRed';
+						} else if (dataT){
+							td.className = 'fontGreen';
+						} else {
+							// default is black
+						}
+						break;
+					default:
+						break;
+				}
+			});
+		});
 	};
 	
 	return {
 		createTable:createTable,
-		updateForm:updateForm
+		updateForm:updateForm,
+		updateTd:updateTd,
 	}
 })();
