@@ -281,7 +281,37 @@ var parser = (function(){
 	* Param 见 getTickets， type = 5 排名
 	*/
 	var getRankTickets = function(param) {
-		var ticketsArr = workbook.getRankTickets();
+		var ticketsArr = [];
+		if(Configure.getMode() == Configure.modeType.DP) {
+			var tDatas = workbook.getRTTicketsLeader();
+			tDatas.forEach((tData)=>{
+				var tTemp = ticketsArr.find((t)=>{
+					return t[Configure.title.name] == tData['f14'];
+				});
+				if (!tTemp) {
+					var tnew = {};
+					tnew[Configure.title.code] = tData['f12'];
+					tnew[Configure.title.name] = tData['f14'];
+					tnew[Configure.title.price] = tData['f2'];
+					tnew[Configure.title.value] = tData['f21'];
+					tnew[Configure.title.totalValue] = tData['f20'];
+					tnew[Configure.title.handoverPercent] = tData['f8'];
+					tnew[Configure.title.gainian] = tData['f103'];
+					tnew[Configure.title.time] = '' + tData['f26'];
+					tnew[Configure.title.rise_5] = parseFloat(tData['f109']/100);
+					tnew[Configure.title.rise_10] = parseFloat(tData['f160']/100);
+					tnew[Configure.title.rise_20] = parseFloat(tData['f110']/100);
+					tnew[Configure.title.f3] = parseFloat(tData['f3']/100);
+					ticketsArr.push(tnew);
+				}
+			});
+		}
+
+		// 如果没有抓取的数据就从默认的表格中取数据
+		if (ticketsArr.length == 0 || Configure.getMode() == Configure.modeType.FP) {   
+			ticketsArr = workbook.getRankTickets();
+		}
+		
 		if (param.hotpointArr && param.hotpointArr.length != 0) {
 			ticketsArr = ticketsArr.filter((t)=>{
 				return param.hotpointArr.find((hotpoint)=>{
@@ -322,26 +352,7 @@ var parser = (function(){
 		tagDargon(Configure.title.rise_20, {tagDes:'高度龙头', style: 'orange'});
 		tagDargon(Configure.title.rise_5, {tagDes:'强度龙头', style: 'blue'});
 		tagDargon(Configure.title.riseTotal, {tagDes:'总龙', style: 'pink bold'});
-		
-		// 加上当前涨幅靠前的票
-		var tDatas = workbook.getRTTicketsLeader();
-		tDatas.forEach((tData)=>{
-			var tTemp = ticketsArr.find((t)=>{
-				return t[Configure.title.name] == tData['f14'];
-			});
-			if (!tTemp) {
-				var tnew = {};
-				tnew[Configure.title.code] = tData['f12'];
-				tnew[Configure.title.name] = tData['f14'];
-				tnew[Configure.title.price] = tData['f2'];
-				tnew[Configure.title.value] = tData['f21'];
-				tnew[Configure.title.totalValue] = tData['f20'];
-				tnew[Configure.title.handoverPercent] = tData['f8'];
-				tnew[Configure.title.f3] = parseFloat(tData['f3']/100);
-				ticketsArr.push(tnew);
-			}
-		});
-		
+
 		ticketsArr.sort((a, b)=>{
 			var title;
 			var reverse = false;

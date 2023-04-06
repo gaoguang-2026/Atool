@@ -162,10 +162,13 @@
 			return t[Configure.title.code] == code;
 		})[0];
 	};
-	// 当前涨幅大于8的
+	// 当前涨幅大于8的或者 5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
 	var getRTTicketsLeader = function() {
 		return realTimeTickets.filter((t)=>{
-			return t['f3'] > 800;   // 8%
+			return t['f3'] > 800 ||                
+					t['f109'] > 2000 ||
+					t['f160'] > 3000 ||
+					t['f110'] > 4000;   
 		});
 	};
 	

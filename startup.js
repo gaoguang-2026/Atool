@@ -66,6 +66,7 @@
 		$('#date').val(dateArr[dateArr.length - 1]);
 		document.getElementById('date').min = dateArr[0];
 	//	document.getElementById('date').max = dateArr[dateArr.length - 1];
+		document.getElementById('mode').disabled = true;
 		
 		dragons.init();
 		table.updateForm();
@@ -112,7 +113,7 @@
 				canvas.resize(document.getElementById("drawing"), Configure.WinXFactor);
 				formUpdate();
 			}
-		};
+		};		
 		$('#form1').change(formUpdate);
 		$('#form2').change(formUpdate);
 		$('#indecator').change(formUpdate);
@@ -174,6 +175,10 @@
 	
 	window.onload = function(){
 		$('#date').val(Configure.getDateStr(Configure.date, '-'));
+		Configure.setMode($('#mode')[0].value);
+		$('#mode').change((e)=>{
+			Configure.setMode($('#mode')[0].value);
+		});
 		
 		const canvas = document.getElementById('drawing');
 		const ctx = canvas.getContext('2d');

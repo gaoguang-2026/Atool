@@ -404,19 +404,24 @@ var table = (function(){
 		if(param.type == 5) {   //排名
 			createRankRow(datetoload, param);
 			updateTd();
-			requests.stop();
-			requests.start(()=>{
-				createRankRow(datetoload, param);
-				updateTd();
-			});
+			if(Configure.getMode() == Configure.modeType.DP) {
+				requests.stop();
+				requests.start(()=>{
+					createRankRow(datetoload, param);
+					updateTd();
+				});
+			}
+
 		} else {
 			createTicketRow(datetoload, param, highlightTichets); 
-			// 实时更新今日数据
-			updateTd();
-			requests.stop();
-			requests.start(()=>{
+			if(Configure.getMode() == Configure.modeType.DP) {
+				// 实时更新今日数据
 				updateTd();
-			});
+				requests.stop();
+				requests.start(()=>{
+					updateTd();
+				});
+			}
 		}
 	};
 	

@@ -15,6 +15,11 @@ End Sub
 var Configure = (function(){
 	var debug = false;
 	var date = new Date();
+	var mode;       // 0 复盘模式， 1 盯盘模式
+	var modeType = {
+		FP: 0,
+		DP: 1,
+	}
 	var timerDuration = 15000;
 	
 	var apothegms = [
@@ -320,7 +325,9 @@ var Configure = (function(){
 				'f6':'成交额','f7':'振幅','f8':'换手率','f9':'市盈率(动态)',
 				'f10':'量比','f12':'代码','f14':'名称','f15':'最高',
 				'f16':'最低','f17':'今开','f18':'昨收','f20':'总值',
-				'f21':'流通市值','f23':'市净率', 'f103':'概念', 'f100':'行业'};
+				'f21':'流通市值','f23':'市净率', 'f103':'概念', 'f100':'行业', 'f101':'龙头',
+				'f24':'60日涨幅', 'f109':'5日涨幅', 'f110':'20日涨幅', 'f160':'10日涨幅',
+				'f26':'上市时间'};
 	var title = {
 		code: '代码',
 		name: '    名称',
@@ -376,13 +383,6 @@ var Configure = (function(){
 		dragonTag: '龙头标记',
 		riseTotal: '涨幅和',
 	};
-	var showInTableTitile = ['name', 'f2', 'f8', 'f3','realValue','score','totalDivergence', 
-							'boardStrength','reason', 'boardAndDay'];
-	var bandShowInTableTitile = ['name', 'f2','f8', 'f3','realValue','score','totalDivergence',
-				'selectDate','reason'];
-	var rankShowInTableTitile = ['index','name', 'f2','f8', 'f3', 'rise_5','rise_10',
-									'rise_20', 'value','gainianDragon'];
-
 	var title2 = {
 		date: '日期',
 		erban: '二板数',
@@ -538,10 +538,35 @@ var Configure = (function(){
 	var isSuspend = function(price) {   //停牌
 		return !price || price == '--';
 	};
+	var showInTableTitile, bandShowInTableTitile, rankShowInTableTitile;
+	var setMode = function(type) {
+		mode = type;
+		if(mode == modeType.FP) {    // 复盘配置
+			this.showInTableTitile = ['name',  'realValue','score','totalDivergence',
+							'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
+			this.bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
+							'selectDate','reason'];
+			this.rankShowInTableTitile = ['index', 'name', 'price', 'value', 'rise_5',
+									'rise_20', 'value','gainianDragon', 'time'];
+		} else  {                      // 盯盘配置
+			this.showInTableTitile = ['name', 'f2', 'f8', 'f3','realValue','score','totalDivergence', 
+							'boardStrength','reason', 'boardAndDay'];
+			this.bandShowInTableTitile = ['name', 'f2','f8', 'f3','realValue','score','totalDivergence',
+						'selectDate','reason'];
+			this.rankShowInTableTitile = ['index','name', 'f2','f8', 'f3', 'rise_5','rise_10',
+											'rise_20', 'value','gainianDragon', 'time'];
+		}
+	};
+	var getMode = function() {
+		return mode;
+	}
 	
 	return {
 		date: date,
 		debug: debug,
+		setMode:setMode,
+		getMode:getMode,
+		modeType:modeType,
 		timerDuration:timerDuration,
 		apothegms: apothegms,
 		winCtxts: winCtxts,
