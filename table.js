@@ -171,7 +171,10 @@ var table = (function(){
 								td.innerHTML += '(创)';
 							} else if (ty == '68') {
 								td.innerHTML += '(科)';
-					//			tr.className = 'grey';
+							} else if (ticket[Configure.title.code].substr(0,1) == '8' ||
+										ticket[Configure.title.code].substr(0,1) == '4') {
+									td.innerHTML += '(京)';		
+									tr.className = 'grey';
 							}
 						}
 						if(Configure.isSHTicket(ticket[Configure.title.code])){
@@ -295,13 +298,18 @@ var table = (function(){
 								td.innerHTML += '(创)';
 							} else if (ty == '68') {
 								td.innerHTML += '(科)';
-					//			tr.className = 'grey';
+							} else if (ticket[Configure.title.code].substr(0,1) == '8' ||
+										ticket[Configure.title.code].substr(0,1) == '4') {
+									td.innerHTML += '(京)';		
+									tr.className = 'grey';
 							}
 						}
 						if(Configure.isSHTicket(ticket[Configure.title.code])){
 							td.innerHTML += '(SH)';
 						};
-						
+						if(Configure.isNew(value)) {
+							td.innerHTML += '(新)';
+						}
 						if (ticket[Configure.title.dragonTag]) {
 							td.innerHTML += '  (' + ticket[Configure.title.dragonTag].tagDes.substr(0,2) + ')';
 							tr.className = ticket[Configure.title.dragonTag].style;
@@ -423,13 +431,17 @@ var table = (function(){
 					case 'f3' :
 					case 'f8':
 					case 'f2':
-						td.innerHTML = dataT ? parseFloat(dataT[t.dataset.titleProp]/100).toFixed(2) : '';
+						td.innerHTML = dataT && dataT[t.dataset.titleProp] != '-' ? 
+									parseFloat(dataT[t.dataset.titleProp]/100).toFixed(2) : '-';
 						if(dataT && parseFloat(dataT['f3']/100) > 0) {
-							td.className = 'fontRed bold';
+							td.className = 'fontRed';
 						} else if (dataT){
-							td.className = 'fontGreen bold';
+							td.className = 'fontGreen';
 						} else {
 							// default is black
+						}
+						if(t.dataset.titleProp == 'f3') {
+							td.className += ' bold';
 						}
 						break;
 					case 'gainianDragon':

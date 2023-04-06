@@ -376,12 +376,12 @@ var Configure = (function(){
 		dragonTag: '龙头标记',
 		riseTotal: '涨幅和',
 	};
-	var showInTableTitile = ['name','f3', 'f8', 'f2', 'realValue','score','totalDivergence', 
+	var showInTableTitile = ['name', 'f2', 'f8', 'f3','realValue','score','totalDivergence', 
 							'boardStrength','reason', 'boardAndDay'];
-	var bandShowInTableTitile = ['name', 'f3', 'f8', 'f2', 'realValue','score','totalDivergence',
+	var bandShowInTableTitile = ['name', 'f2','f8', 'f3','realValue','score','totalDivergence',
 				'selectDate','reason'];
-	var rankShowInTableTitile = ['index', 'name','f3', 'f8', 'f2', 'value', 'rise_5','rise_10',
-									'rise_20', 'gainianDragon', 'time'];
+	var rankShowInTableTitile = ['index','name', 'f2','f8', 'f3', 'rise_5','rise_10',
+									'rise_20', 'value','gainianDragon'];
 
 	var title2 = {
 		date: '日期',

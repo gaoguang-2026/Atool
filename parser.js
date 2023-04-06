@@ -110,7 +110,14 @@ var parser = (function(){
 		// sort
 		retArr.sort((a, b) => {
 			if (obj && obj.sort == 2) {
-				return b.increaseRate - a.increaseRate;
+				var bData = workbook.getRTTicketFromCode(b[Configure.title.code]);
+				var aData = workbook.getRTTicketFromCode(a[Configure.title.code]);
+				if(bData && bData['f3'] && aData && aData['f3']) {
+					return bData['f3'] - aData['f3'] ;
+				} else {
+					return b.increaseRate - a.increaseRate;
+				}
+				
 			} else if (obj.sort == 0){
 				return b[Configure.title.score] - a[Configure.title.score];
 			} else {
@@ -154,6 +161,14 @@ var parser = (function(){
 				} else {
 					return b[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)]  - 
 						a[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] ;
+				}
+			} else if (obj && obj.sort == 2){
+				var bData = workbook.getRTTicketFromCode(b[Configure.title.code]);
+				var aData = workbook.getRTTicketFromCode(a[Configure.title.code]);
+				if(bData && bData['f3'] && aData && aData['f3']) {
+					return bData['f3'] - aData['f3'] ;
+				} else {
+					return 0;
 				}
 			} else {
 				return b[Configure.title.score] - a[Configure.title.score];
@@ -285,7 +300,7 @@ var parser = (function(){
 			ticket[Configure.title.riseTotal] = sum_5 + sum_10 + sum_20;
 			
 			var dataT = workbook.getRTTicketFromCode(ticket[Configure.title.code]);
-			ticket[Configure.title.f3] = dataT ? parseFloat(dataT['f3']/100) : '-20';  //排名用
+			ticket[Configure.title.f3] = dataT && dataT['f3']!='-' ? parseFloat(dataT['f3']/100) : '-20';  //排名用
 		});
 		
 		//  标记龙头

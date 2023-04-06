@@ -146,7 +146,7 @@
 		})[0];
 	};
 	
-	// A :5日涨幅大于10%或者10日涨幅大于25%或者20日涨幅大于40%
+	// A :5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
 	var getRankTickets = function(preWeek = false) {
 		var weeknum = Configure.getWeek(Configure.date);
 		if(preWeek) weeknum --;
