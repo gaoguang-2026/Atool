@@ -518,25 +518,45 @@ var Configure = (function(){
 	ZHISHU_TITLE == title2.zhangtingzhishu ? 
 		selectIndicators.push({name:'连扳晋级'}) : selectIndicators.unshift({name:'短线资金'});
 		
+	var isKeTicket = function(code) {
+		return (code.substr(0, 2) == 'SH' && code.substr(2, 2) == '68') || 
+					code.substr(0, 2) == '68';
+	};
+	var isChungTicket = function(code) {
+		return (code.substr(0, 2) == 'SZ' && code.substr(2, 2) == '30') || 
+					code.substr(0, 2) == '30' ;
+	};
 	var isKechuangTicket = function(code) {
-		return code.substr(2, 2) == '30' || code.substr(2, 2) == '68';
+		return isChungTicket(code) || isKeTicket(code);
 	};
 	var isSHTicket = function(code) {
-		return code.substr(2, 2) == '60' ;
+		return code.substr(2, 2) == '60' ||
+				code.substr(0, 2) == '60';
 	};
 	var isSZTicket = function(code) {
-		return code.substr(2, 2) == '00' ;
+		return code.substr(2, 2) == '00' ||
+				code.substr(0, 2) == '00';
+	};
+	var isBJTicket = function(code) {
+		return code.substr(0,1) == '8' ||
+				code.substr(0,1) == '4';
 	};
 	var isFloorOrFailed = function(ticket, dateStr) {
 		return ticket[replaceTitleDate(title.dayNumber, dateStr)] > 0;
 	};
 	var isNew = function(dateStr) {   //上市时间小于60的为新股   dateStr = 20230303;
+		dateStr += '';
 		if(!dateStr || dateStr.length != 8) return false;
 		var  startDate = Date.parse(dateStr.slice(0,4) + '-' + dateStr.slice(4,6) + '-' + dateStr.slice(6,8));
 		return (Configure.date - startDate)/(1*24*60*60*1000) < 60;
 	};
 	var isSuspend = function(price) {   //停牌
 		return !price || price == '--';
+	};
+	var isBoardDone = function(rtData) {   // 判断实时数据是否涨停
+		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
+		var per = isKechuangTicket(rtData['f12']) ? 1.20 : 1.10;
+		return  Math.round(rtData['f18'] * per) == rtData['f2'];
 	};
 	var showInTableTitile, bandShowInTableTitile, rankShowInTableTitile;
 	var setMode = function(type) {
@@ -547,14 +567,14 @@ var Configure = (function(){
 			this.bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
 							'selectDate','reason'];
 			this.rankShowInTableTitile = ['index', 'name', 'price', 'value', 'rise_5',
-									'rise_20', 'value','gainianDragon', 'time'];
+									'rise_20', 'value','gainianDragon'];
 		} else  {                      // 盯盘配置
 			this.showInTableTitile = ['name', 'f2', 'f8', 'f3','realValue','score','totalDivergence', 
 							'boardStrength','reason', 'boardAndDay'];
 			this.bandShowInTableTitile = ['name', 'f2','f8', 'f3','realValue','score','totalDivergence',
 						'selectDate','reason'];
 			this.rankShowInTableTitile = ['index','name', 'f2','f8', 'f3', 'rise_5','rise_10',
-											'rise_20', 'value','gainianDragon', 'time'];
+											'rise_20', 'value','gainianDragon'];
 		}
 	};
 	var getMode = function() {
@@ -632,12 +652,16 @@ var Configure = (function(){
 		updatetitle:updatetitle,
 		replaceTitleDate:replaceTitleDate,
 		getDayBoard:getDayBoard,
+		isKeTicket:isKeTicket,
+		isChungTicket:isChungTicket,
 		isKechuangTicket:isKechuangTicket,
 		isSHTicket:isSHTicket,
 		isSZTicket:isSZTicket,
+		isBJTicket:isBJTicket,
 		isFloorOrFailed:isFloorOrFailed,
 		isNew:isNew,
 		isSuspend:isSuspend,
+		isBoardDone:isBoardDone,
 		getContextDescription:getContextDescription
 	}	
 })();

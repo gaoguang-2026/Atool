@@ -166,19 +166,16 @@ var table = (function(){
 				switch (t.dataset.titleProp) {
 					case 'name':
 						if(ticket[Configure.title.code]) {
-							var ty = ticket[Configure.title.code].substr(2,2);
-							if( ty == '30') {
+							if( Configure.isChungTicket(ticket[Configure.title.code])) {
 								td.innerHTML += '(创)';
-							} else if (ty == '68') {
+							} else if (Configure.isKeTicket(ticket[Configure.title.code])) {
 								td.innerHTML += '(科)';
-							} else if (ticket[Configure.title.code].substr(0,1) == '8' ||
-										ticket[Configure.title.code].substr(0,1) == '4') {
+							} else if (Configure.isBJTicket(ticket[Configure.title.code])) {
 									td.innerHTML += '(京)';		
 									tr.className = 'grey';
-							}
-						}
-						if(Configure.isSHTicket(ticket[Configure.title.code])){
-							td.innerHTML += '(SH)';
+							} else if(Configure.isSHTicket(ticket[Configure.title.code])){
+									td.innerHTML += '(SH)';
+							};
 						};
 						break;
 					case 'realValue':
@@ -293,21 +290,18 @@ var table = (function(){
 				switch (t.dataset.titleProp) {
 					case 'name':
 						if(ticket[Configure.title.code]) {
-							var ty = ticket[Configure.title.code].substr(2,2);
-							if( ty == '30') {
+							if( Configure.isChungTicket(ticket[Configure.title.code])) {
 								td.innerHTML += '(创)';
-							} else if (ty == '68') {
+							} else if (Configure.isKeTicket(ticket[Configure.title.code])) {
 								td.innerHTML += '(科)';
-							} else if (ticket[Configure.title.code].substr(0,1) == '8' ||
-										ticket[Configure.title.code].substr(0,1) == '4') {
+							} else if (Configure.isBJTicket(ticket[Configure.title.code])) {
 									td.innerHTML += '(京)';		
 									tr.className = 'grey';
-							}
-						}
-						if(Configure.isSHTicket(ticket[Configure.title.code])){
-							td.innerHTML += '(SH)';
+							} else if(Configure.isSHTicket(ticket[Configure.title.code])){
+									td.innerHTML += '(SH)';
+							};
 						};
-						if(Configure.isNew(value)) {
+						if(Configure.isNew(ticket[Configure.title.time])) {
 							td.innerHTML += '(新)';
 						}
 						if (ticket[Configure.title.dragonTag]) {
@@ -331,10 +325,12 @@ var table = (function(){
 									'20日涨幅：' + parseFloat(ticket[Configure.title.rise_20]).toFixed(2) + '<br>');
 						break;
 					case 'rise_5':	
-						// check is new for this week;
-						if(!workbook.getRankTicketFromCode(ticket[Configure.title.code], true) &&
-						   td.innerHTML != '--') {
-							td.className = 'highlight';
+						if(Configure.getMode() == Configure.modeType.FP) {
+							// check is new for this week;
+							if(!workbook.getRankTicketFromCode(ticket[Configure.title.code], true) &&
+							   td.innerHTML != '--') {
+								td.className = 'highlight';
+							}
 						}
 					case 'rise_10':
 					case 'rise_20':
@@ -446,7 +442,11 @@ var table = (function(){
 							// default is black
 						}
 						if(t.dataset.titleProp == 'f3') {
-							td.className += ' bold';
+							if(Configure.isBoardDone(dataT)) {
+								td.className = 'yellow';
+							} else {
+								td.className += ' bold';
+							}
 						}
 						break;
 					case 'gainianDragon':
