@@ -459,6 +459,7 @@ var table = (function(){
 								txt += arr[i] + '】';
 							};
 							td.innerHTML = td.innerHTML != '' ? td.innerHTML : txt;
+							Tip.show(td,  '【' + dataT['f100'] + '】<br>' + dataT['f103']);
 						}
 					default:
 						break;
