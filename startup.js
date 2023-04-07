@@ -58,7 +58,43 @@
 	
 	var fillTicketsTable = function() {
 		var d = $('#date')[0].value.replace(/\-/g, '');	
-		table.createTable(d, highlightTichets);
+		
+		var fr = document.getElementById('form1');
+		var fr2 = document.getElementById('form2');
+		
+		var paramGainian = [];
+		var paramGainianForOther = [];
+		if (fr2.gainian && fr2.gainian.length > 1) {
+			Array.from(fr2.gainian).forEach((input)=> {
+				if(input.checked) {
+					paramGainian =paramGainian.concat(input.dataset.titleProp.split(','));
+				} else {
+					paramGainianForOther= paramGainianForOther.concat(input.dataset.titleProp.split(','));
+				}
+			});
+		} else if(fr2.gainian){
+			if (fr2.gainian.checked) {
+				paramGainian =paramGainian.concat(fr2.gainian.dataset.titleProp.split(','));
+			} else {
+				paramGainianForOther= paramGainianForOther.concat(fr2.gainian.dataset.titleProp.split(','));
+			}
+		}
+
+	//	var gainian = fr.gainian;
+		var isOther = fr2.all[1].checked;  // other 选项
+		var param = {
+			hotpointArr: isOther ? paramGainianForOther : paramGainian,
+			type: fr.gtype[6].checked ? 6 :
+				fr.gtype[5].checked ? 5 :
+				fr.gtype[4].checked ? 4 :
+				fr.gtype[3].checked ? 3 :
+				fr.gtype[2].checked ? 2 : 
+				fr.gtype[0].checked ? 0 : 1,   
+			sort: fr.sort[2].checked ? 2 :
+				fr.sort[0].checked ? 0 : 1,
+			other: fr2.all[1].checked
+		};
+		table.createTable(d, param, highlightTichets);
 	};
 	
 	var init = function() {
@@ -67,6 +103,13 @@
 		document.getElementById('date').min = dateArr[0];
 	//	document.getElementById('date').max = dateArr[dateArr.length - 1];
 		document.getElementById('mode').disabled = true;
+		if(Configure.getMode() == Configure.modeType.DP) {
+			document.getElementById('pre').disabled = true;
+			document.getElementById('date').disabled = true;
+			document.getElementById('next').disabled = true;
+			document.getElementById('last').disabled = true;
+			document.getElementById('excel-file').disabled = true;
+		}
 		
 		dragons.init();
 		table.updateForm();

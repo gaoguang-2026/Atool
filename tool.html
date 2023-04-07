@@ -20,10 +20,6 @@
 		<option value="120">120</option>
 		<option value="180">180</option>
 	</select>
-	<select id="mode" style="width: 50px;" >
-		<option value="0" selected >复盘</option>
-		<option value="1" >盯盘</option>
-	</select>
 	<select id="indecator" style="width: 100px;" >
 		<option value="0">--请选择--</option>
 	</select>
@@ -31,7 +27,10 @@
 	<input id="date" type="date"  min="2022-07-04">
 	<input id= "next" type="button" value='>' style="width: 20px;"/>
 	<input id= "last" type="button" value='>>' style="width: 26px;"/>
-
+	<select id="mode" style="width: 50px;" >
+		<option value="0" selected >复盘</option>
+		<option value="1" >盯盘</option>
+	</select>
 	<div id='apothegm'></div>
 	</div>
 	<canvas id = "drawing" width = "1400" height= "300" >
@@ -62,6 +61,7 @@
 	<script src="./workbook.js"> </script>
 	<script src="./requests.js"> </script>
 	<script src="./dragons.js"> </script>
+	<script src="./parserRT.js"> </script>
 	<script src="./parser.js"> </script>
 	
 	<script src="./canvas.js"> </script>

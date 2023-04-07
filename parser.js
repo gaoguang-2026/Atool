@@ -270,10 +270,13 @@ var parser = (function(){
 			}
 
 		}
-		echelons = echelons.concat(newEchelons);
 		echelons.sort((a, b) => {
 			return b.score - a.score;
-		})   
+		});   
+		echelons = echelons.concat(newEchelons);
+		if(Configure.getMode() == Configure.modeType.DP) {
+			echelons = echelons.concat(parserRT.getRTEchelons());
+		}
 		return echelons;
 	};
 	

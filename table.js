@@ -6,9 +6,17 @@ var table = (function(){
 	var tHead = tbl.tHead;
 	var tHeadtds;
 	
+	var datetoload;   // load date
+	var param;        // load param
+	var highlightTichets;  // highlight
+	
 	var updateForm = function() {
 		var fr = document.getElementById('form2');
+		var checkNameArr = [];
 		while(fr.hasChildNodes()) {
+			if (fr.lastChild.checked) {
+				checkNameArr.push(fr.lastChild.dataset.titleName);   // 记录checked input
+			};
 			fr.removeChild(fr.lastChild);
 		};
 		
@@ -21,7 +29,8 @@ var table = (function(){
 		var inputOther = document.createElement('input');
 		inputAll.type = 'checkbox';
 		inputAll.name = 'all';
-		inputAll.checked = false;
+		inputAll.dataset.titleName = 'all';
+		inputAll.checked = checkNameArr.indexOf(inputAll.dataset.titleName) != -1;
 		inputAll.onchange = function(e){
 			if (e.target.checked) {
 				if (fr.gainian && fr.gainian.length > 1) {
@@ -40,7 +49,8 @@ var table = (function(){
 		// other
 		inputOther.type = 'checkbox';
 		inputOther.name = 'all';
-		inputOther.checked = false;
+		inputOther.dataset.titleName = 'other';
+		inputOther.checked = checkNameArr.indexOf(inputOther.dataset.titleName) != -1;
 		inputOther.onchange = function(e){
 			if (e.target.checked) {
 				if (fr.gainian && fr.gainian.length > 1) {
@@ -64,9 +74,9 @@ var table = (function(){
 				var input = document.createElement('input');
 				input.type = 'checkbox';
 				input.name = 'gainian';
-				input.checked = false;
 				input.dataset.titleProp = g.hotPoints;
 				input.dataset.titleName = g.name;
+				input.checked = checkNameArr.indexOf(input.dataset.titleName) != -1;
 				input.onchange = function(e){
 					if(e.target.checked) {
 						inputAll.checked = false;
@@ -144,7 +154,7 @@ var table = (function(){
 		tr.appendChild(tDel);
 		tBody.appendChild(tr);
 	}
-	var createTicketRow = function(datetoload, param, highlightTichets) {
+	var createTicketRow = function() {
 		//remove all tr
 		while(tBody.hasChildNodes()) {
 			tBody.removeChild(tBody.lastChild);
@@ -264,7 +274,7 @@ var table = (function(){
 		});
 	};
 	
-	var createRankRow = function(datetoload, param) {
+	var createRankRow = function() {
 		//remove all tr
 		while(tBody.hasChildNodes()) {
 			tBody.removeChild(tBody.lastChild);
@@ -358,53 +368,17 @@ var table = (function(){
 			addDetailAndDelete(tr, ticket);
 		});
 	};
-	var createTable = function (datetoload, highlightTichets) {
-		var fr = document.getElementById('form1');
-		var fr2 = document.getElementById('form2');
-		
-		var paramGainian = [];
-		var paramGainianForOther = [];
-		if (fr2.gainian && fr2.gainian.length > 1) {
-			Array.from(fr2.gainian).forEach((input)=> {
-				if(input.checked) {
-					paramGainian =paramGainian.concat(input.dataset.titleProp.split(','));
-				} else {
-					paramGainianForOther= paramGainianForOther.concat(input.dataset.titleProp.split(','));
-				}
-			});
-		} else if(fr2.gainian){
-			if (fr2.gainian.checked) {
-				paramGainian =paramGainian.concat(fr2.gainian.dataset.titleProp.split(','));
-			} else {
-				paramGainianForOther= paramGainianForOther.concat(fr2.gainian.dataset.titleProp.split(','));
-			}
-		}
-
-	//	var gainian = fr.gainian;
-		var isOther = fr2.all[1].checked;  // other 选项
-		var param = {
-			hotpointArr: isOther ? paramGainianForOther : paramGainian,
-			type: fr.gtype[6].checked ? 6 :
-				fr.gtype[5].checked ? 5 :
-				fr.gtype[4].checked ? 4 :
-				fr.gtype[3].checked ? 3 :
-				fr.gtype[2].checked ? 2 : 
-				fr.gtype[0].checked ? 0 : 1,   
-			sort: fr.sort[2].checked ? 2 :
-				fr.sort[0].checked ? 0 : 1,
-			other: fr2.all[1].checked
-		};
-
-		createTableHead();
-		
+	var updateRow = function() {
 		if(param.type == 5) {   //排名
 			createRankRow(datetoload, param);
-			updateTd();
 			if(Configure.getMode() == Configure.modeType.DP) {
+				updateTd();
+				updateForm();
 				requests.stop();
 				requests.start(()=>{
 					createRankRow(datetoload, param);
 					updateTd();
+					updateForm();
 				});
 			}
 
@@ -413,12 +387,23 @@ var table = (function(){
 			if(Configure.getMode() == Configure.modeType.DP) {
 				// 实时更新今日数据
 				updateTd();
+				updateForm();
 				requests.stop();
 				requests.start(()=>{
 					updateTd();
+					updateForm();
 				});
 			}
 		}
+	};
+	
+	var createTable = function (d, p, h) {
+		datetoload = d;
+		param = p;
+		highlightTichets = h;
+		
+		createTableHead();
+		updateRow();
 	};
 	
 	var updateTd = function() {
@@ -472,5 +457,6 @@ var table = (function(){
 		createTable:createTable,
 		updateForm:updateForm,
 		updateTd:updateTd,
+		updateRow:updateRow,
 	}
 })();

@@ -41,18 +41,6 @@
 	var getBandTickets = function() {
 		return BandTickets;
 	};
-	var setRTTickets = function(ticketArr) {
-		realTimeTickets = [];
-		ticketArr.forEach((t)=>{
-			realTimeTickets.push(t);
-		});
-	};
-	
-	var getRTTicketFromCode = function(code) {
-		return realTimeTickets.find((t)=>{
-			return t['f12'] == code || code.indexOf(t['f12']) != -1;
-		})
-	};
 	
 	var getEmotionalCycles = function(dateStr) {
 		var sheet = getSheet('周期');
@@ -161,6 +149,23 @@
 		return tickets.filter((t)=>{
 			return t[Configure.title.code] == code;
 		})[0];
+	};
+	
+	// 实时数据
+	var setRTTickets = function(ticketArr) {
+		realTimeTickets = [];
+		ticketArr.forEach((t)=>{
+			realTimeTickets.push(t);
+		});
+	};
+	
+	var getRTTicketFromCode = function(code) {
+		return realTimeTickets.find((t)=>{
+			return t['f12'] == code || code.indexOf(t['f12']) != -1;
+		})
+	};
+	var getRTTickets = function() {
+		return realTimeTickets;
 	};
 	// 当前涨幅大于8的或者 5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
 	var getRTTicketsLeader = function() {

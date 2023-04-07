@@ -20,7 +20,7 @@ var Configure = (function(){
 		FP: 0,
 		DP: 1,
 	}
-	var timerDuration = 3000;
+	var timerDuration = 10000;
 	
 	var apothegms = [
 	'【连扳】--只做换手总龙, 周期为王，龙头至上。先后有序，强弱有别。择时重于择股，重势胜于重价。',
@@ -488,7 +488,8 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 3;  // 最小显示限制
+	var Echelons_show_min_score = 4;  // 最小显示限制
+	var Echelons_show_min_rank_number = 30;  // rt最小显示限制
 	var Echelons_show_type = 'score';   //  'fund' or 'score'
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
@@ -629,6 +630,7 @@ var Configure = (function(){
 		Echelons_Draw_NUM:Echelons_Draw_NUM,
 		Echelons_tickit_period:Echelons_tickit_period,
 		Echelons_show_min_score:Echelons_show_min_score,
+		Echelons_show_min_rank_number:Echelons_show_min_rank_number,
 		Echelons_show_type:Echelons_show_type,
 		Band_tickit_period:Band_tickit_period,
 		Echelons_miss_tickit_period:Echelons_miss_tickit_period,
