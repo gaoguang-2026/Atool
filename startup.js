@@ -14,31 +14,57 @@
 		oStrong.appendChild(oTxt);
 		oDiv.appendChild(oStrong);
 	};
-	var drawimage = function(echelonNames = []) {
-		canvas.draw(echelonNames, document.getElementById('indecator').value, 
+	
+	var getParamEchelons = function() {
+		var fr2 = document.getElementById('form2');
+		var paramEchelons = [];
+		if (fr2.gainian && fr2.gainian.length > 1) {
+			Array.from(fr2.gainian).forEach((input)=> {
+				if(input.checked) {
+					paramEchelons = paramEchelons.concat(input.dataset.titleName);
+				} 
+			});
+		} else if(fr2.gainian){
+			if(fr2.gainian.checked) {
+				paramEchelons = paramEchelons.concat(fr2.gainian.dataset.titleName);
+			} 
+		}
+		return paramEchelons;
+	};
+	
+	var drawCanvasLeft = function() {
+		canvas.draw(getParamEchelons(), document.getElementById('indecator').value, 
 				document.getElementById('showdays').value);
 	};
 	
 	
 	var highlightTichets;
-	// type = 0 画连扳， 4画趋势
-	var drawEchelons = function(echelonNames = [], type = 0){
-		// 梯队
+	var drawCanvasRight = function(){
 		var elCanvas = document.getElementById("drawing")
 		var dateArr = workbook.getDateArr((a,b)=>{
 				return b - a;
 			});
+		var echelonNames = getParamEchelons();
+		var type = document.getElementById('form1').gtype[4].checked ? 
+							4 : 0;   // type = 0 画连扳， 4画趋势 
+							
 		var echelons = echelonNames.length ?  
 						[(parser.getCombinedEchelon(dateArr[0], echelonNames))] : [];
 		echelons = echelons.concat([(parser.getCombinedEchelon(dateArr[0]))]);
 		echelons = echelons.concat(parser.getEchelons(dateArr[0]));
-
+		// RT canvas
+		var rect = {x: elCanvas.width * Configure.WinXFactor  + 30, y:0,
+						width: elCanvas.width * Configure.WinRTfactor, height:elCanvas.height};
+		canvasRT.draw(elCanvas, rect);
+		
+		// 梯队
 		for (var i = 0; i < Configure.Echelons_Draw_NUM; i ++) {
-			var rect = {x: elCanvas.width * Configure.WinXFactor + 30 +
+			var rect = {x: elCanvas.width * (Configure.WinXFactor + Configure.WinRTfactor) + 30 +
 								i * elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM, 
 							y:0,
-							width:elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM,
-						height:elCanvas.height};
+							width:elCanvas.width * (1-Configure.WinXFactor-Configure.WinRTfactor)/
+															Configure.Echelons_Draw_NUM,
+							height:elCanvas.height};
 			let e1;
 			if(type == 0) {
 				e1 = new window.Echelon(elCanvas, echelons[i], rect);      //连板
@@ -52,8 +78,7 @@
 				// 初始化一下趋势数据 AI需要使用
 				new window.bandEchelon(elCanvas, echelons[i], rect);   
 			}
-		}			
-
+		}	
 	};
 	
 	var fillTicketsTable = function() {
@@ -117,29 +142,21 @@
 		canvas.init(document.getElementById("drawing"), Configure.WinXFactor);
 	};
 	
+	/*var startRequests = function() {
+		if(Configure.getMode() == Configure.modeType.DP) {
+			requests.stop();
+			requests.start(()=>{
+				
+			});
+		}
+	}; */
+	
 	var addEvent = function() {
 		var formUpdate = function() {
-			var fr2 = document.getElementById('form2');
-			var paramEchelons = [];
-			if (fr2.gainian && fr2.gainian.length > 1) {
-				Array.from(fr2.gainian).forEach((input)=> {
-					if(input.checked) {
-						paramEchelons = paramEchelons.concat(input.dataset.titleName);
-					} 
-				});
-			} else if(fr2.gainian){
-				if(fr2.gainian.checked) {
-					paramEchelons = paramEchelons.concat(fr2.gainian.dataset.titleName);
-				} 
-			}
-			
 			// canvas update
-			drawimage(paramEchelons);
-			if (document.getElementById('showdays').value < 120 ) { //canvas显示大于等于120天时不显示Echelons
-				// Echelon update 
-				var type = document.getElementById('form1').gtype[4].checked ? 
-							4 : 0;   // 画趋势还是连扳
-				drawEchelons(paramEchelons, type);
+			drawCanvasLeft();
+			if (document.getElementById('showdays').value < 120 ) { //canvas显示大于等于120天时不显示right
+				drawCanvasRight();
 			}
 			
 			// table update
@@ -151,7 +168,7 @@
 		var showDaysUpdate = function() {
 			if (document.getElementById('showdays').value >= 120 ) {  // canvas显示大于等于120天时resize宽度
 				canvas.resize(document.getElementById("drawing"), 1);
-				drawimage([]);
+				drawCanvasLeft();
 			} else {
 				canvas.resize(document.getElementById("drawing"), Configure.WinXFactor);
 				formUpdate();
@@ -205,12 +222,15 @@
 			const ctx = canvas.getContext('2d');
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			
-			drawimage();
-			drawEchelons();
+			drawCanvasLeft();
+			drawCanvasRight();
 			fillTicketsTable();
 			
 			displayAI(AI.getRecommend());
 			addEvent();
+			
+			//start requests
+		//	startRequests();
         };
         // 以二进制方式打开文件
         fileReader.readAsBinaryString(files[0]);

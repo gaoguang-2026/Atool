@@ -17,7 +17,7 @@ var requests = (function(){
 			if (xhr.status === 200) {
 				const responseText = xhr.responseText;
 				// 处理响应文本
-				console.log(responseText);
+				console.info(responseText);
 				var s = responseText.indexOf('(') + 1; 
 				var json_str = responseText.substr(s, responseText.length - s - 2);
 			    workbook.setRTTickets(JSON.parse(json_str)['data']['diff']);

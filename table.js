@@ -67,9 +67,10 @@ var table = (function(){
 			
 		
 		var d = $('#date')[0].value.replace(/\-/g, '');	
-		var echelonArr = parser.getEchelons(d);
+		var echelonArr = Configure.getMode() == Configure.modeType.DP ? 
+									parserRT.getRTEchelons() : parser.getEchelons(d);
 		echelonArr.forEach((g)=>{
-			if (g.score >= Configure.Echelons_show_min_score) {
+			//if (g.score >= Configure.Echelons_show_min_score) {
 				var oTxt = document.createTextNode(g.name + '(' + g.score + ')\xa0\xa0\xa0\xa0');
 				var input = document.createElement('input');
 				input.type = 'checkbox';
@@ -87,7 +88,7 @@ var table = (function(){
 					
 				fr.appendChild(input);	
 				fr.appendChild(oTxt);	
-			}
+			//}
 		
 		});
 		
@@ -263,11 +264,13 @@ var table = (function(){
 						break;
 					} 
 					
-				highlightTichets.forEach((t)=>{
-					if(t[Configure.title.code] == ticket[Configure.title.code]) {
-						tr.className = 'highlight';
-					}
-				})
+				if(highlightTichets) {
+					highlightTichets.forEach((t)=>{
+						if(t[Configure.title.code] == ticket[Configure.title.code]) {
+							tr.className = 'highlight';
+						}
+					})
+				}
 				tr.appendChild(td);
 			});
 			addDetailAndDelete(tr, ticket);
@@ -379,6 +382,7 @@ var table = (function(){
 					createRankRow(datetoload, param);
 					updateTd();
 					updateForm();
+					canvasRT.reDraw();
 				});
 			}
 
@@ -392,6 +396,7 @@ var table = (function(){
 				requests.start(()=>{
 					updateTd();
 					updateForm();
+					canvasRT.reDraw();
 				});
 			}
 		}

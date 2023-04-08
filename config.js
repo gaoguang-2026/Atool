@@ -444,6 +444,14 @@ var Configure = (function(){
 		sell: '止盈',
 		description: '说明'
 	};
+	
+	var titleGainian = {
+		name: '概念名称',
+		ticketNum: '股票数量',
+		ticketsCode: '股票代码',
+		score: '得分',
+		weight: '权重',
+	};
 		
 	var site_color = 'black';
 	var sz_color = 'purple';
@@ -479,8 +487,9 @@ var Configure = (function(){
 	var Max_echelon_fund = 150;
 	
 	// 左右窗口
-	var WinXFactor = 0.6;     //  左边窗口占比
-	var winFactor = 0.3;    // 上下窗口的比率 
+	var WinXFactor;     //  左边窗口占比 
+	var WinFactor = 0.3;    // 上下窗口的比率 
+	var WinRTfactor = 0.4;   //canvas RT 窗口占比
 	
 	var Echelons_Draw_NUM = 2;
 	var Echelons_ticket_NUM = 7;     // 画出来的数量
@@ -488,8 +497,9 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 4;  // 最小显示限制
-	var Echelons_show_min_rank_number = 30;  // rt最小显示限制
+	var Echelons_show_min_score = 3;  // 最小显示限制
+	var Echelons_show_min_rank_number = 20;  // rt最小显示限制
+	var RT_GAI_rank_max_length = 7;			// rt 概念排名记录的最大长度
 	var Echelons_show_type = 'score';   //  'fund' or 'score'
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
@@ -570,6 +580,10 @@ var Configure = (function(){
 							'selectDate','reason'];
 			this.rankShowInTableTitile = ['index', 'name', 'price', 'value', 'rise_5',
 									'rise_20', 'value','gainianDragon'];
+									
+			this.Echelons_show_min_score = 4;
+			this.WinXFactor = 0.6;
+			this.Echelons_Draw_NUM = 2;
 		} else  {                      // 盯盘配置
 			this.showInTableTitile = ['name', 'f2', 'f8', 'f3','realValue','score','totalDivergence', 
 							'boardStrength','reason', 'boardAndDay'];
@@ -577,6 +591,9 @@ var Configure = (function(){
 						'selectDate','reason'];
 			this.rankShowInTableTitile = ['index','name', 'f2','f8', 'f3', 'rise_5','rise_10',
 											'rise_20', 'value','gainianDragon'];
+			this.Echelons_show_min_score = 5;
+			this.WinXFactor = 0.3;
+			this.Echelons_Draw_NUM = 1;
 		}
 	};
 	var getMode = function() {
@@ -605,6 +622,7 @@ var Configure = (function(){
 		title2:title2,
 		titleCycles:titleCycles,
 		titleTactics:titleTactics,
+		titleGainian:titleGainian,
 		Days_Max_lengh:Days_Max_lengh,
 		Days_Show_reserved_lengh:Days_Show_reserved_lengh,
 		echelons:echelons,
@@ -622,7 +640,8 @@ var Configure = (function(){
 		Dead_Handover:Dead_Handover,
 		Min_handover:Min_handover,
 		WinXFactor:WinXFactor,
-		winFactor:winFactor,
+		WinFactor:WinFactor,
+		WinRTfactor:WinRTfactor,
 		Min_echelon_score:Min_echelon_score,
 		Max_echelon_score:Max_echelon_score,
 		Min_echelon_fund:Min_echelon_fund,
@@ -632,6 +651,7 @@ var Configure = (function(){
 		Echelons_show_min_score:Echelons_show_min_score,
 		Echelons_show_min_rank_number:Echelons_show_min_rank_number,
 		Echelons_show_type:Echelons_show_type,
+		RT_GAI_rank_max_length:RT_GAI_rank_max_length,
 		Band_tickit_period:Band_tickit_period,
 		Echelons_miss_tickit_period:Echelons_miss_tickit_period,
 		Band_miss_tickit_period:Band_miss_tickit_period,

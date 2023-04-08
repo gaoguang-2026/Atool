@@ -20,7 +20,7 @@ var canvas = (function(canvas) {
 	var cellWidth = 0;
 	//var cellHeight;
 	var cell_factor = 0.92;
-	var winFactor = Configure.winFactor;
+	var winFactor = Configure.WinFactor;
 
 	var getDayFromDateStr = function(dateStr) {
 		if (!AllDays || !AllDays.length ) {

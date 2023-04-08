@@ -233,7 +233,7 @@ var parser = (function(){
 			return fundtotal;
 		};
 		//////
-		
+		// configure 的echelon
 		Configure.echelons.forEach((echelon)=>{
 			var e = {};
 			e.score = 0;
@@ -247,36 +247,24 @@ var parser = (function(){
 			e.fund = calEchelonFund(e.hotPoints);
 			echelons.push(e);
 		});
-		echelons.sort((a, b) => {
-			return b.score - a.score;
-		})
+			
 		//如果某个概念大于echelons前三名得分，分离出来单独做echelon.
-		var newEchelons = [];
 		for (var [name, value] of gaiNian) {
 			if(value.weight >= echelons[2].score &&        //得分大于等于第三名
 				value.weight > Configure.Echelons_show_min_score ){ 
 				var newEche = {};
-			/*	echelons.forEach((e)=>{
-					if(e.hotPoints.indexOf(name) != -1) {
-						e.hotPoints.splice(e.hotPoints.indexOf(name), 1);
-						e.score -=  parseInt(value.weight);
-					}
-				}) */
 				newEche.name = '*' + name;
 				newEche.score = parseInt(value.weight);
 				newEche.hotPoints = [name];
 				newEche.fund = calEchelonFund(newEche.hotPoints);
-				newEchelons.push(newEche);
+				echelons.push(newEche);
 			}
 
 		}
+		
 		echelons.sort((a, b) => {
 			return b.score - a.score;
 		});   
-		echelons = echelons.concat(newEchelons);
-		if(Configure.getMode() == Configure.modeType.DP) {
-			echelons = echelons.concat(parserRT.getRTEchelons());
-		}
 		return echelons;
 	};
 	
