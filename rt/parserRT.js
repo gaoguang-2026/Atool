@@ -32,7 +32,7 @@ var parserRT = (function(){
 					gain[Configure.titleGainian.ticketNum] += 1;
 					gain[Configure.titleGainian.ticketsCode].push(rtData['f12']);
 					// 计算score
-					var s = parseFloat(Configure.isBoardDone(rtData) ? Configure.HIGH_factor * 5: 1);
+					var s = parseFloat(Configure.isBoardDone(rtData) ? Configure.HIGH_factor * 7 : 1);
 					gain[Configure.titleGainian.score] += s;
 					// 记录下总和
 					scoreTotal += s;

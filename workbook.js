@@ -167,10 +167,14 @@
 	var getRTTickets = function() {
 		return realTimeTickets;
 	};
-	// 当前涨幅大于8的或者 5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
+	// 当前涨幅大于6切最大涨幅回撤不到30%   或者5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
 	var getRTTicketsLeader = function() {
+		var filter = function(t) {
+			return t['f3'] > 600 &&  (t['f15'] - t['f2'])/(t['f15'] - t['f18']) < 0.3 ;
+		}
+		
 		return realTimeTickets.filter((t)=>{
-			return t['f3'] > 800 ||                
+			return  filter(t)  ||                
 					t['f109'] > 2000 ||
 					t['f160'] > 3000 ||
 					t['f110'] > 4000;   

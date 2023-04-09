@@ -72,6 +72,7 @@ var Configure = (function(){
 	'【轮动】-- 轮动行情呆在一条线站住这个坑，不要试图在几条线上跳来跳去，市场凭什么按你的节奏来。',
 	'【卖点】-- 非主升阶段有冲高给到合适的利润就卖出反T，卖飞就卖飞了。',
 	'【趋势】-- 上涨和下跌一样是有惯性的，下跌因为恐慌，上涨一样因为踏空资金的贪婪，金钱永不眠',
+	'【术和道】-- 情绪周期是底层逻辑，术是卖不了科创可以买ETF',
 	];
 	
 		// echelon 
@@ -498,8 +499,8 @@ var Configure = (function(){
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
 	var Echelons_show_min_score = 3;  // 最小显示限制
-	var Echelons_show_min_rank_number = 20;  // rt最小显示限制
-	var RT_GAI_rank_max_length = 7;			// rt 概念排名记录的最大长度
+	var Echelons_show_min_rank_number = 30;  // rt最小显示限制
+	var RT_GAI_rank_max_length = 20;			// rt 概念排名记录的最大长度
 	var Echelons_show_type = 'score';   //  'fund' or 'score'
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD

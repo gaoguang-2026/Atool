@@ -37,11 +37,14 @@ var canvasRT = (function() {
 		///
 		ctx.fillStyle = Configure.site_color;
 		ctx.fillText('0', siteX + siteWidth - 10, siteY + siteHeight);
-		ctx.fillText('5', siteX + siteWidth - 16, siteY + 12);
+		ctx.fillText('4', siteX + siteWidth - 16, siteY + 12);
 		
 		ctx.fillText('09:30', siteX - 10, siteY + siteHeight + 15);
 		ctx.fillText('11:30(13:00)', siteX + siteWidth/2 - 16, siteY + siteHeight + 15);
 		ctx.fillText('15:00', siteX + siteWidth - 25, siteY + siteHeight + 15);
+		
+		ctx.fillText( Configure.getDateStr(parserRT.getGaiRankData().getRankData().date, '-')
+					, siteX, siteY - 10);
 		ctx.stroke(); 
 	};
 	var drawGainLine = function(name, color) {
@@ -59,7 +62,7 @@ var canvasRT = (function() {
 		for(i = 0; i < last; i ++) {
 			var g = getGaiFromIndex(i);
 			if(g && g[Configure.titleGainian.weight]) {
-				var pointH = siteHeight * (parseFloat(g[Configure.titleGainian.weight])- 0)/5;
+				var pointH = siteHeight * (parseFloat(g[Configure.titleGainian.weight])- 0)/4;
 				var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
 					y: siteY + siteHeight - pointH};
 				//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
@@ -68,7 +71,7 @@ var canvasRT = (function() {
 					var gNext = getGaiFromIndex(i + 1);
 					if(gNext) {
 						var pointNextH = siteHeight  * 
-							(parseFloat(gNext[Configure.titleGainian.weight]) - 0)/5;
+							(parseFloat(gNext[Configure.titleGainian.weight]) - 0)/4;
 						var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 											y: siteY + siteHeight - pointNextH};
 						ctx.lineWidth="2";
@@ -79,7 +82,7 @@ var canvasRT = (function() {
 					}
 				} else {
 					ctx.font="14px 楷体"
-					ctx.fillText(g[Configure.titleGainian.name], szPoint.x - 40, szPoint.y - 30);
+					ctx.fillText(g[Configure.titleGainian.name], szPoint.x - 40, szPoint.y - 10);
 				}
 			}
 		}

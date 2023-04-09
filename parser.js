@@ -262,6 +262,9 @@ var parser = (function(){
 
 		}
 		
+		echelons = echelons.filter((e)=>{
+			return e.score > Configure.Echelons_show_min_score;
+		});
 		echelons.sort((a, b) => {
 			return b.score - a.score;
 		});   

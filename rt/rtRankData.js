@@ -74,7 +74,7 @@
 			LocalStore.set('rtGaiData', this.gRankData);
 		} else {
 			// debug 数据
-		/*	for(var i = 4; i < 130; i ++) {
+		/*	for(var i = 4; i < 240; i ++) {
 				this.gRankData.data[i].gaiRank = dArr;
 			}
 			LocalStore.set('rtGaiData', this.gRankData); */

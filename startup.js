@@ -134,6 +134,7 @@
 			document.getElementById('next').disabled = true;
 			document.getElementById('last').disabled = true;
 			document.getElementById('excel-file').disabled = true;
+			document.getElementById('showdays').disabled = true;
 		}
 		
 		dragons.init();

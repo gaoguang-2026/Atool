@@ -68,7 +68,8 @@ var table = (function(){
 		
 		var d = $('#date')[0].value.replace(/\-/g, '');	
 		var echelonArr = Configure.getMode() == Configure.modeType.DP ? 
-									parserRT.getRTEchelons() : parser.getEchelons(d);
+									parser.getEchelons(d).concat(parserRT.getRTEchelons()) :
+									parser.getEchelons(d);
 		echelonArr.forEach((g)=>{
 			//if (g.score >= Configure.Echelons_show_min_score) {
 				var oTxt = document.createTextNode(g.name + '(' + g.score + ')\xa0\xa0\xa0\xa0');
