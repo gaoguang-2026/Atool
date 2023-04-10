@@ -373,34 +373,11 @@ var table = (function(){
 		});
 	};
 	var updateRow = function() {
-		if(param.type == 5) {   //排名
-			createRankRow(datetoload, param);
-			if(Configure.getMode() == Configure.modeType.DP) {
-				updateTd();
-				updateForm();
-				requests.stop();
-				requests.start(()=>{
-					createRankRow(datetoload, param);
-					updateTd();
-					updateForm();
-					canvasRT.reDraw();
-				});
-			}
-
-		} else {
-			createTicketRow(datetoload, param, highlightTichets); 
-			if(Configure.getMode() == Configure.modeType.DP) {
-				// 实时更新今日数据
-				updateTd();
-				updateForm();
-				requests.stop();
-				requests.start(()=>{
-					updateTd();
-					updateForm();
-					canvasRT.reDraw();
-				});
-			}
+		if(param.type == 5) {
+			createRankRow();
 		}
+		updateTd();
+		updateForm();
 	};
 	
 	var createTable = function (d, p, h) {
@@ -409,6 +386,8 @@ var table = (function(){
 		highlightTichets = h;
 		
 		createTableHead();
+
+		param.type == 5 ? createRankRow() : createTicketRow(); 
 		updateRow();
 	};
 	
@@ -445,9 +424,12 @@ var table = (function(){
 						if(dataT && dataT['f101']) {
 							var txt = dataT['f101'] + ' ';
 							var arr = dataT['f103'].split(',');
-							for(i = arr.length - 1; i >= arr.length - 2; i --) {
-								txt += '【';
-								txt += arr[i] + '】';
+							for(i = arr.length - 1; i >= 0; i --) {
+								if(parserRT.gFilter.indexOf(arr[i]) == -1) {
+									txt += '【';
+									txt += arr[i] + '】';
+								}
+								if (txt.length > 20) break;
 							};
 							td.innerHTML = td.innerHTML != '' ? td.innerHTML : txt;
 							Tip.show(td,  '【' + dataT['f100'] + '】<br>' + dataT['f103']);

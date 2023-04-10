@@ -261,14 +261,15 @@ var parser = (function(){
 			}
 
 		}
-		
-		echelons = echelons.filter((e)=>{
-			return e.score > Configure.Echelons_show_min_score;
-		});
 		echelons.sort((a, b) => {
 			return b.score - a.score;
-		});   
-		return echelons;
+		});  
+		
+		var retEchelons = echelons.filter((e)=>{
+			return e.score > Configure.Echelons_show_min_score;
+		});
+		
+		return retEchelons.length == 0 ? echelons.splice(0,3) : retEchelons;
 	};
 	
 	/* 

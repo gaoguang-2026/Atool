@@ -20,7 +20,6 @@ var Configure = (function(){
 		FP: 0,
 		DP: 1,
 	}
-	var timerDuration = 10000;
 	
 	var apothegms = [
 	'【连扳】--只做换手总龙, 周期为王，龙头至上。先后有序，强弱有别。择时重于择股，重势胜于重价。',
@@ -490,7 +489,6 @@ var Configure = (function(){
 	// 左右窗口
 	var WinXFactor;     //  左边窗口占比 
 	var WinFactor = 0.3;    // 上下窗口的比率 
-	var WinRTfactor = 0.4;   //canvas RT 窗口占比
 	
 	var Echelons_Draw_NUM = 2;
 	var Echelons_ticket_NUM = 7;     // 画出来的数量
@@ -499,9 +497,18 @@ var Configure = (function(){
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
 	var Echelons_show_min_score = 3;  // 最小显示限制
-	var Echelons_show_min_rank_number = 30;  // rt最小显示限制
-	var RT_GAI_rank_max_length = 20;			// rt 概念排名记录的最大长度
 	var Echelons_show_type = 'score';   //  'fund' or 'score'
+	
+	// rt
+	var timerDuration = 10000;
+	var WinRTfactor = 0.4;   //canvas RT 窗口占比
+	var RT_show_min_rank_ticket_num = 10;  // rt最小显示限制
+	var RT_GAI_rank_max_length = 100;			// rt 概念排名记录的最大长度 , 不能太大，存储限制
+	var RT_GAI_show_weight_max = 5;			    // weight min
+	var RT_GAI_show_weight_min = 1;		        // weight max
+	var RT_data_length = 240;					// 多少个点
+	var RT_canvas_record_days_num = 2;			// rt 记录数据的天数
+	var RT_canvas_show_days_num = 1;            // 显示的天数
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2
@@ -530,7 +537,10 @@ var Configure = (function(){
 							];  
 	ZHISHU_TITLE == title2.zhangtingzhishu ? 
 		selectIndicators.push({name:'连扳晋级'}) : selectIndicators.unshift({name:'短线资金'});
-		
+	
+	var isAfterNoon = function() {
+		return new Date().getHours() > 12;
+	}
 	var isKeTicket = function(code) {
 		return (code.substr(0, 2) == 'SH' && code.substr(2, 2) == '68') || 
 					code.substr(0, 2) == '68';
@@ -650,9 +660,14 @@ var Configure = (function(){
 		Echelons_Draw_NUM:Echelons_Draw_NUM,
 		Echelons_tickit_period:Echelons_tickit_period,
 		Echelons_show_min_score:Echelons_show_min_score,
-		Echelons_show_min_rank_number:Echelons_show_min_rank_number,
 		Echelons_show_type:Echelons_show_type,
+		RT_show_min_rank_ticket_num:RT_show_min_rank_ticket_num,
 		RT_GAI_rank_max_length:RT_GAI_rank_max_length,
+		RT_GAI_show_weight_max:RT_GAI_show_weight_max,
+		RT_GAI_show_weight_min:RT_GAI_show_weight_min,
+		RT_data_length:RT_data_length,
+		RT_canvas_show_days_num:RT_canvas_show_days_num,
+		RT_canvas_record_days_num:RT_canvas_record_days_num,
 		Band_tickit_period:Band_tickit_period,
 		Echelons_miss_tickit_period:Echelons_miss_tickit_period,
 		Band_miss_tickit_period:Band_miss_tickit_period,
@@ -676,6 +691,7 @@ var Configure = (function(){
 		updatetitle:updatetitle,
 		replaceTitleDate:replaceTitleDate,
 		getDayBoard:getDayBoard,
+		isAfterNoon:isAfterNoon,
 		isKeTicket:isKeTicket,
 		isChungTicket:isChungTicket,
 		isKechuangTicket:isKechuangTicket,

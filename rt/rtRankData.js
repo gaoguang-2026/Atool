@@ -1,5 +1,7 @@
  'use strict';
 (function(exports){	
+	var storageName = 'rtGaiData';
+	
 	const datesAreOnSameDay = function(first, second) {
 		return first.getFullYear() === second.getFullYear() &&
 				first.getMonth() === second.getMonth() &&
@@ -7,24 +9,32 @@
 	}
 
 	let rtGaiData = function () {
-		var storeData = LocalStore.get('rtGaiData');
+		var storeData = LocalStore.get(storageName);
 		if(storeData) {
 			this.gRankData = storeData;
-			if(!datesAreOnSameDay(new Date(this.gRankData.date), new Date())) {
-				//如果不是今天的数据需要清空
-				for(var i = 0; i < 240; i ++) {
-					this.gRankData.data[i].gaiRank = [];
+			//如果eDate不是今天并且今天不是周末， 数据清理
+			var today = new Date();
+			if(!datesAreOnSameDay(new Date(this.gRankData.eDate), today) && 
+				today.getDay() != 0 && today.getDay() != 6) {
+				this.gRankData.sDate = this.gRankData.eDate;
+				this.gRankData.eDate = JSON.stringify(today).replace(/\"/g, '');
+				var start = Configure.RT_data_length / Configure.RT_canvas_record_days_num;
+				this.gRankData.data = this.gRankData.data.slice(start, Configure.RT_data_length);
+				for(var i = start; i < Configure.RT_data_length; i ++) {
+					this.gRankData.data.push({
+						gaiRank:[],
+					});
 				}
 			}
 		} else {
 			this.gRankData = {
-				date: new Date(),
+				sDate: new Date(),
+				eDate: new Date(),
 				data: [],
 			};
 			
 			for (var i = 0; i < 240; i ++) {
 				this.gRankData.data.push({
-					index:i,
 					gaiRank:[],
 				})
 			}
@@ -32,25 +42,29 @@
 	};
 	
 	
-	rtGaiData.prototype.getIndexFromDate = function(date) {
-		var index = -1;
+	rtGaiData.prototype.getIndexFromNow = function() {
+		var date = new Date();
 		var hour = date.getHours();
 		var minute = date.getMinutes();
+		var base = Configure.RT_data_length * (Configure.RT_canvas_record_days_num - 1)/ 
+							Configure.RT_canvas_record_days_num;
+		var offset = Configure.RT_canvas_record_days_num * 240 / Configure.RT_data_length;
+		var index = -1;
 		if (hour == 9 && minute >= 30) {
-			index = minute - 30;
+			index = (minute - 30) / offset;
 		} else if(hour == 10) {
-			index = 30 + minute;
+			index = (minute + 30) /offset;
 		}else if(hour == 11 && minute < 30) {
-			index = 90 + minute;
+			index = (minute + 90) /offset;
 		}
 		else if(hour == 13) {
-			index = minute + 120;
+			index = (minute + 120) /offset;
 		}else if(hour == 14) {
-			index = minute + 180;
+			index = (minute + 180) /offset;
 		}else {
-			index = 240;
+			index = 240/offset;
 		}
-		return index;
+		return base + Math.floor(index);
 	}
 	
 	rtGaiData.prototype.getRankData = function() {
@@ -61,23 +75,21 @@
 		//return this.gRankData;
 	};
 	
-	rtGaiData.prototype.setRankDataFromDate = function(d , dArr) {
-		this.gRankData.date = d;
-		var index = this.getIndexFromDate(d);
-		if (index >= 0 && index < 240) {
+	rtGaiData.prototype.setRankDataFromNow = function(dArr) {
+		this.gRankData.eDate = new Date();
+		var index = this.getIndexFromNow();
+		var base = Configure.RT_data_length * (Configure.RT_canvas_record_days_num - 1)/ 
+							Configure.RT_canvas_record_days_num;
+		if (index >= base && index < Configure.RT_data_length) {
 			this.gRankData.data[index].gaiRank = dArr;
-			//清空index后面的数据
-			for(var i = index; i < 240; i ++) {
-				this.gRankData.data[i].gaiRank = [];
-			}
 			// 保存到storage避免数据丢失
-			LocalStore.set('rtGaiData', this.gRankData);
+			LocalStore.set(storageName, this.gRankData);
 		} else {
 			// debug 数据
 		/*	for(var i = 4; i < 240; i ++) {
 				this.gRankData.data[i].gaiRank = dArr;
 			}
-			LocalStore.set('rtGaiData', this.gRankData); */
+			LocalStore.set(storageName, this.gRankData);  */
 		}
 	};
 	

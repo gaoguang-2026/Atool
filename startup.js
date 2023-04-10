@@ -40,7 +40,17 @@
 	
 	var highlightTichets;
 	var drawCanvasRight = function(){
-		var elCanvas = document.getElementById("drawing")
+		var elCanvas = document.getElementById("drawing");
+		var rtCanvasFactor = 0;
+		// RT canvas
+		if(Configure.getMode() == Configure.modeType.DP) {
+			rtCanvasFactor = Configure.WinRTfactor;
+			var rect = {x: elCanvas.width * Configure.WinXFactor  + 30, y:0,
+						width: elCanvas.width * rtCanvasFactor, height:elCanvas.height};
+			canvasRT.draw(elCanvas, rect);
+		} 
+				
+		// 梯队
 		var dateArr = workbook.getDateArr((a,b)=>{
 				return b - a;
 			});
@@ -52,17 +62,11 @@
 						[(parser.getCombinedEchelon(dateArr[0], echelonNames))] : [];
 		echelons = echelons.concat([(parser.getCombinedEchelon(dateArr[0]))]);
 		echelons = echelons.concat(parser.getEchelons(dateArr[0]));
-		// RT canvas
-		var rect = {x: elCanvas.width * Configure.WinXFactor  + 30, y:0,
-						width: elCanvas.width * Configure.WinRTfactor, height:elCanvas.height};
-		canvasRT.draw(elCanvas, rect);
-		
-		// 梯队
 		for (var i = 0; i < Configure.Echelons_Draw_NUM; i ++) {
-			var rect = {x: elCanvas.width * (Configure.WinXFactor + Configure.WinRTfactor) + 30 +
+			var rect = {x: elCanvas.width * (Configure.WinXFactor + rtCanvasFactor) + 30 +
 								i * elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM, 
 							y:0,
-							width:elCanvas.width * (1-Configure.WinXFactor-Configure.WinRTfactor)/
+							width:elCanvas.width * (1-Configure.WinXFactor-rtCanvasFactor)/
 															Configure.Echelons_Draw_NUM,
 							height:elCanvas.height};
 			let e1;
@@ -143,14 +147,15 @@
 		canvas.init(document.getElementById("drawing"), Configure.WinXFactor);
 	};
 	
-	/*var startRequests = function() {
+	var startRequests = function() {
 		if(Configure.getMode() == Configure.modeType.DP) {
 			requests.stop();
 			requests.start(()=>{
-				
+				table.updateRow();
+				canvasRT.reDraw();
 			});
 		}
-	}; */
+	}; 
 	
 	var addEvent = function() {
 		var formUpdate = function() {
@@ -231,7 +236,7 @@
 			addEvent();
 			
 			//start requests
-		//	startRequests();
+			startRequests();
         };
         // 以二进制方式打开文件
         fileReader.readAsBinaryString(files[0]);
@@ -240,10 +245,21 @@
 	window.onload = function(){
 		$('#date').val(Configure.getDateStr(Configure.date, '-'));
 		Configure.setMode($('#mode')[0].value);
+		document.getElementById('form1').gtype[5].checked = true;
+		document.getElementById('form1').sort[2].checked = true;
 		$('#mode').change((e)=>{
 			Configure.setMode($('#mode')[0].value);
+			if(Configure.getMode() == Configure.modeType.DP) {
+				document.getElementById('form1').gtype[5].checked = true;
+				document.getElementById('form1').sort[2].checked = true;
+				document.getElementById('showdays').value = 30;
+			} else {
+				document.getElementById('form1').gtype[2].checked = true;
+				document.getElementById('form1').sort[1].checked = true;
+				document.getElementById('showdays').value = 60;
+			}
 		});
-		
+
 		const canvas = document.getElementById('drawing');
 		const ctx = canvas.getContext('2d');
 		const img = new Image();
