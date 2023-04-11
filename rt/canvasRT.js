@@ -40,7 +40,8 @@ var canvasRT = (function() {
 		ctx.fillStyle = 'red';
 		ctx.font="14px 楷体";
 		ctx.fillText(Configure.RT_GAI_show_weight_min, siteX + siteWidth + 4, siteY + siteHeight);
-		ctx.fillText(Configure.RT_GAI_show_weight_max, siteX + siteWidth + 4, siteY + 12);
+		ctx.fillText(Configure.RT_GAI_show_weight_maxOffset + Configure.RT_GAI_show_weight_min, 
+				siteX + siteWidth + 4, siteY + 12);
 		
 		ctx.fillStyle = Configure.site_color;
 		ctx.font="14px 楷体";
@@ -52,39 +53,33 @@ var canvasRT = (function() {
 						siteY - 10);
 		ctx.stroke(); 
 	};
-	var drawGainLine = function(name, color) {
+	var drawEchelonLine = function(echelon, color) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
 		ctx.fillStyle= color;
 		var rtRankData = parserRT.getGaiRankData();   // getRankData() -> {sDate:,eDate:,data: []};
-		var getGaiFromIndex = function(index) {  // index  0 ~ 239
-			return rtRankData.getRankData().data[index].gaiRank.find((d)=>{
-				return d[Configure.titleGainian.name] == name;
-			})
-		}
-		
 		// 从数据中取要显示的第一天index 和最后一天 indexLast
 		var index = Configure.RT_data_length * 
 						(Configure.RT_canvas_record_days_num - Configure.RT_canvas_show_days_num) / 
 							Configure.RT_canvas_record_days_num;
-		var indexLast = rtRankData.getIndexFromNow();
+		var indexLast = rtRankData.getIndexFromDate(new Date(rtRankData.getRankData().eDate));
 		indexLast = indexLast > Configure.RT_data_length ? Configure.RT_data_length : indexLast;
 		for(i = 0; i < cellNum; i ++, index ++) {
-			var g = getGaiFromIndex(index);
-			if(g && g[Configure.titleGainian.weight]) {
+			var e = parserRT.getEchelonByIndex(echelon, index);
+			if(e&& e.score!=0) {
 				var pointH = siteHeight * 
-					(parseFloat(g[Configure.titleGainian.weight])- Configure.RT_GAI_show_weight_min)/
-						Configure.RT_GAI_show_weight_max;
+					(parseFloat(e.score) - Configure.RT_GAI_show_weight_min)/
+						Configure.RT_GAI_show_weight_maxOffset;
 				var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
 					y: siteY + siteHeight - pointH};
 				//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
 		
-				if (index < indexLast - 1) {// 不是最后一个点
-					var gNext = getGaiFromIndex(index + 1);
-					if(gNext) {
+				if (index < indexLast) {// 不是最后一个点
+					var eNext = parserRT.getEchelonByIndex(echelon, index + 1);
+					if(eNext && eNext.score != 0) {
 						var pointNextH = siteHeight  * 
-							(parseFloat(gNext[Configure.titleGainian.weight]) - Configure.RT_GAI_show_weight_min)/
-								Configure.RT_GAI_show_weight_max;
+							(parseFloat(eNext.score) - Configure.RT_GAI_show_weight_min)/
+								Configure.RT_GAI_show_weight_maxOffset;
 						var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 											y: siteY + siteHeight - pointNextH};
 						ctx.lineWidth="2";
@@ -95,8 +90,7 @@ var canvasRT = (function() {
 					}
 				} else {
 					ctx.font="14px 楷体";
-					
-					ctx.fillText('<' + g[Configure.titleGainian.name] + '>', 
+					ctx.fillText('<' + e.name + '>', 
 					Configure.isAfterNoon() ?  siteX  : siteX + siteWidth - 70, 
 					szPoint.y);
 					ctx.stroke();
@@ -108,7 +102,7 @@ var canvasRT = (function() {
 	var drawGain = function(nameArr) {
 		Array.from(parserRT.getRTEchelons()).forEach((e, index) => {
 			var color = Configure.echelon_color[index%Configure.echelon_color.length];
-			drawGainLine(e.name, color);
+			drawEchelonLine(e, color);
 		});
 	};
 	var reDraw = function() {
@@ -139,7 +133,8 @@ var canvasRT = (function() {
 					' siteY:' + siteY +
 					' siteWidth:' + siteWidth + 
 					' siteHeight:' + siteHeight);			
-
+			drawSite();
+			drawGain();
 		}
 	};
 	return {

@@ -151,6 +151,7 @@
 		if(Configure.getMode() == Configure.modeType.DP) {
 			requests.stop();
 			requests.start(()=>{
+				parserRT.parseAndStoreRTData();
 				table.updateRow();
 				canvasRT.reDraw();
 			});
@@ -161,6 +162,7 @@
 		var formUpdate = function() {
 			// canvas update
 			drawCanvasLeft();
+			
 			if (document.getElementById('showdays').value < 120 ) { //canvas显示大于等于120天时不显示right
 				drawCanvasRight();
 			}
@@ -244,20 +246,27 @@
 	
 	window.onload = function(){
 		$('#date').val(Configure.getDateStr(Configure.date, '-'));
+		var fp = function() {
+			document.getElementById('form1').gtype[2].checked = true;
+			document.getElementById('form1').sort[1].checked = true;
+			document.getElementById('showdays').value = 60;
+		};
+		var dp = function() {
+			document.getElementById('form1').gtype[5].checked = true;
+			document.getElementById('form1').sort[2].checked = true;
+			document.getElementById('showdays').value = 30;
+		};
+		if(Configure.isAfterTrading()){
+			document.getElementById('mode').value = 0;
+			fp()
+		} else {
+			document.getElementById('mode').value = 1;
+			dp();
+		}
 		Configure.setMode($('#mode')[0].value);
-		document.getElementById('form1').gtype[5].checked = true;
-		document.getElementById('form1').sort[2].checked = true;
 		$('#mode').change((e)=>{
 			Configure.setMode($('#mode')[0].value);
-			if(Configure.getMode() == Configure.modeType.DP) {
-				document.getElementById('form1').gtype[5].checked = true;
-				document.getElementById('form1').sort[2].checked = true;
-				document.getElementById('showdays').value = 30;
-			} else {
-				document.getElementById('form1').gtype[2].checked = true;
-				document.getElementById('form1').sort[1].checked = true;
-				document.getElementById('showdays').value = 60;
-			}
+			Configure.getMode() == Configure.modeType.DP ? dp() : fp();
 		});
 
 		const canvas = document.getElementById('drawing');

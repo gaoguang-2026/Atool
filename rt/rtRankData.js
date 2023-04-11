@@ -42,8 +42,8 @@
 	};
 	
 	
-	rtGaiData.prototype.getIndexFromNow = function() {
-		var date = new Date();
+	rtGaiData.prototype.getIndexFromDate = function(d = new Date()) {
+		var date = d;
 		var hour = date.getHours();
 		var minute = date.getMinutes();
 		var base = Configure.RT_data_length * (Configure.RT_canvas_record_days_num - 1)/ 
@@ -68,19 +68,21 @@
 	}
 	
 	rtGaiData.prototype.getRankData = function() {
-
 		return this.gRankData;
 	}
-	rtGaiData.prototype.getRankDataFromindex = function() {
-		//return this.gRankData;
+	rtGaiData.prototype.getLastRankData = function() {
+		var index = this.getIndexFromDate(new Date(this.gRankData.eDate));
+		
+		return this.gRankData.data[index] ? this.gRankData.data[index].gaiRank : [];
 	};
 	
 	rtGaiData.prototype.setRankDataFromNow = function(dArr) {
-		this.gRankData.eDate = new Date();
-		var index = this.getIndexFromNow();
+		var d = new Date();
+		var index = this.getIndexFromDate(d);
 		var base = Configure.RT_data_length * (Configure.RT_canvas_record_days_num - 1)/ 
 							Configure.RT_canvas_record_days_num;
 		if (index >= base && index < Configure.RT_data_length) {
+			this.gRankData.eDate = d;
 			this.gRankData.data[index].gaiRank = dArr;
 			// 保存到storage避免数据丢失
 			LocalStore.set(storageName, this.gRankData);

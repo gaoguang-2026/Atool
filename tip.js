@@ -1,5 +1,8 @@
 (function($) {
 	var box;
+	$.fn.clear=(function() {
+		if(box && box.hide) box.hide(0,function(){$(this).remove();});
+	});
     $.fn.tip=(function(options) {
         var _this = $(this);
         var _param = {message:'',position:'bottom center',color:'red',bgColor:'#fffce7',bdColor:'#f8cc7e',hideEvent:'mouseout',fontSize:'16px',hideTime:0,top:0,left:0};
@@ -56,7 +59,11 @@ var Tip = (function () {
 			$(this).tip(txt);
 		};
 	};
+	var remove = function() {
+		$(this).clear();
+	};
 	return {
-		show:show
+		show:show,
+		remove:remove
 	}
 })();

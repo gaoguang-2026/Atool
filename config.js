@@ -504,11 +504,12 @@ var Configure = (function(){
 	var WinRTfactor = 0.4;   //canvas RT 窗口占比
 	var RT_show_min_rank_ticket_num = 10;  // rt最小显示限制
 	var RT_GAI_rank_max_length = 100;			// rt 概念排名记录的最大长度 , 不能太大，存储限制
-	var RT_GAI_show_weight_max = 5;			    // weight min
-	var RT_GAI_show_weight_min = 1;		        // weight max
+	var RT_GAI_show_weight_maxOffset = 10;			    // weight min
+	var RT_GAI_show_weight_min = 0;		        // weight max
 	var RT_data_length = 240;					// 多少个点
 	var RT_canvas_record_days_num = 2;			// rt 记录数据的天数
 	var RT_canvas_show_days_num = 1;            // 显示的天数
+	var RT_canvas_show_echelons_num = 3;            // 显示的个数
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2
@@ -540,7 +541,10 @@ var Configure = (function(){
 	
 	var isAfterNoon = function() {
 		return new Date().getHours() > 12;
-	}
+	};
+	var isAfterTrading = function() {
+		return new Date().getHours() >= 15;
+	};
 	var isKeTicket = function(code) {
 		return (code.substr(0, 2) == 'SH' && code.substr(2, 2) == '68') || 
 					code.substr(0, 2) == '68';
@@ -581,6 +585,18 @@ var Configure = (function(){
 		var per = isKechuangTicket(rtData['f12']) ? 1.20 : 1.10;
 		return  Math.round(rtData['f18'] * per) == rtData['f2'];
 	};
+	var calScoreFromRtData = function(rtData) {
+		if(isBoardDone(rtData)) {
+			return HIGH_factor * 7;
+		} else if(rtData['f3'] > 600) {
+			return HIGH_factor * 3;
+		} else if(rtData['f3']  > 0) {
+			return HIGH_factor * 1
+		} else {
+			return HIGH_factor * (-1);
+		}
+	};
+	
 	var showInTableTitile, bandShowInTableTitile, rankShowInTableTitile;
 	var setMode = function(type) {
 		mode = type;
@@ -663,11 +679,12 @@ var Configure = (function(){
 		Echelons_show_type:Echelons_show_type,
 		RT_show_min_rank_ticket_num:RT_show_min_rank_ticket_num,
 		RT_GAI_rank_max_length:RT_GAI_rank_max_length,
-		RT_GAI_show_weight_max:RT_GAI_show_weight_max,
+		RT_GAI_show_weight_maxOffset:RT_GAI_show_weight_maxOffset,
 		RT_GAI_show_weight_min:RT_GAI_show_weight_min,
 		RT_data_length:RT_data_length,
 		RT_canvas_show_days_num:RT_canvas_show_days_num,
 		RT_canvas_record_days_num:RT_canvas_record_days_num,
+		RT_canvas_show_echelons_num:RT_canvas_show_echelons_num,
 		Band_tickit_period:Band_tickit_period,
 		Echelons_miss_tickit_period:Echelons_miss_tickit_period,
 		Band_miss_tickit_period:Band_miss_tickit_period,
@@ -692,6 +709,7 @@ var Configure = (function(){
 		replaceTitleDate:replaceTitleDate,
 		getDayBoard:getDayBoard,
 		isAfterNoon:isAfterNoon,
+		isAfterTrading:isAfterTrading,
 		isKeTicket:isKeTicket,
 		isChungTicket:isChungTicket,
 		isKechuangTicket:isKechuangTicket,
@@ -702,6 +720,7 @@ var Configure = (function(){
 		isNew:isNew,
 		isSuspend:isSuspend,
 		isBoardDone:isBoardDone,
+		calScoreFromRtData:calScoreFromRtData,
 		getContextDescription:getContextDescription
 	}	
 })();

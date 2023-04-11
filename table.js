@@ -68,8 +68,7 @@ var table = (function(){
 		
 		var d = $('#date')[0].value.replace(/\-/g, '');	
 		var echelonArr = Configure.getMode() == Configure.modeType.DP ? 
-									parser.getEchelons(d).concat(parserRT.getRTEchelons()) :
-									parser.getEchelons(d);
+									parserRT.getRTEchelons() : parser.getEchelons(d);
 		echelonArr.forEach((g)=>{
 			//if (g.score >= Configure.Echelons_show_min_score) {
 				var oTxt = document.createTextNode(g.name + '(' + g.score + ')\xa0\xa0\xa0\xa0');
@@ -373,6 +372,7 @@ var table = (function(){
 		});
 	};
 	var updateRow = function() {
+		Tip.remove();
 		if(param.type == 5) {
 			createRankRow();
 		}
