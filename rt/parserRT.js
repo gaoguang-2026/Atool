@@ -11,6 +11,54 @@ var parserRT = (function(){
 		return rtRankData;
 	};
 	
+	var generateEchelons = function(gaiNianArr) {
+		var rtEchelons = [];
+		// configure 的echelon
+		Configure.echelons.forEach((echelon)=>{
+			var e = {};
+			e.score = 0;
+			e.name = echelon.name;
+			e.hotPoints = echelon.hotPoints.slice();
+			e.hotPoints.forEach((hot)=>{
+				var gFind = gaiNianArr.find((g)=>{
+					return g[Configure.titleGainian.name] == hot;
+				})
+				if (gFind) {
+					e.score += parseFloat(gFind[Configure.titleGainian.weight]) + 0; 
+				}
+			});
+			e.score = parseFloat(e.score).toFixed(3);
+			e.fund = 0;
+			rtEchelons.push(e);
+		});
+		
+		rtEchelons = rtEchelons.sort((a, b) => {
+			return b.score - a.score;
+		}).splice(0, Configure.RT_canvas_show_echelons_num);
+		
+		var alreadyInConfig = [];
+		rtEchelons.forEach((e)=>{
+			alreadyInConfig = alreadyInConfig.concat(e.hotPoints);
+		})
+		for (var i = 0; i < gaiNianArr.length; i ++) {
+			var g = gaiNianArr[i];
+			if(g[Configure.titleGainian.ticketNum] >= Configure.RT_show_min_rank_ticket_num &&
+				!alreadyInConfig.includes(g[Configure.titleGainian.name]) &&
+				g[Configure.titleGainian.weight] > rtEchelons[rtEchelons.length-1].score){ 
+				var newEche = {};
+				newEche.name = '*' + g[Configure.titleGainian.name];
+				newEche.score = parseFloat(g[Configure.titleGainian.weight]).toFixed(3);   // 横向显示权重
+				newEche.hotPoints = [g[Configure.titleGainian.name]];
+				newEche.fund = 0;
+				rtEchelons.push(newEche);
+			}
+		}
+		rtEchelons.sort((a, b) => {
+			return b.score - a.score;
+		});
+		return rtEchelons; 
+	};
+	
 	var parseAndStoreRTData = function(rtTickets = workbook.getRTTicketsLeader()) {
 		var retArr = [];
 		var scoreTotal = 0;
@@ -50,8 +98,10 @@ var parserRT = (function(){
 		
 		retArr = retArr.slice(0, retArr.length > Configure.RT_GAI_rank_max_length ?  
 						Configure.RT_GAI_rank_max_length : retArr.length - 1);
+						
+		var retEchelons = generateEchelons(retArr);
 		
-		rtRankData.setRankDataFromNow(retArr);
+		rtRankData.setRankDataFromNow(retArr, retEchelons);
 		return retArr;
 	};
 	var getEchelonByIndex = function(e, index) {
@@ -75,14 +125,15 @@ var parserRT = (function(){
 					
 	};
 	var getRTEchelons = function() {
+		// 选出全天最高的RT_canvas_show_echelons_num个 
+		var topEchelons = rtRankData.getTopEchelons().sort((a, b) => {
+			return b.score - a.score;
+		}).slice(0, Configure.RT_canvas_show_echelons_num);
+		
+		// 更新当前的得分
 		var gaiNianArr = rtRankData.getLastRankData();
-		var rtEchelons = [];
-		// configure 的echelon
-		Configure.echelons.forEach((echelon)=>{
-			var e = {};
+		topEchelons.forEach((e)=>{
 			e.score = 0;
-			e.name = echelon.name;
-			e.hotPoints = echelon.hotPoints.slice();
 			e.hotPoints.forEach((hot)=>{
 				var gFind = gaiNianArr.find((g)=>{
 					return g[Configure.titleGainian.name] == hot;
@@ -92,36 +143,9 @@ var parserRT = (function(){
 				}
 			});
 			e.score = parseFloat(e.score).toFixed(3);
-			e.fund = 0;
-			rtEchelons.push(e);
 		});
-		
-		rtEchelons = rtEchelons.sort((a, b) => {
-			return b.score - a.score;
-		}).splice(0, Configure.RT_canvas_show_echelons_num);   // 只画出前三个
-		
-		var alreadyInConfig = [];
-		rtEchelons.forEach((e)=>{
-			alreadyInConfig = alreadyInConfig.concat(e.hotPoints);
-		})
-		for (var i = 0; i < gaiNianArr.length; i ++) {
-			var g = gaiNianArr[i];
-			if(g[Configure.titleGainian.ticketNum] >= Configure.RT_show_min_rank_ticket_num &&
-				!alreadyInConfig.includes(g[Configure.titleGainian.name]) &&
-				g[Configure.titleGainian.weight] > rtEchelons[rtEchelons.length-1].score){ 
-				var newEche = {};
-				newEche.name = '*' + g[Configure.titleGainian.name];
-				newEche.score = parseFloat(g[Configure.titleGainian.weight]).toFixed(3);   // 横向显示权重
-				newEche.hotPoints = [g[Configure.titleGainian.name]];
-				newEche.fund = 0;
-				rtEchelons.push(newEche);
-			}
-		}
-		rtEchelons.sort((a, b) => {
-			return b.score - a.score;
-		});
-		return rtEchelons;   
-	}
+		return topEchelons;
+	};
 
 	return {
 		gFilter:gFilter,

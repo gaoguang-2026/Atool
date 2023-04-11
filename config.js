@@ -509,7 +509,7 @@ var Configure = (function(){
 	var RT_data_length = 240;					// 多少个点
 	var RT_canvas_record_days_num = 2;			// rt 记录数据的天数
 	var RT_canvas_show_days_num = 1;            // 显示的天数
-	var RT_canvas_show_echelons_num = 3;            // 显示的个数
+	var RT_canvas_show_echelons_num = 4;            // 显示的个数
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2

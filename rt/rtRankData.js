@@ -25,11 +25,13 @@
 						gaiRank:[],
 					});
 				}
+				this.gRankData.echelons = [];
 			}
 		} else {
 			this.gRankData = {
 				sDate: new Date(),
 				eDate: new Date(),
+				echelons:[],
 				data: [],
 			};
 			
@@ -72,11 +74,13 @@
 	}
 	rtGaiData.prototype.getLastRankData = function() {
 		var index = this.getIndexFromDate(new Date(this.gRankData.eDate));
-		
 		return this.gRankData.data[index] ? this.gRankData.data[index].gaiRank : [];
 	};
+	rtGaiData.prototype.getTopEchelons = function() {
+		return this.gRankData.echelons ? this.gRankData.echelons : [];
+	};
 	
-	rtGaiData.prototype.setRankDataFromNow = function(dArr) {
+	rtGaiData.prototype.setRankDataFromNow = function(dArr, echelonArr) {
 		var d = new Date();
 		var index = this.getIndexFromDate(d);
 		var base = Configure.RT_data_length * (Configure.RT_canvas_record_days_num - 1)/ 
@@ -84,6 +88,18 @@
 		if (index >= base && index < Configure.RT_data_length) {
 			this.gRankData.eDate = d;
 			this.gRankData.data[index].gaiRank = dArr;
+			echelonArr.forEach((newE)=>{
+				var idx = this.gRankData.echelons.findIndex((e)=>{
+					return e.name == newE.name;
+				});
+				if(idx == -1) {
+					this.gRankData.echelons.push(newE);
+				} else {
+					if(this.gRankData.echelons[idx].score < newE.score) {
+						this.gRankData.echelons[idx] = newE;
+					}
+				}
+			})
 			// 保存到storage避免数据丢失
 			LocalStore.set(storageName, this.gRankData);
 		} else {
