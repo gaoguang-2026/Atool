@@ -13,38 +13,40 @@ var parserRT = (function(){
 	
 	var generateEchelons = function(gaiNianArr) {
 		var rtEchelons = [];
-		// configure 的echelon
-		Configure.echelons.forEach((echelon)=>{
-			var e = {};
-			e.score = 0;
-			e.name = echelon.name;
-			e.hotPoints = echelon.hotPoints.slice();
-			e.hotPoints.forEach((hot)=>{
-				var gFind = gaiNianArr.find((g)=>{
-					return g[Configure.titleGainian.name] == hot;
-				})
-				if (gFind) {
-					e.score += parseFloat(gFind[Configure.titleGainian.weight]) + 0; 
-				}
-			});
-			e.score = parseFloat(e.score).toFixed(3);
-			e.fund = 0;
-			rtEchelons.push(e);
-		});
-		
-		rtEchelons = rtEchelons.sort((a, b) => {
-			return b.score - a.score;
-		}).splice(0, Configure.RT_canvas_show_echelons_num);
-		
 		var alreadyInConfig = [];
-		rtEchelons.forEach((e)=>{
-			alreadyInConfig = alreadyInConfig.concat(e.hotPoints);
-		})
+		// configure 的echelon
+		if(Configure.RT_echelon_contain_config) {
+			Configure.echelons.forEach((echelon)=>{
+				var e = {};
+				e.score = 0;
+				e.name = echelon.name;
+				e.hotPoints = echelon.hotPoints.slice();
+				e.hotPoints.forEach((hot)=>{
+					var gFind = gaiNianArr.find((g)=>{
+						return g[Configure.titleGainian.name] == hot;
+					})
+					if (gFind) {
+						e.score += parseFloat(gFind[Configure.titleGainian.weight]) + 0; 
+					}
+				});
+				e.score = parseFloat(e.score).toFixed(3);
+				e.fund = 0;
+				rtEchelons.push(e);
+			});
+			
+			rtEchelons = rtEchelons.sort((a, b) => {
+				return b.score - a.score;
+			}).splice(0, Configure.RT_canvas_show_echelons_num);
+			rtEchelons.forEach((e)=>{
+				alreadyInConfig = alreadyInConfig.concat(e.hotPoints);
+			})
+		}
+
 		for (var i = 0; i < gaiNianArr.length; i ++) {
 			var g = gaiNianArr[i];
 			if(g[Configure.titleGainian.ticketNum] >= Configure.RT_show_min_rank_ticket_num &&
-				!alreadyInConfig.includes(g[Configure.titleGainian.name]) &&
-				g[Configure.titleGainian.weight] > rtEchelons[rtEchelons.length-1].score){ 
+				!alreadyInConfig.includes(g[Configure.titleGainian.name]) /*&&
+				g[Configure.titleGainian.weight] > rtEchelons[rtEchelons.length-1].score*/){ 
 				var newEche = {};
 				newEche.name = '*' + g[Configure.titleGainian.name];
 				newEche.score = parseFloat(g[Configure.titleGainian.weight]).toFixed(3);   // 横向显示权重
