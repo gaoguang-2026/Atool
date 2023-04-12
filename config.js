@@ -89,9 +89,9 @@ var Configure = (function(){
 				'第三代半导体', '中芯国际概念','芯片','集成电路', 'pcb', '光刻机', '光刻胶', '先进封装', 'chiplet']},
 		{name: '机器人', hotPoints:['机器人', '智能制造', '减速器']},
 		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', 'VR', '虚拟现实', '游戏', '云游戏','手机游戏']},
-		{name: '数据要素', hotPoints:['数据要素','数据确权','信创','数据中心','云计算', '数字经济', '东数西算', 
-						'Web3.0','计算机软件', '国产操作系统']},
-		{name: 'AI', hotPoints:['AI','人工智能','AIGC','ChatGPT', '百度文心一言', '算力']},
+		{name: '数据要素', hotPoints:['数据要素','数据确权','信创', '数字经济','Web3.0','计算机软件', '国产操作系统']},
+		{name: '算力', hotPoints:['算力','数据中心','云计算', '东数西算']},				
+		{name: 'AI+', hotPoints:['AI','人工智能','AIGC','ChatGPT', '百度文心一言']},
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
 		{name: '6G', hotPoints:['通信设备','5G', '6G']},
 		{name: '存储', hotPoints:['数据存储','固态存储', '存储芯片', '存储器芯片']},
@@ -509,7 +509,7 @@ var Configure = (function(){
 	var RT_data_length = 240;					// 多少个点
 	var RT_canvas_record_days_num = 2;			// rt 记录数据的天数
 	var RT_canvas_show_days_num = 1;            // 显示的天数
-	var RT_canvas_show_echelons_num = 4;            // 显示的个数
+	var RT_canvas_show_echelons_num = 5;            // 显示的个数
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2
@@ -591,9 +591,9 @@ var Configure = (function(){
 		} else if(rtData['f3'] > 600) {
 			return HIGH_factor * 3;
 		} else if(rtData['f3']  > 0) {
-			return HIGH_factor * 1
+			return HIGH_factor * 2
 		} else {
-			return HIGH_factor * (-1);
+			return 1;
 		}
 	};
 	

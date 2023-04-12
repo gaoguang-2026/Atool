@@ -42,8 +42,6 @@
 			}
 		}
 	};
-	
-	
 	rtGaiData.prototype.getIndexFromDate = function(d = new Date()) {
 		var date = d;
 		var hour = date.getHours();
@@ -52,8 +50,9 @@
 							Configure.RT_canvas_record_days_num;
 		var offset = Configure.RT_canvas_record_days_num * 240 / Configure.RT_data_length;
 		var index = -1;
-		if (hour == 9 && minute >= 30) {
-			index = (minute - 30) / offset;
+		if (hour == 9 && minute >= 15) {
+			minute >= 30 ? 
+				index = (minute - 30) / offset : index = base;
 		} else if(hour == 10) {
 			index = (minute + 30) /offset;
 		}else if(hour == 11 && minute < 30) {
@@ -79,6 +78,16 @@
 	rtGaiData.prototype.getTopEchelons = function() {
 		return this.gRankData.echelons ? this.gRankData.echelons : [];
 	};
+	rtGaiData.prototype.getMaxScore = function() {
+		var max = 0;
+		var topEchelonsArr = this.getTopEchelons();
+		if (topEchelonsArr && topEchelonsArr.length > 0) {
+			max = topEchelonsArr.sort((a, b) => {
+				return b.score - a.score;
+			})[0].score;
+		}
+		return max;
+	};
 	
 	rtGaiData.prototype.setRankDataFromNow = function(dArr, echelonArr) {
 		var d = new Date();
@@ -96,7 +105,7 @@
 					this.gRankData.echelons.push(newE);
 				} else {
 					if(this.gRankData.echelons[idx].score < newE.score) {
-						this.gRankData.echelons[idx] = newE;
+						this.gRankData.echelons[idx].score = newE.score;
 					}
 				}
 			})

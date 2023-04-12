@@ -11,6 +11,8 @@ var canvasRT = (function() {
 	var siteWidth;
 	var cellWidth, cellNum;
 	var cell_factor = 1;
+	var site_weight_max = Configure.RT_GAI_show_weight_maxOffset + 
+							Configure.RT_GAI_show_weight_min;
 	
 	var clear = function()  {
 		drawing.getContext("2d").clearRect(rect.x, rect.y, rect.width, rect.height);
@@ -40,8 +42,7 @@ var canvasRT = (function() {
 		ctx.fillStyle = 'red';
 		ctx.font="14px 楷体";
 		ctx.fillText(Configure.RT_GAI_show_weight_min, siteX + siteWidth + 4, siteY + siteHeight);
-		ctx.fillText(Configure.RT_GAI_show_weight_maxOffset + Configure.RT_GAI_show_weight_min, 
-				siteX + siteWidth + 4, siteY + 12);
+		ctx.fillText(site_weight_max, siteX + siteWidth + 4, siteY + 12);
 		
 		ctx.fillStyle = Configure.site_color;
 		ctx.font="14px 楷体";
@@ -69,7 +70,7 @@ var canvasRT = (function() {
 			if(e&& e.score!=0) {
 				var pointH = siteHeight * 
 					(parseFloat(e.score) - Configure.RT_GAI_show_weight_min)/
-						Configure.RT_GAI_show_weight_maxOffset;
+						(site_weight_max - Configure.RT_GAI_show_weight_min);
 				var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
 					y: siteY + siteHeight - pointH};
 				//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
@@ -79,7 +80,7 @@ var canvasRT = (function() {
 					if(eNext && eNext.score != 0) {
 						var pointNextH = siteHeight  * 
 							(parseFloat(eNext.score) - Configure.RT_GAI_show_weight_min)/
-								Configure.RT_GAI_show_weight_maxOffset;
+								(site_weight_max - Configure.RT_GAI_show_weight_min);
 						var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 											y: siteY + siteHeight - pointNextH};
 						ctx.lineWidth="2";
@@ -99,7 +100,7 @@ var canvasRT = (function() {
 		}
 	};
 	
-	var drawGain = function(nameArr) {
+	var drawEchelons = function(nameArr) {
 		Array.from(parserRT.getRTEchelons()).forEach((e, index) => {
 			var color = Configure.echelon_color[index%Configure.echelon_color.length];
 			drawEchelonLine(e, color);
@@ -108,8 +109,10 @@ var canvasRT = (function() {
 	var reDraw = function() {
 		clear();
 		console.log('canvasRT redraw');
+		site_weight_max = Math.ceil(parserRT.getGaiRankData().getMaxScore());
+		
 		drawSite();
-		drawGain();
+		drawEchelons();
 	}
 	var draw = function(c, r) {
 		if (c.getContext){
@@ -134,7 +137,7 @@ var canvasRT = (function() {
 					' siteWidth:' + siteWidth + 
 					' siteHeight:' + siteHeight);			
 			drawSite();
-			drawGain();
+			drawEchelons();
 		}
 	};
 	return {

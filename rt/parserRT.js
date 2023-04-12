@@ -3,7 +3,7 @@ var parserRT = (function(){
 					'沪股通', '华为概念', '机构重仓', '基金重仓', '区块链', '标准普尔',
 					'深成500', '物联网', '大数据', '注册制次新股', '次新股', '百元股',
 					'MSCI中国', '专精特新', '国企改革', '中证500', '深圳特区',
-					'昨日涨停_含一字', '昨日涨停', '股权激励', '转债标的'];
+					'昨日涨停_含一字', '昨日涨停', '股权激励', '转债标的', '上证380'];
 
 	var rtRankData = new window.GaiData();
 	
@@ -130,21 +130,30 @@ var parserRT = (function(){
 			return b.score - a.score;
 		}).slice(0, Configure.RT_canvas_show_echelons_num);
 		
-		// 更新当前的得分
+		// 更新当前的得分, 需要拷贝对象
 		var gaiNianArr = rtRankData.getLastRankData();
+		var retEchelons = [];
 		topEchelons.forEach((e)=>{
-			e.score = 0;
-			e.hotPoints.forEach((hot)=>{
+			var newEche = {};
+			newEche.score = 0;
+			newEche.name = e.name;
+			newEche.hotPoints = e.hotPoints.slice();
+			
+			newEche.hotPoints.forEach((hot)=>{
 				var gFind = gaiNianArr.find((g)=>{
 					return g[Configure.titleGainian.name] == hot;
 				})
 				if (gFind) {
-					e.score += parseFloat(gFind[Configure.titleGainian.weight]) + 0; 
+					newEche.score += parseFloat(gFind[Configure.titleGainian.weight]) + 0; 
 				}
 			});
-			e.score = parseFloat(e.score).toFixed(3);
+			newEche.score = parseFloat(newEche.score).toFixed(3);
+			retEchelons.push(newEche);
 		});
-		return topEchelons;
+		retEchelons.sort((a, b) => {
+			return b.score - a.score;
+		});
+		return retEchelons;
 	};
 
 	return {
