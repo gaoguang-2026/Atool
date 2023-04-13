@@ -52,7 +52,7 @@
 		var index = -1;
 		if (hour == 9 && minute >= 15) {
 			minute >= 30 ? 
-				index = (minute - 30) / offset : index = base;
+				index = (minute - 30) / offset : index = 0;
 		} else if(hour == 10) {
 			index = (minute + 30) /offset;
 		}else if(hour == 11 && minute < 30) {
@@ -94,6 +94,9 @@
 		var index = this.getIndexFromDate(d);
 		var base = Configure.RT_data_length * (Configure.RT_canvas_record_days_num - 1)/ 
 							Configure.RT_canvas_record_days_num;
+		if(Configure.isBidding()) {   // 竞价阶段的echelons需要清空
+			this.gRankData.echelons = [];
+		};
 		if (index >= base && index < Configure.RT_data_length) {
 			this.gRankData.eDate = d;
 			this.gRankData.data[index].gaiRank = dArr;
@@ -104,7 +107,7 @@
 				if(idx == -1) {
 					this.gRankData.echelons.push(newE);
 				} else {
-					if(this.gRankData.echelons[idx].score < newE.score) {
+					if(parseFloat(this.gRankData.echelons[idx].score) < parseFloat(newE.score)) {
 						this.gRankData.echelons[idx].score = newE.score;
 					}
 				}

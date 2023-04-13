@@ -35,18 +35,24 @@ var parserRT = (function(){
 			});
 			
 			rtEchelons = rtEchelons.sort((a, b) => {
-				return b.score - a.score;
+				return parseFloat(b.score) - parseFloat(a.score);
 			}).splice(0, Configure.RT_canvas_show_echelons_num);
 			rtEchelons.forEach((e)=>{
 				alreadyInConfig = alreadyInConfig.concat(e.hotPoints);
 			})
+		};
+		
+		var filterGai = function(g) {
+			if(Configure.RT_echelon_contain_config) {
+				return !alreadyInConfig.includes(g[Configure.titleGainian.name]) &&
+				g[Configure.titleGainian.weight] > rtEchelons[rtEchelons.length-1].score;
+			} else 
+				return g[Configure.titleGainian.ticketNum] >= Configure.RT_show_min_rank_ticket_num;
 		}
 
 		for (var i = 0; i < gaiNianArr.length; i ++) {
 			var g = gaiNianArr[i];
-			if(g[Configure.titleGainian.ticketNum] >= Configure.RT_show_min_rank_ticket_num &&
-				!alreadyInConfig.includes(g[Configure.titleGainian.name]) /*&&
-				g[Configure.titleGainian.weight] > rtEchelons[rtEchelons.length-1].score*/){ 
+			if(filterGai(g)){ 
 				var newEche = {};
 				newEche.name = '*' + g[Configure.titleGainian.name];
 				newEche.score = parseFloat(g[Configure.titleGainian.weight]).toFixed(3);   // 横向显示权重
@@ -56,7 +62,7 @@ var parserRT = (function(){
 			}
 		}
 		rtEchelons.sort((a, b) => {
-			return b.score - a.score;
+			return parseFloat(b.score) - parseFloat(a.score);
 		});
 		return rtEchelons; 
 	};
@@ -129,7 +135,7 @@ var parserRT = (function(){
 	var getRTEchelons = function() {
 		// 选出全天最高的RT_canvas_show_echelons_num个 
 		var topEchelons = rtRankData.getTopEchelons().sort((a, b) => {
-			return b.score - a.score;
+			return parseFloat(b.score) - parseFloat(a.score);
 		}).slice(0, Configure.RT_canvas_show_echelons_num);
 		
 		// 更新当前的得分, 需要拷贝对象
@@ -153,7 +159,7 @@ var parserRT = (function(){
 			retEchelons.push(newEche);
 		});
 		retEchelons.sort((a, b) => {
-			return b.score - a.score;
+			return parseFloat(b.score) - parseFloat(a.score);
 		});
 		return retEchelons;
 	};

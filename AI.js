@@ -152,8 +152,9 @@ var AI = (function(){
 		var ret = true;
 		var emotionPoints = canvas.getLastEmotionPoints(Configure.EmotionAngleDeafultDays + 1);  
 		var emotionSumAngle = canvas.sumAngleFromPoints(emotionPoints);
-		var emotionAngle = Configure.getAngle(emotionPoints[0].point, emotionPoints[1].point);
-		var emotionLevel = getLevel(emotionPoints[0]);
+		var emotionAngle = emotionPoints.length >= 2 ?
+						Configure.getAngle(emotionPoints[0].point, emotionPoints[1].point) : 0;
+		var emotionLevel = emotionPoints.length >= 1 ? getLevel(emotionPoints[0]) : 0;
 		
 		var szAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.sz));
 		var eAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qingxuzhishu));

@@ -458,7 +458,7 @@ var Configure = (function(){
 	var sz_color = 'purple';
 	var boardHeight_color = 'black';
 	var line_color = 'red';
-	var echelon_color = ['orange', '#E89AF5', '#6F65DE', '#9D97FF', '#F597C0', '#8BEDD9'];
+	var echelon_color = ['orange', '#E89AF5', '#FF6347', '#9D97FF', '#008000', '#FFFF00', '#1E90FF'];
 	
 	var MIN_LB_NUMBER = 2;
 	var MIN_KAINIAN = 2;     // 最少出现的次数
@@ -505,12 +505,12 @@ var Configure = (function(){
 	var WinRTfactor = 0.4;   //canvas RT 窗口占比
 	var RT_show_min_rank_ticket_num = 10;  // rt最小显示限制
 	var RT_GAI_rank_max_length = 100;			// rt 概念排名记录的最大长度 , 不能太大，存储限制
-	var RT_GAI_show_weight_maxOffset = 10;			    // weight min
+	var RT_GAI_show_weight_maxOffset = 5;			    // weight min
 	var RT_GAI_show_weight_min = 0;		        // weight max
 	var RT_data_length = 240;					// 多少个点
 	var RT_canvas_record_days_num = 2;			// rt 记录数据的天数
 	var RT_canvas_show_days_num = 1;            // 显示的天数
-	var RT_canvas_show_echelons_num = 5;            // 显示的个数
+	var RT_canvas_show_echelons_num = 7;            // 显示的个数
 	var RT_echelon_contain_config = true;       // 是否加上config的echelon
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
@@ -545,7 +545,16 @@ var Configure = (function(){
 		return new Date().getHours() > 12;
 	};
 	var isAfterTrading = function() {
-		return new Date().getHours() >= 15;
+		var d = new Date();	
+		return d > new Date(d.getFullYear(),d.getMonth(),d.getDate(),15,30,0);
+	};
+	var isBidding = function(d = new Date()) {
+		var startD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),9,15,0);
+		var endD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),9,30,0);
+		if(d >= startD && d < endD) {
+			return true;
+		}
+		return false;
 	};
 	var isKeTicket = function(code) {
 		return (code.substr(0, 2) == 'SH' && code.substr(2, 2) == '68') || 
@@ -594,10 +603,8 @@ var Configure = (function(){
 			return HIGH_factor * 3;
 		} else if(rtData['f3']  > 0) {
 			return HIGH_factor * 1;
-		}  else if(rtData['f3']  < 600) {
-			return HIGH_factor * (-3);
-		}else {
-			return HIGH_factor * (-1);    // <0
+		} else {
+			return 0;    // <0
 		}
 	};
 	
@@ -715,6 +722,7 @@ var Configure = (function(){
 		getDayBoard:getDayBoard,
 		isAfterNoon:isAfterNoon,
 		isAfterTrading:isAfterTrading,
+		isBidding:isBidding,
 		isKeTicket:isKeTicket,
 		isChungTicket:isChungTicket,
 		isKechuangTicket:isKechuangTicket,

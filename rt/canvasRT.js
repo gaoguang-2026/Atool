@@ -3,7 +3,7 @@ var canvasRT = (function() {
 	var rect;
 	var width = 0;
 	var height = 0;
-	var width_factor = 0.9;
+	var width_factor = 0.95;
 	var height_factor = 0.8;
 	var siteX;
 	var siteY;
@@ -54,7 +54,7 @@ var canvasRT = (function() {
 						siteY - 10);
 		ctx.stroke(); 
 	};
-	var drawEchelonLine = function(echelon, color) {
+	var drawEchelonLine = function(echelon, color, eIndex) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
 		ctx.fillStyle= color;
@@ -65,37 +65,37 @@ var canvasRT = (function() {
 							Configure.RT_canvas_record_days_num;
 		var indexLast = rtRankData.getIndexFromDate(new Date(rtRankData.getRankData().eDate));
 		indexLast = indexLast > Configure.RT_data_length ? Configure.RT_data_length : indexLast;
+		var eFirst; 	// 记录第一个点，数据不连贯，连线难看
+		var offsetX = cellWidth * eIndex/ Configure.RT_canvas_show_echelons_num;  // 错位显示不同Echelon的cell
 		for(i = 0; i < cellNum; i ++, index ++) {
 			var e = parserRT.getEchelonByIndex(echelon, index);
 			if(e&& e.score!=0) {
 				var pointH = siteHeight * 
 					(parseFloat(e.score) - Configure.RT_GAI_show_weight_min)/
 						(site_weight_max - Configure.RT_GAI_show_weight_min);
-				var szPoint = {x: siteX + cellWidth  * i + 0.5 * cellWidth,
+				var szPoint = {x: siteX + cellWidth  * i + offsetX,
 					y: siteY + siteHeight - pointH};
 				//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
-		
-				if (index < indexLast) {// 不是最后一个点
-					var eNext = parserRT.getEchelonByIndex(echelon, index + 1);
-					if(eNext && eNext.score != 0) {
-						var pointNextH = siteHeight  * 
-							(parseFloat(eNext.score) - Configure.RT_GAI_show_weight_min)/
-								(site_weight_max - Configure.RT_GAI_show_weight_min);
-						var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
-											y: siteY + siteHeight - pointNextH};
-						ctx.lineWidth="2";
-						ctx.strokeStyle = color;
-						ctx.moveTo(szPoint.x, szPoint.y);
-						ctx.lineTo(szpointNext.x, szpointNext.y);
-						ctx.stroke();
-					}
-				} else {
+				if(!eFirst ) {
+					eFirst = parserRT.getEchelonByIndex(echelon, index); 
 					ctx.font="14px 楷体";
 					ctx.fillText('<' + e.name + '>', 
 					Configure.isAfterNoon() ?  siteX  : siteX + siteWidth - 70, 
 					szPoint.y);
+				}
+				if(eFirst && eFirst.score != 0) {
+					var pointFirstH = siteHeight  * 
+							(parseFloat(eFirst.score) - Configure.RT_GAI_show_weight_min)/
+								(site_weight_max - Configure.RT_GAI_show_weight_min);
+					var szpointFirst = {x:siteX + cellWidth  * i + offsetX,
+											y: siteY + siteHeight - pointFirstH};
+					ctx.lineWidth= cellWidth/Configure.RT_canvas_show_echelons_num;
+					ctx.strokeStyle = color;
+					ctx.moveTo(szPoint.x, szPoint.y);
+					ctx.lineTo(szpointFirst.x, szpointFirst.y);
 					ctx.stroke();
 				}
+				ctx.stroke();
 			}
 		}
 	};
@@ -103,7 +103,7 @@ var canvasRT = (function() {
 	var drawEchelons = function(nameArr) {
 		Array.from(parserRT.getRTEchelons()).forEach((e, index) => {
 			var color = Configure.echelon_color[index%Configure.echelon_color.length];
-			drawEchelonLine(e, color);
+			drawEchelonLine(e, color, index);
 		});
 	};
 	var reDraw = function() {
