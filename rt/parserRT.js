@@ -36,7 +36,7 @@ var parserRT = (function(){
 			
 			rtEchelons = rtEchelons.sort((a, b) => {
 				return parseFloat(b.score) - parseFloat(a.score);
-			}).splice(0, Configure.RT_canvas_show_echelons_num);
+			}).splice(0, Configure.RT_echelons_max_num);
 			rtEchelons.forEach((e)=>{
 				alreadyInConfig = alreadyInConfig.concat(e.hotPoints);
 			})
@@ -136,7 +136,7 @@ var parserRT = (function(){
 		// 选出全天最高的RT_canvas_show_echelons_num个 
 		var topEchelons = rtRankData.getTopEchelons().sort((a, b) => {
 			return parseFloat(b.score) - parseFloat(a.score);
-		}).slice(0, Configure.RT_canvas_show_echelons_num);
+		}).slice(0, Configure.RT_echelons_max_num);
 		
 		// 更新当前的得分, 需要拷贝对象
 		var gaiNianArr = rtRankData.getLastRankData();

@@ -458,7 +458,7 @@ var Configure = (function(){
 	var sz_color = 'purple';
 	var boardHeight_color = 'black';
 	var line_color = 'red';
-	var echelon_color = ['orange', '#E89AF5', '#FF6347', '#9D97FF', '#008000', '#FFFF00', '#1E90FF'];
+	var echelon_color = ['#FFA500', '#E89AF5', '#FF6347', '#9D97FF', '#008000', '#FFFF00', '#1E90FF'];
 	
 	var MIN_LB_NUMBER = 2;
 	var MIN_KAINIAN = 2;     // 最少出现的次数
@@ -508,9 +508,10 @@ var Configure = (function(){
 	var RT_GAI_show_weight_maxOffset = 5;			    // weight min
 	var RT_GAI_show_weight_min = 0;		        // weight max
 	var RT_data_length = 240;					// 多少个点
-	var RT_canvas_record_days_num = 2;			// rt 记录数据的天数
-	var RT_canvas_show_days_num = 1;            // 显示的天数
-	var RT_canvas_show_echelons_num = 7;            // 显示的个数
+	var RT_canvas_record_days_num = 4;			// rt 记录数据的天数
+	var RT_canvas_show_days_num = 2;            // 显示的天数
+	var RT_canvas_show_echelons_num = 5;            // 显示的最大个数
+	var RT_echelons_max_num = 14;            // 生成的个数
 	var RT_echelon_contain_config = true;       // 是否加上config的echelon
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
@@ -694,6 +695,7 @@ var Configure = (function(){
 		RT_GAI_show_weight_min:RT_GAI_show_weight_min,
 		RT_data_length:RT_data_length,
 		RT_canvas_show_days_num:RT_canvas_show_days_num,
+		RT_echelons_max_num:RT_echelons_max_num,
 		RT_canvas_record_days_num:RT_canvas_record_days_num,
 		RT_canvas_show_echelons_num:RT_canvas_show_echelons_num,
 		RT_echelon_contain_config:RT_echelon_contain_config,

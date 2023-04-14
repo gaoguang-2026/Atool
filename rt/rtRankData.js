@@ -16,20 +16,20 @@
 			var today = new Date();
 			if(!datesAreOnSameDay(new Date(this.gRankData.eDate), today) && 
 				today.getDay() != 0 && today.getDay() != 6) {
-				this.gRankData.sDate = this.gRankData.eDate;
 				this.gRankData.eDate = JSON.stringify(today).replace(/\"/g, '');
+				this.gRankData.echelons = [];
 				var start = Configure.RT_data_length / Configure.RT_canvas_record_days_num;
 				this.gRankData.data = this.gRankData.data.slice(start, Configure.RT_data_length);
 				for(var i = start; i < Configure.RT_data_length; i ++) {
 					this.gRankData.data.push({
+						date: new Date(),
+						index: 0,
 						gaiRank:[],
 					});
 				}
-				this.gRankData.echelons = [];
 			}
 		} else {
 			this.gRankData = {
-				sDate: new Date(),
 				eDate: new Date(),
 				echelons:[],
 				data: [],
@@ -38,6 +38,8 @@
 			for (var i = 0; i < 240; i ++) {
 				this.gRankData.data.push({
 					gaiRank:[],
+					date: new Date(),
+					index: 0,
 				})
 			}
 		}
@@ -100,6 +102,8 @@
 		if (index >= base && index < Configure.RT_data_length) {
 			this.gRankData.eDate = d;
 			this.gRankData.data[index].gaiRank = dArr;
+			this.gRankData.data[index].date = Configure.getDateStr(d, '/');
+			this.gRankData.data[index].index = index - base;
 			echelonArr.forEach((newE)=>{
 				var idx = this.gRankData.echelons.findIndex((e)=>{
 					return e.name == newE.name;

@@ -47,7 +47,7 @@
 			rtCanvasFactor = Configure.WinRTfactor;
 			var rect = {x: elCanvas.width * Configure.WinXFactor  + 30, y:0,
 						width: elCanvas.width * rtCanvasFactor, height:elCanvas.height};
-			canvasRT.draw(elCanvas, rect);
+			canvasRT.draw(elCanvas, rect, getParamEchelons(), document.getElementById('rtShowdays').value);
 		} 
 				
 		// 梯队
@@ -153,7 +153,7 @@
 			requests.start(()=>{
 				parserRT.parseAndStoreRTData();
 				table.updateRow();
-				canvasRT.reDraw();
+				canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
 			});
 		}
 	}; 
@@ -186,6 +186,9 @@
 		$('#form2').change(formUpdate);
 		$('#indecator').change(formUpdate);
 		$('#showdays').change(showDaysUpdate);
+		$('#rtShowdays').change(()=>{
+			canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
+		});
 		
 		var dateChange = function(e) {
 			Configure.date = new Date($('#date')[0].value);
@@ -246,15 +249,18 @@
 	
 	window.onload = function(){
 		$('#date').val(Configure.getDateStr(Configure.date, '-'));
+		$('#rtShowdays').val(Configure.RT_canvas_show_days_num);
 		var fp = function() {
 			document.getElementById('form1').gtype[2].checked = true;
 			document.getElementById('form1').sort[1].checked = true;
 			document.getElementById('showdays').value = 60;
+			document.getElementById('rtShowdays').hidden = true;
 		};
 		var dp = function() {
 			document.getElementById('form1').gtype[5].checked = true;
 			document.getElementById('form1').sort[2].checked = true;
 			document.getElementById('showdays').value = 30;
+			document.getElementById('rtShowdays').hidden = false;
 		};
 		if(Configure.isAfterTrading()){
 			document.getElementById('mode').value = 0;
