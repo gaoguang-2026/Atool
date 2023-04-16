@@ -425,7 +425,8 @@ var table = (function(){
 							var txt = dataT['f101'] + ' ';
 							var arr = dataT['f103'].split(',');
 							for(i = arr.length - 1; i >= 0; i --) {
-								if(parserRT.gFilter.indexOf(arr[i]) == -1) {
+								if(Configure.gaiBlackList_critical.indexOf(arr[i]) == -1 &&
+									Configure.gaiBlackList_verbose.indexOf(arr[i]) == -1) {
 									txt += '【';
 									txt += arr[i] + '】';
 								}

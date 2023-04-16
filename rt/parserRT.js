@@ -1,16 +1,9 @@
 var parserRT = (function(){
-	var gFilter = ['融资融券', '深股通', '创业板综', '预亏预减', '预盈预增', '富时罗素',
-					'沪股通', '华为概念', '机构重仓', '基金重仓', '区块链', '标准普尔',
-					'深成500', '物联网', '大数据', '注册制次新股', '次新股', '百元股',
-					'MSCI中国', '专精特新', '国企改革', '中证500', '深圳特区',
-					'昨日涨停_含一字', '昨日涨停', '股权激励', '转债标的', '上证380'];
-
 	var rtRankData = new window.GaiData();
 	
 	var getGaiRankData = function() {
 		return rtRankData;
 	};
-	
 	var generateEchelons = function(gaiNianArr) {
 		var rtEchelons = [];
 		var alreadyInConfig = [];
@@ -54,7 +47,8 @@ var parserRT = (function(){
 			var g = gaiNianArr[i];
 			if(filterGai(g)){ 
 				var newEche = {};
-				newEche.name = '*' + g[Configure.titleGainian.name];
+				newEche.name = Configure.gaiBlackList_verbose.indexOf(g[Configure.titleGainian.name]) == -1 ? 
+									'*' + g[Configure.titleGainian.name] : '$' + g[Configure.titleGainian.name] ;
 				newEche.score = parseFloat(g[Configure.titleGainian.weight]).toFixed(3);   // 横向显示权重
 				newEche.hotPoints = [g[Configure.titleGainian.name]];
 				newEche.fund = 0;
@@ -73,7 +67,7 @@ var parserRT = (function(){
 		rtTickets.forEach((rtData)=>{
 			var tGainArr = rtData['f103'].split(',');
 			tGainArr.forEach((gtxt)=>{
-				if ( gFilter.indexOf(gtxt) == -1) {  // 过滤频繁出现的概念
+				if ( Configure.gaiBlackList_critical.indexOf(gtxt) == -1) {  // 过滤频繁出现的概念
 					var gain = retArr.find((item)=>{
 						return item[Configure.titleGainian.name] == gtxt;
 					});
@@ -132,8 +126,19 @@ var parserRT = (function(){
 		return retE;
 					
 	};
+	var getMaxScoreWithDaynum = function(rtShowDaynum = 1) {
+		var max = 0;
+		var length = rtShowDaynum * Configure.RT_data_length / Configure.RT_canvas_record_days_num;
+		for(var i = Configure.RT_data_length - length; i < Configure.RT_data_length; i ++) {
+			rtRankData.getTopEchelons().forEach((e)=>{
+				var tmpScore = getEchelonByIndex(e, i).score;
+				max = max > tmpScore ? max : tmpScore;
+			});
+		}
+		return max;
+	};
 	var getRTEchelons = function() {
-		// 选出全天最高的RT_canvas_show_echelons_num个 
+		// 选出全天最高的RT_echelons_max_num个 
 		var topEchelons = rtRankData.getTopEchelons().sort((a, b) => {
 			return parseFloat(b.score) - parseFloat(a.score);
 		}).slice(0, Configure.RT_echelons_max_num);
@@ -141,6 +146,7 @@ var parserRT = (function(){
 		// 更新当前的得分, 需要拷贝对象
 		var gaiNianArr = rtRankData.getLastRankData();
 		var retEchelons = [];
+		var verboseEchelons = [];
 		topEchelons.forEach((e)=>{
 			var newEche = {};
 			newEche.score = 0;
@@ -156,19 +162,20 @@ var parserRT = (function(){
 				}
 			});
 			newEche.score = parseFloat(newEche.score).toFixed(3);
-			retEchelons.push(newEche);
+			Configure.gaiBlackList_verbose.indexOf(newEche.name.substr(1, newEche.name.length - 1)) != -1 ? 
+							 verboseEchelons.push(newEche) : retEchelons.push(newEche);
 		});
-		retEchelons.sort((a, b) => {
+		var sort = function(a, b){
 			return parseFloat(b.score) - parseFloat(a.score);
-		});
-		return retEchelons;
+		};
+		return retEchelons.sort(sort).concat(verboseEchelons.sort(sort));  // 分开排序
 	};
 
 	return {
-		gFilter:gFilter,
 		parseAndStoreRTData:parseAndStoreRTData,
 		getRTEchelons:getRTEchelons,
 		getGaiRankData:getGaiRankData,
 		getEchelonByIndex:getEchelonByIndex,
+		getMaxScoreWithDaynum:getMaxScoreWithDaynum,
 	}
 })();

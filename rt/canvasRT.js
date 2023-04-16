@@ -87,7 +87,7 @@ var canvasRT = (function() {
 				if(!eFirst ) {
 					eFirst = parserRT.getEchelonByIndex(echelon, index); 
 					ctx.font="14px 楷体";
-					ctx.fillText('<' + e.name + '>', 
+					ctx.fillText('<' + e.name.substr(0,7) + '>', 
 					Configure.isAfterNoon() ?  siteX  : siteX + siteWidth - 70, 
 					szPoint.y);
 					ctx.stroke();
@@ -136,7 +136,7 @@ var canvasRT = (function() {
 	var reDraw = function(nameArr, rtShowD) {
 		clear();
 		console.log('canvasRT redraw');
-		site_weight_max = Math.ceil(parserRT.getGaiRankData().getMaxScore());
+		site_weight_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD));
 		rtShowDays_num = rtShowD;
 		
 		reload();

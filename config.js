@@ -107,14 +107,14 @@ var Configure = (function(){
 		{name: '大消费', hotPoints:['酒店旅游', '乳业', '食品饮料']},	
 		
 		//周期能源
-		{name: '老能源', hotPoints:['煤炭','石油','天然气']},
+		{name: '老能源', hotPoints:['煤炭','石油','天然气','煤化工']},
 		{name: '金属', hotPoints:['有色金属','黄金','小金属概念', '钴', '金属锌', '金属铜', '金属铅', '金属镍']},
 		{name: '化工', hotPoints:['化工']},	
 		
 		//大金融
 		{name: '基建', hotPoints:['建筑材料', '建筑装饰', '水利', '装配式建筑', '公路铁路运输']},
 		{name: '房地产', hotPoints:['房地产开发', '房地产', '物业管理', '新型城镇化']},
-		{name: '金融', hotPoints:['银行', '保险', '证券', '券商']},
+		{name: '金融', hotPoints:['银行', '保险', '证券', '券商', '互联金融', '券商概念']},
 		
 		// 服务
 		{name: '服装', hotPoints:['服装加工']},	
@@ -129,6 +129,17 @@ var Configure = (function(){
 		{name: '抗病毒', hotPoints:['抗原检测', '抗病毒材料', '抗病毒面料']},
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
+	var gaiBlackList_verbose = [
+				'次新股','注册制次新股','专精特新','昨日触板','昨日连板','昨日连板_含一字',
+				'昨日涨停_含一字', '昨日涨停', 'ST股','破净股','百元股','科创板做市商', '科创板做市股',
+				];
+	var gaiBlackList_critical = ['-', '融资融券', '深股通', '创业板综', '预亏预减', '预盈预增', '富时罗素',
+				'沪股通', '华为概念', '机构重仓', '基金重仓', '区块链', '标准普尔',
+				'深成500', '物联网', '大数据','QFII重仓', '送转预期','深证100R', '股权转让',
+				'MSCI中国',  '国企改革', '中证500','上证50_', '深圳特区','股权激励', '转债标的', '上证380', 
+				'贬值受益','内贸流通','参股新三板','AH股','证金持股','AB股','上证180_',
+				'壳资源','参股期货','高送转','债转股',
+				];
 	
 
 	var EnableEmotionalogicV2 = true;
@@ -617,8 +628,8 @@ var Configure = (function(){
 							'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
 			this.bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
 							'selectDate','reason'];
-			this.rankShowInTableTitile = ['index', 'name', 'price', 'value', 'rise_5',
-									'rise_20', 'value','gainianDragon'];
+			this.rankShowInTableTitile = ['index', 'name', 'price', 'value', 'rise_5','rise_10',
+									'rise_20', 'gainianDragon', 'time'];
 									
 			this.Echelons_show_min_score = 4;
 			this.WinXFactor = 0.6;
@@ -665,6 +676,8 @@ var Configure = (function(){
 		Days_Max_lengh:Days_Max_lengh,
 		Days_Show_reserved_lengh:Days_Show_reserved_lengh,
 		echelons:echelons,
+		gaiBlackList_critical:gaiBlackList_critical,
+		gaiBlackList_verbose:gaiBlackList_verbose,
 		selectIndicators:selectIndicators,
 		MAX_BEILI:MAX_BEILI,
 		ZHISHU_TITLE:ZHISHU_TITLE,

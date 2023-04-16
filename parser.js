@@ -338,7 +338,8 @@ var parser = (function(){
 					t[Configure.title.index] = index + 1;
 				}
 				if(tagObj && !Configure.isNew(t[Configure.title.time]) &&
-					!Configure.isSuspend(t[Configure.title.price])) {
+					!Configure.isSuspend(t[Configure.title.price]) && 
+					!Configure.isBJTicket(t[Configure.title.code])) {
 					t[Configure.title.dragonTag] = tagObj;
 					tagObj = undefined;
 				}
@@ -356,7 +357,8 @@ var parser = (function(){
 					title = Configure.title.rise_20;
 					break;
 				case 2:
-					title = Configure.title.f3;
+					title = Configure.getMode() == Configure.modeType.DP ?
+									Configure.title.f3 : Configure.title.rise_5;
 					break;
 				case 0:
 				default:

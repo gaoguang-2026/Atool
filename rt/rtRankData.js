@@ -20,7 +20,7 @@
 				this.gRankData.echelons = [];
 				var start = Configure.RT_data_length / Configure.RT_canvas_record_days_num;
 				this.gRankData.data = this.gRankData.data.slice(start, Configure.RT_data_length);
-				for(var i = start; i < Configure.RT_data_length; i ++) {
+				for(var i = 0; i < start; i ++) {    
 					this.gRankData.data.push({
 						date: new Date(),
 						index: 0,
@@ -79,18 +79,7 @@
 	};
 	rtGaiData.prototype.getTopEchelons = function() {
 		return this.gRankData.echelons ? this.gRankData.echelons : [];
-	};
-	rtGaiData.prototype.getMaxScore = function() {
-		var max = 0;
-		var topEchelonsArr = this.getTopEchelons();
-		if (topEchelonsArr && topEchelonsArr.length > 0) {
-			max = topEchelonsArr.sort((a, b) => {
-				return b.score - a.score;
-			})[0].score;
-		}
-		return max;
-	};
-	
+	};	
 	rtGaiData.prototype.setRankDataFromNow = function(dArr, echelonArr) {
 		var d = new Date();
 		var index = this.getIndexFromDate(d);
