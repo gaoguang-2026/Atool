@@ -282,7 +282,7 @@ var table = (function(){
 		while(tBody.hasChildNodes()) {
 			tBody.removeChild(tBody.lastChild);
 		};
-		var rankTickets = parser.getRankTickets(param);
+		var rankTickets = parserRT.getRankTickets(param);
 		var findIndexWithNum = function(str,cha,num){
 			var x=str.indexOf(cha);
 			for(var i=0;i<num;i++){

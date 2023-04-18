@@ -102,7 +102,7 @@ var Configure = (function(){
 		{name: '医药', hotPoints:['新冠预防药', '医药商业', '医药', '中药', '新冠治疗',
 				'生物医药', '医药电商', '医美', '医疗器械', '医疗']},
 		{name: '消费电子', hotPoints:['消费电子','智能穿戴','无线耳机', '智能音箱', 'OLED']},
-		{name: '家电', hotPoints:['白色家电','黑色家电', '小家电']},
+		{name: '家电', hotPoints:['白色家电','黑色家电', '小家电', '家电行业']},
 		{name: '农业', hotPoints:['农业种植', '大豆', '玉米', '农产品加工', '养殖']},	
 		{name: '大消费', hotPoints:['酒店旅游', '乳业', '食品饮料']},	
 		
@@ -130,8 +130,8 @@ var Configure = (function(){
 		{name: '半年报预增', hotPoints:['半年报预增']}
 	];
 	var gaiBlackList_verbose = [
-				'次新股','注册制次新股','专精特新','昨日触板','昨日连板','昨日连板_含一字',
-				'昨日涨停_含一字', '昨日涨停', 'ST股','破净股','百元股','科创板做市商', '科创板做市股',
+				'次新股','注册制次新股','专精特新','昨日触板','昨日连板',
+				 '昨日涨停', 'ST股','破净股','百元股','科创板做市商', '科创板做市股',
 				];
 	var gaiBlackList_critical = ['-', '融资融券', '深股通', '创业板综', '预亏预减', '预盈预增', '富时罗素',
 				'沪股通', '华为概念', '机构重仓', '基金重仓', '区块链', '标准普尔',
@@ -139,6 +139,7 @@ var Configure = (function(){
 				'MSCI中国',  '国企改革', '中证500','上证50_', '深圳特区','股权激励', '转债标的', '上证380', 
 				'贬值受益','内贸流通','参股新三板','AH股','证金持股','AB股','上证180_',
 				'壳资源','参股期货','高送转','债转股',
+				'昨日连板_含一字','昨日涨停_含一字',
 				];
 	
 
@@ -520,8 +521,8 @@ var Configure = (function(){
 	var RT_GAI_show_weight_min = 0;		        // weight max
 	var RT_data_length = 240;					// 多少个点
 	var RT_canvas_record_days_num = 4;			// rt 记录数据的天数
-	var RT_canvas_show_days_num = 2;            // 显示的天数
-	var RT_canvas_show_echelons_num = 5;            // 显示的最大个数
+	var RT_canvas_show_days_num = 1;            // 显示的天数
+	var RT_canvas_show_echelons_num = 3;            // 显示的最大个数
 	var RT_echelons_max_num = 14;            // 生成的个数
 	var RT_echelon_contain_config = true;       // 是否加上config的echelon
 	

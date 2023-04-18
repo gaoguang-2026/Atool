@@ -3,7 +3,7 @@ var canvasRT = (function() {
 	var rect;
 	var width = 0;
 	var height = 0;
-	var width_factor = 0.95;
+	var width_factor = 0.90;
 	var height_factor = 0.8;
 	var siteX;
 	var siteY;
@@ -87,8 +87,7 @@ var canvasRT = (function() {
 				if(!eFirst ) {
 					eFirst = parserRT.getEchelonByIndex(echelon, index); 
 					ctx.font="14px 楷体";
-					ctx.fillText('<' + e.name.substr(0,7) + '>', 
-					Configure.isAfterNoon() ?  siteX  : siteX + siteWidth - 70, 
+					ctx.fillText('<' + e.name.substr(0,7) + '>',siteX + siteWidth - 30, 
 					szPoint.y);
 					ctx.stroke();
 				}
@@ -116,7 +115,7 @@ var canvasRT = (function() {
 		Array.from(parserRT.getRTEchelons()).forEach((e) => {
 			var color = Configure.echelon_color[displayIndex%Configure.echelon_color.length];
 			if((!nameArr || nameArr.length == 0) &&
-					displayIndex <= Configure.RT_canvas_show_echelons_num) {   //最多显示5个
+					displayIndex < Configure.RT_canvas_show_echelons_num) {   //最多显示
 				drawEchelonLine(e, color, displayIndex, false);
 				displayIndex ++;
 			} else {
@@ -150,7 +149,7 @@ var canvasRT = (function() {
 			
 			width = rect.width;
 			height = rect.height;
-			siteX = rect.x + width * (1 - width_factor)/2;
+			siteX = rect.x + 10;
 			siteY = rect.y + height * (1 - height_factor)/2;
 			siteWidth = width * width_factor;
 			siteHeight = height * height_factor;

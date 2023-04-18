@@ -66,6 +66,7 @@ var parserRT = (function(){
 		var scoreTotal = 0;
 		rtTickets.forEach((rtData)=>{
 			var tGainArr = rtData['f103'].split(',');
+			tGainArr.push(rtData['f100']);   // 加上行业
 			tGainArr.forEach((gtxt)=>{
 				if ( Configure.gaiBlackList_critical.indexOf(gtxt) == -1) {  // 过滤频繁出现的概念
 					var gain = retArr.find((item)=>{
@@ -170,6 +171,112 @@ var parserRT = (function(){
 		};
 		return retEchelons.sort(sort).concat(verboseEchelons.sort(sort));  // 分开排序
 	};
+	
+	/* 
+	* Param 见 parser getTickets， type = 5 排名
+	*/
+	var getRankTickets = function(param) {
+		var ticketsArr = [];
+		if(Configure.getMode() == Configure.modeType.DP) {
+			var tDatas = workbook.getRTTicketsLeader();
+			tDatas.forEach((tData)=>{
+				var tTemp = ticketsArr.find((t)=>{
+					return t[Configure.title.name] == tData['f14'];
+				});
+				if (!tTemp) {
+					var tnew = {};
+					tnew[Configure.title.code] = tData['f12'];
+					tnew[Configure.title.name] = tData['f14'];
+					tnew[Configure.title.price] = tData['f2'];
+					tnew[Configure.title.value] = tData['f21'];
+					tnew[Configure.title.totalValue] = tData['f20'];
+					tnew[Configure.title.handoverPercent] = tData['f8'];
+					tnew[Configure.title.gainian] = tData['f103'];
+					tnew[Configure.title.industry] = tData['f100'];
+					tnew[Configure.title.time] = '' + tData['f26'];
+					tnew[Configure.title.rise_5] = parseFloat(tData['f109']/100);
+					tnew[Configure.title.rise_10] = parseFloat(tData['f160']/100);
+					tnew[Configure.title.rise_20] = parseFloat(tData['f110']/100);
+					tnew[Configure.title.f3] = parseFloat(tData['f3']/100);
+					ticketsArr.push(tnew);
+				}
+			});
+		}
+
+		// 如果没有抓取的数据就从默认的表格中取数据
+		if (ticketsArr.length == 0 || Configure.getMode() == Configure.modeType.FP) {   
+			ticketsArr = workbook.getRankTickets();
+		}
+		
+		if (param.hotpointArr && param.hotpointArr.length != 0) {
+			ticketsArr = ticketsArr.filter((t)=>{
+				var isSelect = false;
+				param.hotpointArr.find((hotpoint)=>{
+					if (t[Configure.title.gainian].includes(hotpoint) || 
+							t[Configure.title.industry].includes(hotpoint)) {// 加上行业
+						isSelect = true;
+					};   
+				});
+				return param.other ? !isSelect : isSelect;
+			});
+		}
+		ticketsArr.forEach((ticket)=>{
+			// 平均涨速 = MA20 + MA10 + MA5
+			var sum_5 = 0, sum_10 = 0, sum_20 = 0;
+			sum_5 = !!parseFloat(ticket[Configure.title.rise_5]) ? parseFloat(ticket[Configure.title.rise_5]) : 0;
+			sum_10 = !!parseFloat(ticket[Configure.title.rise_10]) ? parseFloat(ticket[Configure.title.rise_10]) : 0;
+			sum_20 = !!parseFloat(ticket[Configure.title.rise_20]) ? parseFloat(ticket[Configure.title.rise_20]) : 0;
+			ticket[Configure.title.increaseRate] = parseFloat(sum_5/5 + sum_10/10 + sum_20/20).toFixed(2);
+			
+			ticket[Configure.title.riseTotal] = sum_5 + sum_10 + sum_20;
+			
+			var dataT = workbook.getRTTicketFromCode(ticket[Configure.title.code]);
+			ticket[Configure.title.f3] = dataT && dataT['f3']!='-' ? parseFloat(dataT['f3']/100) : '-20';  //排名用
+		});
+		
+		//  标记龙头
+		var tagDargon = function(title, tagObj){
+			ticketsArr.sort((a, b)=>{
+				return (parseInt(b[title] == '--' ? 0 : b[title]) - parseInt(a[title] == '--' ? 0 : a[title]));
+			});
+			ticketsArr.forEach((t, index) => {
+				if(title == Configure.title.riseTotal) {
+					t[Configure.title.index] = index + 1;
+				}
+				if(tagObj && !Configure.isNew(t[Configure.title.time]) &&
+					!Configure.isSuspend(t[Configure.title.price]) && 
+					!Configure.isBJTicket(t[Configure.title.code])) {
+					t[Configure.title.dragonTag] = tagObj;
+					tagObj = undefined;
+				}
+			});
+		}
+		tagDargon(Configure.title.rise_20, {tagDes:'高度龙头', style: 'orange'});
+		tagDargon(Configure.title.rise_5, {tagDes:'强度龙头', style: 'blue'});
+		tagDargon(Configure.title.riseTotal, {tagDes:'总龙', style: 'pink bold'});
+
+		ticketsArr.sort((a, b)=>{
+			var title;
+			var reverse = false;
+			switch(param.sort) {
+				case 1:
+					title = Configure.title.rise_20;
+					break;
+				case 2:
+					title = Configure.getMode() == Configure.modeType.DP ?
+									Configure.title.f3 : Configure.title.rise_5;
+					break;
+				case 0:
+				default:
+					title = Configure.title.index;
+					reverse = true;
+					break;
+			}
+			return reverse ? (parseInt(a[title] == '--' ? 0 : a[title]) - parseInt(b[title] == '--' ? 0 : b[title])) :
+								(parseInt(b[title] == '--' ? 0 : b[title]) - parseInt(a[title] == '--' ? 0 : a[title]));
+		});
+		return ticketsArr;
+	};
 
 	return {
 		parseAndStoreRTData:parseAndStoreRTData,
@@ -177,5 +284,6 @@ var parserRT = (function(){
 		getGaiRankData:getGaiRankData,
 		getEchelonByIndex:getEchelonByIndex,
 		getMaxScoreWithDaynum:getMaxScoreWithDaynum,
+		getRankTickets:getRankTickets,
 	}
 })();
