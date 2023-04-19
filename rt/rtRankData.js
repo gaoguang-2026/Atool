@@ -1,46 +1,66 @@
  'use strict';
 (function(exports){	
 	var storageName = 'rtGaiData';
+	var storeVer = 1;
 	
 	const datesAreOnSameDay = function(first, second) {
 		return first.getFullYear() === second.getFullYear() &&
 				first.getMonth() === second.getMonth() &&
 				first.getDate() === second.getDate();
 	}
-
-	let rtGaiData = function () {
-		var storeData = LocalStore.get(storageName);
+	
+	var updateStoreVersion = function(storeData) {
 		if(storeData) {
-			this.gRankData = storeData;
-			//如果eDate不是今天并且今天不是周末， 数据清理
-			var today = new Date();
-			if(!datesAreOnSameDay(new Date(this.gRankData.eDate), today) && 
-				today.getDay() != 0 && today.getDay() != 6) {
-				this.gRankData.eDate = JSON.stringify(today).replace(/\"/g, '');
-				this.gRankData.echelons = [];
-				var start = Configure.RT_data_length / Configure.RT_canvas_record_days_num;
-				this.gRankData.data = this.gRankData.data.slice(start, Configure.RT_data_length);
-				for(var i = 0; i < start; i ++) {    
-					this.gRankData.data.push({
-						date: new Date(),
-						index: 0,
-						gaiRank:[],
-					});
+			if(!storeData.version || storeData.version != storeVer){  //should update
+				if(storeVer == 1) {
+					storeData.version = storeVer;
+					storeData.topEchelons = [];
 				}
-			}
-		} else {
-			this.gRankData = {
+			} 
+		} else {                 // 初始化
+			storeData = {
+				version:storeVer,
 				eDate: new Date(),
-				echelons:[],
+				topEchelons:[],            // 记录RT_canvas_record_days_num天内的最高ehelon
+				echelons:[],				// 记录当天的echelons
 				data: [],
 			};
 			
 			for (var i = 0; i < 240; i ++) {
-				this.gRankData.data.push({
+				storeData.data.push({
 					gaiRank:[],
 					date: new Date(),
 					index: 0,
 				})
+			}
+		}
+		return storeData;
+	};
+
+	let rtGaiData = function () {
+		var storeData = LocalStore.get(storageName);
+		
+		this.gRankData = updateStoreVersion(storeData);
+		//如果eDate不是今天并且今天不是周末， 数据清理
+		var today = new Date();
+		if(!datesAreOnSameDay(new Date(this.gRankData.eDate), today) && 
+			today.getDay() != 0 && today.getDay() != 6) {
+			this.gRankData.eDate = JSON.stringify(today).replace(/\"/g, '');
+			if(this.gRankData.topEchelons.length >= Configure.RT_canvas_record_days_num) {
+				this.gRankData.topEchelons.splice(0,this.gRankData.topEchelons.length - 
+						Configure.RT_canvas_record_days_num + 1);
+			}
+			this.gRankData.topEchelons = 
+					this.gRankData.topEchelons.concat(this.gRankData.echelons.slice(0,1));
+			this.gRankData.echelons = [];
+			var start = Configure.RT_data_length / Configure.RT_canvas_record_days_num;
+			this.gRankData.data = this.gRankData.data.slice(start, Configure.RT_data_length);
+			for(var i = 0; i < start; i ++) {    
+				this.gRankData.data.push({
+					date: new Date(),
+					index: 0,
+					gaiRank:[],
+				});
 			}
 		}
 	};
@@ -78,7 +98,16 @@
 		return this.gRankData.data[index] ? this.gRankData.data[index].gaiRank : [];
 	};
 	rtGaiData.prototype.getTopEchelons = function() {
-		return this.gRankData.echelons ? this.gRankData.echelons : [];
+		var retEchelons = this.gRankData.echelons;
+		this.gRankData.topEchelons.forEach((topE)=>{
+			var fEhelon = retEchelons.find((e)=>{
+				return topE.name == e.name;
+			});
+			if(!fEhelon) {
+				retEchelons.push(topE);
+			}
+		});
+		return retEchelons;
 	};	
 	rtGaiData.prototype.setRankDataFromNow = function(dArr, echelonArr) {
 		var d = new Date();
