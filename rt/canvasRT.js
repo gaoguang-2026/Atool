@@ -87,7 +87,7 @@ var canvasRT = (function() {
 				if(!eFirst ) {
 					eFirst = parserRT.getEchelonByIndex(echelon, index); 
 					ctx.font="14px 楷体";
-					ctx.fillText('<' + e.name.substr(0,7) + '>',siteX + siteWidth - 30, 
+					ctx.fillText('<' + e.name.substr(0,2) + '>',siteX + siteWidth - 5, 
 					szPoint.y);
 					ctx.stroke();
 				}
