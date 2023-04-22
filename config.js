@@ -14,6 +14,7 @@ End Sub
 
 var Configure = (function(){
 	var debug = false;
+	var version = 'v1.0';
 	var date = new Date();
 	var mode;       // 0 复盘模式， 1 盯盘模式
 	var modeType = {
@@ -561,6 +562,9 @@ var Configure = (function(){
 		var d = new Date();	
 		return d > new Date(d.getFullYear(),d.getMonth(),d.getDate(),15,30,0);
 	};
+	var isWeekend = function(today = new Date()) {
+		return today.getDay() == 0 || today.getDay() == 6;
+	};
 	var isBidding = function(d = new Date()) {
 		var startD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),9,15,0);
 		var endD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),9,30,0);
@@ -654,6 +658,7 @@ var Configure = (function(){
 	return {
 		date: date,
 		debug: debug,
+		version:version,
 		setMode:setMode,
 		getMode:getMode,
 		modeType:modeType,
@@ -736,6 +741,7 @@ var Configure = (function(){
 		updatetitle:updatetitle,
 		replaceTitleDate:replaceTitleDate,
 		getDayBoard:getDayBoard,
+		isWeekend:isWeekend,
 		isAfterNoon:isAfterNoon,
 		isAfterTrading:isAfterTrading,
 		isBidding:isBidding,

@@ -43,8 +43,7 @@
 		this.gRankData = updateStoreVersion(storeData);
 		//如果eDate不是今天并且今天不是周末， 数据清理
 		var today = new Date();
-		if(!datesAreOnSameDay(new Date(this.gRankData.eDate), today) && 
-			today.getDay() != 0 && today.getDay() != 6) {
+		if(!datesAreOnSameDay(new Date(this.gRankData.eDate), today) && !Configure.isWeekend(today)) {
 			this.gRankData.eDate = JSON.stringify(today).replace(/\"/g, '');
 			if(this.gRankData.topEchelons.length >= Configure.RT_canvas_record_days_num) {
 				this.gRankData.topEchelons.splice(0,this.gRankData.topEchelons.length - 
@@ -117,7 +116,7 @@
 		if(Configure.isBidding()) {   // 竞价阶段的echelons需要清空
 			this.gRankData.echelons = [];
 		};
-		if (index >= base && index < Configure.RT_data_length) {
+		if (index >= base && index < Configure.RT_data_length && !Configure.isWeekend(d)) {
 			this.gRankData.eDate = d;
 			this.gRankData.data[index].gaiRank = dArr;
 			this.gRankData.data[index].date = Configure.getDateStr(d, '/');

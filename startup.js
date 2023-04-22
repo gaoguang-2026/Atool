@@ -248,6 +248,7 @@
     });
 	
 	window.onload = function(){
+		document.title = document.title + Configure.version;
 		$('#date').val(Configure.getDateStr(Configure.date, '-'));
 		$('#rtShowdays').val(Configure.RT_canvas_show_days_num);
 		var fp = function() {
