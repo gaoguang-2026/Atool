@@ -49,8 +49,12 @@
 				this.gRankData.topEchelons.splice(0,this.gRankData.topEchelons.length - 
 						Configure.RT_canvas_record_days_num + 1);
 			}
+			var eIdx = this.gRankData.echelons.findIndex((e)=>{
+				return Configure.gaiBlackList_verbose.indexOf(e.name) == -1 &&
+						Configure.gaiBlackList_verbose.indexOf(e.name.substr(1)) == -1;
+			});
 			this.gRankData.topEchelons = 
-					this.gRankData.topEchelons.concat(this.gRankData.echelons.slice(0,1));
+					this.gRankData.topEchelons.concat(this.gRankData.echelons.slice(eIdx,eIdx + 1));
 			this.gRankData.echelons = [];
 			var start = Configure.RT_data_length / Configure.RT_canvas_record_days_num;
 			this.gRankData.data = this.gRankData.data.slice(start, Configure.RT_data_length);
