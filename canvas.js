@@ -211,17 +211,7 @@ var canvas = (function(canvas) {
 			ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor)*i/4);	
 		}
 		///
-
-		if (echelonNames.length) {
-			ctx.fillStyle = Configure.echelon_color[0];
-			if (Configure.Echelons_show_type == 'score') {
-				ctx.fillText(Configure.Min_echelon_score, siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor));
-				ctx.fillText(Configure.Max_echelon_score, siteX + siteWidth, siteY);
-			} else {
-				ctx.fillText(Configure.Min_echelon_fund, siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor));
-				ctx.fillText(Configure.Max_echelon_fund, siteX + siteWidth, siteY);
-			}
-		} else {
+		if (!echelonNames.length) {
 			ctx.fillStyle = Configure.line_color;
 			ctx.fillText('0', siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor));
 			ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth - 16, siteY + 12);
@@ -416,7 +406,7 @@ var canvas = (function(canvas) {
 		ctx.stroke();
 	};
 	
-	var drawEchelon = function(echelonNames) {
+	var drawZTEchelon = function(echelonNames) {
 		var ctx = drawing.getContext("2d");		
 		function calPointHeight(g) {
 			return Configure.Echelons_show_type == 'score' ? 
@@ -455,6 +445,16 @@ var canvas = (function(canvas) {
 			ctx.stroke();
 		}
 		
+		//site
+		ctx.fillStyle = Configure.echelon_color[0];
+		if (Configure.Echelons_show_type == 'score') {
+			ctx.fillText(Configure.Min_echelon_score, siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor));
+			ctx.fillText(Configure.Max_echelon_score, siteX + siteWidth, siteY);
+		} else {
+			ctx.fillText(Configure.Min_echelon_fund, siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor));
+			ctx.fillText(Configure.Max_echelon_fund, siteX + siteWidth, siteY);
+		}
+		// 
 		var bottomData = 0;
 		for(i = 0; i < Days.length; i ++) {
 			var echelonArr = Days[i][Configure.title2.echelons];
@@ -472,7 +472,6 @@ var canvas = (function(canvas) {
 								
 					if (i < Days.length - 1) {   // 不是最后一天
 						var echelonsNext = Days[i+1][Configure.title2.echelons];
-						
 						echelonsNext.forEach((gNext)=>{
 							if (gNext.name == g.name){
 								var pointNextH = calPointHeight(gNext);
@@ -501,6 +500,59 @@ var canvas = (function(canvas) {
 			if (bottomData != 0) {
 				drawBottom(bottomData, 200);
 			}
+		};
+	};
+	
+	var drawBandEchelon = function(echelonNames) {
+		var ctx = drawing.getContext("2d");		
+		function calPointHeight(g) {
+			return siteHeight * (1-winFactor) * parseFloat(g.score - Configure.RT_GAI_show_weight_min)
+						/ (Configure.RT_GAI_show_weight_maxOffset + Configure.RT_GAI_show_weight_min);
+		}
+		
+		// site
+		ctx.fillStyle = Configure.echelon_color[0];
+		ctx.fillText(Configure.RT_GAI_show_weight_min, siteX + siteWidth + 6, siteY + siteHeight * (1- winFactor));
+		ctx.fillText(Configure.RT_GAI_show_weight_maxOffset + Configure.RT_GAI_show_weight_min
+				, siteX + siteWidth, siteY);
+		//
+		for(i = 0; i < Days.length; i ++) {
+			var echelonArr = parserRT.getRTEchelons();
+			var dateStr = Configure.formatExcelDate(Days[i][Configure.title2.date], '');
+			echelonArr.forEach((g)=> {    //  g : {name:'', hotPoints:[], score:'', fund:''};
+				if(echelonNames.indexOf(g.name) != -1) {
+					var drawNameDone = false;	
+					var gHistory = parserRT.getHistoryEchelonFromDateStr(g, dateStr);
+					var pointH =  calPointHeight(gHistory);
+					var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
+							y: siteY + siteHeight*(1-winFactor) - pointH};	
+							
+					var color = Configure.echelon_color[echelonNames.indexOf(g.name)%Configure.echelon_color.length];
+								
+					if (i < Days.length - 1) {   // 不是最后一天
+						var echelonsNext = Days[i+1][Configure.title2.echelons];
+						var nextDateStr = Configure.formatExcelDate(Days[i+1][Configure.title2.date], '');
+						var pointNextH = calPointHeight(parserRT.getHistoryEchelonFromDateStr(g, nextDateStr));
+						var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
+													y: siteY + siteHeight*(1-winFactor) - pointNextH};
+						ctx.beginPath();
+						ctx.lineWidth="3";
+						ctx.strokeStyle = color;
+						ctx.moveTo(point.x, point.y);
+						ctx.lineTo(pointNext.x, pointNext.y);
+						ctx.stroke();
+						drawNameDone = true;
+					}
+					if (!drawNameDone && i == Days.length - 1) {  // 没有连线，画名称
+						drawNameDone = true;
+						ctx.beginPath();
+						ctx.fillStyle= color;
+						ctx.font="14px 楷体";
+						ctx.fillText(gHistory.name + gHistory.score , point.x - 25, point.y);
+						ctx.stroke();
+					};
+				}
+			});
 		};
 	};
 	// type = Configure.title2.lianbanzhishu  or Configure.title2.zhangtingzhishu
@@ -576,7 +628,7 @@ var canvas = (function(canvas) {
 			
 			drawSite(indecatorName, echelonNames);
 			drawIndicators(indecatorName, echelonNames);
-			drawEchelon(echelonNames);
+			AI && AI.isBandInCharge() ?  drawBandEchelon(echelonNames) : drawZTEchelon(echelonNames);
 			
 			var emotionPoints = getLastEmotionPoints(Configure.Days_Max_lengh);    
 			findTurnintPoint(emotionPoints, Configure.EmotionAngleDeafultDays + 1);

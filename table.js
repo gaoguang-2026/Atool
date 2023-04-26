@@ -397,7 +397,7 @@ var table = (function(){
 				var td = Array.from(tr.childNodes).find((td)=>{
 							return td.dataset.prop == t.dataset.titleProp;
 						})
-				var dataT = workbook.getRTTicketFromCode(tr.dataset.ticketCode);
+				var dataT = rtDataManager.getRTTicketFromCode(tr.dataset.ticketCode);
 				switch (t.dataset.titleProp) {
 					case 'f3' :
 					case 'f8':

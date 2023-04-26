@@ -1,6 +1,7 @@
 
 var AI = (function(){
 	var recommendText;
+	var storeNamePrefix = 'ai';
 	var objStorage = LocalStore.getAll();
 	var dataStorage = {};
 	
@@ -31,24 +32,24 @@ var AI = (function(){
 		});
 		var datestr = dateArr[0];
 		var preDatestr = dateArr[1];
-		if (objStorage[preDatestr]) {
+		if (objStorage[storeNamePrefix + preDatestr]) {
 			var sucessNum = 0;
-			objStorage[preDatestr].tickits.forEach((name)=>{
+			objStorage[storeNamePrefix + preDatestr].tickits.forEach((name)=>{
 				var ticket = parser.getTicket(datestr, name);
 				if(ticket) {
 					sucessNum ++;
 				}
 			})
-			objStorage[preDatestr].sucessRate = parseFloat(sucessNum / objStorage[preDatestr].tickits.length).toFixed(2);
+			objStorage[storeNamePrefix + preDatestr].sucessRate = parseFloat(sucessNum / objStorage[storeNamePrefix + preDatestr].tickits.length).toFixed(2);
 			//重新set更新后的结果
-			LocalStore.set(preDatestr, objStorage[preDatestr]);
+			LocalStore.set(storeNamePrefix + preDatestr, objStorage[storeNamePrefix + preDatestr]);
 		}
 		
 		RectifyDay_num = dateArr.length > RectifyDay_num ? RectifyDay_num : dateArr.length;
 		var num = 0;
 		var total = 0;
 		for (var i = 0; i < RectifyDay_num; i ++) {
-			var obj = objStorage[dateArr[i]];
+			var obj = objStorage[storeNamePrefix + dateArr[i]];
 			if(obj && obj.sucessRate >= 0.5) {
 				total += obj.scoreFator;
 				num ++;
@@ -56,8 +57,8 @@ var AI = (function(){
 		}
 		// 计算 scoreFator
 		var aveage = total/num;
-		if (objStorage[preDatestr] && objStorage[preDatestr].sucessRate) {
-			dataStorage.scoreFator = aveage && objStorage[preDatestr].scoreFator - aveage > 0 ? 
+		if (objStorage[storeNamePrefix + preDatestr] && objStorage[storeNamePrefix + preDatestr].sucessRate) {
+			dataStorage.scoreFator = aveage && objStorage[storeNamePrefix + preDatestr].scoreFator - aveage > 0 ? 
 										aveage  - Rectify_factor : aveage + Rectify_factor;
 		} else {
 			dataStorage.scoreFator += Rectify_factor;
@@ -69,14 +70,16 @@ var AI = (function(){
 			sort:1
 		}
 		var tickets =  parser.getTickets(datestr, param);
-		for(var i = 0; i < Configure.Band_miss_tickit_period, objStorage[dateArr[i]]; i ++) {   
+		for(var i = 0; i < Configure.Band_miss_tickit_period, objStorage[storeNamePrefix + dateArr[i]]; i ++) {   
 			// 检查过去Band_miss_tickit_period天内是否有票出现在今天的首板
-			objStorage[dateArr[i]].band_ticktes.forEach((bandTicket)=>{
+			objStorage[storeNamePrefix + dateArr[i]].band_ticktes.forEach((bandTicket)=>{
 				tickets.forEach((t)=>{
 					if(bandTicket.name == t[Configure.title.name]) {
 						var priceIncrease = (t[Configure.title.price] - bandTicket.price)/bandTicket.price;
-						var startFator = objStorage[dateArr[i]].bandScoreFator;
-						var preFaotor = objStorage[preDatestr].bandScoreFator;
+						var startFator = objStorage[storeNamePrefix + dateArr[i]].bandScoreFator;
+						var preFaotor = objStorage[storeNamePrefix + preDatestr] ? 
+											objStorage[storeNamePrefix + preDatestr].bandScoreFator :
+																Configure.AI_Default_Band_Factor;
 						dataStorage.bandScoreFator = preFaotor - startFator > 0 ? 
 										preFaotor + parseInt(startFator * priceIncrease) : 
 										preFaotor - parseInt(startFator * priceIncrease);
@@ -90,10 +93,10 @@ var AI = (function(){
 	var saveLoacalstorage = function(dataStorage) {
 		console.log(dataStorage);
 		var datestr = workbook.getDisplayLastDate();
-		if (LocalStore.get(datestr)) {
-			LocalStore.remove(datestr);
+		if (LocalStore.get(storeNamePrefix + datestr)) {
+			LocalStore.remove(storeNamePrefix + datestr);
 		}
-		LocalStore.set(datestr, dataStorage);
+		LocalStore.set(storeNamePrefix + datestr, dataStorage);
 	};
 	
 	var getEmotionSuccessRate = function(emotion) {
@@ -104,11 +107,11 @@ var AI = (function(){
 		var num = 0;
 		var totalValue = 0;
 		for (var i = 1; i <= RectifyDay_num; i ++) {
-			if (objStorage[dateArr[i]] ) {
+			if (objStorage[storeNamePrefix + dateArr[i]] ) {
 				total ++;
-				if(objStorage[dateArr[i]].emotion == emotion) {
+				if(objStorage[storeNamePrefix + dateArr[i]].emotion == emotion) {
 					num ++;
-					totalValue += parseFloat(objStorage[dateArr[i]].sucessRate);
+					totalValue += parseFloat(objStorage[storeNamePrefix + dateArr[i]].sucessRate);
 				}
 			}
 		}
@@ -506,7 +509,25 @@ var AI = (function(){
 		return {color: displayColor, txt: recommendText, tatics: getTaticsTxt()};
 	};
 	
+	var init = function() {
+		// 清理storage过期的数据 LocalStore_history_period
+		Object.keys(LocalStore.getAll()).forEach((key)=>{
+			if(key.includes(storeNamePrefix)) {
+				var dateStr = key.substr(key.indexOf(storeNamePrefix) + storeNamePrefix.length);
+				if(dateStr.length == 8) {
+					dateStr = dateStr.substr(0,4) + '/' + dateStr.substr(4,2) + '/' + dateStr.substr(6,2);
+					if (Configure.getDaysBetween(new Date(dateStr), new Date()) > 
+								Configure.LocalStore_history_period) {
+						LocalStore.remove(key);
+					}
+				}
+			}
+		});
+	};
+	
 	return {
-		getRecommend:getRecommend
+		init:init,
+		getRecommend:getRecommend,
+		isBandInCharge:isBandInCharge,
 	}
 })();

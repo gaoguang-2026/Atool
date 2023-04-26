@@ -20,7 +20,7 @@ var requests = (function(){
 				console.info(responseText);
 				var s = responseText.indexOf('(') + 1; 
 				var json_str = responseText.substr(s, responseText.length - s - 2);
-			    workbook.setRTTickets(JSON.parse(json_str)['data']['diff']);
+			    rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff']);
 				
 				if(typeof callback === 'function') {
 					callback();

@@ -1,7 +1,5 @@
  var workbook = (function() {
 	var Book;
-	
-	var realTimeTickets = [];
 	var BandTickets = [];
 	
 	var Book = function(b){
@@ -151,35 +149,7 @@
 		})[0];
 	};
 	
-	// 实时数据
-	var setRTTickets = function(ticketArr) {
-		realTimeTickets = [];
-		ticketArr.forEach((t)=>{
-			realTimeTickets.push(t);
-		});
-	};
-	
-	var getRTTicketFromCode = function(code) {
-		return realTimeTickets.find((t)=>{
-			return t['f12'] == code || code.indexOf(t['f12']) != -1;
-		})
-	};
-	var getRTTickets = function() {
-		return realTimeTickets;
-	};
-	// 当前涨幅大于6切最大涨幅回撤不到30%   或者5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
-	var getRTTicketsLeader = function() {
-		var filter = function(t) {
-			return t['f3'] > 600 &&  (t['f15'] - t['f2'])/(t['f15'] - t['f18']) < 0.3 ;
-		}
-		
-		return realTimeTickets.filter((t)=>{
-			return  filter(t)  ||                
-					t['f109'] > 2000 ||
-					t['f160'] > 3000 ||
-					t['f110'] > 4000;   
-		});
-	};
+
 	
 	// param = {sheetName: '0707',ticketCode:'SZ002527'}}
 	// A : 今日非ST涨停板或者今日涨停过或者今日跌停或者今日跌停过 上市时间超过30天
@@ -210,10 +180,7 @@
 		getLastDate:getLastDate,
 		setBandTicket:setBandTicket,
 		getBandTickets:getBandTickets,
-		setRTTickets:setRTTickets,
-		getRTTicketFromCode:getRTTicketFromCode,
 		getRankTickets:getRankTickets,
 		getRankTicketFromCode:getRankTicketFromCode,
-		getRTTicketsLeader:getRTTicketsLeader,
 	}
  })();

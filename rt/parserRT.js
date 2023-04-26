@@ -29,7 +29,7 @@ var parserRT = (function(){
 			
 			rtEchelons = rtEchelons.sort((a, b) => {
 				return parseFloat(b.score) - parseFloat(a.score);
-			}).splice(0, Configure.RT_echelons_max_num);
+			});
 			rtEchelons.forEach((e)=>{
 				alreadyInConfig = alreadyInConfig.concat(e.hotPoints);
 			})
@@ -61,8 +61,9 @@ var parserRT = (function(){
 		return rtEchelons; 
 	};
 	
-	var parseAndStoreRTData = function(rtTickets = workbook.getRTTicketsLeader()) {
+	var generateGais = function(rtTickets){
 		var retArr = [];
+		if (!rtTickets) return retArr;
 		var scoreTotal = 0;
 		rtTickets.forEach((rtData)=>{
 			var tGainArr = rtData['f103'].split(',');
@@ -98,14 +99,34 @@ var parserRT = (function(){
 		retArr.sort((a, b)=>{
 			return parseFloat(b[Configure.titleGainian.weight]) - parseFloat(a[Configure.titleGainian.weight]);
 		});
-		
-		retArr = retArr.slice(0, retArr.length > Configure.RT_GAI_rank_max_length ?  
-						Configure.RT_GAI_rank_max_length : retArr.length - 1);
-						
-		var retEchelons = generateEchelons(retArr);
-		
-		rtRankData.setRankDataFromNow(retArr, retEchelons);
 		return retArr;
+	};
+	
+	var parseAndStoreRTData = function(rtTickets = rtDataManager.getRTTicketsLeader()) {
+		var retArr = generateGais(rtTickets);
+		var retEchelons = generateEchelons(retArr);
+		rtRankData.setRankDataFromNow(retArr.slice(0, retArr.length > Configure.RT_GAI_rank_max_length ?  
+												Configure.RT_GAI_rank_max_length : retArr.length - 1), 
+										retEchelons.splice(0, Configure.RT_echelons_max_num));
+	};
+	var getHistoryEchelonFromDateStr = function(echelon, dateStr) {
+		var historyRTticketsLeader = rtDataManager.getHistoryRTticketsLeader(dateStr);
+		var gaiNianArr = generateGais(historyRTticketsLeader);
+		var e = {};
+		e.score = 0;
+		e.name = echelon.name;
+		e.hotPoints = echelon.hotPoints.slice();
+		e.hotPoints.forEach((hot)=>{
+			var gFind = gaiNianArr.find((g)=>{
+				return g[Configure.titleGainian.name] == hot;
+			})
+			if (gFind) {
+				e.score += parseFloat(gFind[Configure.titleGainian.weight]) + 0; 
+			}
+		});
+		e.score = parseFloat(e.score).toFixed(3);
+		e.fund = 0;
+		return e;
 	};
 	var getEchelonByIndex = function(e, index) {
 		var retE = {};
@@ -178,7 +199,7 @@ var parserRT = (function(){
 	var getRankTickets = function(param) {
 		var ticketsArr = [];
 		if(Configure.getMode() == Configure.modeType.DP) {
-			var tDatas = workbook.getRTTicketsLeader();
+			var tDatas = rtDataManager.getRTTicketsLeader();
 			tDatas.forEach((tData)=>{
 				var tTemp = ticketsArr.find((t)=>{
 					return t[Configure.title.name] == tData['f14'];
@@ -230,7 +251,7 @@ var parserRT = (function(){
 			
 			ticket[Configure.title.riseTotal] = sum_5 + sum_10 + sum_20;
 			
-			var dataT = workbook.getRTTicketFromCode(ticket[Configure.title.code]);
+			var dataT = rtDataManager.getRTTicketFromCode(ticket[Configure.title.code]);
 			ticket[Configure.title.f3] = dataT && dataT['f3']!='-' ? parseFloat(dataT['f3']/100) : '-20';  //排名用
 		});
 		
@@ -285,5 +306,6 @@ var parserRT = (function(){
 		getEchelonByIndex:getEchelonByIndex,
 		getMaxScoreWithDaynum:getMaxScoreWithDaynum,
 		getRankTickets:getRankTickets,
+		getHistoryEchelonFromDateStr:getHistoryEchelonFromDateStr,
 	}
 })();

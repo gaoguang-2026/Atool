@@ -110,8 +110,8 @@ var parser = (function(){
 		// sort
 		retArr.sort((a, b) => {
 			if (obj && obj.sort == 2) {
-				var bData = workbook.getRTTicketFromCode(b[Configure.title.code]);
-				var aData = workbook.getRTTicketFromCode(a[Configure.title.code]);
+				var bData = rtDataManager.getRTTicketFromCode(b[Configure.title.code]);
+				var aData = rtDataManager.getRTTicketFromCode(a[Configure.title.code]);
 				if(bData && bData['f3'] && aData && aData['f3']) {
 					return bData['f3'] - aData['f3'] ;
 				} else {
@@ -163,8 +163,8 @@ var parser = (function(){
 						a[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] ;
 				}
 			} else if (obj && obj.sort == 2){
-				var bData = workbook.getRTTicketFromCode(b[Configure.title.code]);
-				var aData = workbook.getRTTicketFromCode(a[Configure.title.code]);
+				var bData = rtDataManager.getRTTicketFromCode(b[Configure.title.code]);
+				var aData = rtDataManager.getRTTicketFromCode(a[Configure.title.code]);
 				if(bData && bData['f3'] && aData && aData['f3']) {
 					return bData['f3'] - aData['f3'] ;
 				} else {
@@ -298,6 +298,14 @@ var parser = (function(){
 			});
 		}
 		return combinedEchelon;
+	};
+	
+	var getBandEchelonFromZTEchellon = function(dateStr, ztEchelon) {
+		var bEchelon = {};
+		bEchelon.score = 0;
+		bEchelon.name = ztEchelon.name;
+		bEchelon.hotPoints = ztEchelon.hotPoints.slice();
+		bEchelon.fund = 0;
 	};
 	
 	var getBoardHeight = function(dateStr, titleName) {

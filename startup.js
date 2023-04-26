@@ -141,9 +141,11 @@
 			document.getElementById('showdays').disabled = true;
 		}
 		
+		rtDataManager.init();
+		AI.init();
+		
 		dragons.init();
 		table.updateForm();
-		
 		canvas.init(document.getElementById("drawing"), Configure.WinXFactor);
 	};
 	
@@ -152,6 +154,7 @@
 			requests.stop();
 			requests.start(()=>{
 				parserRT.parseAndStoreRTData();
+				rtDataManager.store();
 				table.updateRow();
 				canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
 			});

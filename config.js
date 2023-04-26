@@ -208,7 +208,7 @@ var Configure = (function(){
 			return year + format + (month < 10 ? '0' + month : month) + format + (date < 10 ? '0' + date : date)
 		}
 		return year + (month < 10 ? '0' + month : month) + (date < 10 ? '0' + date : date)
-	}
+	};
 	
 	var getDateStr = function(d, separator='') {   // ex. 20220704
 		var month = d.getMonth() + 1 < 10 ?
@@ -218,6 +218,25 @@ var Configure = (function(){
 					'0' + d.getDate() :
 					d.getDate();
 		return d.getFullYear()+ separator + month + separator + day;
+	};
+	
+	/**
+	 * 计算两个日期之间的天数
+	 *  date1  开始日期 yyyy-MM-dd
+	 *  date2  结束日期 yyyy-MM-dd
+	 *  如果日期相同 返回一天 开始日期大于结束日期，返回0
+	 */
+	var getDaysBetween = function(date1,date2){
+		var  startDate = Date.parse(date1);
+		var  endDate = Date.parse(date2);
+		if (startDate>endDate){
+			return 0;
+		}
+		if (startDate==endDate){
+			return 1;
+		}
+		var days=(endDate - startDate)/(1*24*60*60*1000);
+		return  days;
 	};
 	
 	var getWeek = function (d) {
@@ -240,7 +259,7 @@ var Configure = (function(){
 		var days = Math.ceil(distanceTimestamp / (24 * 60 * 60 * 1000)) + startWeek;
 		var weeks = Math.ceil(days / 7) + offsetWeek;
 		return weeks;
-	}
+	};
 	
 	var winCtxts = ['试错对赌','确认加仓','一致', '分歧选强', '高低切换', '低吸反核', '轮动博弈'];
 	var getContextDescription = function(str) {
@@ -541,6 +560,8 @@ var Configure = (function(){
 	
 	var EmotionAngleDeafultDays = 7;    //情绪指标计算拐点的期限
 	
+	var LocalStore_history_period = 120;   // locastory 保留数据的期限，需要清理。
+	
 	var selectIndicators = [
 							//	{name:'亏钱效应'},
 								{name:'上证指数'}, 
@@ -560,7 +581,7 @@ var Configure = (function(){
 	};
 	var isAfterTrading = function() {
 		var d = new Date();	
-		return d > new Date(d.getFullYear(),d.getMonth(),d.getDate(),15,30,0);
+		return d > new Date(d.getFullYear(),d.getMonth(),d.getDate(),16,30,0);
 	};
 	var isWeekend = function(today = new Date()) {
 		return today.getDay() == 0 || today.getDay() == 6;
@@ -685,6 +706,7 @@ var Configure = (function(){
 		gaiBlackList_critical:gaiBlackList_critical,
 		gaiBlackList_verbose:gaiBlackList_verbose,
 		selectIndicators:selectIndicators,
+		LocalStore_history_period:LocalStore_history_period,
 		MAX_BEILI:MAX_BEILI,
 		ZHISHU_TITLE:ZHISHU_TITLE,
 		ZHISHU_SUB_TITLE:ZHISHU_SUB_TITLE,
@@ -734,6 +756,7 @@ var Configure = (function(){
 		line_color:line_color,
 		echelon_color:echelon_color,
 		getDateStr:getDateStr,
+		getDaysBetween:getDaysBetween,
 		getWeek:getWeek,
 		getAngle:getAngle,
 		getBoardStrength:getBoardStrength,

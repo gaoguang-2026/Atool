@@ -45,13 +45,16 @@
 		var today = new Date();
 		if(!datesAreOnSameDay(new Date(this.gRankData.eDate), today) && !Configure.isWeekend(today)) {
 			this.gRankData.eDate = JSON.stringify(today).replace(/\"/g, '');
-			if(this.gRankData.topEchelons.length >= Configure.RT_canvas_record_days_num) {
+			if(this.gRankData.topEchelons.length >= Configure.RT_canvas_record_days_num * 2) {
 				this.gRankData.topEchelons.splice(0,this.gRankData.topEchelons.length - 
 						Configure.RT_canvas_record_days_num + 1);
 			}
 			var eIdx = this.gRankData.echelons.findIndex((e)=>{
 				return Configure.gaiBlackList_verbose.indexOf(e.name) == -1 &&
-						Configure.gaiBlackList_verbose.indexOf(e.name.substr(1)) == -1;
+						Configure.gaiBlackList_verbose.indexOf(e.name.substr(1)) == -1 && 
+						this.gRankData.topEchelons.findIndex((topE)=> {
+							return topE.name == e.name;
+						}) == -1;
 			});
 			this.gRankData.topEchelons = 
 					this.gRankData.topEchelons.concat(this.gRankData.echelons.slice(eIdx,eIdx + 1));
@@ -94,6 +97,9 @@
 	}
 	
 	rtGaiData.prototype.getRankData = function() {
+		return this.gRankData;
+	};
+	rtGaiData.prototype.getOriginalDataFromDateStr = function(dateStr) {
 		return this.gRankData;
 	}
 	rtGaiData.prototype.getLastRankData = function() {
