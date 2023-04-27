@@ -337,6 +337,9 @@ var table = (function(){
 									'10日涨幅：' + parseFloat(ticket[Configure.title.rise_10]).toFixed(2) + '<br>' +
 									'20日涨幅：' + parseFloat(ticket[Configure.title.rise_20]).toFixed(2) + '<br>');
 						break;
+					case 'rise_1':				
+						td.innerHTML = value.replace(/\%/g, '');
+						break;
 					case 'rise_5':	
 						if(Configure.getMode() == Configure.modeType.FP) {
 							// check is new for this week;
@@ -361,6 +364,8 @@ var table = (function(){
 						if(td.innerHTML.length > 20) {  //大于20个字符，截取两个概念显示
 							td.innerHTML = td.innerHTML.substr(0,findIndexWithNum(td.innerHTML, '】', 1)+1);
 						}
+						value == '--' ? Tip.show(td, ticket[Configure.title.gainian]) 
+										: Tip.show(td,  value);
 						break;
 					default :
 						break;

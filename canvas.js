@@ -628,7 +628,8 @@ var canvas = (function(canvas) {
 			
 			drawSite(indecatorName, echelonNames);
 			drawIndicators(indecatorName, echelonNames);
-			AI && AI.isBandInCharge() ?  drawBandEchelon(echelonNames) : drawZTEchelon(echelonNames);
+			Configure.getMode() == Configure.modeType.DP  ?  
+							drawBandEchelon(echelonNames) : drawZTEchelon(echelonNames);
 			
 			var emotionPoints = getLastEmotionPoints(Configure.Days_Max_lengh);    
 			findTurnintPoint(emotionPoints, Configure.EmotionAngleDeafultDays + 1);

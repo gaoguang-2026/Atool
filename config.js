@@ -406,6 +406,7 @@ var Configure = (function(){
 		f2: '今日价格',
 
 		// 涨幅排名独有
+		rise_1:'涨幅',
 		rise_5: '5日涨幅',
 		rise_10: '10日涨幅',
 		rise_20:'20日涨幅',
@@ -537,7 +538,7 @@ var Configure = (function(){
 	var WinRTfactor = 0.4;   //canvas RT 窗口占比
 	var RT_show_min_rank_ticket_num = 10;  // rt最小显示限制
 	var RT_GAI_rank_max_length = 100;			// rt 概念排名记录的最大长度 , 不能太大，存储限制
-	var RT_GAI_show_weight_maxOffset = 5;			    // weight min
+	var RT_GAI_show_weight_maxOffset = 7;			    // weight min
 	var RT_GAI_show_weight_min = 0;		        // weight max
 	var RT_data_length = 240;					// 多少个点
 	var RT_canvas_record_days_num = 4;			// rt 记录数据的天数
@@ -654,8 +655,8 @@ var Configure = (function(){
 							'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
 			this.bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
 							'selectDate','reason'];
-			this.rankShowInTableTitile = ['index', 'name', 'price', 'value', 'rise_5','rise_10',
-									'rise_20', 'gainianDragon', 'time'];
+			this.rankShowInTableTitile = ['index', 'name', 'price', 'rise_1', 'rise_5','rise_10',
+									'rise_20', 'value', 'gainianDragon', 'time'];
 									
 			this.Echelons_show_min_score = 4;
 			this.WinXFactor = 0.6;

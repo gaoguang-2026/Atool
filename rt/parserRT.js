@@ -218,7 +218,7 @@ var parserRT = (function(){
 					tnew[Configure.title.rise_5] = parseFloat(tData['f109']/100);
 					tnew[Configure.title.rise_10] = parseFloat(tData['f160']/100);
 					tnew[Configure.title.rise_20] = parseFloat(tData['f110']/100);
-					tnew[Configure.title.f3] = parseFloat(tData['f3']/100);
+					tnew[Configure.title.rise_1] = parseFloat(tData['f3']/100);
 					ticketsArr.push(tnew);
 				}
 			});
@@ -267,14 +267,28 @@ var parserRT = (function(){
 				if(tagObj && !Configure.isNew(t[Configure.title.time]) &&
 					!Configure.isSuspend(t[Configure.title.price]) && 
 					!Configure.isBJTicket(t[Configure.title.code])) {
-					t[Configure.title.dragonTag] = tagObj;
-					tagObj = undefined;
+					if(tagObj.tagDes == '补涨新发') {
+						var rise_20 = parseFloat(t[Configure.title.rise_20] == '--' ? 0 : t[Configure.title.rise_20]);
+						var rise_10 = parseFloat(t[Configure.title.rise_10] == '--' ? 0 : t[Configure.title.rise_10]);
+						var rise_5 = parseFloat(t[Configure.title.rise_5] == '--' ? 0 : t[Configure.title.rise_5]);
+						var rise_1 = parseFloat(t[Configure.title.rise_1]);
+						if(rise_20 <= rise_10 && 
+							rise_10 <= 1.5 * rise_5 &&
+							rise_5 <= 2 * rise_1 && 
+							rise_5 >= 6) {
+								t[Configure.title.dragonTag] = tagObj;
+							};
+					} else {
+						t[Configure.title.dragonTag] = tagObj;
+						tagObj = undefined;
+					}
 				}
 			});
 		}
 		tagDargon(Configure.title.rise_20, {tagDes:'高度龙头', style: 'orange'});
 		tagDargon(Configure.title.rise_5, {tagDes:'强度龙头', style: 'blue'});
 		tagDargon(Configure.title.riseTotal, {tagDes:'总龙', style: 'pink bold'});
+		tagDargon(Configure.title.rise_1, {tagDes:'补涨新发', style: 'LightYellow'});
 
 		ticketsArr.sort((a, b)=>{
 			var title;
