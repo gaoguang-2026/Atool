@@ -13,6 +13,7 @@ var canvasRT = (function() {
 	var cell_factor = 1;
 	var site_weight_max = Configure.RT_GAI_show_weight_maxOffset + 
 							Configure.RT_GAI_show_weight_min;
+	var site_score_max = 3000;
 	var rtShowDays_num = Configure.RT_canvas_show_days_num;				
 	
 	var clear = function()  {
@@ -127,6 +128,46 @@ var canvasRT = (function() {
 			}
 		});
 	};
+	var drawEmotion = function() {
+		var ctx = drawing.getContext("2d");		
+		ctx.beginPath();
+		var grd=ctx.createLinearGradient(siteX, siteY + siteHeight, siteX, siteY);
+		grd.addColorStop(0,"green");
+		grd.addColorStop(0.6,"orange");
+		grd.addColorStop(1,Configure.line_color);  
+		ctx.lineWidth="2";
+		ctx.fillStyle = grd;
+		ctx.strokeStyle = grd;
+		var rtRankData = parserRT.getGaiRankData();   // getRankData() -> {eDate:,data: []};
+		// 从数据中取要显示的第一天index 和最后一天 indexLast
+		var index = Configure.RT_data_length * 
+						(Configure.RT_canvas_record_days_num - rtShowDays_num) / 
+							Configure.RT_canvas_record_days_num;
+		var indexLast = rtRankData.getIndexFromDate(new Date(rtRankData.getRankData().eDate));
+		indexLast = indexLast > Configure.RT_data_length ? Configure.RT_data_length : indexLast;
+		var score = 0, scoreNext = 0;
+		for(i = 0; i < cellNum; i ++, index ++) {
+			score = parserRT.getScoreTotalByIndex(index);
+			score = score == 0 ? scoreNext : score;
+			if(score!=0) {
+				var pointH = siteHeight * 
+					(parseFloat(score) - 0)/ site_score_max;
+				var point = {x: siteX + cellWidth  * i,
+					y: siteY + siteHeight - pointH};
+				//ctx.fillRect(point.x, point.y, 2, 2);
+				if (i < cellNum - 1) {   // 不是最后一天
+					scoreNext = parserRT.getScoreTotalByIndex(index + 1);
+					scoreNext = scoreNext == 0 ? score : scoreNext;
+					var pointNextH = siteHeight * (parseFloat(scoreNext) - 0)/ site_score_max;
+					var pointNext = {x: siteX + cellWidth  * (i + 1),
+								y: siteY + siteHeight - pointNextH};
+					ctx.moveTo(point.x, point.y);
+					ctx.lineTo(pointNext.x, pointNext.y);
+				}
+				ctx.stroke();
+			}
+		}
+	};
 	var reload = function() {
 		cellNum = Configure.RT_data_length * rtShowDays_num / 
 							Configure.RT_canvas_record_days_num;
@@ -135,11 +176,13 @@ var canvasRT = (function() {
 	var reDraw = function(nameArr, rtShowD) {
 		clear();
 		console.log('canvasRT redraw');
-		site_weight_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD));
+		site_weight_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'echelon'));
+		site_score_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'total'));
 		rtShowDays_num = rtShowD;
 		
 		reload();
 		drawSite();
+		drawEmotion();
 		drawEchelons(nameArr);
 	}
 	var draw = function(c, r, nameArr, rtShowD) {

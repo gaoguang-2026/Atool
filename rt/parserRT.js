@@ -148,14 +148,29 @@ var parserRT = (function(){
 		return retE;
 					
 	};
-	var getMaxScoreWithDaynum = function(rtShowDaynum = 1) {
+	var getScoreTotalByIndex = function(index) {
+		var retScoreTotal = 0;
+		if(rtRankData.getRankData().data[index]&& 
+				rtRankData.getRankData().data[index].gaiRank) {
+			rtRankData.getRankData().data[index].gaiRank.forEach((gai)=>{
+				retScoreTotal += gai[Configure.titleGainian.score];
+			});		
+		}
+		return retScoreTotal;
+	};
+	var getMaxScoreWithDaynum = function(rtShowDaynum = 1, type = 'echelon') {
 		var max = 0;
 		var length = rtShowDaynum * Configure.RT_data_length / Configure.RT_canvas_record_days_num;
 		for(var i = Configure.RT_data_length - length; i < Configure.RT_data_length; i ++) {
-			rtRankData.getTopEchelons().forEach((e)=>{
+			if(type == 'echelon') {
+				rtRankData.getTopEchelons().forEach((e)=>{
 				var tmpScore = getEchelonByIndex(e, i).score;
 				max = max > tmpScore ? max : tmpScore;
-			});
+				});
+			} else if (type == 'total') {
+				var tmpScoretotal = getScoreTotalByIndex(i);
+				max = max > tmpScoretotal ? max : tmpScoretotal;
+			}
 		}
 		return max;
 	};
@@ -321,5 +336,6 @@ var parserRT = (function(){
 		getMaxScoreWithDaynum:getMaxScoreWithDaynum,
 		getRankTickets:getRankTickets,
 		getHistoryEchelonFromDateStr:getHistoryEchelonFromDateStr,
+		getScoreTotalByIndex:getScoreTotalByIndex,
 	}
 })();

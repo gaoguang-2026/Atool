@@ -266,6 +266,21 @@
 			document.getElementById('showdays').value = 30;
 			document.getElementById('rtShowdays').hidden = false;
 		};
+		
+		var updateIndicator = function() {
+			var indecator = document.getElementById('indecator');
+			var options = indecator.getElementsByTagName("option");
+			for(var i = 0; i < options.length; i++) {
+				indecator.removeChild(options[i]);
+				i--;
+			}
+			for(var i = 0; i < Configure.selectIndicators.length; i++) {
+				var option1 = document.createElement("option");
+				var text1 = document.createTextNode(Configure.selectIndicators[i].name);
+				option1.appendChild(text1);
+				indecator.appendChild(option1);
+			}
+		};
 		if(Configure.isAfterTrading()){
 			document.getElementById('mode').value = 0;
 			fp()
@@ -277,6 +292,7 @@
 		$('#mode').change((e)=>{
 			Configure.setMode($('#mode')[0].value);
 			Configure.getMode() == Configure.modeType.DP ? dp() : fp();
+			updateIndicator();
 		});
 
 		const canvas = document.getElementById('drawing');
@@ -293,16 +309,5 @@
 		var txt = Configure.apothegms[Math.round(Math.random() * Configure.apothegms.length)];
 		apothegm.innerHTML = txt ? txt : Configure.apothegms[0];
 		
-		var indecator = document.getElementById('indecator');
-		var options = indecator.getElementsByTagName("option");
-		for(var i = 0; i < options.length; i++) {
-			indecator.removeChild(options[i]);
-			i--;
-		}
-		for(var i = 0; i < Configure.selectIndicators.length; i++) {
-			var option1 = document.createElement("option");
-			var text1 = document.createTextNode(Configure.selectIndicators[i].name);
-			option1.appendChild(text1);
-			indecator.appendChild(option1);
-		}
+		updateIndicator();
 	};

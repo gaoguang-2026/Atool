@@ -211,11 +211,11 @@ var canvas = (function(canvas) {
 			ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor)*i/4);	
 		}
 		///
-		if (!echelonNames.length) {
+		if (!echelonNames.length && Configure.getMode() == Configure.modeType.FP) {
 			ctx.fillStyle = Configure.line_color;
 			ctx.fillText('0', siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor));
 			ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth - 16, siteY + 12);
-		}
+		} 
 		ctx.stroke(); 
 	};
 
@@ -291,14 +291,14 @@ var canvas = (function(canvas) {
 			ctx.fillText(maxOffset, siteX - 30, siteY + siteHeight * (1- winFactor) + 10);
 			ctx.stroke();
 		}
-		function drawUp() {
+		function drawUp(zero, max, title) {
 			ctx.fillStyle="black";
 			ctx.strokeStyle = "black";
-			var pointH = siteHeight * (1-winFactor) * parseFloat(Days[i][Configure.title2.beili])/Configure.MAX_BEILI;
+			var pointH = siteHeight * (1-winFactor) * (parseFloat(Days[i][title]) - zero)/(max - zero);
 			var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
 						y: siteY + siteHeight*(1-winFactor) - pointH};	
 							
-			emotionPoints.push({point:point, value:parseFloat(Days[i][Configure.title2.beili]), 
+			emotionPoints.push({point:point, value:parseFloat(Days[i][title]), 
 						date:Days[i][Configure.title2.date]});
 							
 			grd=ctx.createLinearGradient(siteX, siteY + siteHeight * (1-winFactor), 
@@ -309,7 +309,7 @@ var canvas = (function(canvas) {
 			ctx.fillStyle = grd;
 			ctx.strokeStyle = grd;
 			if (i < Days.length - 1) {// 不是最后一个点
-				var pointNextH = siteHeight * (1-winFactor) * parseFloat(Days[i + 1][Configure.title2.beili])/Configure.MAX_BEILI;
+				var pointNextH = siteHeight * (1-winFactor) * (parseFloat(Days[i + 1][title]) - zero)/(max - zero);
 				var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 								y: siteY + siteHeight*(1-winFactor) - pointNextH};
 				ctx.lineWidth="4";
@@ -318,7 +318,7 @@ var canvas = (function(canvas) {
 				ctx.stroke();
 			} else {
 				ctx.font="14px 楷体";
-				ctx.fillText(parseFloat(Days[i][Configure.title2.beili]) + '%', point.x + 10, point.y);
+				ctx.fillText(parseFloat(Days[i][title]), point.x + 10, point.y);
 				ctx.stroke();
 			}
 		}
@@ -370,7 +370,9 @@ var canvas = (function(canvas) {
 					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, 600);
 			} 
 			if (echelonNames.length <= 1) {
-				drawUp();
+				Configure.getMode() == Configure.modeType.DP ? 
+					drawUp(900, 1000, Configure.title2.qingxuzhishu):
+					drawUp(0, Configure.MAX_BEILI, Configure.title2.beili);
 			}
 			
 			var pointLB = drawLine('#DC143C', 0, 10, Configure.title2.subBeili, 
@@ -381,7 +383,7 @@ var canvas = (function(canvas) {
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
 								Configure.SZ_MaxOffset, Configure.title2.sz , 
 								indecatorName == '上证指数');	
-
+			drawLine('#DC143C', 0, 10, Configure.title2.beili, indecatorName == '涨停背离');
 			drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);
 			drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName);
 			drawLine('blue', 900, 100, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName );

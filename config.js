@@ -153,10 +153,10 @@ var Configure = (function(){
 	/  @param
 	/   min  max  currentMin  currentMax  days minDays
 	*/
-	var bandConditions = [{k:{days:5, minDays:4, max:4}},
-							{j:{days:5, minDays:4, max:3}}, 
-							{f:{days:5, minDays:4, max:20}},
-							{m:{days:5, minDays:5, max:200}}
+	var bandConditions = [{k:{days:5, minDays:4, max:5}},
+							{j:{days:5, minDays:4, max:5}}, 
+							{f:{days:5, minDays:3, max:30}},
+							{m:{days:5, minDays:4, max:200}}
 							];
 	var cangMap2 = new Map([
 		['混沌', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
@@ -565,8 +565,8 @@ var Configure = (function(){
 	
 	var selectIndicators = [
 							//	{name:'亏钱效应'},
-								{name:'上证指数'}, 
-								{name:'情绪指数'},						
+								{name:'情绪指数'},	
+								{name:'上证指数'}, 								
 								{name:'涨停数量'},
 								{name:'跌停数量'},
 								{name:'炸板数量'},
@@ -661,6 +661,8 @@ var Configure = (function(){
 			this.Echelons_show_min_score = 4;
 			this.WinXFactor = 0.6;
 			this.Echelons_Draw_NUM = 2;
+			this.selectIndicators.shift();
+			this.selectIndicators.unshift({name:'情绪指数'});
 		} else  {                      // 盯盘配置
 			this.showInTableTitile = ['name', 'f2', 'f8', 'f3','realValue','score','totalDivergence', 
 							'boardStrength','reason', 'boardAndDay'];
@@ -671,6 +673,8 @@ var Configure = (function(){
 			this.Echelons_show_min_score = 5;
 			this.WinXFactor = 0.3;
 			this.Echelons_Draw_NUM = 1;
+			this.selectIndicators.shift();
+			this.selectIndicators.unshift({name:'涨停背离'});
 		}
 	};
 	var getMode = function() {
