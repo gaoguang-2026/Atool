@@ -466,7 +466,7 @@ var AI = (function(){
 		});
 		return retTxt;
 	};
-	var clearAndInit = function() {
+	var clear = function() {
 		dataStorage = {
 		emotion:'',
 		tickits:[],
@@ -493,7 +493,7 @@ var AI = (function(){
 				checkZBUnderDays(Configure.title2.boardnum, 5, 4, 20);*/    //涨停数量
 	};
 	var getRecommend = function() {
-		clearAndInit();
+		clear();
 		// 更新获取storage的数据
 		getAndUpdateLoacalstorage();
 		

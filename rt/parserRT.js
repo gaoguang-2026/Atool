@@ -163,7 +163,7 @@ var parserRT = (function(){
 		var length = rtShowDaynum * Configure.RT_data_length / Configure.RT_canvas_record_days_num;
 		for(var i = Configure.RT_data_length - length; i < Configure.RT_data_length; i ++) {
 			if(type == 'echelon') {
-				rtRankData.getTopEchelons().forEach((e)=>{
+				rtRankData.getEchelons().forEach((e)=>{
 				var tmpScore = getEchelonByIndex(e, i).score;
 				max = max > tmpScore ? max : tmpScore;
 				});
@@ -176,9 +176,7 @@ var parserRT = (function(){
 	};
 	var getRTEchelons = function() {
 		// 选出全天最高的RT_echelons_max_num个 
-		var topEchelons = rtRankData.getTopEchelons().sort((a, b) => {
-			return parseFloat(b.score) - parseFloat(a.score);
-		}).slice(0, Configure.RT_echelons_max_num);
+		var topEchelons = rtRankData.getEchelons().slice(0, Configure.RT_echelons_max_num);
 		
 		// 更新当前的得分, 需要拷贝对象
 		var gaiNianArr = rtRankData.getLastRankData();

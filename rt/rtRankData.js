@@ -45,9 +45,9 @@
 		var today = new Date();
 		if(!datesAreOnSameDay(new Date(this.gRankData.eDate), today) && !Configure.isWeekend(today)) {
 			this.gRankData.eDate = JSON.stringify(today).replace(/\"/g, '');
-			if(this.gRankData.topEchelons.length >= Configure.RT_canvas_record_days_num * 2) {
+			if(this.gRankData.topEchelons.length >= Configure.RT_canvas_show_echelons_num) {
 				this.gRankData.topEchelons.splice(0,this.gRankData.topEchelons.length - 
-						Configure.RT_canvas_record_days_num + 1);
+						Configure.RT_canvas_show_echelons_num + 1);
 			}
 			var eIdx = this.gRankData.echelons.findIndex((e)=>{
 				return Configure.gaiBlackList_verbose.indexOf(e.name) == -1 &&
@@ -107,13 +107,19 @@
 		return this.gRankData.data[index] ? this.gRankData.data[index].gaiRank : [];
 	};
 	rtGaiData.prototype.getTopEchelons = function() {
-		var retEchelons = this.gRankData.echelons;
-		this.gRankData.topEchelons.forEach((topE)=>{
-			var fEhelon = retEchelons.find((e)=>{
+		return  this.gRankData.topEchelons.slice();
+	};
+	rtGaiData.prototype.getEchelons = function() {
+		var retEchelons = this.gRankData.topEchelons.slice();
+		this.gRankData.echelons.sort((a, b) => {
+			return parseFloat(b.score) - parseFloat(a.score);
+		});
+		this.gRankData.echelons.forEach((e)=>{
+			var fEhelon = retEchelons.find((topE)=>{
 				return topE.name == e.name;
 			});
 			if(!fEhelon) {
-				retEchelons.push(topE);
+				retEchelons.push(e);
 			}
 		});
 		return retEchelons;

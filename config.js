@@ -542,9 +542,9 @@ var Configure = (function(){
 	var RT_GAI_show_weight_min = 0;		        // weight max
 	var RT_data_length = 240;					// 多少个点
 	var RT_canvas_record_days_num = 4;			// rt 记录数据的天数
-	var RT_canvas_show_days_num = 1;            // 显示的天数
-	var RT_canvas_show_echelons_num = 3;            // 显示的最大个数
-	var RT_echelons_max_num = 14;            // 生成的个数
+	var RT_canvas_show_days_num = 4;            // 显示的天数
+	var RT_canvas_show_echelons_num = 4;            // 显示的最大个数
+	var RT_echelons_max_num = 7;            // 生成的个数
 	var RT_echelon_contain_config = true;       // 是否加上config的echelon
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD

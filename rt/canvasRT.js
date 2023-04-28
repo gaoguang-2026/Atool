@@ -68,12 +68,10 @@ var canvasRT = (function() {
 		ctx.beginPath();
 		ctx.fillStyle= color;
 		var rtRankData = parserRT.getGaiRankData();   // getRankData() -> {eDate:,data: []};
-		// 从数据中取要显示的第一天index 和最后一天 indexLast
+		// 从数据中取要显示的第一天index 
 		var index = Configure.RT_data_length * 
 						(Configure.RT_canvas_record_days_num - rtShowDays_num) / 
 							Configure.RT_canvas_record_days_num;
-		var indexLast = rtRankData.getIndexFromDate(new Date(rtRankData.getRankData().eDate));
-		indexLast = indexLast > Configure.RT_data_length ? Configure.RT_data_length : indexLast;
 		var eFirst; 	// 记录第一个点，数据不连贯，连线难看
 		var offsetX = cellWidth * eIndex/ Configure.RT_canvas_show_echelons_num;  // 错位显示不同Echelon的cell
 		for(i = 0; i < cellNum; i ++, index ++) {
@@ -115,10 +113,15 @@ var canvasRT = (function() {
 		var displayIndex = 0;
 		Array.from(parserRT.getRTEchelons()).forEach((e) => {
 			var color = Configure.echelon_color[displayIndex%Configure.echelon_color.length];
-			if((!nameArr || nameArr.length == 0) &&
-					displayIndex < Configure.RT_canvas_show_echelons_num) {   //最多显示
-				drawEchelonLine(e, color, displayIndex, false);
-				displayIndex ++;
+			if(!nameArr || nameArr.length == 0) {   // 默认显示top echelons
+				var topEchelons = parserRT.getGaiRankData().getTopEchelons();
+				var idx = topEchelons.findIndex((tEchelon)=>{
+					return tEchelon.name == e.name;
+				})
+				if(idx >= 0) {
+					drawEchelonLine(e, color, displayIndex, false);
+					displayIndex ++;
+				}
 			} else {
 				if(nameArr.includes(e.name) && 
 					displayIndex <= Configure.RT_canvas_show_echelons_num){
@@ -145,6 +148,7 @@ var canvasRT = (function() {
 							Configure.RT_canvas_record_days_num;
 		var indexLast = rtRankData.getIndexFromDate(new Date(rtRankData.getRankData().eDate));
 		indexLast = indexLast > Configure.RT_data_length ? Configure.RT_data_length : indexLast;
+		var drawLength = indexLast - index;
 		var score = 0, scoreNext = 0;
 		for(i = 0; i < cellNum; i ++, index ++) {
 			score = parserRT.getScoreTotalByIndex(index);
@@ -155,7 +159,7 @@ var canvasRT = (function() {
 				var point = {x: siteX + cellWidth  * i,
 					y: siteY + siteHeight - pointH};
 				//ctx.fillRect(point.x, point.y, 2, 2);
-				if (i < cellNum - 1) {   // 不是最后一天
+				if (i < drawLength) {   // 不是最后一天
 					scoreNext = parserRT.getScoreTotalByIndex(index + 1);
 					scoreNext = scoreNext == 0 ? score : scoreNext;
 					var pointNextH = siteHeight * (parseFloat(scoreNext) - 0)/ site_score_max;

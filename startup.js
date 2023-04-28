@@ -172,8 +172,6 @@
 			
 			// table update
 			fillTicketsTable();
-			
-			displayAI(AI.getRecommend());
 		};
 		
 		var showDaysUpdate = function() {
@@ -200,6 +198,7 @@
 	//		}
 			table.updateForm();
 			formUpdate();
+			displayAI(AI.getRecommend());
 		}
 		
 		var dateOnclick = function(e) {
