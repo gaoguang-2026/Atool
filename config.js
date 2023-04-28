@@ -14,7 +14,7 @@ End Sub
 
 var Configure = (function(){
 	var debug = false;
-	var version = 'v1.0';
+	var version = 'dev';
 	var date = new Date();
 	var mode;       // 0 复盘模式， 1 盯盘模式
 	var modeType = {
@@ -544,7 +544,7 @@ var Configure = (function(){
 	var RT_canvas_record_days_num = 4;			// rt 记录数据的天数
 	var RT_canvas_show_days_num = 4;            // 显示的天数
 	var RT_canvas_show_echelons_num = 4;            // 显示的最大个数
-	var RT_echelons_max_num = 7;            // 生成的个数
+	var RT_echelons_max_num = 8;            // 生成的个数
 	var RT_echelon_contain_config = true;       // 是否加上config的echelon
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD

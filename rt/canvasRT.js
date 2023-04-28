@@ -45,6 +45,7 @@ var canvasRT = (function() {
 		ctx.font="14px 楷体";
 		ctx.fillText(Configure.RT_GAI_show_weight_min, siteX + siteWidth + 4, siteY + siteHeight);
 		ctx.fillText(site_weight_max, siteX + siteWidth + 4, siteY + 12);
+		ctx.fillText(site_score_max, siteX + siteWidth, siteY);
 		
 		ctx.fillStyle = Configure.site_color;
 		ctx.font="14px 楷体";
@@ -181,7 +182,7 @@ var canvasRT = (function() {
 		clear();
 		console.log('canvasRT redraw');
 		site_weight_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'echelon'));
-		site_score_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'total'));
+		site_score_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'total') / 1000) * 1000;
 		rtShowDays_num = rtShowD;
 		
 		reload();
