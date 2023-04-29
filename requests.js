@@ -9,7 +9,7 @@ var requests = (function(){
 		_:1600744555569,
 		fields:'f12,f14,f2,f3,f8,f15,f18,f20,f21,f100,f101,f103,f109,f160,f110,f26',
 	}
-	var request = function(url, callback) {
+	var request = function(url, callback, isFirst = false) {
 		const xhr = new XMLHttpRequest();
 		console.log('start request date from 东方财富');
 		xhr.open('GET', url);
@@ -22,7 +22,9 @@ var requests = (function(){
 				var json_str = responseText.substr(s, responseText.length - s - 2);
 			    rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff']);
 				
-				if(typeof callback === 'function') {
+				if(typeof callback === 'function' && 
+					rtDataManager.checkIfRtDataUpdated() || 
+					isFirst) {
 					callback();
 				};
 			}
@@ -38,7 +40,7 @@ var requests = (function(){
 		/*for(var i = 1; i < 200; i ++) {
 			url += ',f' + i;
 		} */
-		request(url, callback);
+		request(url, callback, true);
 		Timer.addTimerCallback(()=>{
 			request(url, callback);
 		});
