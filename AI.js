@@ -121,7 +121,7 @@ var AI = (function(){
 	};
 	
 	var getLevel = function(point) {
-		return Math.floor(point.value * 4/Configure.MAX_BEILI);
+		return Math.floor((point.value- Configure.MIN_BEILI) * 4/(Configure.MAX_BEILI - Configure.MIN_BEILI));
 	}
 	
 	var checkZBHigherDays = function(title, days, minDays, minThreshold) {
@@ -273,43 +273,34 @@ var AI = (function(){
 	var getEmotions = function() {
 		var emotionPoints = canvas.getLastEmotionPoints(3);    
 		var sumLevel = 0;
+		var BeiliOffset = Configure.MAX_BEILI - Configure.MIN_BEILI;
 		for(var i = 0; i < 3; i ++){
 			sumLevel += getLevel(emotionPoints[i]);
 		}
 		var angle = Configure.getAngle(emotionPoints[0].point, emotionPoints[1].point);
 		var value = parseFloat(emotionPoints[0].value);
 		var level = getLevel(emotionPoints[0]) - sumLevel/3;
-		if(value < Configure.MAX_BEILI / 8) {
+		if(value < BeiliOffset / 8) {
 			dataStorage.emotion = '冰点';
 			if (checkZBHigherDays(Configure.BH_Draw_title, 7, 3, 4) &&
-				(parseFloat(emotionPoints[1].value) < Configure.MAX_BEILI / 4 || 
-					parseFloat(emotionPoints[2].value) < Configure.MAX_BEILI / 4 )
+				(parseFloat(emotionPoints[1].value) < BeiliOffset / 4 || 
+					parseFloat(emotionPoints[2].value) < BeiliOffset / 4 )
 					){
 					dataStorage.emotion = '混沌';
 			}
-		} else if(value < Configure.MAX_BEILI / 4) {
+		} else if(value < BeiliOffset / 4) {
 			dataStorage.emotion = '冰点';
 			if (checkZBHigherDays(Configure.title2.failedRate, 4, 3, 0.25) &&
-				parseFloat(emotionPoints[1].value) < Configure.MAX_BEILI / 4 || 
-				parseFloat(emotionPoints[2].value) < Configure.MAX_BEILI / 4){
+				parseFloat(emotionPoints[1].value) < BeiliOffset / 4 || 
+				parseFloat(emotionPoints[2].value) < BeiliOffset / 4){
 					dataStorage.emotion = '二次冰点';
 			}
-			// 混沌期 前5个交易日连扳背离率小于涨停背离率出现3次以上且值小于5为混沌期。
-			var ePoints = canvas.getLastEmotionPoints(5, Configure.title2.lianbanzhishu); 
-			var ztEPoints = canvas.getLastEmotionPoints(5, Configure.title2.zhangtingzhishu); 
-			var n = 0;
-			for(var i = 0 ; i < 5 ; i ++) {
-				if(ztEPoints[i].value - ePoints[i].value > Configure.MAX_BEILI / 8 &&
-					ePoints[i].value < Configure.MAX_BEILI / 2) {
-					n ++;
-				}
-			}
 			if(checkZBUnderDays(Configure.title2.totalFund, 7, 5, 200) || 
-				(n >= 3 && checkZBHigherDays(Configure.title2.lianban, 1, 1, 7))) {
+				 checkZBHigherDays(Configure.title2.lianban, 1, 1, 7)) {
 				dataStorage.emotion = '混沌';
 			}
 			//////
-		} else if(value < Configure.MAX_BEILI / 2) {
+		} else if(value < BeiliOffset / 2) {
 			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
 			else {
 				if(angle > 0) {
@@ -318,7 +309,7 @@ var AI = (function(){
 					dataStorage.emotion = level < 0 ?  '持续退潮' : '分歧';
 				}
 			}   
-		} else if(value < Configure.MAX_BEILI * 3 / 4) {
+		} else if(value < BeiliOffset * 3 / 4) {
 			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
 			else  {
 				if(angle > 0) {
@@ -330,8 +321,8 @@ var AI = (function(){
 			}
 		} else {
 			dataStorage.emotion = '高潮';
-			if (parseFloat(emotionPoints[1].value) > Configure.MAX_BEILI * 3 / 4 || 
-				parseFloat(emotionPoints[2].value) > Configure.MAX_BEILI * 3 / 4){
+			if (parseFloat(emotionPoints[1].value) > BeiliOffset * 3 / 4 || 
+				parseFloat(emotionPoints[2].value) > BeiliOffset * 3 / 4){
 				dataStorage.emotion = angle > 0 ? '继续高潮' : '分化';
 			}
 		}		
@@ -346,7 +337,7 @@ var AI = (function(){
 		return parseInt(parseInt(t[Configure.title.score]) - 
 				t[Configure.title.totalDivergence] * dataStorage.scoreFator + 
 				// 情绪高位，板块越向低位找
-				((Configure.MAX_BEILI / 2 - emotionPoints[0].value) * 3)* t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] +
+				(((Configure.MAX_BEILI - Configure.MIN_BEILI) / 2 - emotionPoints[0].value) * 3)* t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] +
 				t[Configure.title.boardStrength].v * 10) +    // 封板强度 X10
 				(Configure.isSZTicket(t[Configure.title.code]) ? 100 : 0);   // 深市票
 	};

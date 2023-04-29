@@ -73,6 +73,7 @@ var Configure = (function(){
 	'【卖点】-- 非主升阶段有冲高给到合适的利润就卖出反T，卖飞就卖飞了。',
 	'【趋势】-- 上涨和下跌一样是有惯性的，下跌因为恐慌，上涨一样因为踏空资金的贪婪，金钱永不眠',
 	'【术和道】-- 情绪周期是底层逻辑，术是卖不了科创可以买ETF',
+	'【情绪共振】-- 情绪多维度多指标剧烈的伶俐的同方向的变动并且遭遇叠加平台效应就是好的开仓和止盈点',
 	'【量和价】-- 量能越大说明力量越强，但是价格趋势不代表多头和空头发力，比如平台突破空头发力和平台底部承接多头发力',
 	];
 	
@@ -496,16 +497,25 @@ var Configure = (function(){
 	var MIN_LB_NUMBER = 2;
 	var MIN_KAINIAN = 2;     // 最少出现的次数
 	var HIGH_factor = 1;     //连板数对概念权重的影响因子， 影响股票最后的得分
-
-	var ZHISHU_TITLE = title2.zhangtingzhishu;    // 情绪指标， title2.lianbanzhishu 
+	
+	/**
+	/  情绪指标
+	/	title2.lianbanzhishu        连扳，针对市场大盘环境差，游资连扳纯投机环境。
+	/	title2.zhangtingzhishu      涨停，针对市场短线和趋势博弈环境
+	/	title2.qingxuzhishu         同花顺情绪指数，市场趋势行情主导
+	/*/
+	var ZHISHU_TITLE = title2.qingxuzhishu; 
+	///
 	var ZHISHU_SUB_TITLE = ZHISHU_TITLE == title2.zhangtingzhishu ?
 			title2.lianbanzhishu : title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
-	var MAX_BEILI = ZHISHU_TITLE == title2.zhangtingzhishu ? 8 : 10;    //最大背离率 ,  影响canvas纵坐标
+	var MAX_BEILI = ZHISHU_TITLE == title2.zhangtingzhishu ? 8 : 
+						ZHISHU_TITLE == title2.qingxuzhishu ?  1000 : 10;    //最大背离率 ,  影响canvas纵坐标
+	var MIN_BEILI = ZHISHU_TITLE == title2.qingxuzhishu ?  900 : 0;
 	
 	var Days_Show_reserved_lengh = 5;  //预留的天数，为了算显示第一天的MA5
 	var Days_Max_lengh = 250;   // 最大期限
 	
-	var SZ_zero = 3000;    // sz 0轴坐标
+	var SZ_zero = 3100;    // sz 0轴坐标
 	var SZ_MaxOffset = 400;   // 纵轴
 	
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
@@ -522,7 +532,7 @@ var Configure = (function(){
 	
 	// 左右窗口
 	var WinXFactor;     //  左边窗口占比 
-	var WinFactor = 0.3;    // 上下窗口的比率 
+	var WinFactor = 0.2;    // 上下窗口的比率 
 	
 	var Echelons_Draw_NUM = 2;
 	var Echelons_ticket_NUM = 7;     // 画出来的数量
@@ -564,19 +574,14 @@ var Configure = (function(){
 	var LocalStore_history_period = 60;   // locastory 保留数据的期限，需要清理。
 	
 	var selectIndicators = [
-							//	{name:'亏钱效应'},
-								{name:'情绪指数'},	
 								{name:'上证指数'}, 								
-								{name:'涨停数量'},
-								{name:'跌停数量'},
-								{name:'炸板数量'},
-								{name:'连扳背离'},
+							//	{name:'涨停数量'},
+							//	{name:'跌停数量'},
+							//	{name:'炸板数量'},
+							//	{name:'连扳背离'},
 								{name:'连扳高度'},
-								{name:'连扳数量'},
+							//	{name:'连扳数量'},
 							];  
-	ZHISHU_TITLE == title2.zhangtingzhishu ? 
-		selectIndicators.push({name:'连扳晋级'}) : selectIndicators.unshift({name:'短线资金'});
-	
 	var isAfterNoon = function() {
 		return new Date().getHours() > 12;
 	};
@@ -660,8 +665,6 @@ var Configure = (function(){
 									
 			this.WinXFactor = 0.6;
 			this.Echelons_Draw_NUM = 2;
-			this.selectIndicators.shift();
-			this.selectIndicators.unshift({name:'情绪指数'});
 		} else  {                      // 盯盘配置
 			this.showInTableTitile = ['name', 'f2', 'f8', 'f3','realValue','score','totalDivergence', 
 							'boardStrength','reason', 'boardAndDay'];
@@ -671,8 +674,6 @@ var Configure = (function(){
 											'rise_20', 'value','gainianDragon'];
 			this.WinXFactor = 0.3;
 			this.Echelons_Draw_NUM = 1;
-			this.selectIndicators.shift();
-			this.selectIndicators.unshift({name:'涨停背离'});
 		}
 	};
 	var getMode = function() {
@@ -711,6 +712,7 @@ var Configure = (function(){
 		selectIndicators:selectIndicators,
 		LocalStore_history_period:LocalStore_history_period,
 		MAX_BEILI:MAX_BEILI,
+		MIN_BEILI:MIN_BEILI,
 		ZHISHU_TITLE:ZHISHU_TITLE,
 		ZHISHU_SUB_TITLE:ZHISHU_SUB_TITLE,
 		SZ_zero:SZ_zero,

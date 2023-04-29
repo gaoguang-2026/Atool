@@ -4,9 +4,7 @@ var canvas = (function(canvas) {
 	var AllDays;  // Store all days data
 	var Days;    // days to show 
 
-	var emotionPoints = [];   // 保存背离率的点
-	var stEmotionPoints = []; // 保存涨停背离率的点
-	
+	var emotionPoints = [];   // 保存情绪的点
 	var zbPoints = {};   // 保存其他指标的点
 
 	var width = 0;
@@ -211,11 +209,11 @@ var canvas = (function(canvas) {
 			ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor)*i/4);	
 		}
 		///
-		if (!echelonNames.length && Configure.getMode() == Configure.modeType.FP) {
+	/*	if (!echelonNames.length ) {
 			ctx.fillStyle = Configure.line_color;
-			ctx.fillText('0', siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor));
+			ctx.fillText(Configure.MIN_BEILI, siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor));
 			ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth - 16, siteY + 12);
-		} 
+		} */
 		ctx.stroke(); 
 	};
 
@@ -262,7 +260,7 @@ var canvas = (function(canvas) {
 	var drawIndicators = function(indecatorName, echelonNames) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
-		
+		// 情绪维度1 -- 进场热度
 		function drawBottom(title, maxOffset) {
 			var rectHeight = Days[i][title] ? 
 						siteHeight * winFactor * parseFloat(Days[i][title]) /maxOffset : 0;
@@ -290,8 +288,27 @@ var canvas = (function(canvas) {
 			ctx.fillText('0', siteX - 20, siteY + siteHeight + 10);
 			ctx.fillText(maxOffset, siteX - 30, siteY + siteHeight * (1- winFactor) + 10);
 			ctx.stroke();
-		}
-		function drawUp(zero, max, title) {
+		};
+		// head 情绪维度2 -- 市场恐慌     foot 情绪维度3 -- 风险偏好
+		function drawHeadorFoot(color, zero, maxOffset, title, indecatorIndex, isHead = true) {
+			ctx.beginPath();
+			ctx.fillStyle= color;
+			ctx.strokeStyle = color;
+			var vReverseHeight = isHead ? 0 : siteHeight*(1-winFactor);
+			var pointH = siteHeight * (1-winFactor) * 
+				(parseFloat(Days[i][title])- zero)/maxOffset;
+			var pointY = siteY + vReverseHeight + ( isHead ? pointH : - pointH)
+			var point = {x: siteX + cellWidth  * i + indecatorIndex * 0.25 * cellWidth, y: pointY};
+		//	ctx.fillRect(point.x, point.y, 2, 2);
+			ctx.lineWidth=cellWidth/4;
+			ctx.moveTo(point.x, siteY + vReverseHeight);
+			ctx.lineTo(point.x, point.y);
+			ctx.stroke();
+		};
+		
+		// 情绪维度4 -- 赚钱效益
+		function drawUpon(zero, max, title) {
+			ctx.beginPath();
 			ctx.fillStyle="black";
 			ctx.strokeStyle = "black";
 			var pointH = siteHeight * (1-winFactor) * (parseFloat(Days[i][title]) - zero)/(max - zero);
@@ -323,6 +340,7 @@ var canvas = (function(canvas) {
 			}
 		}
 		
+		// 情绪维度5 -- 指数维度
 		function drawLine(color, zero, maxOffset, title, draw = true) {
 			var ctx = drawing.getContext("2d");		
 			ctx.beginPath();
@@ -367,27 +385,26 @@ var canvas = (function(canvas) {
 			ctx.beginPath();
 			if (echelonNames.length == 0) {   // 没有echolon显示底部量能就显示总量能
 				Configure.ZHISHU_TITLE == Configure.title2.lianbanzhishu ? 
-					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, 600);
+					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, 800);
 			} 
 			if (echelonNames.length <= 1) {
-				Configure.getMode() == Configure.modeType.DP ? 
-					drawUp(900, 1000, Configure.title2.qingxuzhishu):
-					drawUp(0, Configure.MAX_BEILI, Configure.title2.beili);
-			}
-			
-			var pointLB = drawLine('#DC143C', 0, 10, Configure.title2.subBeili, 
-							indecatorName == '连扳背离');
-			stEmotionPoints.push({point:pointLB, value:parseFloat(Days[i][Configure.title2.subBeili]),
-									 date:Days[i][Configure.title2.date]});
-			
+				drawHeadorFoot('Green', 0, 2, Configure.title2.failedRate, 1, true);
+				drawHeadorFoot('DarkGreen', 0, 100, Configure.title2.floornum, 3, true);
+				drawHeadorFoot('Orange', 0, 200,  Configure.title2.boardnum, 2,false);
+				drawHeadorFoot('Orange', 0, 50,  Configure.title2.lianban, 4,false);
+				drawUpon(Configure.MIN_BEILI, Configure.MAX_BEILI, 
+					Configure.ZHISHU_TITLE == Configure.title2.qingxuzhishu ?
+					Configure.ZHISHU_TITLE : Configure.title2.beili);
+			}		
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
 								Configure.SZ_MaxOffset, Configure.title2.sz , 
 								indecatorName == '上证指数');	
+			drawLine('#DC143C', 0, 10, Configure.title2.subBeili, indecatorName == '连扳背离');
 			drawLine('#DC143C', 0, 10, Configure.title2.beili, indecatorName == '涨停背离');
 			drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);
 			drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName);
 			drawLine('blue', 900, 100, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName );
-			drawLine('green', 0, 0.8, Configure.title2.failedRate, /*'亏钱效应' == indecatorName &&*/ echelonNames.length == 0);
+			drawLine('green', 0, 0.8, Configure.title2.failedRate, '亏钱效应' == indecatorName);
 			drawLine(Configure.boardHeight_color, 5, 10, Configure.title2.lianban, '连扳数量' == indecatorName);
 			drawLine(Configure.boardHeight_color, 30, 40, Configure.title2.boardnum, '涨停数量' == indecatorName);
 			drawLine('#20B2AA', 0, 15, Configure.title2.floornum, '跌停数量' == indecatorName);
@@ -557,13 +574,12 @@ var canvas = (function(canvas) {
 			});
 		};
 	};
-	// type = Configure.title2.lianbanzhishu  or Configure.title2.zhangtingzhishu
-	var getLastEmotionPoints = function(num, type = Configure.title2.zhangtingzhishu) {
-		var ePoints = type == Configure.ZHISHU_TITLE ? emotionPoints : stEmotionPoints;
-		var n = num > ePoints.length ? ePoints.length : num;
+
+	var getLastEmotionPoints = function(num) {
+		var n = num > emotionPoints.length ? emotionPoints.length : num;
 		var retP = [];
-		for(var i = ePoints.length - 1; i > ePoints.length - 1 - n; i --) {
-			retP.push(ePoints[i]);
+		for(var i = emotionPoints.length - 1; i > emotionPoints.length - 1 - n; i --) {
+			retP.push(emotionPoints[i]);
 		}
 		return retP;
 	};
@@ -612,7 +628,6 @@ var canvas = (function(canvas) {
 	
 	var clear = function() {
 		emotionPoints = [];   // 保存背离率的点
-		stEmotionPoints = []; // 保存涨停背离率的点
 		zbPoints = {};   // 保存其他指标的点
 	};
 	var draw = function(echelonNames, indecatorName, showDaysNumber) {
