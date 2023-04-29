@@ -124,6 +124,7 @@
 		});
 		return retEchelons;
 	};	
+
 	rtGaiData.prototype.setRankDataFromNow = function(dArr, echelonArr) {
 		var d = new Date();
 		var index = this.getIndexFromDate(d);
@@ -150,7 +151,9 @@
 				}
 			})
 			// 保存到storage避免数据丢失
-			LocalStore.set(storageName, this.gRankData);
+			if(rtDataManager.checkIfRtDataUpdated()) {
+				LocalStore.set(storageName, this.gRankData);
+			}
 		} else {
 			// debug 数据
 		/*	for(var i = 4; i < 240; i ++) {

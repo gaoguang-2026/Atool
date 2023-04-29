@@ -530,7 +530,7 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 3;  // 最小显示限制
+	var Echelons_show_min_score = 7;  // 最小显示限制
 	var Echelons_show_type = 'score';   //  'fund' or 'score'
 	
 	// rt
@@ -561,7 +561,7 @@ var Configure = (function(){
 	
 	var EmotionAngleDeafultDays = 7;    //情绪指标计算拐点的期限
 	
-	var LocalStore_history_period = 120;   // locastory 保留数据的期限，需要清理。
+	var LocalStore_history_period = 60;   // locastory 保留数据的期限，需要清理。
 	
 	var selectIndicators = [
 							//	{name:'亏钱效应'},
@@ -658,7 +658,6 @@ var Configure = (function(){
 			this.rankShowInTableTitile = ['index', 'name', 'price', 'rise_1', 'rise_5','rise_10',
 									'rise_20', 'value', 'gainianDragon', 'time'];
 									
-			this.Echelons_show_min_score = 4;
 			this.WinXFactor = 0.6;
 			this.Echelons_Draw_NUM = 2;
 			this.selectIndicators.shift();
@@ -670,7 +669,6 @@ var Configure = (function(){
 						'selectDate','reason'];
 			this.rankShowInTableTitile = ['index','name', 'f2','f8', 'f3', 'rise_5','rise_10',
 											'rise_20', 'value','gainianDragon'];
-			this.Echelons_show_min_score = 5;
 			this.WinXFactor = 0.3;
 			this.Echelons_Draw_NUM = 1;
 			this.selectIndicators.shift();

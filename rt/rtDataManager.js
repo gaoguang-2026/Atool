@@ -2,12 +2,26 @@
 var rtDataManager = (function(){
 	var storageNamePrefix = 'rtData';
 	var realTimeTickets = [];
+	var preRealTimeTickets;   // 保存上一次获取的数据
 	// 实时数据
 	var setRTTickets = function(ticketArr) {
+		preRealTimeTickets = realTimeTickets.slice();
 		realTimeTickets = [];
 		ticketArr.forEach((t)=>{
 			realTimeTickets.push(t);
 		});
+	};
+	
+	var checkIfRtDataUpdated = function() {
+		if(preRealTimeTickets && preRealTimeTickets.length) {
+			for(var i = 0; i < 10; i ++) {  //检查前10个数据是否一样
+				if(preRealTimeTickets[i]['f12'] != realTimeTickets[i]['f12']
+				  || preRealTimeTickets[i]['f2'] != realTimeTickets[i]['f2']) {
+					  return true;
+				}
+			}
+		}
+		return false;
 	};
 	
 	var getRTTicketFromCode = function(code) {
@@ -52,7 +66,7 @@ var rtDataManager = (function(){
 	};
 	var store = function() {
 		var d = new Date();
-		if (!Configure.isWeekend(d) && !Configure.isAfterTrading(d)) {
+		if (!Configure.isWeekend(d) && !Configure.isAfterTrading(d) && checkIfRtDataUpdated()) {
 			LocalStore.set(storageNamePrefix + Configure.getDateStr(d), getRTTicketsLeader(true));
 		}
 	};
@@ -65,5 +79,6 @@ var rtDataManager = (function(){
 		getRTTicketsLeader:getRTTicketsLeader,
 		getRTTicketFromCode:getRTTicketFromCode,
 		getHistoryRTticketsLeader:getHistoryRTticketsLeader,
+		checkIfRtDataUpdated:checkIfRtDataUpdated,
 	}
 })();

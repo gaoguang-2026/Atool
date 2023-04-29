@@ -280,7 +280,7 @@
 				indecator.appendChild(option1);
 			}
 		};
-		if(Configure.isAfterTrading()){
+		if(Configure.isAfterTrading() || Configure.isWeekend()){
 			document.getElementById('mode').value = 0;
 			fp()
 		} else {
