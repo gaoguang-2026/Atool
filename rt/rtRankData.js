@@ -3,12 +3,6 @@
 	var storageName = 'rtGaiData';
 	var storeVer = 1;
 	
-	const datesAreOnSameDay = function(first, second) {
-		return first.getFullYear() === second.getFullYear() &&
-				first.getMonth() === second.getMonth() &&
-				first.getDate() === second.getDate();
-	}
-	
 	var updateStoreVersion = function(storeData) {
 		if(storeData) {
 			if(!storeData.version || storeData.version != storeVer){  //should update
@@ -43,7 +37,7 @@
 		this.gRankData = updateStoreVersion(storeData);
 		//如果eDate不是今天并且今天不是周末， 数据清理
 		var today = new Date();
-		if(!datesAreOnSameDay(new Date(this.gRankData.eDate), today) && !Configure.isWeekend(today)) {
+		if(!Configure.datesAreOnSameDay(new Date(this.gRankData.eDate), today) && !Configure.isWeekend(today)) {
 			this.gRankData.eDate = JSON.stringify(today).replace(/\"/g, '');
 			if(this.gRankData.topEchelons.length >= Configure.RT_canvas_show_echelons_num) {
 				this.gRankData.topEchelons.splice(0,this.gRankData.topEchelons.length - 

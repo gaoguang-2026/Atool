@@ -240,6 +240,13 @@ var Configure = (function(){
 		return  days;
 	};
 	
+		
+	var datesAreOnSameDay = function(first, second) {
+		return first.getFullYear() === second.getFullYear() &&
+				first.getMonth() === second.getMonth() &&
+				first.getDate() === second.getDate();
+	};
+	
 	var getWeek = function (d) {
         curYear = d.getFullYear();
         startDate = new Date(curYear, 0, 1);
@@ -587,7 +594,11 @@ var Configure = (function(){
 	};
 	var isAfterTrading = function() {
 		var d = new Date();	
-		return d > new Date(d.getFullYear(),d.getMonth(),d.getDate(),16,30,0);
+		return d > new Date(d.getFullYear(),d.getMonth(),d.getDate(),15,0,0);
+	};
+	var isNight = function() {
+		var d = new Date();	
+		return d > new Date(d.getFullYear(),d.getMonth(),d.getDate(),20,0,0);
 	};
 	var isWeekend = function(today = new Date()) {
 		return today.getDay() == 0 || today.getDay() == 6;
@@ -762,6 +773,7 @@ var Configure = (function(){
 		echelon_color:echelon_color,
 		getDateStr:getDateStr,
 		getDaysBetween:getDaysBetween,
+		datesAreOnSameDay:datesAreOnSameDay,
 		getWeek:getWeek,
 		getAngle:getAngle,
 		getBoardStrength:getBoardStrength,
@@ -772,6 +784,7 @@ var Configure = (function(){
 		isWeekend:isWeekend,
 		isAfterNoon:isAfterNoon,
 		isAfterTrading:isAfterTrading,
+		isNight:isNight,
 		isBidding:isBidding,
 		isKeTicket:isKeTicket,
 		isChungTicket:isChungTicket,

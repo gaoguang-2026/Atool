@@ -10,6 +10,7 @@ var rtDataManager = (function(){
 		ticketArr.forEach((t)=>{
 			realTimeTickets.push(t);
 		});
+		rtDataStore.storeToday(realTimeTickets);
 	};
 	
 	var checkIfRtDataUpdated = function() {

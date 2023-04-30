@@ -216,37 +216,51 @@
 		$('#last').click(dateOnclick);
 	};
 	
+	var loadExcel = function(data) {
+		try {
+			workbook.Book(XLSX.read(data, {
+				type: 'binary'
+			})); // 以二进制流方式读取得到整份excel表格对象
+		} catch (e) {
+			console.log('文件类型不正确');
+			return;
+		}
+		init();
+				
+		const canvas = document.getElementById('drawing');
+		const ctx = canvas.getContext('2d');
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+				
+		drawCanvasLeft();
+		drawCanvasRight();
+		fillTicketsTable();
+				
+		displayAI(AI.getRecommend());
+		addEvent();
+				
+		//start requests
+		startRequests();
+	};
+	
     $('#excel-file').change(function(e) {
         var files = e.target.files;
-        var fileReader = new FileReader();
-        fileReader.onload = function(ev) {
-            try {
-                var data = ev.target.result
-                workbook.Book(XLSX.read(data, {
-                    type: 'binary'
-                })); // 以二进制流方式读取得到整份excel表格对象
-            } catch (e) {
-                console.log('文件类型不正确');
-                return;
-            }
-			init();
-			
-			const canvas = document.getElementById('drawing');
-			const ctx = canvas.getContext('2d');
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			
-			drawCanvasLeft();
-			drawCanvasRight();
-			fillTicketsTable();
-			
-			displayAI(AI.getRecommend());
-			addEvent();
-			
-			//start requests
-			startRequests();
-        };
-        // 以二进制方式打开文件
-        fileReader.readAsBinaryString(files[0]);
+		Array.from(files).forEach((file, index)=>{
+			var fileReader = new FileReader();
+			fileReader.file = file;
+			fileReader.index = index;
+			fileReader.onload = function(ev) {
+				var data = ev.target.result
+				if(ev.target.file.type == 'application/json') {
+					Downloader.upload(data, ev.target.index);
+				} else {
+					if(ev.target.index == 0) {  // excel只加载第一个
+						loadExcel(data);   
+					}
+				}
+			};
+			// 以二进制方式打开文件
+			fileReader.readAsBinaryString(file);
+		})
     });
 	
 	window.onload = function(){
@@ -280,7 +294,7 @@
 				indecator.appendChild(option1);
 			}
 		};
-		if(Configure.isAfterTrading() || Configure.isWeekend()){
+		if(Configure.isNight() || Configure.isWeekend()){
 			document.getElementById('mode').value = 0;
 			fp()
 		} else {
@@ -309,4 +323,6 @@
 		apothegm.innerHTML = txt ? txt : Configure.apothegms[0];
 		
 		updateIndicator();
+		
+		Downloader.download('备份数据' + Configure.getDateStr(new Date()) + '.json');
 	};

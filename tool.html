@@ -6,13 +6,15 @@
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
     <script src="https://cdn.bootcss.com/xlsx/0.11.5/xlsx.core.min.js"></script>
 	
-	<script type="text/javascript" src="./tip.js"></script>
-	<script type="text/javascript" src="./storage.js"></script>
-	<link rel="stylesheet"  type="text/css" href="./startup.css" />
+	<script type="text/javascript" src="base/tip.js"></script>
+	<script type="text/javascript" src="base/storage.js"></script>
+	<script type="text/javascript" src="base/indexdb.js"></script>
+	<script type="text/javascript"  src="base/timer.js"></script>
+	<link rel="stylesheet"  type="text/css" href="css/startup.css" />
 </head>
 <body>
 	<div>
-	<input type="file" id="excel-file">
+	<input type="file" id="excel-file" multiple="multiple">
 	<select id="showdays" style="width: 50px;" >
 		<option value="30" selected >30</option>
 		<option value="60"  >60</option>
@@ -63,8 +65,8 @@
 	</table>
 	<script src="./config.js"> </script>
 	<script src="rt/rtRankData.js"> </script>
+	<script src="rt/rtDataStore.js"> </script>
 	<script src="rt/rtDataManager.js"> </script>
-	<script src="./timer.js"></script>
 	<script src="./workbook.js"> </script>
 	<script src="./requests.js"> </script>
 	<script src="./dragons.js"> </script>
@@ -76,6 +78,7 @@
 	<script src="./echelon.js"> </script>
 	<script src="./bandEchelon.js"> </script>
 	<script src="./table.js"> </script>
+	<script src="./download.js"> </script>
 	
 	<script src="./AI.js"> </script>
 	<script src="./startup.js"> </script>
