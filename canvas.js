@@ -60,7 +60,7 @@ var canvas = (function(canvas) {
 				day[Configure.title2.jinji] = parseFloat((day[Configure.title2.lianban] -  day[Configure.title2.erban]) * 100/
 												preDay[Configure.title2.lianban]).toFixed(2);
 			}
-			// 涨停数、跌停数 和炸板数  亏钱效应
+			// 涨停数、跌停数 炸板数 曾涨停数  亏钱效应
 			day[Configure.title2.boardnum] = tickets.filter((t)=>{
 				return t[dayNumberTitle] >= 1;
 			}).length;
@@ -70,6 +70,8 @@ var canvas = (function(canvas) {
 			day[Configure.title2.failednum] = tickets.filter((t)=>{
 				return t[dayNumberTitle] == 0 && t[boardTimeTilte] != '--';
 			}).length;
+			day[Configure.title2.boardednum] = day[Configure.title2.failednum] + 
+						day[Configure.title2.boardnum];
 			day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
 						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
 			// 资金总量  涨停的总和-跌停的总和
@@ -296,7 +298,7 @@ var canvas = (function(canvas) {
 			ctx.strokeStyle = color;
 			var vReverseHeight = isHead ? 0 : siteHeight*(1-winFactor);
 			var pointH = siteHeight * (1-winFactor) * 
-				(parseFloat(Days[i][title])- zero)/maxOffset;
+				(parseFloat(Math.abs(Days[i][title]))- zero)/maxOffset;
 			var pointY = siteY + vReverseHeight + ( isHead ? pointH : - pointH)
 			var point = {x: siteX + cellWidth  * i + indecatorIndex * 0.25 * cellWidth, y: pointY};
 		//	ctx.fillRect(point.x, point.y, 2, 2);
@@ -388,10 +390,15 @@ var canvas = (function(canvas) {
 					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, 800);
 			} 
 			if (echelonNames.length <= 1) {
-				drawHeadorFoot('Green', 0, 2, Configure.title2.failedRate, 1, true);
-				drawHeadorFoot('DarkGreen', 0, 100, Configure.title2.floornum, 3, true);
-				drawHeadorFoot('Orange', 0, 200,  Configure.title2.boardnum, 2,false);
-				drawHeadorFoot('Orange', 0, 50,  Configure.title2.lianban, 4,false);
+			//	drawHeadorFoot('CadetBlue', 0, 2, Configure.title2.failedRate, 1, true);
+			//	drawHeadorFoot('DarkGreen', 0, 100, Configure.title2.floornum, 3, true);
+				drawHeadorFoot('rgba(0,158,0,0.5)', 0, 2000, Configure.title2.jumped, 1, true);
+				drawHeadorFoot('rgba(0,50,0,0.5)', 0, 2000, Configure.title2.floored, 3, true);
+			//	drawHeadorFoot('rgba(255,165,0,0.5)', 0, 200,  Configure.title2.boardnum, 2,false);
+			//	drawHeadorFoot('rgba(255,0,0,0.5)', 0, 50,  Configure.title2.lianban, 4,false);
+				drawHeadorFoot('rgba(255,140,0,0.5)', 0, 200,  Configure.title2.boardednum, 2,false);
+				drawHeadorFoot('rgba(255,0,0,0.5)', 0, 200,  Configure.title2.boardnum, 4,false);
+				
 				drawUpon(Configure.MIN_BEILI, Configure.MAX_BEILI, 
 					Configure.ZHISHU_TITLE == Configure.title2.qingxuzhishu ?
 					Configure.ZHISHU_TITLE : Configure.title2.beili);

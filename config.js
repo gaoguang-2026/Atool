@@ -438,6 +438,8 @@ var Configure = (function(){
 		ma5:'5日线',
 		beili:'背离率',
 		sz:'SZ',
+		floored:'曾跌停数',    
+		jumped:'曾超跌数',    // 盘中跌超-5%
 		
 		context:'1指数与情绪',
 		qst1:'2.趋势连扳和特点？',
@@ -454,6 +456,7 @@ var Configure = (function(){
 		boardHeight: 'height',   // 记录当天最高高度   BH_Draw_title
 		dragon: 'dragon',   // 记录当天的龙头名字
 		boardnum: '涨停数',
+		boardednum: '曾涨停数',
 		floornum: '跌停数',
 		failednum: '炸板数',
 		failedRate: '亏钱效应',   // （炸板+跌停板）/ （炸板+跌停板 + 涨停板）
@@ -539,7 +542,7 @@ var Configure = (function(){
 	
 	// 左右窗口
 	var WinXFactor;     //  左边窗口占比 
-	var WinFactor = 0.2;    // 上下窗口的比率 
+	var WinFactor = 0.25;    // 上下窗口的比率 
 	
 	var Echelons_Draw_NUM = 2;
 	var Echelons_ticket_NUM = 7;     // 画出来的数量
@@ -581,12 +584,12 @@ var Configure = (function(){
 	var LocalStore_history_period = 60;   // locastory 保留数据的期限，需要清理。
 	
 	var selectIndicators = [
-								{name:'上证指数'}, 								
-							//	{name:'涨停数量'},
-							//	{name:'跌停数量'},
-							//	{name:'炸板数量'},
+								{name:'上证指数'}, 	
+								{name:'连扳高度'},								
+								{name:'涨停数量'},
+								{name:'跌停数量'},
+								{name:'炸板数量'},
 							//	{name:'连扳背离'},
-								{name:'连扳高度'},
 							//	{name:'连扳数量'},
 							];  
 	var isAfterNoon = function() {

@@ -75,7 +75,7 @@ var Downloader = (function() {
 		rtDataStore.updateRtTicketsToDB(JSON.parse(data));
 	}
 	var download = function(saveName) {
-		if(!backupDate || Configure.getDaysBetween(new Date(backupDate), new Date()) > 5) {
+		if(!backupDate || Configure.getDaysBetween(new Date(backupDate), new Date()) > 7) {
 			rtDataStore.getAllRtTicketsFromDB().then((data)=>{
 			if(data && data.length) {
 					var  url = saveName.includes('xlsx') ?  
