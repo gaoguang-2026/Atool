@@ -7,6 +7,8 @@ var rtDataStore = (function(){
 	var storeId = 'rtDataStore_storeDate';
 	var storeDate = LocalStore.get(storeId);
 	
+	var historyRtTicketsArray;
+	
 	var onupgradeneeded = function(event) {
 		// 数据库创建或升级的时候会触发
 		console.log("onupgradeneeded");
@@ -55,10 +57,26 @@ var rtDataStore = (function(){
 			IndexDB.closeDB(db);
 			return promise;
 		});
-	}
+	};
+	
+	var init = function(){
+		if(!historyRtTicketsArray) {
+			getAllRtTicketsFromDB().then((list)=>{
+				historyRtTicketsArray = list;
+			});
+		}
+	};
+	var getHistoryFromDatestr = function(dateStr){
+		var historyData = historyRtTicketsArray.find((rt) => {
+			return rt['ID'] == dateStr;
+		});
+		return historyData ? historyData['Data']  : [];
+	};
 	return {
+		init:init,
 		updateRtTicketsToDB:updateRtTicketsToDB,
 		getAllRtTicketsFromDB:getAllRtTicketsFromDB,
 		storeToday:storeToday,
+		getHistoryFromDatestr:getHistoryFromDatestr,
 	};
 })();

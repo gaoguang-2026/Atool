@@ -3,6 +3,12 @@ var rtDataManager = (function(){
 	var storageNamePrefix = 'rtData';
 	var realTimeTickets = [];
 	var preRealTimeTickets;   // 保存上一次获取的数据
+	
+	var topFilter = function(t){
+		return t['f109'] > 2000 ||
+				t['f160'] > 3000 ||
+				t['f110'] > 4000;  
+	};
 	// 实时数据
 	var setRTTickets = function(ticketArr) {
 		preRealTimeTickets = realTimeTickets.slice();
@@ -34,47 +40,24 @@ var rtDataManager = (function(){
 		return realTimeTickets;
 	};
 	// 当前涨幅大于6切最大涨幅回撤不到30%   或者5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
-	var getRTTicketsLeader = function(filterToday = false) {
-		var filter = function(t) {
-			return !filterToday && t['f3'] > 600 &&  (t['f15'] - t['f2'])/(t['f15'] - t['f18']) < 0.3 ;
-		}
-		
+	var getRTTicketsLeader = function() {
 		return realTimeTickets.filter((t)=>{
-			return  filter(t)  ||                
-					t['f109'] > 2000 ||
-					t['f160'] > 3000 ||
-					t['f110'] > 4000;   
+			return  (t['f3'] > 600 &&  (t['f15'] - t['f2'])/(t['f15'] - t['f18']) < 0.3)
+					||  topFilter(t);          
 		});
 	};
 	var getHistoryRTticketsLeader = function(dateStr) {
-		return LocalStore.get(storageNamePrefix + dateStr);
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
+			return  topFilter(t);
+		});
 	};
 	
 	var init = function() {
-		// 清理storage过期的数据 LocalStore_history_period
-		Object.keys(LocalStore.getAll()).forEach((key)=>{
-			if(key.includes(storageNamePrefix)) {
-				var dateStr = key.substr(key.indexOf(storageNamePrefix) + storageNamePrefix.length);
-				if(dateStr.length == 8) {
-					dateStr = dateStr.substr(0,4) + '/' + dateStr.substr(4,2) + '/' + dateStr.substr(6,2);
-					if (Configure.getDaysBetween(new Date(dateStr), new Date()) > 
-								Configure.LocalStore_history_period) {
-						LocalStore.remove(key);
-					}
-				}
-			}
-		});
+		rtDataStore.init();
 	};
-	var store = function() {
-		var d = new Date();
-		if (!Configure.isWeekend(d) && !Configure.isAfterTrading(d) && checkIfRtDataUpdated()) {
-			LocalStore.set(storageNamePrefix + Configure.getDateStr(d), getRTTicketsLeader(true));
-		}
-	};
-	
+
 	return {
 		init:init,
-		store:store,
 		setRTTickets:setRTTickets,
 		getRTTickets:getRTTickets,
 		getRTTicketsLeader:getRTTicketsLeader,

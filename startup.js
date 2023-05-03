@@ -154,7 +154,6 @@
 			requests.stop();
 			requests.start(()=>{
 				parserRT.parseAndStoreRTData();
-				rtDataManager.store();
 				table.updateRow();
 				canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
 			});

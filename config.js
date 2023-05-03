@@ -581,7 +581,7 @@ var Configure = (function(){
 	
 	var EmotionAngleDeafultDays = 7;    //情绪指标计算拐点的期限
 	
-	var LocalStore_history_period = 60;   // locastory 保留数据的期限，需要清理。
+	var LocalStore_history_period = 7;   // locastory 保留数据的期限，需要清理。
 	
 	var selectIndicators = [
 								{name:'上证指数'}, 	
