@@ -141,11 +141,7 @@
 			document.getElementById('showdays').disabled = true;
 		}
 		AI.init();
-		
 		dragons.init();
-		table.updateForm();
-		canvas.init(document.getElementById("drawing"), Configure.WinXFactor);
-		
 		return rtDataManager.init();   // 读数据库，异步
 	};
 	
@@ -225,10 +221,13 @@
 			return;
 		}
 		init().then(()=>{							
-			const canvas = document.getElementById('drawing');
-			const ctx = canvas.getContext('2d');
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-					
+			const c = document.getElementById('drawing');
+			const ctx = c.getContext('2d');
+			ctx.clearRect(0, 0, c.width, c.height);
+			
+			table.updateForm();
+			canvas.init(document.getElementById("drawing"), Configure.WinXFactor);
+		
 			drawCanvasLeft();
 			drawCanvasRight();
 			fillTicketsTable();
