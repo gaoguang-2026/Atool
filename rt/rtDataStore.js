@@ -7,7 +7,7 @@ var rtDataStore = (function(){
 	var storeId = 'rtDataStore_storeDate';
 	var storeDate = LocalStore.get(storeId);
 	
-	var historyRtTicketsArray;
+	var historyRtTicketsArray = [];
 	
 	var onupgradeneeded = function(event) {
 		// 数据库创建或升级的时候会触发
@@ -60,11 +60,14 @@ var rtDataStore = (function(){
 	};
 	
 	var init = function(){
-		if(!historyRtTicketsArray) {
-			getAllRtTicketsFromDB().then((list)=>{
-				historyRtTicketsArray = list;
-			});
-		}
+		return new Promise((resolve, reject) => {
+			if(!historyRtTicketsArray || !historyRtTicketsArray.length) {
+				getAllRtTicketsFromDB().then((list)=>{
+					historyRtTicketsArray = list;
+					resolve();
+				});
+			}
+		});
 	};
 	var getHistoryFromDatestr = function(dateStr){
 		var historyData = historyRtTicketsArray.find((rt) => {

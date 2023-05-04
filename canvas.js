@@ -74,6 +74,12 @@ var canvas = (function(canvas) {
 						day[Configure.title2.boardnum];
 			day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
 						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
+			// 曾跌停数 和 超跌数
+			if(!day[Configure.title2.floored] || !day[Configure.title2.jumped]) {
+				day[Configure.title2.floored] = rtDataManager.getHistoryRTticketsFloored(dateArr[dayIndex]).length;
+				day[Configure.title2.jumped]  = rtDataManager.getHistoryRTticketsJumped(dateArr[dayIndex]).length;
+			}
+			
 			// 资金总量  涨停的总和-跌停的总和
 			day[Configure.title2.totalFund] = 0;
 			tickets.forEach((ticket)=>{

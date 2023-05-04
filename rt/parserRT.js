@@ -209,36 +209,36 @@ var parserRT = (function(){
 	/* 
 	* Param 见 parser getTickets， type = 5 排名
 	*/
-	var getRankTickets = function(param) {
+	var getRankTickets = function(datestr, param) {
 		var ticketsArr = [];
-		if(Configure.getMode() == Configure.modeType.DP) {
-			var tDatas = rtDataManager.getRTTicketsLeader();
-			tDatas.forEach((tData)=>{
-				var tTemp = ticketsArr.find((t)=>{
-					return t[Configure.title.name] == tData['f14'];
-				});
-				if (!tTemp) {
-					var tnew = {};
-					tnew[Configure.title.code] = tData['f12'];
-					tnew[Configure.title.name] = tData['f14'];
-					tnew[Configure.title.price] = tData['f2'];
-					tnew[Configure.title.value] = tData['f21'];
-					tnew[Configure.title.totalValue] = tData['f20'];
-					tnew[Configure.title.handoverPercent] = tData['f8'];
-					tnew[Configure.title.gainian] = tData['f103'];
-					tnew[Configure.title.industry] = tData['f100'];
-					tnew[Configure.title.time] = '' + tData['f26'];
-					tnew[Configure.title.rise_5] = parseFloat(tData['f109']/100);
-					tnew[Configure.title.rise_10] = parseFloat(tData['f160']/100);
-					tnew[Configure.title.rise_20] = parseFloat(tData['f110']/100);
-					tnew[Configure.title.rise_1] = parseFloat(tData['f3']/100);
-					ticketsArr.push(tnew);
-				}
-			});
-		}
+		var tDatas = Configure.getMode() == Configure.modeType.DP ? 
+							rtDataManager.getRTTicketsLeader() : 
+							rtDataManager.getHistoryRTticketsLeader(datestr);
 
+		tDatas.forEach((tData)=>{
+			var tTemp = ticketsArr.find((t)=>{
+				return t[Configure.title.name] == tData['f14'];
+			});
+			if (!tTemp) {
+				var tnew = {};
+				tnew[Configure.title.code] = tData['f12'];
+				tnew[Configure.title.name] = tData['f14'];
+				tnew[Configure.title.price] = parseFloat(tData['f2']/100);
+				tnew[Configure.title.value] = tData['f21'];
+				tnew[Configure.title.totalValue] = tData['f20'];
+				tnew[Configure.title.handoverPercent] = tData['f8'];
+				tnew[Configure.title.gainian] = tData['f103'];
+				tnew[Configure.title.industry] = tData['f100'];
+				tnew[Configure.title.time] = '' + tData['f26'];
+				tnew[Configure.title.rise_5] = parseFloat(tData['f109']/100);
+				tnew[Configure.title.rise_10] = parseFloat(tData['f160']/100);
+				tnew[Configure.title.rise_20] = parseFloat(tData['f110']/100);
+				tnew[Configure.title.rise_1] = parseFloat(tData['f3']/100);
+				ticketsArr.push(tnew);
+			}
+		});
 		// 如果没有抓取的数据就从默认的表格中取数据
-		if (ticketsArr.length == 0 || Configure.getMode() == Configure.modeType.FP) {   
+		if (ticketsArr.length == 0) {   
 			ticketsArr = workbook.getRankTickets();
 		}
 		

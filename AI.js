@@ -493,11 +493,13 @@ var AI = (function(){
 		recommendText += isBandInCharge() ? getBandtickets() : getTickits();
 		saveLoacalstorage(dataStorage);
 		
-		canvas.drawEmotionCycle(dragonStage, cangMap.get(dataStorage.emotion).stage);
-		
 		var displayColor = cangMap.get(dataStorage.emotion).context == '博弈' ? 'blue' :
 					cangMap.get(dataStorage.emotion).context == '主升' ? 'red' : 'green';
 		return {color: displayColor, txt: recommendText, tatics: getTaticsTxt()};
+	};
+	
+	var drawEmotionCycle = function(){
+		canvas.drawEmotionCycle(dragonStage, cangMap.get(dataStorage.emotion).stage);
 	};
 	
 	var init = function() {
@@ -520,5 +522,6 @@ var AI = (function(){
 		init:init,
 		getRecommend:getRecommend,
 		isBandInCharge:isBandInCharge,
+		drawEmotionCycle:drawEmotionCycle,
 	}
 })();

@@ -282,7 +282,7 @@ var table = (function(){
 		while(tBody.hasChildNodes()) {
 			tBody.removeChild(tBody.lastChild);
 		};
-		var rankTickets = parserRT.getRankTickets(param);
+		var rankTickets = parserRT.getRankTickets(datetoload,param);
 		var findIndexWithNum = function(str,cha,num){
 			var x=str.indexOf(cha);
 			for(var i=0;i<num;i++){
@@ -338,7 +338,7 @@ var table = (function(){
 									'20日涨幅：' + parseFloat(ticket[Configure.title.rise_20]).toFixed(2) + '<br>');
 						break;
 					case 'rise_1':				
-						td.innerHTML = value.replace(/\%/g, '');
+						td.innerHTML = value.toString().replace(/\%/g, '');
 						break;
 					case 'rise_5':	
 						if(Configure.getMode() == Configure.modeType.FP) {
@@ -363,6 +363,21 @@ var table = (function(){
 						td.innerHTML = td.innerHTML.substr(0,findIndexWithNum(td.innerHTML, '】', 2)+1);
 						if(td.innerHTML.length > 20) {  //大于20个字符，截取两个概念显示
 							td.innerHTML = td.innerHTML.substr(0,findIndexWithNum(td.innerHTML, '】', 1)+1);
+						}
+						if(Configure.getMode() == Configure.modeType.FP){
+							if(td.innerHTML == 'undefined' || td.innerHTML == ''){
+								var txt = '';
+								var arr = ticket[Configure.title.gainian].split(',');
+								for(i = arr.length - 1; i >= 0; i --) {
+									if(Configure.gaiBlackList_critical.indexOf(arr[i]) == -1 &&
+										Configure.gaiBlackList_verbose.indexOf(arr[i]) == -1) {
+										txt += '【';
+										txt += arr[i] + '】';
+									}
+									if (txt.length > 20) break;
+								};
+								td.innerHTML = td.innerHTML != '' ? td.innerHTML : txt;
+							}
 						}
 						value == '--' ? Tip.show(td, ticket[Configure.title.gainian]) 
 										: Tip.show(td,  value);

@@ -3,12 +3,7 @@ var rtDataManager = (function(){
 	var storageNamePrefix = 'rtData';
 	var realTimeTickets = [];
 	var preRealTimeTickets;   // 保存上一次获取的数据
-	
-	var topFilter = function(t){
-		return t['f109'] > 2000 ||
-				t['f160'] > 3000 ||
-				t['f110'] > 4000;  
-	};
+
 	// 实时数据
 	var setRTTickets = function(ticketArr) {
 		preRealTimeTickets = realTimeTickets.slice();
@@ -46,14 +41,44 @@ var rtDataManager = (function(){
 					||  topFilter(t);          
 		});
 	};
+	
+		
+	var topFilter = function(t){
+		return t['f109'] > 2000 ||
+				t['f160'] > 3000 ||
+				t['f110'] > 4000;  
+	};
+		
+	var flooredFilter = function(rtData){
+		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
+		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
+		return  Math.round(rtData['f18'] * per) == rtData['f16'];
+	};
+	
+	var jumpedFilter = function(rtData){
+		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
+		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.95 : 0.93;
+		return  Math.round(rtData['f18'] * per) >= rtData['f16'];
+	};
+	
 	var getHistoryRTticketsLeader = function(dateStr) {
 		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
 			return  topFilter(t);
 		});
 	};
+	var getHistoryRTticketsFloored = function(dateStr) {
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
+			return  flooredFilter(t);
+		});
+	};
+	var getHistoryRTticketsJumped = function(dateStr) {
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
+			return  jumpedFilter(t);
+		});
+	};
 	
 	var init = function() {
-		rtDataStore.init();
+		return rtDataStore.init();
 	};
 
 	return {
@@ -63,6 +88,8 @@ var rtDataManager = (function(){
 		getRTTicketsLeader:getRTTicketsLeader,
 		getRTTicketFromCode:getRTTicketFromCode,
 		getHistoryRTticketsLeader:getHistoryRTticketsLeader,
+		getHistoryRTticketsFloored:getHistoryRTticketsFloored,
+		getHistoryRTticketsJumped:getHistoryRTticketsJumped,
 		checkIfRtDataUpdated:checkIfRtDataUpdated,
 	}
 })();

@@ -140,13 +140,13 @@
 			document.getElementById('excel-file').disabled = true;
 			document.getElementById('showdays').disabled = true;
 		}
-		
-		rtDataManager.init();
 		AI.init();
 		
 		dragons.init();
 		table.updateForm();
 		canvas.init(document.getElementById("drawing"), Configure.WinXFactor);
+		
+		return rtDataManager.init();   // 读数据库，异步
 	};
 	
 	var startRequests = function() {
@@ -215,7 +215,7 @@
 		$('#last').click(dateOnclick);
 	};
 	
-	var loadExcel = function(data) {
+	var loadExcelDone = function(data) {
 		try {
 			workbook.Book(XLSX.read(data, {
 				type: 'binary'
@@ -224,21 +224,24 @@
 			console.log('文件类型不正确');
 			return;
 		}
-		init();
-				
-		const canvas = document.getElementById('drawing');
-		const ctx = canvas.getContext('2d');
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-				
-		drawCanvasLeft();
-		drawCanvasRight();
-		fillTicketsTable();
-				
-		displayAI(AI.getRecommend());
-		addEvent();
-				
-		//start requests
-		startRequests();
+		init().then(()=>{							
+			const canvas = document.getElementById('drawing');
+			const ctx = canvas.getContext('2d');
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+					
+			drawCanvasLeft();
+			drawCanvasRight();
+			fillTicketsTable();
+					
+			displayAI(AI.getRecommend());
+			AI.drawEmotionCycle();
+			
+			addEvent();
+					
+			//start requests
+			startRequests();
+			
+		});
 	};
 	
     $('#excel-file').change(function(e) {
@@ -250,10 +253,10 @@
 			fileReader.onload = function(ev) {
 				var data = ev.target.result
 				if(ev.target.file.type == 'application/json') {
-					Downloader.upload(data, ev.target.index);
+					Downloader.upload(data, ev.target.index);   // 恢复数据库
 				} else {
 					if(ev.target.index == 0) {  // excel只加载第一个
-						loadExcel(data);   
+						loadExcelDone(data);   
 					}
 				}
 			};
