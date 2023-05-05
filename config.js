@@ -125,8 +125,7 @@ var Configure = (function(){
 		{name: '航运', hotPoints:['机场航运', '港口航运']},
 		
 		// 风格
-		{name: '国资改+', hotPoints:['央企国资改革', '地方国资改革']},
-		{name: '一带一路', hotPoints:['一带一路']},
+		{name: '带路中特估', hotPoints:['一带一路','央企国资改革', '地方国资改革','中字头','国企改革', '中特估']},
 		{name: '供销社', hotPoints:['供销社', '乡村振兴']},
 		{name: '抗病毒', hotPoints:['抗原检测', '抗病毒材料', '抗病毒面料']},
 		{name: '半年报预增', hotPoints:['半年报预增']}
