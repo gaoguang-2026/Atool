@@ -441,11 +441,15 @@ var canvas = (function(canvas) {
 	var drawZTEchelon = function(echelonNames) {
 		var ctx = drawing.getContext("2d");		
 		function calPointHeight(g) {
-			return Configure.Echelons_show_type == 'score' ? 
+			if(g && g[Configure.Echelons_show_type]) {
+				return Configure.Echelons_show_type == 'score' ? 
 				siteHeight * (1-winFactor) * parseFloat(g[Configure.Echelons_show_type] - Configure.Min_echelon_score)
 						/ Configure.Max_echelon_score  : 
 				siteHeight * (1-winFactor) * parseFloat(g[Configure.Echelons_show_type] - Configure.Min_echelon_fund)
 						/ Configure.Max_echelon_fund;
+			} else {
+				return 0;
+			}
 		}
 		
 		function drawBottom(bund, maxOffset) {
@@ -489,45 +493,47 @@ var canvas = (function(canvas) {
 		// 
 		var bottomData = 0;
 		for(i = 0; i < Days.length; i ++) {
-			var echelonArr = Days[i][Configure.title2.echelons];
-			echelonArr.forEach((g)=> {    //  g : {name:'', hotPoints:[], score:'', fund:''};
-				if(echelonNames.indexOf(g.name) != -1) {
-					var drawNameDone = false;	
-					var pointH =  calPointHeight(g);
-					// 记录底部数据
+			echelonNames.forEach((gName)=> {
+				var echelonArr = Days[i][Configure.title2.echelons];
+				var g = echelonArr.find((g)=>{   //  g : {name:'', hotPoints:[], score:'', fund:''};
+					return g.name == gName;
+				});
+				var drawNameDone = false;	
+				var pointH =  calPointHeight(g);
+				// 记录底部数据
+				if(g && g.fund) {
 					bottomData = Configure.Echelons_show_type == 'score' ? g.fund : g.score;
-					/////
-					var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
-							y: siteY + siteHeight*(1-winFactor) - pointH};	
-							
-					var color = Configure.echelon_color[echelonNames.indexOf(g.name)%Configure.echelon_color.length];
-								
-					if (i < Days.length - 1) {   // 不是最后一天
-						var echelonsNext = Days[i+1][Configure.title2.echelons];
-						echelonsNext.forEach((gNext)=>{
-							if (gNext.name == g.name){
-								var pointNextH = calPointHeight(gNext);
-								var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
-													y: siteY + siteHeight*(1-winFactor) - pointNextH};
-								ctx.beginPath();
-								ctx.lineWidth="3";
-								ctx.strokeStyle = color;
-								ctx.moveTo(point.x, point.y);
-								ctx.lineTo(pointNext.x, pointNext.y);
-								ctx.stroke();
-								drawNameDone = true;
-							}
-						});
-					}
-					if (!drawNameDone && i == Days.length - 1) {  // 没有连线，画名称
-						drawNameDone = true;
-						ctx.beginPath();
-						ctx.fillStyle= color;
-						ctx.font="14px 楷体";
-						ctx.fillText(g.name + g[Configure.Echelons_show_type] , point.x + 5, point.y);
-						ctx.stroke();
-					};
 				}
+				/////
+				var point = {x :siteX + cellWidth  * i + 0.5 * cellWidth,
+						y: siteY + siteHeight*(1-winFactor) - pointH};	
+							
+				var color = Configure.echelon_color[echelonNames.indexOf(gName)%Configure.echelon_color.length];
+								
+				if (i < Days.length - 1) {   // 不是最后一天
+					var echelonsNext = Days[i+1][Configure.title2.echelons];
+					var gNext = echelonsNext.find((gN)=>{
+						return gN.name == gName;
+					});
+					var pointNextH = calPointHeight(gNext);
+					var pointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
+													y: siteY + siteHeight*(1-winFactor) - pointNextH};
+					ctx.beginPath();
+					ctx.lineWidth="3";
+					ctx.strokeStyle = color;
+					ctx.moveTo(point.x, point.y);
+					ctx.lineTo(pointNext.x, pointNext.y);
+					ctx.stroke();
+					drawNameDone = true;
+				}
+				if (!drawNameDone && i == Days.length - 1) {  // 没有连线，画名称
+					drawNameDone = true;
+					ctx.beginPath();
+					ctx.fillStyle= color;
+					ctx.font="14px 楷体";
+					ctx.fillText(g.name + g[Configure.Echelons_show_type] , point.x + 5, point.y);
+					ctx.stroke();
+				};
 			});
 			if (bottomData != 0) {
 				drawBottom(bottomData, 200);
