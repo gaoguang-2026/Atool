@@ -17,13 +17,13 @@ var rtDataManager = (function(){
 	var checkIfRtDataUpdated = function() {
 		if(preRealTimeTickets && preRealTimeTickets.length) {
 			for(var i = 0; i < 10; i ++) {  //检查前10个数据是否一样
-				if(preRealTimeTickets[i]['f12'] == realTimeTickets[i]['f12']
-				  && preRealTimeTickets[i]['f2'] == realTimeTickets[i]['f2']) {
-					  return false;
+				if(preRealTimeTickets[i]['f12'] != realTimeTickets[i]['f12']
+				  || preRealTimeTickets[i]['f2'] != realTimeTickets[i]['f2']) {
+					  return true;
 				}
 			}
 		}
-		return true;
+		return false;
 	};
 	
 	var getRTTicketFromCode = function(code) {

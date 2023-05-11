@@ -148,20 +148,11 @@
 	var startRequests = function() {
 		if(Configure.getMode() == Configure.modeType.DP) {
 			requests.stop();
-			requests.start((json_str)=>{
-				rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff']);
-				if(rtDataManager.checkIfRtDataUpdated()) {
-					parserRT.parseAndStoreRTData();
-					table.updateRow();
-					canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
-				};
-			}, 'RT');
-		} else {
-			requests.request((json_str)=>{
-				if(json_str) {
-					ztDataStore.storeToday(JSON.parse(json_str)['data']['pool']);
-				}
-			} , 'ZT');
+			requests.start(()=>{
+				parserRT.parseAndStoreRTData();
+				table.updateRow();
+				canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
+			});
 		}
 	}; 
 	
