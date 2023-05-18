@@ -98,6 +98,7 @@ var Configure = (function(){
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
 		{name: '6G', hotPoints:['通信设备','5G', '6G']},
 		{name: '存储', hotPoints:['数据存储','固态存储', '存储芯片', '存储器芯片']},
+		{name: 'CPO', hotPoints:[ 'CPO', '光通信模块', '光模块']},
 		
 		// 消费
 		{name: '白酒', hotPoints:['白酒','啤酒概念','白酒概念', '烟草']},
