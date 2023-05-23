@@ -64,7 +64,7 @@ var canvasRT = (function() {
 		return '#' + str.substring(str.length-6,str.length);
 	}
 
-	var drawEchelonLine = function(echelon, color, eIndex, shouldColorReverse = true) {
+	var drawEchelonLine = function(echelon, color, eIndex, shouldColorReverse = false) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
 		ctx.fillStyle= color;
@@ -120,13 +120,13 @@ var canvasRT = (function() {
 					return tEchelon.name == e.name;
 				})
 				if(idx >= 0) {
-					drawEchelonLine(e, color, displayIndex, false);
+					drawEchelonLine(e, color, displayIndex);
 					displayIndex ++;
 				}
 			} else {
 				if(nameArr.includes(e.name) && 
 					displayIndex <= Configure.RT_canvas_show_echelons_num){
-					drawEchelonLine(e, color, displayIndex);
+					drawEchelonLine(e, color, displayIndex, nameArr.length <= 2 && rtShowDays_num <= 2);
 					displayIndex ++;
 				};
 			}
