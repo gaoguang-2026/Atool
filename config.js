@@ -440,6 +440,8 @@ var Configure = (function(){
 		sz:'SZ',
 		floored:'曾跌停数',    
 		jumped:'曾超跌数',    // 盘中跌超-5%
+		boardR: '昨涨停收益率',
+		boardedR: '昨涨停过收益率',
 		
 		context:'1指数与情绪',
 		qst1:'2.趋势连扳和特点？',
@@ -585,6 +587,7 @@ var Configure = (function(){
 	
 	var selectIndicators = [
 								{name:'上证指数'}, 	
+							//	{name:'收益率%'},
 								{name:'连扳高度'},								
 								{name:'涨停数量'},
 								{name:'跌停数量'},

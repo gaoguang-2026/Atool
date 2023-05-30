@@ -404,7 +404,9 @@ var canvas = (function(canvas) {
 			//	drawHeadorFoot('rgba(255,0,0,0.5)', 0, 50,  Configure.title2.lianban, 4,false);
 				drawHeadorFoot('rgba(255,140,0,0.5)', 0, 200,  Configure.title2.boardednum, 2,false);
 				drawHeadorFoot('rgba(255,0,0,0.5)', 0, 200,  Configure.title2.boardnum, 4,false);
-				
+				drawLine('rgba(255,140,0,1)', 0, 40, Configure.title2.boardedR, true);
+				drawLine('rgba(255,0,0,1)', 0, 40, Configure.title2.boardR, true);
+
 				drawUpon(Configure.MIN_BEILI, Configure.MAX_BEILI, 
 					Configure.ZHISHU_TITLE == Configure.title2.qingxuzhishu ?
 					Configure.ZHISHU_TITLE : Configure.title2.beili);
@@ -412,6 +414,9 @@ var canvas = (function(canvas) {
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
 								Configure.SZ_MaxOffset, Configure.title2.sz , 
 								indecatorName == '上证指数');	
+		//	if(indecatorName == '收益率%') {
+				
+		//	}
 			drawLine('#DC143C', 0, 10, Configure.title2.subBeili, indecatorName == '连扳背离');
 			drawLine('#DC143C', 0, 10, Configure.title2.beili, indecatorName == '涨停背离');
 			drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);
