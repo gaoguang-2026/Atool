@@ -99,6 +99,7 @@ var Configure = (function(){
 		{name: '6G', hotPoints:['通信设备','5G', '6G']},
 		{name: '存储', hotPoints:['数据存储','固态存储', '存储芯片', '存储器芯片']},
 		{name: 'CPO', hotPoints:[ 'CPO', '光通信模块', '光模块']},
+		{name: '脑机接口', hotPoints:[ '脑机接口', '人脑工程', '类脑芯片', '神经元网络', '脑科学']},
 		
 		// 消费
 		{name: '白酒', hotPoints:['白酒','啤酒概念','白酒概念', '烟草']},
