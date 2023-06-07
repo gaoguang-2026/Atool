@@ -589,12 +589,15 @@ var Configure = (function(){
 	var selectIndicators = [
 								{name:'上证指数'}, 	
 							//	{name:'收益率%'},
-								{name:'连扳高度'},								
 								{name:'涨停数量'},
+								{name:'连扳高度'},								
+								{name:'连扳数量'},
 								{name:'跌停数量'},
 								{name:'炸板数量'},
+								{name:'超跌数量'},
+								{name:'亏钱效应'},
 							//	{name:'连扳背离'},
-							//	{name:'连扳数量'},
+								
 							];  
 	var isAfterNoon = function() {
 		return new Date().getHours() > 12;

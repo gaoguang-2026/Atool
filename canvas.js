@@ -64,10 +64,10 @@ var canvas = (function(canvas) {
 			day[Configure.title2.boardnum] = tickets.filter((t)=>{
 				return t[dayNumberTitle] >= 1;
 			}).length;
-			day[Configure.title2.floornum] = tickets.filter((t)=>{
+			day[Configure.title2.floornum] = - tickets.filter((t)=>{
 				return t[dayNumberTitle] == 0 && t[boardTimeTilte] == '--';
 			}).length;
-			day[Configure.title2.failednum] = tickets.filter((t)=>{
+			day[Configure.title2.failednum] = - tickets.filter((t)=>{
 				return t[dayNumberTitle] == 0 && t[boardTimeTilte] != '--';
 			}).length;
 			day[Configure.title2.boardednum] = day[Configure.title2.failednum] + 
@@ -76,8 +76,8 @@ var canvas = (function(canvas) {
 						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
 			// 曾跌停数 和 超跌数
 			if(!day[Configure.title2.floored] || !day[Configure.title2.jumped]) {
-				day[Configure.title2.floored] = rtDataManager.getHistoryRTticketsFloored(dateArr[dayIndex]).length;
-				day[Configure.title2.jumped]  = rtDataManager.getHistoryRTticketsJumped(dateArr[dayIndex]).length;
+				day[Configure.title2.floored] = - rtDataManager.getHistoryRTticketsFloored(dateArr[dayIndex]).length;
+				day[Configure.title2.jumped]  = - rtDataManager.getHistoryRTticketsJumped(dateArr[dayIndex]).length;
 			}
 			
 			// 资金总量  涨停的总和-跌停的总和
@@ -373,7 +373,8 @@ var canvas = (function(canvas) {
 					ctx.font="14px 楷体"
 					ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
 					// 写坐标值
-					if(title != Configure.title2.failedRate ) {  // failedRate 不写
+					if(title != Configure.title2.boardedR &&
+						title != Configure.title2.boardR ) {  // 昨日涨停收益 不写
 						ctx.fillText(zero, siteX - 30, siteY + siteHeight * (1- winFactor));
 						ctx.fillText(zero + maxOffset, siteX - 30, siteY);
 						ctx.stroke();
@@ -422,11 +423,13 @@ var canvas = (function(canvas) {
 			drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);
 			drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName);
 			drawLine('blue', 900, 100, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName );
-			drawLine('green', 0, 0.8, Configure.title2.failedRate, '亏钱效应' == indecatorName);
-			drawLine(Configure.boardHeight_color, 5, 10, Configure.title2.lianban, '连扳数量' == indecatorName);
-			drawLine(Configure.boardHeight_color, 30, 40, Configure.title2.boardnum, '涨停数量' == indecatorName);
-			drawLine('#20B2AA', 0, 15, Configure.title2.floornum, '跌停数量' == indecatorName);
-			drawLine('#20B2AA', 0, 20, Configure.title2.failednum, '炸板数量' == indecatorName);
+			drawLine(Configure.boardHeight_color, 5, 20, Configure.title2.lianban, '连扳数量' == indecatorName);
+			drawLine(Configure.boardHeight_color, 20, 70, Configure.title2.boardnum, '涨停数量' == indecatorName);
+			
+			drawLine('#20B2AA', -20, 20, Configure.title2.floornum, '跌停数量' == indecatorName);
+			drawLine('#20B2AA', -20, 20, Configure.title2.failednum, '炸板数量' == indecatorName);
+			drawLine('#20B2AA', -2000, 2000, Configure.title2.jumped, '超跌数量' == indecatorName);
+			drawLine('green', -0.8, 0.8, Configure.title2.failedRate, '亏钱效应' == indecatorName);
 			
 			//画连扳高度
 			point = drawLine(Configure.boardHeight_color, Configure.BH_zero,
