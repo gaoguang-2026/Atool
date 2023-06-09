@@ -6,26 +6,36 @@
 		Book = b
 	};
 	var sheetExist = function(name) {
-		for (var sheet in Book.Sheets) {
-			if (Book.Sheets.hasOwnProperty(sheet) && name.includes(sheet)) {
-				return true;
-			};
-		 }
-		return false;
+		return Book.Sheets.hasOwnProperty(name) || 
+				//兼容老版本不完整得日期表格
+				Book.Sheets.hasOwnProperty(name.substr(-6)) ||   
+				Book.Sheets.hasOwnProperty(name.substr(-4));
+				// 兼容老版本不完整得日期表格 end 
 	};
 	
 	var getSheet = function(name) {
 		// 表格的表格范围，可用于判断表头是否数量是否正确
         var fromTo = '';
 		var persons = [];  // 存储要使用的表
+		if(sheetExist(name)) {
+			persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[name]));
+			 //兼容老版本不完整得日期表格
+			if(!persons.length) {   
+				persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[name.substr(-6)]));
+				if(!persons.length) {
+					persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[name.substr(-4)]));
+				}
+			}
+			// 兼容老版本不完整得日期表格 end 
+		}
         // 遍历每张表读取
-        for (var sheet in Book.Sheets) {
+   /*     for (var sheet in Book.Sheets) {
             if (Book.Sheets.hasOwnProperty(sheet) && name && name.substr(-4) == (sheet)) {
 				fromTo = Book.Sheets[sheet]['!ref'];
                 persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[sheet]));
                 //  break; // 如果只取第一张表，就取消注释这行
             }
-        }
+        } */
 		return persons;
 	};
 	

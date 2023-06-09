@@ -6,7 +6,7 @@ var parser = (function(){
 		
 	var loadSheet = function(dateStr = Configure.getDateStr(Configure.date)) {
 		//避免重复加载
-		if(dateStr == dateToload || !workbook.getSheet(dateStr)) {
+		if(dateStr == dateToload || !workbook.sheetExist(dateStr)) {
 			return;
 		};
 		clear();
