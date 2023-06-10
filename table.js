@@ -135,7 +135,7 @@ var table = (function(){
 	var addDetailAndDelete = function(tr, ticket) {
 			//添加详细超链接
 		var tDetail = document.createElement('td');
-		tDetail.innerHTML = '<a href="baidu.com" target="_blank">详细</a>';
+		tDetail.innerHTML = '<a href="javascript:;" >详细</a>';
 		var oD = tDetail.children[0];
 		oD.onclick = function(){
 			var url = "http://quote.eastmoney.com/" + ticket[Configure.title.code] + ".html#fullScreenChart"
