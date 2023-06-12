@@ -310,6 +310,7 @@
 		});
 
 		const canvas = document.getElementById('drawing');
+		canvas.width = window.outerWidth;
 		const ctx = canvas.getContext('2d');
 		const img = new Image();
 		img.src = 'img/情绪周期.png';

@@ -523,7 +523,7 @@ var Configure = (function(){
 			title2.lianbanzhishu : title2.zhangtingzhishu;   // 情绪指标 title2.zhangtingzhishu
 	var MAX_BEILI = ZHISHU_TITLE == title2.zhangtingzhishu ? 8 : 
 						ZHISHU_TITLE == title2.qingxuzhishu ?  1000 : 10;    //最大背离率 ,  影响canvas纵坐标
-	var MIN_BEILI = ZHISHU_TITLE == title2.qingxuzhishu ?  900 : 0;
+	var MIN_BEILI = ZHISHU_TITLE == title2.qingxuzhishu ?  850 : 0;
 	
 	var Days_Show_reserved_lengh = 5;  //预留的天数，为了算显示第一天的MA5
 	var Days_Max_lengh = 250;   // 最大期限

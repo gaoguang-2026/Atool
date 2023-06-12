@@ -543,7 +543,7 @@ var canvas = (function(canvas) {
 					ctx.stroke();
 				};
 			});
-			if (bottomData != 0) {
+			if (bottomData != 0 && bottomData != 'NaN') {
 				drawBottom(bottomData, 200);
 			}
 		};
