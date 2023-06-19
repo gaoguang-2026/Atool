@@ -240,8 +240,10 @@ var parser = (function(){
 			e.name = echelon.name;
 			e.hotPoints = echelon.hotPoints.slice();
 			echelon.hotPoints.forEach((hot)=>{
-				if (gaiNian.has(hot)) {
-					e.score += parseInt(gaiNian.get(hot).weight);
+				for (var [name, value] of gaiNian) {
+					if (name.includes(hot)) {
+						e.score += parseInt(value.weight);
+					}
 				}
 			});
 			e.fund = calEchelonFund(e.hotPoints);

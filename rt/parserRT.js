@@ -16,7 +16,7 @@ var parserRT = (function(){
 				e.hotPoints = echelon.hotPoints.slice();
 				e.hotPoints.forEach((hot)=>{
 					var gFind = gaiNianArr.find((g)=>{
-						return g[Configure.titleGainian.name] == hot;
+						return  g[Configure.titleGainian.name].includes(hot);
 					})
 					if (gFind) {
 						e.score += parseFloat(gFind[Configure.titleGainian.weight]) + 0; 

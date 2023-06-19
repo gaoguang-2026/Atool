@@ -98,7 +98,7 @@ var Configure = (function(){
 		{name: '军工', hotPoints:['航天航空', '军工','大飞机','国产航母', '卫星导航', '北斗','卫星通信']},
 		{name: '6G', hotPoints:['通信设备','5G', '6G']},
 		{name: '存储', hotPoints:['数据存储','固态存储', '存储芯片', '存储器芯片']},
-		{name: 'CPO', hotPoints:[ 'CPO', '光通信模块', '光模块']},
+		{name: 'CPO', hotPoints:[ 'CPO概念', '光通信', '光模块', '光芯片', '光模块连接器']},
 		{name: '脑机接口', hotPoints:[ '脑机接口', '人脑工程', '类脑芯片', '神经元网络', '脑科学']},
 		
 		// 消费
