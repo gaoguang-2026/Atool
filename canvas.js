@@ -3,6 +3,12 @@ var canvas = (function(canvas) {
 	var drawing;
 	var AllDays;  // Store all days data
 	var Days;    // days to show 
+	
+	// 记录情绪指标的min max,
+	var site_MIN_qx = 0;
+	var site_MAX_qx = 0;
+	var site_MIN_qazs = 0;
+	var site_MAX_qazs = 0;
 
 	var emotionPoints = [];   // 保存情绪的点
 	var zbPoints = {};   // 保存其他指标的点
@@ -59,6 +65,10 @@ var canvas = (function(canvas) {
 				preDay = getDayFromDateStr(predayDate);
 				day[Configure.title2.jinji] = parseFloat((day[Configure.title2.lianban] -  day[Configure.title2.erban]) * 100/
 												preDay[Configure.title2.lianban]).toFixed(2);
+				if(!day[Configure.title2.zhangtingzhishu]) {
+					day[Configure.title2.zhangtingzhishu] = parseInt(preDay[Configure.title2.zhangtingzhishu]) * 
+															(100 + parseFloat(day[Configure.title2.boardR])) / 100;
+				}
 			}
 			// 涨停数、跌停数 炸板数 曾涨停数  亏钱效应
 			day[Configure.title2.boardnum] = tickets.filter((t)=>{
@@ -70,9 +80,9 @@ var canvas = (function(canvas) {
 			day[Configure.title2.failednum] = - tickets.filter((t)=>{
 				return t[dayNumberTitle] == 0 && t[boardTimeTilte] != '--';
 			}).length;
-			day[Configure.title2.boardednum] = day[Configure.title2.failednum] + 
+			day[Configure.title2.boardednum] = Math.abs(day[Configure.title2.failednum]) + 
 						day[Configure.title2.boardnum];
-			day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
+			day[Configure.title2.failedRate] = ((Math.abs(day[Configure.title2.failednum]) + 
 						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
 			// 曾跌停数 和 超跌数
 			if(!day[Configure.title2.floored] || !day[Configure.title2.jumped]) {
@@ -108,10 +118,17 @@ var canvas = (function(canvas) {
 												day[ZHISHU_TITLE]).toFixed(2);
 			}
 		}
-		// 连扳指数 ma5和背离率
-		calMa5AndBeili(Configure.ZHISHU_TITLE, Configure.title2.ma5, Configure.title2.beili);
-		// 涨停板 MA5 和 背离率
-		calMa5AndBeili(Configure.ZHISHU_SUB_TITLE, Configure.title2.subMa5, Configure.title2.subBeili);
+		
+		if(Configure.ZHISHU_TITLE == Configure.title2.qingxuzhishu ) {
+			// 涨停板 ma5和背离率
+			calMa5AndBeili(Configure.title2.zhangtingzhishu, Configure.title2.ma5, Configure.title2.beili);
+			// 连扳 MA5 和 背离率
+			calMa5AndBeili(Configure.title2.lianbanzhishu, Configure.title2.subMa5, Configure.title2.subBeili);
+		} else {
+			calMa5AndBeili(Configure.ZHISHU_TITLE, Configure.title2.ma5, Configure.title2.beili);
+			calMa5AndBeili(Configure.ZHISHU_SUB_TITLE, Configure.title2.subMa5, Configure.title2.subBeili);
+		}
+
 		return day;
 	};
 	
@@ -217,11 +234,16 @@ var canvas = (function(canvas) {
 			ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor)*i/4);	
 		}
 		///
-	/*	if (!echelonNames.length ) {
+		if (!echelonNames.length ) {
 			ctx.fillStyle = Configure.line_color;
-			ctx.fillText(Configure.MIN_BEILI, siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor));
-			ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth - 16, siteY + 12);
-		} */
+			if (Configure.ZHISHU_TITLE == Configure.title2.qingxuzhishu) {
+				ctx.fillText(site_MIN_qx, siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor) + 10);
+				ctx.fillText(site_MAX_qx, siteX + siteWidth - 16, siteY + 12);
+			} else {
+				ctx.fillText(Configure.MIN_BEILI, siteX + siteWidth - 10, siteY + siteHeight * (1- winFactor)+ 10);
+				ctx.fillText(Configure.MAX_BEILI + '%', siteX + siteWidth - 16, siteY + 12);
+			}
+		} 
 		ctx.stroke(); 
 	};
 
@@ -268,7 +290,7 @@ var canvas = (function(canvas) {
 	var drawIndicators = function(indecatorName, echelonNames) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
-		// 情绪维度1 -- 进场热度
+		// 情绪维度1 -- 资金热度
 		function drawBottom(title, maxOffset) {
 			var rectHeight = Days[i][title] ? 
 						siteHeight * winFactor * parseFloat(Days[i][title]) /maxOffset : 0;
@@ -306,9 +328,9 @@ var canvas = (function(canvas) {
 			var pointH = siteHeight * (1-winFactor) * 
 				(parseFloat(Math.abs(Days[i][title]))- zero)/maxOffset;
 			var pointY = siteY + vReverseHeight + ( isHead ? pointH : - pointH)
-			var point = {x: siteX + cellWidth  * i + indecatorIndex * 0.25 * cellWidth, y: pointY};
+			var point = {x: siteX + cellWidth  * i + indecatorIndex * 0.5 * cellWidth, y: pointY};
 		//	ctx.fillRect(point.x, point.y, 2, 2);
-			ctx.lineWidth=cellWidth/4;
+			ctx.lineWidth=cellWidth/2.5;
 			ctx.moveTo(point.x, siteY + vReverseHeight);
 			ctx.lineTo(point.x, point.y);
 			ctx.stroke();
@@ -397,27 +419,22 @@ var canvas = (function(canvas) {
 					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, 800);
 			} 
 			if (echelonNames.length <= 1) {
-			//	drawHeadorFoot('CadetBlue', 0, 2, Configure.title2.failedRate, 1, true);
-			//	drawHeadorFoot('DarkGreen', 0, 100, Configure.title2.floornum, 3, true);
 				drawHeadorFoot('rgba(0,158,0,0.5)', 0, 2000, Configure.title2.jumped, 1, true);
-				drawHeadorFoot('rgba(0,50,0,0.5)', 0, 2000, Configure.title2.floored, 3, true);
-			//	drawHeadorFoot('rgba(255,165,0,0.5)', 0, 200,  Configure.title2.boardnum, 2,false);
-			//	drawHeadorFoot('rgba(255,0,0,0.5)', 0, 50,  Configure.title2.lianban, 4,false);
-				drawHeadorFoot('rgba(255,140,0,0.5)', 0, 200,  Configure.title2.boardednum, 2,false);
-				drawHeadorFoot('rgba(255,0,0,0.5)', 0, 200,  Configure.title2.boardnum, 4,false);
+				drawHeadorFoot('rgba(0,50,0,0.5)', 0, 2000, Configure.title2.floored, 2, true);
+				drawHeadorFoot('rgba(255,140,0,0.5)', 0, 200,  Configure.title2.boardednum, 1,false);
+				drawHeadorFoot('rgba(255,0,0,0.5)', 0, 200,  Configure.title2.boardnum, 2,false);
 				drawLine('rgba(255,140,0,1)', 0, 40, Configure.title2.boardedR, true);
 				drawLine('rgba(255,0,0,1)', 0, 40, Configure.title2.boardR, true);
 
-				drawUpon(Configure.MIN_BEILI, Configure.MAX_BEILI, 
-					Configure.ZHISHU_TITLE == Configure.title2.qingxuzhishu ?
-					Configure.ZHISHU_TITLE : Configure.title2.beili);
+				Configure.ZHISHU_TITLE == Configure.title2.qingxuzhishu ? 
+					drawUpon(site_MIN_qx, site_MAX_qx, Configure.title2.qingxuzhishu) :
+					drawUpon(Configure.MIN_BEILI, Configure.MAX_BEILI, Configure.title2.beili);
 			}		
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
 								Configure.SZ_MaxOffset, Configure.title2.sz , 
 								indecatorName == '上证指数');	
-		//	if(indecatorName == '收益率%') {
-				
-		//	}
+			drawLine(Configure.sz_color, site_MIN_qazs, site_MAX_qazs - site_MIN_qazs, 
+							Configure.title2.qadq , indecatorName == '全A等权');	
 			drawLine('#DC143C', 0, 10, Configure.title2.subBeili, indecatorName == '连扳背离');
 			drawLine('#DC143C', 0, 10, Configure.title2.beili, indecatorName == '涨停背离');
 			drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);
@@ -432,12 +449,13 @@ var canvas = (function(canvas) {
 			drawLine('green', -0.8, 0.8, Configure.title2.failedRate, '亏钱效应' == indecatorName);
 			
 			//画连扳高度
-			point = drawLine(Configure.boardHeight_color, Configure.BH_zero,
-					Configure.BH_MaxOffset, Configure.BH_Draw_title, '连扳高度' == indecatorName);
-			if ('连扳高度' == indecatorName &&
+			point = drawLine('rgba(0,0,0,0.1)', Configure.BH_zero,
+					Configure.BH_MaxOffset, Configure.BH_Draw_title, /*'连扳高度' == indecatorName*/ true);
+			if (/*'连扳高度' == indecatorName &&*/
 				i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
 				Days[i][Configure.BH_Draw_title] >= Days[i+1][Configure.BH_Draw_title] &&
 					Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
+				ctx.fillStyle= 'rgba(0,0,0,0.8)';
 				ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + '', point.x - 10, point.y - 5);
 				ctx.stroke();
 			}
@@ -656,6 +674,10 @@ var canvas = (function(canvas) {
 	var clear = function() {
 		emotionPoints = [];   // 保存背离率的点
 		zbPoints = {};   // 保存其他指标的点
+		site_MIN_qx = 0;
+		site_MAX_qx = 0;
+		site_MIN_qazs = 0;
+		site_MAX_qazs = 0;
 	};
 	var draw = function(echelonNames, indecatorName, showDaysNumber) {
 		if (drawing.getContext){
@@ -669,6 +691,19 @@ var canvas = (function(canvas) {
 			
 			Days = AllDays.slice(AllDays.length - showDaysNumber, AllDays.length);
 			cellWidth = siteWidth / showDaysNumber *cell_factor;  
+			Days.forEach((d)=>{      // 提前获取坐标
+				var base = 50;
+				if(!site_MIN_qx || d[Configure.title2.qingxuzhishu] < site_MIN_qx ) {
+					site_MIN_qx = Math.floor(d[Configure.title2.qingxuzhishu] / base) * base;
+				} else if(!site_MAX_qx || d[Configure.title2.qingxuzhishu] > site_MAX_qx){
+					site_MAX_qx = Math.ceil(d[Configure.title2.qingxuzhishu] / base) * base;
+				}
+				if(!site_MIN_qazs || d[Configure.title2.qadq] < site_MIN_qazs) {
+					site_MIN_qazs = Math.floor(d[Configure.title2.qadq] / base) * base;
+				} else if(!site_MAX_qazs || d[Configure.title2.qadq] > site_MAX_qazs){
+					site_MAX_qazs = Math.ceil(d[Configure.title2.qadq] / base) * base;
+				}
+			});
 			
 			drawSite(indecatorName, echelonNames);
 			drawIndicators(indecatorName, echelonNames);

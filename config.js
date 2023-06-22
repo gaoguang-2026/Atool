@@ -439,6 +439,7 @@ var Configure = (function(){
 		ma5:'5日线',
 		beili:'背离率',
 		sz:'SZ',
+		qadq:'全A等权',
 		floored:'曾跌停数',    
 		jumped:'曾超跌数',    // 盘中跌超-5%
 		boardR: '昨涨停收益率',
@@ -533,9 +534,9 @@ var Configure = (function(){
 	
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
 	var BH_zero = BH_Draw_title == title2.height ? 
-							 	2 : 2 * 65537;    // boardHeight 0轴坐标
+							 	0 : 0 * 65537;    // boardHeight 0轴坐标
 	var BH_MaxOffset = BH_Draw_title == title2.height ? 
-							8 : 8 * 65537;   // boardHeight 纵轴
+							10 : 10 * 65537;   // boardHeight 纵轴
 
 	
 	var Min_echelon_score = 0;    //Echelons_show_type == 'score' 时draw 的条件  
@@ -587,10 +588,13 @@ var Configure = (function(){
 	var LocalStore_history_period = 7;   // locastory 保留数据的期限，需要清理。
 	
 	var selectIndicators = [
-								{name:'上证指数'}, 	
+							
+								{name:'全A等权'}, 
+							//	{name:'上证指数'}, 									
 							//	{name:'收益率%'},
+								{name:'涨停背离'},
 								{name:'涨停数量'},
-								{name:'连扳高度'},								
+							//	{name:'连扳高度'},								
 								{name:'连扳数量'},
 								{name:'跌停数量'},
 								{name:'炸板数量'},
