@@ -326,5 +326,7 @@
 		
 		updateIndicator();
 		
-		Downloader.download('备份数据' + Configure.getDateStr(new Date()) + '.json');
+		var date = new Date();
+		var backupYear = date.getMonth() <= 1 ? date.getFullYear() - 1: date.getFullYear();
+		Downloader.download('备份数据' + backupYear + '.backup', backupYear);
 	};

@@ -442,6 +442,7 @@ var Configure = (function(){
 		qadq:'全A等权',
 		floored:'曾跌停数',    
 		jumped:'曾超跌数',    // 盘中跌超-5%
+		boardsR: '昨连扳收益率',
 		boardR: '昨涨停收益率',
 		boardedR: '昨涨停过收益率',
 		
@@ -594,11 +595,12 @@ var Configure = (function(){
 							//	{name:'收益率%'},
 								{name:'涨停背离'},
 								{name:'涨停数量'},
+								{name:'赚钱效应'},
 							//	{name:'连扳高度'},								
-								{name:'连扳数量'},
-								{name:'跌停数量'},
-								{name:'炸板数量'},
-								{name:'超跌数量'},
+							//	{name:'连扳数量'},
+							//	{name:'跌停数量'},
+							//	{name:'炸板数量'},
+							//	{name:'超跌数量'},
 								{name:'亏钱效应'},
 							//	{name:'连扳背离'},
 								

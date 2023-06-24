@@ -74,13 +74,16 @@ var Downloader = (function() {
 		console.log('upload index:' + index + ',data:' + data);
 		rtDataStore.updateRtTicketsToDB(JSON.parse(data));
 	}
-	var download = function(saveName) {
-		if(!backupDate || Configure.getDaysBetween(new Date(backupDate), new Date()) >= 30) {
+	var download = function(saveName, backupYear) {
+		if(!backupDate || Configure.getDaysBetween(new Date(backupDate), new Date()) >= 30 ) {
 			rtDataStore.getAllRtTicketsFromDB().then((data)=>{
 			if(data && data.length) {
+					var backupData = data.filter((d)=>{
+							return d.ID.substr(0,4) == backupYear;
+						});
 					var  url = saveName.includes('xlsx') ?  
-										sheet2blob(XLSX.utils.aoa_to_sheet(data)) :
-										arrayDataToBlob(data);
+										sheet2blob(XLSX.utils.aoa_to_sheet(backupData)) :
+										arrayDataToBlob(backupData);
 					openDownloadDialog(url, saveName);
 				}
 			});	

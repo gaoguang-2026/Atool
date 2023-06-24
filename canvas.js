@@ -69,6 +69,10 @@ var canvas = (function(canvas) {
 					day[Configure.title2.zhangtingzhishu] = parseInt(preDay[Configure.title2.zhangtingzhishu]) * 
 															(100 + parseFloat(day[Configure.title2.boardR])) / 100;
 				}
+				if(!day[Configure.title2.lianbanzhishu]) {
+					day[Configure.title2.lianbanzhishu] = parseInt(preDay[Configure.title2.lianbanzhishu]) * 
+															(100 + parseFloat(day[Configure.title2.boardsR])) / 100;
+				}
 			}
 			// 涨停数、跌停数 炸板数 曾涨停数  亏钱效应
 			day[Configure.title2.boardnum] = tickets.filter((t)=>{
@@ -82,7 +86,7 @@ var canvas = (function(canvas) {
 			}).length;
 			day[Configure.title2.boardednum] = Math.abs(day[Configure.title2.failednum]) + 
 						day[Configure.title2.boardnum];
-			day[Configure.title2.failedRate] = ((Math.abs(day[Configure.title2.failednum]) + 
+		day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
 						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
 			// 曾跌停数 和 超跌数
 			if(!day[Configure.title2.floored] || !day[Configure.title2.jumped]) {
@@ -328,7 +332,7 @@ var canvas = (function(canvas) {
 			var pointH = siteHeight * (1-winFactor) * 
 				(parseFloat(Math.abs(Days[i][title]))- zero)/maxOffset;
 			var pointY = siteY + vReverseHeight + ( isHead ? pointH : - pointH)
-			var point = {x: siteX + cellWidth  * i + indecatorIndex * 0.5 * cellWidth, y: pointY};
+			var point = {x: siteX + cellWidth  * i + indecatorIndex * 0.33 * cellWidth, y: pointY};
 		//	ctx.fillRect(point.x, point.y, 2, 2);
 			ctx.lineWidth=cellWidth/2.5;
 			ctx.moveTo(point.x, siteY + vReverseHeight);
@@ -419,34 +423,46 @@ var canvas = (function(canvas) {
 					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, 800);
 			} 
 			if (echelonNames.length <= 1) {
-				drawHeadorFoot('rgba(0,158,0,0.5)', 0, 2000, Configure.title2.jumped, 1, true);
-				drawHeadorFoot('rgba(0,50,0,0.5)', 0, 2000, Configure.title2.floored, 2, true);
-				drawHeadorFoot('rgba(255,140,0,0.5)', 0, 200,  Configure.title2.boardednum, 1,false);
-				drawHeadorFoot('rgba(255,0,0,0.5)', 0, 200,  Configure.title2.boardnum, 2,false);
-				drawLine('rgba(255,140,0,1)', 0, 40, Configure.title2.boardedR, true);
-				drawLine('rgba(255,0,0,1)', 0, 40, Configure.title2.boardR, true);
-
+				drawHeadorFoot('rgba(0,158,0,0.4)', 0, 2000, Configure.title2.jumped, 1, true);
+				drawHeadorFoot('rgba(0,50,0,0.4)', 0, 2000, Configure.title2.floored, 2, true);
+				drawHeadorFoot('rgba(128,0,0,0.4)', 0, 200,  Configure.title2.lianban, 3,false);
+				drawHeadorFoot('rgba(255,0,0,0.4)', 0, 200,  Configure.title2.boardnum, 2,false);
+				drawHeadorFoot('rgba(255,140,0,0.4)', 0, 200,  Configure.title2.boardednum, 1,false);
+				
 				Configure.ZHISHU_TITLE == Configure.title2.qingxuzhishu ? 
 					drawUpon(site_MIN_qx, site_MAX_qx, Configure.title2.qingxuzhishu) :
 					drawUpon(Configure.MIN_BEILI, Configure.MAX_BEILI, Configure.title2.beili);
 			}		
+			
+			// 1 指数维度
 			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
 								Configure.SZ_MaxOffset, Configure.title2.sz , 
 								indecatorName == '上证指数');	
 			drawLine(Configure.sz_color, site_MIN_qazs, site_MAX_qazs - site_MIN_qazs, 
 							Configure.title2.qadq , indecatorName == '全A等权');	
-			drawLine('#DC143C', 0, 10, Configure.title2.subBeili, indecatorName == '连扳背离');
-			drawLine('#DC143C', 0, 10, Configure.title2.beili, indecatorName == '涨停背离');
+			
+			// 2 风险偏好
+			drawLine('rgba(75,0,130,0.5)', -4, 16, Configure.title2.subBeili, indecatorName == '涨停背离'/*'连扳背离'*/); 
+			drawLine('blue', -4, 16, Configure.title2.beili, indecatorName == '涨停背离');   
+
+			// 3 资金热度    和短线资金配合
+			drawLine('rgba(75,0,130,0.5)', -5, 30, Configure.title2.lianban, /*'连扳数量'*/'涨停数量' == indecatorName);  
+			drawLine('blue', 0, 200, Configure.title2.boardnum, '涨停数量' == indecatorName);            
+			
+			// 4 赚钱效益
+			drawLine('rgba(128,0,0,1)', 0, 40, Configure.title2.boardsR, '赚钱效应' == indecatorName);
+			drawLine('rgba(255,0,0,1)', 0, 40, Configure.title2.boardR, /*'涨停收益' == indecatorName*/ true);
+			drawLine('rgba(255,140,0,1)', 0, 40, Configure.title2.boardedR, '赚钱效应' == indecatorName);
+			
+			// 5 恐慌指数
+			drawLine('green', -1, 1, Configure.title2.failedRate, '亏钱效应' == indecatorName);
+			//drawLine('#20B2AA',  -20, 20, Configure.title2.failednum, /*'炸板数量'*/'亏钱效应' == indecatorName);
+			drawLine('#20B2AA', -2000, 2000, Configure.title2.jumped, /*'超跌数量'*/'亏钱效应' == indecatorName);
+			drawLine('green', -200, 200, Configure.title2.floornum, /*'跌停数量'*/ '亏钱效应'== indecatorName);
+						
 			drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);
 			drawLine('blue', 100, 400, Configure.title2.totalFund, '短线资金' == indecatorName);
 			drawLine('blue', 900, 100, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName );
-			drawLine(Configure.boardHeight_color, 5, 20, Configure.title2.lianban, '连扳数量' == indecatorName);
-			drawLine(Configure.boardHeight_color, 20, 70, Configure.title2.boardnum, '涨停数量' == indecatorName);
-			
-			drawLine('#20B2AA', -20, 20, Configure.title2.floornum, '跌停数量' == indecatorName);
-			drawLine('#20B2AA', -20, 20, Configure.title2.failednum, '炸板数量' == indecatorName);
-			drawLine('#20B2AA', -2000, 2000, Configure.title2.jumped, '超跌数量' == indecatorName);
-			drawLine('green', -0.8, 0.8, Configure.title2.failedRate, '亏钱效应' == indecatorName);
 			
 			//画连扳高度
 			point = drawLine('rgba(0,0,0,0.1)', Configure.BH_zero,
