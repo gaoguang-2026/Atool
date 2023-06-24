@@ -74,12 +74,12 @@ var Downloader = (function() {
 		console.log('upload index:' + index + ',data:' + data);
 		rtDataStore.updateRtTicketsToDB(JSON.parse(data));
 	}
-	var download = function(saveName, backupYear) {
-		if(!backupDate || Configure.getDaysBetween(new Date(backupDate), new Date()) >= 30 ) {
+	var download = function(saveName, backupMonth) {
+		if(!backupDate || new Date(backupDate).getMonth() != new Date().getMonth()) {   // 时间到下一个月
 			rtDataStore.getAllRtTicketsFromDB().then((data)=>{
 			if(data && data.length) {
 					var backupData = data.filter((d)=>{
-							return d.ID.substr(0,4) == backupYear;
+							return d.ID.substr(0,6) == backupMonth;
 						});
 					var  url = saveName.includes('xlsx') ?  
 										sheet2blob(XLSX.utils.aoa_to_sheet(backupData)) :

@@ -326,7 +326,19 @@
 		
 		updateIndicator();
 		
-		var date = new Date();
-		var backupYear = date.getMonth() <= 1 ? date.getFullYear() - 1: date.getFullYear();
-		Downloader.download('备份数据' + backupYear + '.backup', backupYear);
+		// 当月备份上一个月的数据
+		function getLastMonth() {
+			var date = new Date();
+			var year = date.getFullYear();   //当前年：四位数字
+			var month = date.getMonth();     //当前月：0-11
+			if (month == 0) {   //如果是0，则说明是1月份，上一个月就是去年的12月
+				year -= 1;
+				month = 12;
+			}
+			month = month < 10 ? ('0' + month) : month;   //月份格式化：月份小于10则追加个0
+			let lastYearMonth = year + month;
+			return lastYearMonth;
+		};
+		var backUpMonth = getLastMonth();
+		Downloader.download('备份数据' + backUpMonth + '.backup', backUpMonth);
 	};
