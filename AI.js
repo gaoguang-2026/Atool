@@ -159,7 +159,7 @@ var AI = (function(){
 						Configure.getAngle(emotionPoints[0].point, emotionPoints[1].point) : 0;
 		var emotionLevel = emotionPoints.length >= 1 ? getLevel(emotionPoints[0]) : 0;
 		
-		var szAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.sz));
+		var szAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qadq));
 		var eAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qingxuzhishu));
 		for (var i in condition) {
 			var value = currentValue = -1;
@@ -344,7 +344,7 @@ var AI = (function(){
 	
 	var getBandtickets = function() {
 		// 算斜率
-		var szPoinsts = canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.sz);    
+		var szPoinsts = canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qadq);    
 		var sumAngle = canvas.sumAngleFromPoints(szPoinsts);
 		var sumValue = canvas.sumValueFromPoints(szPoinsts);
 		dataStorage.sz_average_angle = parseFloat(sumAngle / Configure.Band_MA_NUM).toFixed(2);
@@ -352,7 +352,7 @@ var AI = (function(){
 		var MA_value = (sumValue + parseInt(szPoinsts[Configure.Band_MA_NUM - 1].value))/Configure.Band_MA_NUM;
 		dataStorage.sz_ma_beili = parseFloat((szPoinsts[0].value - MA_value) / MA_value).toFixed(4);
 		
-		var txt = 'sz趋势' + (dataStorage.sz_average_angle > 0 ? '向上' : '向下，') + 'MA' + 
+		var txt = '指数趋势' + (dataStorage.sz_average_angle > 0 ? '向上' : '向下，') + 'MA' + 
 				Configure.Band_MA_NUM + '背离率' + (dataStorage.sz_ma_beili*100).toFixed(2) + '(%)，';
 		//选出趋势票
 		var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});

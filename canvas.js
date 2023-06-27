@@ -435,9 +435,8 @@ var canvas = (function(canvas) {
 			}		
 			
 			// 1 指数维度
-			var point = drawLine(Configure.sz_color, Configure.SZ_zero,
-								Configure.SZ_MaxOffset, Configure.title2.sz , 
-								indecatorName == '上证指数');	
+			drawLine(Configure.sz_color, Configure.SZ_zero, Configure.SZ_MaxOffset, 
+								Configure.title2.sz ,indecatorName == '上证指数');	
 			drawLine(Configure.sz_color, site_MIN_qazs, site_MAX_qazs - site_MIN_qazs, 
 							Configure.title2.qadq , indecatorName == '全A等权');	
 			
@@ -465,7 +464,7 @@ var canvas = (function(canvas) {
 			drawLine('blue', 900, 100, Configure.title2.qingxuzhishu, '情绪指数' == indecatorName );
 			
 			//画连扳高度
-			point = drawLine('rgba(0,0,0,0.1)', Configure.BH_zero,
+			var point = drawLine('rgba(0,0,0,0.1)', Configure.BH_zero,
 					Configure.BH_MaxOffset, Configure.BH_Draw_title, /*'连扳高度' == indecatorName*/ true);
 			if (/*'连扳高度' == indecatorName &&*/
 				i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
