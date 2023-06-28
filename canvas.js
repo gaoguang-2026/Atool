@@ -256,11 +256,14 @@ var canvas = (function(canvas) {
 		ctx.beginPath();
 		// 标记转点
 		emotionPoints.forEach((p)=> {
-			if(p.angleA5) {
+			if(p.angleA5  && !p.isOnlyDisplay) {
 				ctx.fillStyle = p.angleA5 > 0 ?  'green' : 'red';
 				ctx.fillRect(p.point.x - 4, p.point.y -4, 8, 8);
-		//		ctx.font="bold 14px 楷体";
-		//		ctx.fillText(p.angleA5.toFixed(1), p.point.x, p.point.y);
+				ctx.font="bold 14px 楷体";
+				ctx.fillText(p.angleA5.toFixed(1), p.point.x, p.point.y);
+			} else if(p.isOnlyDisplay) {
+				ctx.font="12px 楷体";
+				ctx.fillText('(' + p.angleA5.toFixed(1) + ')', p.point.x, p.point.y + 14);
 			}
 			ctx.stroke();
 		});
@@ -682,6 +685,11 @@ var canvas = (function(canvas) {
 				tmpTrend = averageSum;
 			} else if (tmpTrend == 0) {
 				tmpTrend = averageSum;
+			}
+			//最近一个点记录数据
+			if(i == 0) {
+				pArray[i].angleA5 = averageSum;
+				pArray[i].isOnlyDisplay = true;
 			}
 		}
 	};
