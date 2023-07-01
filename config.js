@@ -130,7 +130,8 @@ var Configure = (function(){
 		{name: '带路中特估', hotPoints:['一带一路','央企国资改革', '地方国资改革','中字头','国企改革', '中特估']},
 		{name: '供销社', hotPoints:['供销社', '乡村振兴']},
 		{name: '抗病毒', hotPoints:['抗原检测', '抗病毒材料', '抗病毒面料']},
-		{name: '半年报预增', hotPoints:['半年报预增']}
+		{name: '半年报预增', hotPoints:['半年报预增']},
+		{name: '铜箔', hotPoints:['锂电隔膜' , 'PET铜箔', '薄膜电容器']}
 	];
 	var gaiBlackList_verbose = [
 				'次新股','注册制次新股','专精特新','昨日触板','昨日连板',
