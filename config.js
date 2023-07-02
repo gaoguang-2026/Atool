@@ -477,7 +477,7 @@ var Configure = (function(){
 		cycles: '时间周期',
 		hotpoint: '热点',
 		date: '日期',
-		dragon:'龙头'
+		//dragon:'龙头'
 	};
 	var titleTactics = {
 		context:'窗口',
