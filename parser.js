@@ -234,6 +234,7 @@ var parser = (function(){
 		};
 		//////
 		// configure 的echelon
+		var alreadyInConfig = [];
 		Configure.echelons.forEach((echelon)=>{
 			var e = {};
 			e.score = 0;
@@ -247,12 +248,13 @@ var parser = (function(){
 				}
 			});
 			e.fund = calEchelonFund(e.hotPoints);
+			alreadyInConfig = alreadyInConfig.concat(e.hotPoints);
 			echelons.push(e);
 		});
 			
-		//如果某个概念大于echelons前三名得分，分离出来单独做echelon.
+		//如果某个概念符合要求但是没在配置里面，分离出来单独做echelon.
 		for (var [name, value] of gaiNian) {
-			if(value.weight >= echelons[2].score &&        //得分大于等于第三名
+			if(!alreadyInConfig.includes(name) && 
 				value.weight > Configure.Echelons_show_min_score ){ 
 				var newEche = {};
 				newEche.name = '*' + name;
