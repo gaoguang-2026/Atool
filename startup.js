@@ -276,7 +276,7 @@
 		};
 		var dp = function() {
 			document.getElementById('form1').gtype[5].checked = true;
-			document.getElementById('form1').sort[2].checked = true;
+			document.getElementById('form1').sort[0].checked = true;
 			document.getElementById('showdays').value = 30;
 			document.getElementById('rtShowdays').hidden = false;
 		};

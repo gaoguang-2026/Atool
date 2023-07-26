@@ -115,7 +115,7 @@ var canvasRT = (function() {
 		Array.from(parserRT.getRTEchelons()).forEach((e) => {
 			var color = Configure.echelon_color[displayIndex%Configure.echelon_color.length];
 			if(!nameArr || nameArr.length == 0) {   // 默认显示top echelons
-				var topEchelons = parserRT.getGaiRankData().getTopEchelons();
+				var topEchelons = parserRT.getGaiRankData().getTopEchelons();//.slice(0,2);
 				var idx = topEchelons.findIndex((tEchelon)=>{
 					return tEchelon.name == e.name;
 				})
