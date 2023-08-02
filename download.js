@@ -77,7 +77,7 @@ var Downloader = (function() {
 	var download = function(saveName, backupMonth) {
 		if(!backupDate || new Date(backupDate).getMonth() != new Date().getMonth()) {   // 时间到下一个月
 			rtDataStore.getAllRtTicketsFromDB().then((data)=>{
-			if(data && data.length) {
+				if(data && data.length) {
 					var backupData = data.filter((d)=>{
 							return d.ID.substr(0,6) == backupMonth;
 						});
@@ -86,9 +86,9 @@ var Downloader = (function() {
 										arrayDataToBlob(backupData);
 					openDownloadDialog(url, saveName);
 				}
+				backupDate = new Date();
+				LocalStore.set(storeId, backupDate);
 			});	
-			backupDate = new Date();
-			LocalStore.set(storeId, backupDate);
 		}
 	}
 
