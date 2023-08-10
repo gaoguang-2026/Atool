@@ -203,7 +203,8 @@ var parserRT = (function(){
 		var sort = function(a, b){
 			return parseFloat(b.score) - parseFloat(a.score);
 		};
-		return retEchelons.sort(sort).concat(verboseEchelons.sort(sort));  // 分开排序
+		return retEchelons.concat(verboseEchelons).sort(sort); 
+//		return retEchelons.sort(sort).concat(verboseEchelons.sort(sort));  // 分开排序
 	};
 	
 	/* 
