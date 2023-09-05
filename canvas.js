@@ -474,7 +474,8 @@ var canvas = (function(canvas) {
 				Days[i][Configure.BH_Draw_title] >= Days[i+1][Configure.BH_Draw_title] &&
 					Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
 				ctx.fillStyle= 'rgba(0,0,0,0.8)';
-				ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + '', point.x - 10, point.y - 5);
+				ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + Days[i][Configure.BH_Draw_title]
+							, point.x - 10, point.y - 5);
 				ctx.stroke();
 			}
 			////连扳高度

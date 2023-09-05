@@ -196,7 +196,7 @@ var parserRT = (function(){
 					newEche.score += parseFloat(gFind[Configure.titleGainian.weight]) + 0; 
 				}
 			});
-			newEche.score = parseFloat(newEche.score).toFixed(3);
+			newEche.score = parseFloat(newEche.score).toFixed(1);
 			Configure.gaiBlackList_verbose.indexOf(newEche.name.substr(1, newEche.name.length - 1)) != -1 ? 
 							 verboseEchelons.push(newEche) : retEchelons.push(newEche);
 		});

@@ -14,7 +14,9 @@ var canvasRT = (function() {
 	var site_weight_max = Configure.RT_GAI_show_weight_maxOffset + 
 							Configure.RT_GAI_show_weight_min;
 	var site_score_max = 3000;
-	var rtShowDays_num = Configure.RT_canvas_show_days_num;				
+	var rtShowDays_num = Configure.RT_canvas_show_days_num;	
+
+	var POINT_PIXEL = 5;
 	
 	var clear = function()  {
 		drawing.getContext("2d").clearRect(rect.x, rect.y, rect.width, rect.height);
@@ -83,9 +85,11 @@ var canvasRT = (function() {
 						(site_weight_max - Configure.RT_GAI_show_weight_min);
 				var szPoint = {x: siteX + cellWidth  * i + offsetX,
 					y: siteY + siteHeight - pointH};
-				//	ctx.fillRect(szPoint.x, szPoint.y, 2, 2);
+				
 				if(!eFirst ) {
 					eFirst = parserRT.getEchelonByIndex(echelon, index); 
+					ctx.fillRect(szPoint.x - POINT_PIXEL / 2, szPoint.y - POINT_PIXEL / 2, 
+							POINT_PIXEL, POINT_PIXEL);   // 画第一个点
 					ctx.font="14px 楷体";
 					ctx.fillText('<' + e.name.substr(0,2) + '>',siteX + siteWidth - 5, 
 					szPoint.y);
@@ -119,7 +123,8 @@ var canvasRT = (function() {
 				var idx = topEchelons.findIndex((tEchelon)=>{
 					return tEchelon.name == e.name;
 				})
-				if(idx >= 0) {
+			//	if(idx >= 0) {      // 画top echelons
+				if (displayIndex < 2) {	  // 画前2个
 					drawEchelonLine(e, color, displayIndex);
 					displayIndex ++;
 				}
@@ -159,7 +164,10 @@ var canvasRT = (function() {
 					(parseFloat(score) - 0)/ site_score_max;
 				var point = {x: siteX + cellWidth  * i,
 					y: siteY + siteHeight - pointH};
-				//ctx.fillRect(point.x, point.y, 2, 2);
+				if (i == 0) {
+					ctx.fillRect(point.x - POINT_PIXEL / 2, point.y - POINT_PIXEL / 2, 
+										POINT_PIXEL, POINT_PIXEL);
+				}
 				if (i < drawLength) {   // 不是最后一天
 					scoreNext = parserRT.getScoreTotalByIndex(index + 1);
 					scoreNext = scoreNext == 0 ? score : scoreNext;

@@ -267,7 +267,12 @@
 	window.onload = function(){
 		document.title = document.title + Configure.version;
 		$('#date').val(Configure.getDateStr(Configure.date, '-'));
-		$('#rtShowdays').val(Configure.RT_canvas_show_days_num);
+		//$('#rtShowdays').val(Configure.RT_canvas_show_days_num);
+		if (Configure.isAfterNoon()) {
+			$('#rtShowdays').val(1);
+		} else {
+			$('#rtShowdays').val(2);
+		}
 		var fp = function() {
 			document.getElementById('form1').gtype[2].checked = true;
 			document.getElementById('form1').sort[1].checked = true;
@@ -295,7 +300,7 @@
 				indecator.appendChild(option1);
 			}
 		};
-		if(Configure.isNight() || Configure.isWeekend()){
+		if(Configure.isAfterTrading() || Configure.isWeekend()){
 			document.getElementById('mode').value = 0;
 			fp()
 		} else {
