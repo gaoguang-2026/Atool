@@ -33,7 +33,12 @@ td,tr	{}.green{background-color: green}
 		.fontGreen { color:green}
 		.highlight{background-color: rgba(255, 128, 0, 0.3)}
 		
-
+footer {	margin-top:50px;
+	margin-bottom:50px;
+	margin-right:100px;
+	float:right; 
+	text-align:center;
+}
 		
 #apothegm {
 	font-weight:900;

@@ -209,6 +209,13 @@
 		$('#pre').click(dateOnclick);
 		$('#next').click(dateOnclick);
 		$('#last').click(dateOnclick);
+		
+		// link
+		$('#jiuyan').click((e)=>{
+			e.preventDefault();  
+			var url = "https://www.jiuyangongshe.com/action/" + Configure.getDateStr(Configure.date, '-');
+			window.open(url);
+		});
 	};
 	
 	var loadExcelDone = function(data) {
