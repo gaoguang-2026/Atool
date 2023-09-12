@@ -8,7 +8,7 @@ body {
 #tbl {
 	border-collapse:collapse;
 	margin-top:5px;
-	width:1300px;	  
+	#width:1300px;	  
 }
 
 table,th,td {
@@ -17,6 +17,7 @@ table,th,td {
 
 th,td {
 	text-align:center;
+	min-width: 50px;
 }
 
 td,tr	{}.green{background-color: green}

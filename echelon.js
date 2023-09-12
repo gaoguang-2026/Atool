@@ -180,8 +180,7 @@
 				realHandoverPer = parseFloat(tkt[Configure.replaceTitleDate(Configure.title.handoverPercent, this.dateArr[i])] 
 										/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';
 				boardStrength = Configure.getBoardStrength(tkt[Configure.title.boardType], 
-									tkt[Configure.replaceTitleDate(Configure.title.boardPercent, this.dateArr[i])],
-									tkt[Configure.replaceTitleDate(Configure.title.boardTime, this.dateArr[i])]).description;
+									tkt[Configure.replaceTitleDate(Configure.title.boardPercent, this.dateArr[i])]).description;
 									
 				//当最后一天该股票的涨停原因为空或者其他情况，index需要重新更新，显示名字颜色
 				index = i;

@@ -176,6 +176,17 @@ var canvasRT = (function() {
 								y: siteY + siteHeight - pointNextH};
 					ctx.moveTo(point.x, point.y);
 					ctx.lineTo(pointNext.x, pointNext.y);
+				} else if(i == drawLength){
+					// 前一天此时得分
+					var bscore = parserRT.getScoreTotalByIndex(index - 
+							Configure.RT_data_length / Configure.RT_canvas_record_days_num);
+					if(bscore > 0) {
+						ctx.fillStyle= score > bscore ? 'red' : 'green';
+						ctx.fillText(score + '(' + (score - bscore) + ')', point.x - 20, point.y - 15);
+					} else {
+						ctx.fillStyle= 'red';
+						ctx.fillText(score, point.x + 10, point.y - 5);
+					}
 				}
 				ctx.stroke();
 			}

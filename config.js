@@ -309,7 +309,7 @@ var Configure = (function(){
 	}
 	
 	// 封板力度算法
-	var getBoardStrength = function(bType, bPercent, bTime = '') {
+	var getBoardStrength = function(bType, bPercent) {
 		var retObj = {v:0, description:'--'};
 		switch (bType) {
 			case '一字板':
@@ -328,13 +328,11 @@ var Configure = (function(){
 				break;
 			case '换手板':
 				if (bPercent > 50) {
-					retObj.description = '很强';
-				} else if (bPercent > 20 || bTime.substr(0,1) == '9') {
 					retObj.description = '强';
-				} else if(bPercent < 5 || bTime.substr(0,2) == '14'){
-					retObj.description = '弱';
-				} else {
+				} else if (bPercent > 20){
 					retObj.description = '一般';
+				} else {
+					retObj.description = '弱';
 				}
 				break;
 			default:
@@ -690,7 +688,7 @@ var Configure = (function(){
 		mode = type;
 		if(mode == modeType.FP) {    // 复盘配置
 			this.showInTableTitile = ['name',  'realValue','score','totalDivergence',
-							'realHandoverPercent', 'boardStrength','reason', 'boardAndDay'];
+							'realHandoverPercent', 'boardTime','boardStrength','reason', 'boardAndDay'];
 			this.bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
 							'selectDate','reason'];
 			this.rankShowInTableTitile = ['index', 'name', 'price', 'rise_1', 'rise_5','rise_10',

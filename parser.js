@@ -65,8 +65,7 @@ var parser = (function(){
 														Math.abs(ticket[Configure.title.profitDivergence])).toFixed(2);
 			// 封板力度
 			ticket[Configure.title.boardStrength] = Configure.getBoardStrength(ticket[Configure.title.boardType], 
-									ticket[Configure.title.boardPercent],
-									ticket[Configure.title.boardTime]);
+									ticket[Configure.title.boardPercent]);
 
 		})
 	};
@@ -163,17 +162,21 @@ var parser = (function(){
 						a[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] ;
 				}
 			} else if (obj && obj.sort == 2){
-				var bData = rtDataManager.getRTTicketFromCode(b[Configure.title.code]);
-				var aData = rtDataManager.getRTTicketFromCode(a[Configure.title.code]);
-				if(bData && bData['f3'] && aData && aData['f3']) {
-					return bData['f3'] - aData['f3'] ;
+				if(obj.type == 5) {
+					var bData = rtDataManager.getRTTicketFromCode(b[Configure.title.code]);
+					var aData = rtDataManager.getRTTicketFromCode(a[Configure.title.code]);
+					if(bData && bData['f3'] && aData && aData['f3']) {
+						return bData['f3'] - aData['f3'] ;
+					} else {
+						return 0;
+					}
 				} else {
-					return 0;
+					return new Date('2023-09-12 '+ a[Configure.title.boardTime]) - 
+						new Date('2023-09-12 '+ b[Configure.title.boardTime]);
 				}
 			} else {
 				return b[Configure.title.score] - a[Configure.title.score];
 			}
-			
 		});
 			
 		// type

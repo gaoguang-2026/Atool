@@ -120,7 +120,9 @@ var table = (function(){
 				if (t == 'reason') {
 					td.innerHTML = '涨停原因';
 				} else if (t == 'dayNumber') {
-					td.innerHTML = '连板数'
+					td.innerHTML = '连板数';
+				}else if (t == 'boardTime') {
+					td.innerHTML = '最终涨停时间';
 				} else {
 					td.innerHTML =  Configure.title[t];
 				}
@@ -200,7 +202,6 @@ var table = (function(){
 							td.className = 'red';
 						} 
 						Tip.show(td, '封板类型：' + ticket[Configure.title.boardType] + '<br>' +
-								'封板时间: ' + ticket[Configure.title.boardTime] + '<br>' + 
 								'封成比: ' + ticket[Configure.title.boardPercent] + '%');
 						break;
 					case 'dayNumber':
@@ -316,6 +317,7 @@ var table = (function(){
 						};
 						if(Configure.isNew(ticket[Configure.title.time])) {
 							td.innerHTML += '(新)';
+							td.className = 'grey';
 						}
 						if (ticket[Configure.title.dragonTag]) {
 							td.innerHTML += '  (' + ticket[Configure.title.dragonTag].tagDes.substr(0,2) + ')';
