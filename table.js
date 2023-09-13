@@ -341,6 +341,11 @@ var table = (function(){
 						break;
 					case 'rise_1':				
 						td.innerHTML = value.toString().replace(/\%/g, '');
+						if(value >= 0) {
+							td.className = 'fontRed';
+						} else {
+							td.className = 'fontGreen';
+						} 
 						break;
 					case 'rise_5':	
 						if(Configure.getMode() == Configure.modeType.FP) {
@@ -348,8 +353,9 @@ var table = (function(){
 							if(!workbook.getRankTicketFromCode(ticket[Configure.title.code], true) &&
 							   td.innerHTML != '--') {
 								td.className = 'highlight';
-							}
+							} 
 						}
+						
 					case 'rise_10':
 					case 'rise_20':
 						if(td.innerHTML == '--') {
