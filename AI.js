@@ -159,7 +159,7 @@ var AI = (function(){
 						Configure.getAngle(emotionPoints[0].point, emotionPoints[1].point) : 0;
 		var emotionLevel = emotionPoints.length >= 1 ? getLevel(emotionPoints[0]) : 0;
 		
-		var szAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qadq));
+		var szAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM/*, Configure.title2.qadq*/));
 		var eAngle = canvas.sumAngleFromPoints(canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qingxuzhishu));
 		for (var i in condition) {
 			var value = currentValue = -1;
@@ -344,7 +344,7 @@ var AI = (function(){
 	
 	var getBandtickets = function() {
 		// 算斜率
-		var szPoinsts = canvas.getLastZBPoints(Configure.Band_MA_NUM, Configure.title2.qadq);    
+		var szPoinsts = canvas.getLastZBPoints(Configure.Band_MA_NUM/*, Configure.title2.qadq*/);    
 		var sumAngle = canvas.sumAngleFromPoints(szPoinsts);
 		var sumValue = canvas.sumValueFromPoints(szPoinsts);
 		dataStorage.sz_average_angle = parseFloat(sumAngle / Configure.Band_MA_NUM).toFixed(2);

@@ -192,7 +192,11 @@ var table = (function(){
 						};
 						break;
 					case 'realValue':
-						td.innerHTML = parseFloat(ticket[t.innerHTML]/100000000).toFixed(2);
+						let v = parseFloat(ticket[t.innerHTML]/100000000);
+						if (v > 100) {
+							td.className = 'red';
+						} 
+						td.innerHTML = v.toFixed(2);
 						Tip.show(td, '流通市值：' + parseFloat(ticket[Configure.title.value]/100000000).toFixed(2) + '<br>' +
 								'机构持股比例合计: ' + ticket[Configure.title.orgProportion] + '%<br>');
 						break;

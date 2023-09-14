@@ -594,8 +594,8 @@ var Configure = (function(){
 	
 	var selectIndicators = [
 							
-								{name:'全A等权'}, 
-							//	{name:'上证指数'}, 									
+							//	{name:'全A等权'}, 
+								{name:'上证指数'}, 									
 							//	{name:'收益率%'},
 								{name:'涨停背离'},
 								{name:'涨停数量'},
