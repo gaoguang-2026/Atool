@@ -398,6 +398,9 @@ var Configure = (function(){
 				getDateStr(date) +
 				']' ,
 		orgProportion: '机构持股比例合计%',
+		fboardTime : '首次涨停时间' + '[' + 
+				getDateStr(date) +
+				']' ,
 		boardTime : '最终涨停时间' + '[' + 
 				getDateStr(date) +
 				']' ,
