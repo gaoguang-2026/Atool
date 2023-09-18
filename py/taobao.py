@@ -10,6 +10,8 @@ speaker = win32com.client.Dispatch("SAPI.SpVoice")
 times = '2023-09-15 13:56:30'
 
 browser = webdriver.Chrome()
+browser.maximize_window()
+
 browser.get("https://www.taobao.com")
 time.sleep(3)
 browser.find_element(By.LINK_TEXT, "亲，请登录").click()
