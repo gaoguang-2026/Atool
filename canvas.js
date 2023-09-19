@@ -427,7 +427,7 @@ var canvas = (function(canvas) {
 			} 
 			if (echelonNames.length <= 1) {
 				drawHeadorFoot('rgba(0,158,0,0.4)', 0, 2000, Configure.title2.jumped, 1, true);
-				drawHeadorFoot('rgba(0,50,0,0.4)', 0, 2000, Configure.title2.floored, 2, true);
+				drawHeadorFoot('rgba(0,50,0,0.4)', 0, 200, Configure.title2.floored, 2, true);
 				drawHeadorFoot('rgba(128,0,0,0.4)', 0, 200,  Configure.title2.lianban, 3,false);
 				drawHeadorFoot('rgba(255,0,0,0.4)', 0, 200,  Configure.title2.boardnum, 2,false);
 				drawHeadorFoot('rgba(255,140,0,0.4)', 0, 200,  Configure.title2.boardednum, 1,false);
@@ -459,7 +459,7 @@ var canvas = (function(canvas) {
 			// 5 恐慌指数
 			drawLine('green', -1, 1, Configure.title2.failedRate, '亏钱效应' == indecatorName);
 			//drawLine('#20B2AA',  -20, 20, Configure.title2.failednum, /*'炸板数量'*/'亏钱效应' == indecatorName);
-			drawLine('#20B2AA', -2000, 2000, Configure.title2.jumped, /*'超跌数量'*/'亏钱效应' == indecatorName);
+			//drawLine('#20B2AA', -2000, 2000, Configure.title2.jumped, /*'超跌数量'*/'亏钱效应' == indecatorName);
 			drawLine('green', -200, 200, Configure.title2.floornum, /*'跌停数量'*/ '亏钱效应'== indecatorName);
 						
 			drawLine('blue', 0, 100, Configure.title2.jinji, '连扳晋级' == indecatorName);

@@ -1,18 +1,4 @@
 
-	var Speecher = function(text) {
-		// 创建一个SpeechSynthesisUtterance对象  
-		var utterance = new SpeechSynthesisUtterance();
-		
-		// 设置语音合成的语速  
-		utterance.rate = 1; // 0.5表示正常语速，可以设置为0.1到10之间的值 
-		// 设置语音合成的音调  
-		utterance.pitch = 2; // 1表示正常音调，可以设置为0到2之间的值  
-		// 设置语音合成的音量  
-		utterance.volume = 0.3; // 1表示正常音量，可以设置为0到1之间的值  
-		// 设置要播报的文本内容  
-		utterance.text = text;  
-		window.speechSynthesis.speak(utterance);
-	};
 	var displayAI = function (recommend) {
 		var oDiv = document.getElementById("AI");
 		//remove child
@@ -24,7 +10,6 @@
         var oStrong = document.createElement("div");
         var oTxt = document.createTextNode(recommend.txt);
 		Tip.show(oDiv, recommend.tatics);
-		Speecher(recommend.txt + recommend.tatics);
 		
 		oStrong.appendChild(oTxt);
 		oDiv.appendChild(oStrong);
@@ -351,7 +336,6 @@
 		var apothegm = document.getElementById("apothegm");
 		var txt = Configure.apothegms[Math.round(Math.random() * Configure.apothegms.length)];
 		apothegm.innerHTML = txt ? txt : Configure.apothegms[0];
-		//Speecher(apothegm.innerHTML);
 		
 		updateIndicator();
 		
