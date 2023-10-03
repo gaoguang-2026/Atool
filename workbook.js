@@ -54,7 +54,8 @@
 		var sheet = getSheet('周期');
 		sheet.reverse();
 		var index = sheet.findIndex((e)=>{
-				if (dateStr >= Configure.formatExcelDate(e[Configure.titleCycles.date])) return true;
+				var d = Configure.formatExcelDate(e[Configure.titleCycles.date]);
+				if (d != '' && dateStr >= d) return true;
 			});
 		var retCycle = {};
 		for(var i = index; i < sheet.length; i ++) {
