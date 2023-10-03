@@ -7,8 +7,9 @@ var canvas = (function(canvas) {
 	// 记录情绪指标的min max,
 	var site_MIN_qx = 0;
 	var site_MAX_qx = 0;
-	var site_MIN_qazs = 0;
-	var site_MAX_qazs = 0;
+	var site_MIN_zs = 0;
+	var site_MAX_zs = 0;
+	var main_sz_title = Configure.title2.sz; // Configure.title2.qadq  or Configure.title2.sz
 
 	var emotionPoints = [];   // 保存情绪的点
 	var zbPoints = {};   // 保存其他指标的点
@@ -438,9 +439,9 @@ var canvas = (function(canvas) {
 			}		
 			
 			// 1 指数维度
-			drawLine(Configure.sz_color, Configure.SZ_zero, Configure.SZ_MaxOffset, 
+			drawLine(Configure.sz_color, site_MIN_zs, site_MAX_zs - site_MIN_zs, 
 								Configure.title2.sz ,indecatorName == '上证指数');	
-			drawLine(Configure.sz_color, site_MIN_qazs, site_MAX_qazs - site_MIN_qazs, 
+			drawLine(Configure.sz_color, site_MIN_zs, site_MAX_zs - site_MIN_zs, 
 							Configure.title2.qadq , indecatorName == '全A等权');	
 			
 			// 2 风险偏好
@@ -700,8 +701,8 @@ var canvas = (function(canvas) {
 		zbPoints = {};   // 保存其他指标的点
 		site_MIN_qx = 0;
 		site_MAX_qx = 0;
-		site_MIN_qazs = 0;
-		site_MAX_qazs = 0;
+		site_MIN_zs = 0;
+		site_MAX_zs = 0;
 	};
 	var draw = function(echelonNames, indecatorName, showDaysNumber) {
 		if (drawing.getContext){
@@ -722,10 +723,10 @@ var canvas = (function(canvas) {
 				} else if(!site_MAX_qx || d[Configure.title2.qingxuzhishu] > site_MAX_qx){
 					site_MAX_qx = Math.ceil(d[Configure.title2.qingxuzhishu] / base) * base;
 				}
-				if(!site_MIN_qazs || d[Configure.title2.qadq] < site_MIN_qazs) {
-					site_MIN_qazs = Math.floor(d[Configure.title2.qadq] / base) * base;
-				} else if(!site_MAX_qazs || d[Configure.title2.qadq] > site_MAX_qazs){
-					site_MAX_qazs = Math.ceil(d[Configure.title2.qadq] / base) * base;
+				if(!site_MIN_zs || d[main_sz_title] < site_MIN_zs) {
+					site_MIN_zs = Math.floor(d[main_sz_title] / base) * base;
+				} else if(!site_MAX_zs || d[main_sz_title] > site_MAX_zs){
+					site_MAX_zs = Math.ceil(d[main_sz_title] / base) * base;
 				}
 			});
 			

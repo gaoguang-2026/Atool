@@ -380,6 +380,7 @@ var table = (function(){
 							if(td.innerHTML == 'undefined' || td.innerHTML == ''){
 								var txt = '';
 								var arr = ticket[Configure.title.gainian].split(',');
+								if (arr.length <= 1) arr = ticket[Configure.title.gainian].split(';');   //兼容';'
 								for(i = arr.length - 1; i >= 0; i --) {
 									if(Configure.gaiBlackList_critical.indexOf(arr[i]) == -1 &&
 										Configure.gaiBlackList_verbose.indexOf(arr[i]) == -1) {
