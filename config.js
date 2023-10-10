@@ -167,6 +167,13 @@ var Configure = (function(){
 							{f:{days:5, minDays:3, max:30}},
 							{m:{days:5, minDays:4, max:200}}
 							];
+	var icePoint = [{c:{days:2, minDays:1, max:-0.5}},
+						{d:{days:1, minDays:1, max:-20}}, 
+						{k:{days:1, minDays:1, max:5}},
+						{i:{days:1, minDays:1, max:4}},
+						{m:{days:1, minDays:1, max:200}}
+		];						
+	
 	var cangMap2 = new Map([
 		['混沌', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
 							{a:{currentMax:45},b:{max:1},m:{days:7, minDays:4, max:100}, f:{days:3,minDays:2, min:25}}
@@ -603,7 +610,7 @@ var Configure = (function(){
 							//	{name:'收益率%'},
 								{name:'涨停背离'},
 								{name:'涨停数量'},
-								{name:'赚钱效应'},
+							//	{name:'赚钱效应'},
 							//	{name:'连扳高度'},								
 							//	{name:'连扳数量'},
 							//	{name:'跌停数量'},
@@ -727,6 +734,7 @@ var Configure = (function(){
 		winCtxts: winCtxts,
 		cangMap2: cangMap2,
 		bandConditions:bandConditions,
+		icePoint:icePoint,
 		EnableEmotionalogicV2: EnableEmotionalogicV2,
 		showInTableTitile:showInTableTitile,
 		bandShowInTableTitile:bandShowInTableTitile,

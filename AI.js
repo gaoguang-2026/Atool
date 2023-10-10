@@ -342,7 +342,7 @@ var AI = (function(){
 				(Configure.isSZTicket(t[Configure.title.code]) ? 100 : 0);   // 深市票
 	};
 	
-	var getBandtickets = function() {
+	var getSZEnv = function() {
 		// 算斜率
 		var szPoinsts = canvas.getLastZBPoints(Configure.Band_MA_NUM/*, Configure.title2.qadq*/);    
 		var sumAngle = canvas.sumAngleFromPoints(szPoinsts);
@@ -352,8 +352,11 @@ var AI = (function(){
 		var MA_value = (sumValue + parseInt(szPoinsts[Configure.Band_MA_NUM - 1].value))/Configure.Band_MA_NUM;
 		dataStorage.sz_ma_beili = parseFloat((szPoinsts[0].value - MA_value) / MA_value).toFixed(4);
 		
-		var txt = '指数趋势' + (dataStorage.sz_average_angle > 0 ? '向上' : '向下，') + 'MA' + 
-				Configure.Band_MA_NUM + '背离率' + (dataStorage.sz_ma_beili*100).toFixed(2) + '(%)，';
+		return '指数趋势' + (dataStorage.sz_average_angle > 0 ? '向上' : '向下，') + 'MA' + 
+				Configure.Band_MA_NUM + '背离率' + (dataStorage.sz_ma_beili*100).toFixed(2) + '%。';
+	}
+	
+	var getBandtickets = function() {
 		//选出趋势票
 		var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
 		tickets.sort((a, b)=>{
@@ -368,7 +371,7 @@ var AI = (function(){
 		}
 
 		var num = tickets.length >= 2 ? 2 : tickets.length;
-		txt += '关注：';
+		var txt = '关注趋势波段：';
 		for(var i = 0; i < num; i ++ ) {
 			txt += tickets[i][Configure.title.name] + ' ';
 			dataStorage.band_ticktes.push({name:tickets[i][Configure.title.name], price: tickets[i][Configure.title.price]});
@@ -408,7 +411,7 @@ var AI = (function(){
 				console.log(t[Configure.title.name] + '  ' + getFinalScroe(t, dateStr));
 			})
 		}
-		var txt = '关注短线：';
+		var txt = '关注连板接力：';
 		var num = tickets.length >= 3 ? 3 : tickets.length;
 		for(var i = 0; i < num; i ++ ) {
 			dataStorage.tickits.push(tickets[i][Configure.title.name]);
@@ -483,6 +486,16 @@ var AI = (function(){
 				checkZBUnderDays(Configure.BH_Draw_title, 5, 4, 3) ||    // 连扳高度
 				checkZBUnderDays(Configure.title2.boardnum, 5, 4, 20);*/    //涨停数量
 	};
+	var isIcePoint = function() {
+		var ret = true;
+		Configure.icePoint.forEach((c, index)=>{
+			console.log('start check icePoint index = ' + index);
+			if(!checkCondition(c)){
+				ret = false;
+			};
+		});
+		return ret;
+	};
 	var speecher = function(text) {
 		// 创建一个SpeechSynthesisUtterance对象  
 		var utterance = new SpeechSynthesisUtterance();
@@ -503,11 +516,18 @@ var AI = (function(){
 		getAndUpdateLoacalstorage();
 		
 		recommendText = '【AI 提示】';
-		recommendText += Configure.EnableEmotionalogicV2 ? getEmotions2() : getEmotions();  
-		recommendText += isBandInCharge() ? getBandtickets() : getTickits();
-		saveLoacalstorage(dataStorage);
+		if (isIcePoint()) {
+			recommendText += 'Fire the hole! 冰点出现! 冰点出现! ';
+			recommendText += getSZEnv();
+			speecher(recommendText);
+		} else {
+			recommendText += getSZEnv();
+			recommendText += Configure.EnableEmotionalogicV2 ? getEmotions2() : getEmotions(); 
+			recommendText += isBandInCharge() ? getBandtickets() : getTickits();
+		}		
 		
-		speecher(recommendText);
+		Configure.EnableEmotionalogicV2 ? getEmotions2() : getEmotions(); 
+		saveLoacalstorage(dataStorage);
 		
 		var displayColor = cangMap.get(dataStorage.emotion).context == '博弈' ? 'blue' :
 					cangMap.get(dataStorage.emotion).context == '主升' ? 'red' : 'green';

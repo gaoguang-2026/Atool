@@ -95,16 +95,16 @@ var canvas = (function(canvas) {
 				day[Configure.title2.jumped]  = - rtDataManager.getHistoryRTticketsJumped(dateArr[dayIndex]).length;
 			}
 			
-			// 资金总量  涨停的总和-跌停的总和
+			// 资金总量  涨停的总    ###和-跌停的总和###
 			day[Configure.title2.totalFund] = 0;
 			tickets.forEach((ticket)=>{
 				var fund = ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100 ?
 							ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100 : 0;
 				if(ticket[dayNumberTitle] >= 1) {
 					day[Configure.title2.totalFund] += fund;
-				} else if(ticket[dayNumberTitle] == 0 && ticket[boardTimeTilte] == '--') {
+				} /*else if(ticket[dayNumberTitle] == 0 && ticket[boardTimeTilte] == '--') {
 					day[Configure.title2.totalFund] -= fund;
-				}
+				}*/
 			});
 			day[Configure.title2.totalFund] = (day[Configure.title2.totalFund] / 100000000).toFixed(2);   // 亿为单位
 		}
@@ -308,7 +308,7 @@ var canvas = (function(canvas) {
 						height: rectHeight};
 			var grd=ctx.createLinearGradient(rect.x, rect.y + + siteHeight * winFactor * 0.5, 
 											rect.x, rect.y);
-			if(parseFloat(Days[i][title]) < maxOffset/3) {
+			if(parseFloat(Days[i][title]) < 150) {
 				grd.addColorStop(0,"yellow");
 				grd.addColorStop(1,"green");
 			} else {
@@ -402,6 +402,10 @@ var canvas = (function(canvas) {
 				} else {
 					ctx.font="14px 楷体"
 					ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
+					if (title == Configure.title2.sz) {   // 沪指写背离
+						ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
+					}
+					
 					// 写坐标值
 					if(title != Configure.title2.boardedR &&
 						title != Configure.title2.boardR ) {  // 昨日涨停收益 不写
@@ -449,13 +453,13 @@ var canvas = (function(canvas) {
 			drawLine('blue', -4, 16, Configure.title2.beili, indecatorName == '涨停背离');   
 
 			// 3 资金热度    和短线资金配合
-			drawLine('rgba(75,0,130,0.5)', -5, 30, Configure.title2.lianban, /*'连扳数量'*/'涨停数量' == indecatorName);  
+			drawLine('rgba(75,0,130,0.5)', -10, 30, Configure.title2.lianban, /*'连扳数量'*/'涨停数量' == indecatorName);  
 			drawLine('blue', 0, 200, Configure.title2.boardnum, '涨停数量' == indecatorName);            
 			
 			// 4 赚钱效益
-			drawLine('rgba(128,0,0,1)', 0, 40, Configure.title2.boardsR, '赚钱效应' == indecatorName);
-			drawLine('rgba(255,0,0,1)', 0, 40, Configure.title2.boardR, /*'涨停收益' == indecatorName*/ true);
-			drawLine('rgba(255,140,0,1)', 0, 40, Configure.title2.boardedR, '赚钱效应' == indecatorName);
+			drawLine('rgba(128,0,0,1)', 10, 40, Configure.title2.boardsR, '赚钱效应' == indecatorName);
+			drawLine('rgba(255,0,0,1)', 10, 40, Configure.title2.boardR, /*'涨停收益'*/ '赚钱效应' == indecatorName);
+			drawLine('rgba(255,140,0,1)', 10, 40, Configure.title2.boardedR, '赚钱效应' == indecatorName);
 			
 			// 5 恐慌指数
 			drawLine('green', -1, 1, Configure.title2.failedRate, '亏钱效应' == indecatorName);
