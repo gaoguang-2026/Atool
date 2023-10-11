@@ -584,7 +584,7 @@ var Configure = (function(){
 	var RT_canvas_record_days_num = 4;			// rt 记录数据的天数
 	var RT_canvas_show_days_num = 4;            // 显示的天数
 	var RT_canvas_show_echelons_num = 4;            // 显示的最大个数
-	var RT_echelons_max_num = 12;            // 生成的个数
+	var RT_echelons_max_num = 6;            // 生成的个数
 	var RT_echelon_contain_config = true;       // 是否加上config的echelon
 	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
@@ -610,7 +610,7 @@ var Configure = (function(){
 							//	{name:'收益率%'},
 								{name:'涨停背离'},
 								{name:'涨停数量'},
-							//	{name:'赚钱效应'},
+								{name:'赚钱效应'},
 							//	{name:'连扳高度'},								
 							//	{name:'连扳数量'},
 							//	{name:'跌停数量'},

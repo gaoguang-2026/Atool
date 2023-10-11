@@ -39,9 +39,9 @@
 		var today = new Date();
 		if(!Configure.datesAreOnSameDay(new Date(this.gRankData.eDate), today) && !Configure.isWeekend(today)) {
 			this.gRankData.eDate = JSON.stringify(today).replace(/\"/g, '');
-			if(this.gRankData.topEchelons.length >= Configure.RT_echelons_max_num/2) {
+			if(this.gRankData.topEchelons.length >= Math.floor(Configure.RT_echelons_max_num/4)) {
 				this.gRankData.topEchelons.splice(0,this.gRankData.topEchelons.length - 
-						Configure.RT_echelons_max_num/2 + 1);
+						Math.floor(Configure.RT_echelons_max_num/4) + 1);
 			}
 			var eIdx = this.gRankData.echelons.findIndex((e)=>{
 				return Configure.gaiBlackList_verbose.indexOf(e.name) == -1 &&

@@ -235,8 +235,10 @@ var canvas = (function(canvas) {
 		ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor));	
 		// 画内部网格
 		for(var i = 1; i <= 3; i ++) {
-			ctx.moveTo(siteX,siteY + siteHeight * (1-winFactor)*i/4);
-			ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor)*i/4);	
+			if (i != 2) {
+				ctx.moveTo(siteX,siteY + siteHeight * (1-winFactor)*i/4);
+				ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor)*i/4);
+			}
 		}
 		///
 		if (!echelonNames.length ) {
@@ -394,6 +396,13 @@ var canvas = (function(canvas) {
 						(parseFloat(Days[i + 1][title]) - zero)/maxOffset;
 					var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 									y: siteY + siteHeight*(1-winFactor) - pointNextH};
+					// 画阈值线
+					ctx.lineWidth="2";
+					ctx.strokeStyle = 'black';
+					ctx.moveTo(szPoint.x + 2,siteY + siteHeight * (1-winFactor)/2);
+					ctx.lineTo(szpointNext.x - 2,siteY + siteHeight * (1-winFactor)/2);
+					ctx.stroke();
+					// 画数据线
 					ctx.lineWidth="2";
 					ctx.strokeStyle = color;
 					ctx.moveTo(szPoint.x, szPoint.y);
@@ -402,10 +411,7 @@ var canvas = (function(canvas) {
 				} else {
 					ctx.font="14px 楷体"
 					ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
-					if (title == Configure.title2.sz) {   // 沪指写背离
-						ctx.fillText(parseFloat(Days[i][title]) + '', szPoint.x, szPoint.y);
-					}
-					
+					ctx.stroke();
 					// 写坐标值
 					if(title != Configure.title2.boardedR &&
 						title != Configure.title2.boardR ) {  // 昨日涨停收益 不写
@@ -457,9 +463,9 @@ var canvas = (function(canvas) {
 			drawLine('blue', 0, 200, Configure.title2.boardnum, '涨停数量' == indecatorName);            
 			
 			// 4 赚钱效益
-			drawLine('rgba(128,0,0,1)', 10, 40, Configure.title2.boardsR, '赚钱效应' == indecatorName);
-			drawLine('rgba(255,0,0,1)', 10, 40, Configure.title2.boardR, /*'涨停收益'*/ '赚钱效应' == indecatorName);
-			drawLine('rgba(255,140,0,1)', 10, 40, Configure.title2.boardedR, '赚钱效应' == indecatorName);
+			drawLine('rgba(128,0,0,1)', -6, 16, Configure.title2.boardsR, '赚钱效应' == indecatorName);
+			drawLine('rgba(255,0,0,1)', -6, 16, Configure.title2.boardR, /*'涨停收益'*/ '赚钱效应' == indecatorName);
+			drawLine('rgba(255,140,0,1)', -6, 16, Configure.title2.boardedR, '赚钱效应' == indecatorName);
 			
 			// 5 恐慌指数
 			drawLine('green', -1, 1, Configure.title2.failedRate, '亏钱效应' == indecatorName);
