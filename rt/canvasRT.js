@@ -144,7 +144,7 @@ var canvasRT = (function() {
 		grd.addColorStop(0,"green");
 		grd.addColorStop(0.6,"orange");
 		grd.addColorStop(1,Configure.line_color);  
-		ctx.lineWidth="2";
+		ctx.lineWidth="3";
 		ctx.fillStyle = grd;
 		ctx.strokeStyle = grd;
 		var rtRankData = parserRT.getGaiRankData();   // getRankData() -> {eDate:,data: []};
@@ -192,6 +192,59 @@ var canvasRT = (function() {
 			}
 		}
 	};
+	
+	var drawLine = function(type, zero, maxoffset, color) {
+		var ctx = drawing.getContext("2d");		
+		ctx.beginPath();
+		ctx.lineWidth="1";
+		ctx.strokeStyle = color;
+		
+		var rtRankData = parserRT.getGaiRankData();   // getRankData() -> {eDate:,data: []};
+		// 从数据中取要显示的第一天index 和最后一天 indexLast
+		var index = Configure.RT_data_length * 
+						(Configure.RT_canvas_record_days_num - rtShowDays_num) / 
+							Configure.RT_canvas_record_days_num;
+		var indexLast = rtRankData.getIndexFromDate(new Date(rtRankData.getRankData().eDate));
+		indexLast = indexLast > Configure.RT_data_length ? Configure.RT_data_length : indexLast;
+		var drawLength = indexLast - index;
+		var score = 0, scoreNext = 0;
+		for(i = 0; i < cellNum; i ++, index ++) {
+			score = rtRankData.getRankData().data[index].paramExt[type];
+			score = !score || score == 0 ? scoreNext : score;
+			if(score!=0) {
+				var pointH = siteHeight * 
+					(parseFloat(score) - zero)/ maxoffset;
+				var point = {x: siteX + cellWidth  * i,
+					y: siteY + siteHeight - pointH};
+				if (i == 0) {
+					ctx.fillRect(point.x - POINT_PIXEL / 2, point.y - POINT_PIXEL / 2, 
+										POINT_PIXEL, POINT_PIXEL);
+				}
+				if (i < drawLength) {   // 不是最后一天
+					scoreNext = rtRankData.getRankData().data[index + 1].paramExt[type];
+					scoreNext = !scoreNext || scoreNext == 0 ? score : scoreNext;
+					var pointNextH = siteHeight * (parseFloat(scoreNext) - zero)/ maxoffset;
+					var pointNext = {x: siteX + cellWidth  * (i + 1),
+								y: siteY + siteHeight - pointNextH};
+					ctx.moveTo(point.x, point.y);
+					ctx.lineTo(pointNext.x, pointNext.y);
+				} else if(i == drawLength){
+					// 前一天此时得分
+					var bscore =rtRankData.getRankData().data[index - Configure.RT_data_length / 
+							Configure.RT_canvas_record_days_num].paramExt[type];
+					if(bscore > 0) {
+						ctx.fillStyle= score > bscore ? 'rgba(255,0,0,0.5)' : 'rgba(0,255,0,0.5)';
+						ctx.fillText(type + score + '(' + (score - bscore) + ')', point.x - 20, point.y - 15);
+					} else {
+						ctx.fillStyle= 'rgba(255,0,0,0.5)';
+						ctx.fillText(type + score, point.x + 10, point.y - 5);
+					}
+				}
+				ctx.stroke();
+			}
+		}
+	};
+	
 	var reload = function() {
 		cellNum = Configure.RT_data_length * rtShowDays_num / 
 							Configure.RT_canvas_record_days_num;
@@ -206,6 +259,11 @@ var canvasRT = (function() {
 		
 		reload();
 		drawSite();
+		
+		drawLine('赚钱效应', 0, 10, 'red');
+		drawLine('涨停', 0, 80, 'orange');
+		drawLine('跌停', -10, 10, 'green');
+		
 		drawEmotion();
 		drawEchelons(nameArr);
 	}

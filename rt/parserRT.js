@@ -102,12 +102,31 @@ var parserRT = (function(){
 		return retArr;
 	};
 	
+	var calAverageAscending  = function(tickets) {
+		var ascendingSum = 0, num = 0;
+		for(; num < tickets.length; num ++) {
+			ascendingSum += parseFloat(tickets[num]['f3']/100);
+		}
+		return parseFloat(ascendingSum / num).toFixed(2);
+	}
+	
 	var parseAndStoreRTData = function(rtTickets = rtDataManager.getRTTicketsLeader()) {
 		var retArr = generateGais(rtTickets);
 		var retEchelons = generateEchelons(retArr);
-		rtRankData.setRankDataFromNow(retArr.slice(0, retArr.length > Configure.RT_GAI_rank_max_length ?  
+		
+		// ext params
+		var param = {};
+		param['赚钱效应'] = calAverageAscending(rtDataManager.getActiveTickets());
+		param['涨停'] = rtTickets.filter((rtData)=>{
+			return rtDataManager.boardFilter(rtData);
+		}).length;
+		param['跌停'] = -rtTickets.filter((rtData)=>{
+			return rtDataManager.floorFilter(rtData);
+		}).length;
+		rtRankData.setRankDataFromNow( retArr.slice(0, retArr.length > Configure.RT_GAI_rank_max_length ?  
 												Configure.RT_GAI_rank_max_length : retArr.length - 1), 
-										retEchelons.splice(0, Configure.RT_echelons_max_num));
+										retEchelons.splice(0, Configure.RT_echelons_max_num),
+										param);
 	};
 	var getHistoryEchelonFromDateStr = function(echelon, dateStr) {
 		var historyRTticketsLeader = rtDataManager.getHistoryRTticketsLeader(dateStr);

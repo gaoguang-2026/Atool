@@ -42,13 +42,36 @@ var rtDataManager = (function(){
 		});
 	};
 	
+	// 5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
+	var getActiveTickets = function() {
+		return realTimeTickets.filter((t)=>{
+			return  topFilter(t);          
+		});
+	};
 		
 	var topFilter = function(t){
 		return t['f109'] > 2000 ||
 				t['f160'] > 3000 ||
 				t['f110'] > 4000;  
 	};
-		
+
+	var boardFilter = function(rtData){
+		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
+		var per = Configure.isKechuangTicket(rtData['f12']) ? 1.2 : 1.1;
+		return  Math.round(rtData['f18'] * per) == rtData['f2'];
+	};
+	var boardedFilter = function(rtData){
+		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
+		var per = Configure.isKechuangTicket(rtData['f12']) ? 1.2 : 1.1;
+		return  Math.round(rtData['f18'] * per) == rtData['f15'];
+	};
+	
+	var floorFilter = function(rtData){
+		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
+		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
+		return  Math.round(rtData['f18'] * per) == rtData['f2'];
+	};
+	
 	var flooredFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
 		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
@@ -83,9 +106,13 @@ var rtDataManager = (function(){
 
 	return {
 		init:init,
+		boardFilter:boardFilter,
+		boardedFilter:boardedFilter,
+		floorFilter:floorFilter,
 		setRTTickets:setRTTickets,
 		getRTTickets:getRTTickets,
 		getRTTicketsLeader:getRTTicketsLeader,
+		getActiveTickets:getActiveTickets,
 		getRTTicketFromCode:getRTTicketFromCode,
 		getHistoryRTticketsLeader:getHistoryRTticketsLeader,
 		getHistoryRTticketsFloored:getHistoryRTticketsFloored,

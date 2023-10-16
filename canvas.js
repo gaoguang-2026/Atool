@@ -87,7 +87,7 @@ var canvas = (function(canvas) {
 			}).length;
 			day[Configure.title2.boardednum] = Math.abs(day[Configure.title2.failednum]) + 
 						day[Configure.title2.boardnum];
-		day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
+			day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
 						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
 			// 曾跌停数 和 超跌数
 			if(!day[Configure.title2.floored] || !day[Configure.title2.jumped]) {
@@ -234,12 +234,12 @@ var canvas = (function(canvas) {
 		ctx.moveTo(siteX,siteY + siteHeight * (1-winFactor));
 		ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor));	
 		// 画内部网格
-		for(var i = 1; i <= 3; i ++) {
+		/*for(var i = 1; i <= 3; i ++) {
 			if (i != 2) {
 				ctx.moveTo(siteX,siteY + siteHeight * (1-winFactor)*i/4);
 				ctx.lineTo(siteX + siteWidth,siteY + siteHeight * (1-winFactor)*i/4);
 			}
-		}
+		}  */
 		///
 		if (!echelonNames.length ) {
 			ctx.fillStyle = Configure.line_color;
@@ -397,10 +397,10 @@ var canvas = (function(canvas) {
 					var szpointNext = {x:siteX + cellWidth  * (i + 1) + 0.5 * cellWidth,
 									y: siteY + siteHeight*(1-winFactor) - pointNextH};
 					// 画阈值线
-					ctx.lineWidth="2";
+					ctx.lineWidth="3";
 					ctx.strokeStyle = 'black';
-					ctx.moveTo(szPoint.x + 2,siteY + siteHeight * (1-winFactor)/2);
-					ctx.lineTo(szpointNext.x - 2,siteY + siteHeight * (1-winFactor)/2);
+					ctx.moveTo(szPoint.x,siteY + siteHeight * (1-winFactor)/2);
+					ctx.lineTo(szpointNext.x - 10,siteY + siteHeight * (1-winFactor)/2);
 					ctx.stroke();
 					// 画数据线
 					ctx.lineWidth="2";
@@ -465,7 +465,7 @@ var canvas = (function(canvas) {
 			// 4 赚钱效益
 			drawLine('rgba(128,0,0,1)', -6, 16, Configure.title2.boardsR, '赚钱效应' == indecatorName);
 			drawLine('rgba(255,0,0,1)', -6, 16, Configure.title2.boardR, /*'涨停收益'*/ '赚钱效应' == indecatorName);
-			drawLine('rgba(255,140,0,1)', -6, 16, Configure.title2.boardedR, '赚钱效应' == indecatorName);
+			drawLine('green', -8, 16, Configure.title2.boardedR, '赚钱效应' == indecatorName);
 			
 			// 5 恐慌指数
 			drawLine('green', -1, 1, Configure.title2.failedRate, '亏钱效应' == indecatorName);

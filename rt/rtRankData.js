@@ -22,9 +22,10 @@
 			
 			for (var i = 0; i < 240; i ++) {
 				storeData.data.push({
+					index: 0,
 					gaiRank:[],
 					date: new Date(),
-					index: 0,
+					paramExt:{},
 				})
 			}
 		}
@@ -60,6 +61,7 @@
 					date: new Date(),
 					index: 0,
 					gaiRank:[],
+					paramExt:{},
 				});
 			}
 		}
@@ -119,7 +121,7 @@
 		return retEchelons;
 	};	
 
-	rtGaiData.prototype.setRankDataFromNow = function(dArr, echelonArr) {
+	rtGaiData.prototype.setRankDataFromNow = function(dArr, echelonArr, paramExt) {
 		var d = new Date();
 		var index = this.getIndexFromDate(d);
 		var base = Configure.RT_data_length * (Configure.RT_canvas_record_days_num - 1)/ 
@@ -131,6 +133,7 @@
 			this.gRankData.eDate = d;
 			this.gRankData.data[index].gaiRank = dArr;
 			this.gRankData.data[index].date = Configure.getDateStr(d, '/');
+			this.gRankData.data[index].paramExt = paramExt;
 			this.gRankData.data[index].index = index - base;
 			echelonArr.forEach((newE)=>{
 				var idx = this.gRankData.echelons.findIndex((e)=>{
