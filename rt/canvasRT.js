@@ -124,7 +124,7 @@ var canvasRT = (function() {
 					return tEchelon.name == e.name;
 				})
 			//	if(idx >= 0) {      // 画top echelons
-				if (displayIndex < 2) {	  // 画前2个
+				if (displayIndex < 1) {	  // 画前1个
 					drawEchelonLine(e, color, displayIndex);
 					displayIndex ++;
 				}
@@ -259,13 +259,14 @@ var canvasRT = (function() {
 		
 		reload();
 		drawSite();
-		
-		drawLine('赚钱效应', 0, 10, 'red');
-		drawLine('涨停', 0, 80, 'orange');
-		drawLine('跌停', -10, 10, 'green');
-		
-		drawEmotion();
 		drawEchelons(nameArr);
+
+		if(!nameArr || nameArr.length == 0) {
+			drawLine('赚钱效应', -1, 4, 'red');
+			drawLine('涨停', 0, 60, 'orange');
+			drawLine('跌停', -10, 10, 'green');
+		}
+		drawEmotion();
 	}
 	var draw = function(c, r, nameArr, rtShowD) {
 		if (c.getContext){

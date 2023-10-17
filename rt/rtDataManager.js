@@ -45,7 +45,8 @@ var rtDataManager = (function(){
 	// 5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
 	var getActiveTickets = function() {
 		return realTimeTickets.filter((t)=>{
-			return  topFilter(t);          
+			return  topFilter(t) && 
+					!Configure.isNew(t['f26']);          
 		});
 	};
 		
@@ -89,6 +90,11 @@ var rtDataManager = (function(){
 			return  topFilter(t);
 		});
 	};
+	var getHistoryRTticketsBoard = function(dateStr) {
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
+			return  boardFilter(t);
+		});
+	};
 	var getHistoryRTticketsFloored = function(dateStr) {
 		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
 			return  flooredFilter(t);
@@ -115,6 +121,7 @@ var rtDataManager = (function(){
 		getActiveTickets:getActiveTickets,
 		getRTTicketFromCode:getRTTicketFromCode,
 		getHistoryRTticketsLeader:getHistoryRTticketsLeader,
+		getHistoryRTticketsBoard:getHistoryRTticketsBoard,
 		getHistoryRTticketsFloored:getHistoryRTticketsFloored,
 		getHistoryRTticketsJumped:getHistoryRTticketsJumped,
 		checkIfRtDataUpdated:checkIfRtDataUpdated,
