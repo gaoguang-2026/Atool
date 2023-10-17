@@ -263,8 +263,8 @@ var canvasRT = (function() {
 
 		if(!nameArr || nameArr.length == 0) {
 			drawLine('赚钱效应', -1, 4, 'red');
-			drawLine('涨停', 0, 60, 'orange');
-			drawLine('跌停', -10, 10, 'green');
+			drawLine('涨停', 0, 80, 'orange');
+			drawLine('跌停', -15, 15, 'green');
 		}
 		drawEmotion();
 	}

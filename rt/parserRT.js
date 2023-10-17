@@ -110,8 +110,8 @@ var parserRT = (function(){
 		return parseFloat(ascendingSum / num).toFixed(2);
 	}
 	
-	var parseAndStoreRTData = function(rtTickets = rtDataManager.getRTTicketsLeader()) {
-		var retArr = generateGais(rtTickets);
+	var parseAndStoreRTData = function(rtTickets = rtDataManager.getRTTickets()) {
+		var retArr = generateGais(rtDataManager.getRTTicketsLeader());
 		var retEchelons = generateEchelons(retArr);
 		
 		// ext params
