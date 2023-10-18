@@ -58,6 +58,20 @@ var canvasRT = (function() {
 						rtShowDays_num, 
 						siteY - 10);
 		ctx.stroke(); 
+		
+		// 画涨跌个数
+		ctx.fillStyle = 'red';
+		var red = rtDataManager.getRTTickets().filter((rtData)=>{
+			return rtData['f3'] > 0;
+		}).length;
+		ctx.fillText( red, siteX + siteWidth * (rtShowDays_num - 1)/ rtShowDays_num + 80, siteY - 10);
+		ctx.stroke(); 
+		ctx.fillStyle = 'green';
+		var red = rtDataManager.getRTTickets().filter((rtData)=>{
+			return rtData['f3'] < 0;
+		}).length;
+		ctx.fillText( red, siteX + siteWidth * (rtShowDays_num - 1)/ rtShowDays_num + 105, siteY - 10);
+		ctx.stroke(); 
 	};
 	
 	var ColorReverse = function(OldColorValue){
@@ -168,7 +182,7 @@ var canvasRT = (function() {
 					ctx.fillRect(point.x - POINT_PIXEL / 2, point.y - POINT_PIXEL / 2, 
 										POINT_PIXEL, POINT_PIXEL);
 				}
-				if (i < drawLength) {   // 不是最后一天
+				if (i < drawLength - 1) {   // 不是最后一天
 					scoreNext = parserRT.getScoreTotalByIndex(index + 1);
 					scoreNext = scoreNext == 0 ? score : scoreNext;
 					var pointNextH = siteHeight * (parseFloat(scoreNext) - 0)/ site_score_max;
@@ -176,7 +190,7 @@ var canvasRT = (function() {
 								y: siteY + siteHeight - pointNextH};
 					ctx.moveTo(point.x, point.y);
 					ctx.lineTo(pointNext.x, pointNext.y);
-				} else if(i == drawLength){
+				} else if(i == drawLength - 1){
 					// 前一天此时得分
 					var bscore = parserRT.getScoreTotalByIndex(index - 
 							Configure.RT_data_length / Configure.RT_canvas_record_days_num);
@@ -220,7 +234,7 @@ var canvasRT = (function() {
 					ctx.fillRect(point.x - POINT_PIXEL / 2, point.y - POINT_PIXEL / 2, 
 										POINT_PIXEL, POINT_PIXEL);
 				}
-				if (i < drawLength) {   // 不是最后一天
+				if (i < drawLength - 1) {   // 不是最后一天
 					scoreNext = rtRankData.getRankData().data[index + 1].paramExt[type];
 					scoreNext = !scoreNext || scoreNext == 0 ? score : scoreNext;
 					var pointNextH = siteHeight * (parseFloat(scoreNext) - zero)/ maxoffset;
@@ -228,17 +242,17 @@ var canvasRT = (function() {
 								y: siteY + siteHeight - pointNextH};
 					ctx.moveTo(point.x, point.y);
 					ctx.lineTo(pointNext.x, pointNext.y);
-				} else if(i == drawLength){
+				} else if(i == drawLength - 1){
 					// 前一天此时得分
 					var bscore =rtRankData.getRankData().data[index - Configure.RT_data_length / 
 							Configure.RT_canvas_record_days_num].paramExt[type];
-					if(bscore > 0) {
-						ctx.fillStyle= score > bscore ? 'rgba(255,0,0,0.5)' : 'rgba(0,255,0,0.5)';
-						ctx.fillText(type + score + '(' + (score - bscore) + ')', point.x - 20, point.y - 15);
-					} else {
-						ctx.fillStyle= 'rgba(255,0,0,0.5)';
+				//	if(bscore > 0) {
+				//		ctx.fillStyle= score > bscore ? 'rgba(255,0,0,0.5)' : 'rgba(0,255,120,0.5)';
+				//		ctx.fillText(type + score + '(' + (score - bscore) + ')', point.x - 20, point.y - 15);
+				//	} else {
+						ctx.fillStyle= color;  //'rgba(255,0,0,0.5)';
 						ctx.fillText(type + score, point.x + 10, point.y - 5);
-					}
+				//	}
 				}
 				ctx.stroke();
 			}
@@ -262,7 +276,7 @@ var canvasRT = (function() {
 		drawEchelons(nameArr);
 
 		if(!nameArr || nameArr.length == 0) {
-			drawLine('赚钱效应', -1, 4, 'red');
+			drawLine('赚钱效应', -1.5, 6, 'red');
 			drawLine('涨停', 0, 80, 'orange');
 			drawLine('跌停', -15, 15, 'green');
 		}
