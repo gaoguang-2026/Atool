@@ -70,7 +70,7 @@ var canvasRT = (function() {
 		var red = rtDataManager.getRTTickets().filter((rtData)=>{
 			return rtData['f3'] < 0;
 		}).length;
-		ctx.fillText( red, siteX + siteWidth * (rtShowDays_num - 1)/ rtShowDays_num + 105, siteY - 10);
+		ctx.fillText( red, siteX + siteWidth * (rtShowDays_num - 1)/ rtShowDays_num + 110, siteY - 10);
 		ctx.stroke(); 
 	};
 	
@@ -278,7 +278,7 @@ var canvasRT = (function() {
 		if(!nameArr || nameArr.length == 0) {
 			drawLine('赚钱效应', -1.5, 6, 'red');
 			drawLine('涨停', 0, 80, 'orange');
-			drawLine('跌停', -15, 15, 'green');
+			drawLine('跌停', -20, 20, 'green');
 		}
 		drawEmotion();
 	}
