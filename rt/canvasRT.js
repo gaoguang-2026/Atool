@@ -251,7 +251,7 @@ var canvasRT = (function() {
 				//		ctx.fillText(type + score + '(' + (score - bscore) + ')', point.x - 20, point.y - 15);
 				//	} else {
 						ctx.fillStyle= color;  //'rgba(255,0,0,0.5)';
-						ctx.fillText(type + score, point.x + 10, point.y - 5);
+						ctx.fillText(type + score, point.x - 30, point.y - 5);
 				//	}
 				}
 				ctx.stroke();
@@ -276,7 +276,7 @@ var canvasRT = (function() {
 		drawEchelons(nameArr);
 
 		if(!nameArr || nameArr.length == 0) {
-			drawLine('赚钱效应', -1.5, 6, 'red');
+			drawLine('赚钱效应', -2.5, 10, 'red');
 			drawLine('涨停', 0, 80, 'orange');
 			drawLine('跌停', -20, 20, 'green');
 		}
