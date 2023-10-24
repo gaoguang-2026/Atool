@@ -37,8 +37,11 @@ var canvasRT = (function() {
 		for(var i = 1; i <= 3; i ++) {
 			ctx.moveTo(siteX  + siteWidth * i / 4,siteY);
 			ctx.lineTo(siteX + siteWidth * i / 4,siteY + siteHeight);	
-			ctx.moveTo(siteX,siteY + siteHeight * i / 4);
-			ctx.lineTo(siteX + siteWidth ,siteY + siteHeight * i / 4);
+			if(i == 2) {
+				ctx.moveTo(siteX,siteY + siteHeight * i / 4);
+				ctx.lineTo(siteX + siteWidth ,siteY + siteHeight * i / 4);
+				ctx.stroke(); 
+			}
 		}
 		ctx.stroke(); 
 		///
@@ -80,7 +83,7 @@ var canvasRT = (function() {
 		return '#' + str.substring(str.length-6,str.length);
 	}
 
-	var drawEchelonLine = function(echelon, color, eIndex, shouldColorReverse = false) {
+	var drawEchelonLine = function(echelon, color, eIndex, num, needReverse = false) {
 		var ctx = drawing.getContext("2d");		
 		ctx.beginPath();
 		ctx.fillStyle= color;
@@ -90,7 +93,7 @@ var canvasRT = (function() {
 						(Configure.RT_canvas_record_days_num - rtShowDays_num) / 
 							Configure.RT_canvas_record_days_num;
 		var eFirst; 	// 记录第一个点，数据不连贯，连线难看
-		var offsetX = cellWidth * eIndex/ Configure.RT_canvas_show_echelons_num;  // 错位显示不同Echelon的cell
+		var offsetX = cellWidth * eIndex/ num;  // 错位显示不同Echelon的cell
 		for(i = 0; i < cellNum; i ++, index ++) {
 			var e = parserRT.getEchelonByIndex(echelon, index);
 			if(e&& e.score!=0) {
@@ -111,13 +114,12 @@ var canvasRT = (function() {
 				}
 				if(eFirst && eFirst.score != 0) {
 					ctx.beginPath();
-					var pointFirstH = siteHeight  * 
-							(parseFloat(eFirst.score) - Configure.RT_GAI_show_weight_min)/
-								(site_weight_max - Configure.RT_GAI_show_weight_min);
+					var pointFirstH = needReverse ?  siteHeight  * (parseFloat(eFirst.score) - Configure.RT_GAI_show_weight_min)/
+								(site_weight_max - Configure.RT_GAI_show_weight_min) : 0;
 					var szpointFirst = {x:siteX + cellWidth  * i + offsetX,
 											y: siteY + siteHeight - pointFirstH};
-					ctx.lineWidth= cellWidth/Configure.RT_canvas_show_echelons_num;
-					ctx.strokeStyle = szPoint.y > szpointFirst.y && shouldColorReverse ?
+					ctx.lineWidth= cellWidth / Configure.RT_canvas_show_echelons_num;
+					ctx.strokeStyle = szPoint.y > szpointFirst.y && needReverse ?
 										ColorReverse(color) : color;
 					ctx.moveTo(szPoint.x, szPoint.y);
 					ctx.lineTo(szpointFirst.x, szpointFirst.y);
@@ -134,18 +136,18 @@ var canvasRT = (function() {
 			var color = Configure.echelon_color[displayIndex%Configure.echelon_color.length];
 			if(!nameArr || nameArr.length == 0) {   // 默认显示top echelons
 				var topEchelons = parserRT.getGaiRankData().getTopEchelons();//.slice(0,2);
-				var idx = topEchelons.findIndex((tEchelon)=>{
+			/*	var idx = topEchelons.findIndex((tEchelon)=>{
 					return tEchelon.name == e.name;
 				})
-			//	if(idx >= 0) {      // 画top echelons
+				if(idx >= 0) {*/      // 画top echelons
 				if (displayIndex < 1) {	  // 画前1个
-					drawEchelonLine(e, color, displayIndex);
+					drawEchelonLine(e, color, displayIndex, 1);
 					displayIndex ++;
 				}
 			} else {
 				if(nameArr.includes(e.name) && 
 					displayIndex <= Configure.RT_canvas_show_echelons_num){
-					drawEchelonLine(e, color, displayIndex, nameArr.length <= 2 && rtShowDays_num <= 2);
+					drawEchelonLine(e, color, displayIndex, nameArr.length, nameArr.length > 2 && rtShowDays_num <= 2);
 					displayIndex ++;
 				};
 			}
@@ -194,12 +196,13 @@ var canvasRT = (function() {
 					// 前一天此时得分
 					var bscore = parserRT.getScoreTotalByIndex(index - 
 							Configure.RT_data_length / Configure.RT_canvas_record_days_num);
+					var o = Configure.isAfterTrading() ? -30 : 10;
 					if(bscore > 0) {
 						ctx.fillStyle= score > bscore ? 'red' : 'green';
-						ctx.fillText(score + '(' + (score - bscore) + ')', point.x - 20, point.y - 15);
+						ctx.fillText(score + '(' + (score - bscore) + ')', point.x + o, point.y - 15);
 					} else {
 						ctx.fillStyle= 'red';
-						ctx.fillText(score, point.x + 10, point.y - 5);
+						ctx.fillText(score, point.x + o, point.y - 5);
 					}
 				}
 				ctx.stroke();
@@ -251,7 +254,8 @@ var canvasRT = (function() {
 				//		ctx.fillText(type + score + '(' + (score - bscore) + ')', point.x - 20, point.y - 15);
 				//	} else {
 						ctx.fillStyle= color;  //'rgba(255,0,0,0.5)';
-						ctx.fillText(type + score, point.x - 30, point.y - 5);
+						var o = Configure.isAfterTrading() ? -30 : 10;
+						ctx.fillText(type + score, point.x + o, point.y - 5);
 				//	}
 				}
 				ctx.stroke();
@@ -269,6 +273,7 @@ var canvasRT = (function() {
 		console.log('canvasRT redraw');
 		site_weight_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'echelon'));
 		site_score_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'total') / 1000) * 1000;
+		site_score_max = site_score_max > 4000 ? site_score_max : 4000;
 		rtShowDays_num = rtShowD;
 		
 		reload();
@@ -276,9 +281,9 @@ var canvasRT = (function() {
 		drawEchelons(nameArr);
 
 		if(!nameArr || nameArr.length == 0) {
-			drawLine('赚钱效应', -2.5, 10, 'red');
-			drawLine('涨停', 0, 80, 'orange');
-			drawLine('跌停', -20, 20, 'green');
+			drawLine('赚钱效应', -3, 10, 'red');
+			drawLine('涨停', 0, 60, 'blue');
+			drawLine('跌停', -14, 14, 'green');
 		}
 		drawEmotion();
 	}
