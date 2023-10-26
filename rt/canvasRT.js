@@ -272,6 +272,7 @@ var canvasRT = (function() {
 		clear();
 		console.log('canvasRT redraw');
 		site_weight_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'echelon'));
+		site_weight_max = site_weight_max > 10 ? site_weight_max : 10;
 		site_score_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'total') / 1000) * 1000;
 		site_score_max = site_score_max > 4000 ? site_score_max : 4000;
 		rtShowDays_num = rtShowD;

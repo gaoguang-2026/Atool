@@ -350,6 +350,11 @@ var table = (function(){
 						} else {
 							td.className = 'fontGreen';
 						} 
+						if (!Configure.isNew(ticket[Configure.title.time], 1) &&
+							Configure.isNew(ticket[Configure.title.time]) && 
+							value > 20) {
+								td.className = 'highlight';
+							}
 						break;
 					case 'rise_5':	
 						if(Configure.getMode() == Configure.modeType.FP) {
@@ -450,6 +455,11 @@ var table = (function(){
 							} else {
 								td.className += ' bold';
 							}
+						}
+						if (dataT && !Configure.isNew(dataT['f26'], 1) &&
+							Configure.isNew(dataT['f26']) && 
+							parseFloat(dataT['f3']/100) > 25) {
+								td.className += ' highlight';
 						}
 						break;
 					case 'gainianDragon':
