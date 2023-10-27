@@ -16,7 +16,7 @@ var canvasRT = (function() {
 	var site_score_max = 3000;
 	var rtShowDays_num = Configure.RT_canvas_show_days_num;	
 
-	var POINT_PIXEL = 5;
+	var POINT_PIXEL = 8;
 	
 	var clear = function()  {
 		drawing.getContext("2d").clearRect(rect.x, rect.y, rect.width, rect.height);
@@ -105,8 +105,8 @@ var canvasRT = (function() {
 				
 				if(!eFirst ) {
 					eFirst = parserRT.getEchelonByIndex(echelon, index); 
-					ctx.fillRect(szPoint.x - POINT_PIXEL / 2, szPoint.y - POINT_PIXEL / 2, 
-							POINT_PIXEL, POINT_PIXEL);   // 画第一个点
+					//ctx.fillRect(szPoint.x - POINT_PIXEL / 2, szPoint.y - POINT_PIXEL / 2, 
+					//		POINT_PIXEL, POINT_PIXEL);   // 画第一个点
 					ctx.font="14px 楷体";
 					ctx.fillText('<' + e.name.substr(0,2) + '>',siteX + siteWidth - 5, 
 					szPoint.y);
@@ -180,9 +180,9 @@ var canvasRT = (function() {
 					(parseFloat(score) - 0)/ site_score_max;
 				var point = {x: siteX + cellWidth  * i,
 					y: siteY + siteHeight - pointH};
-				if (i == 0) {
+				if (i * Configure.RT_canvas_record_days_num % Configure.RT_data_length == 0) {   // 每天的首个
 					ctx.fillRect(point.x - POINT_PIXEL / 2, point.y - POINT_PIXEL / 2, 
-										POINT_PIXEL, POINT_PIXEL);
+										POINT_PIXEL + 2, POINT_PIXEL + 2);
 				}
 				if (i < drawLength - 1) {   // 不是最后一天
 					scoreNext = parserRT.getScoreTotalByIndex(index + 1);
@@ -233,7 +233,8 @@ var canvasRT = (function() {
 					(parseFloat(score) - zero)/ maxoffset;
 				var point = {x: siteX + cellWidth  * i,
 					y: siteY + siteHeight - pointH};
-				if (i == 0) {
+				if (i * Configure.RT_canvas_record_days_num % Configure.RT_data_length == 0) {   // 每天的首个
+					ctx.fillStyle= color;
 					ctx.fillRect(point.x - POINT_PIXEL / 2, point.y - POINT_PIXEL / 2, 
 										POINT_PIXEL, POINT_PIXEL);
 				}
@@ -255,7 +256,7 @@ var canvasRT = (function() {
 				//	} else {
 						ctx.fillStyle= color;  //'rgba(255,0,0,0.5)';
 						var o = Configure.isAfterTrading() ? -30 : 10;
-						ctx.fillText(type + score, point.x + o, point.y - 5);
+						ctx.fillText(type + score, point.x + o, point.y < siteY ? siteY : point.y - 5);
 				//	}
 				}
 				ctx.stroke();
