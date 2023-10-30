@@ -105,7 +105,9 @@ var parserRT = (function(){
 	var calAverageAscending  = function(tickets) {
 		var ascendingSum = 0, num = 0;
 		for(; num < tickets.length; num ++) {
-			ascendingSum += parseFloat(tickets[num]['f3']/100);
+			if(tickets[num]['f3'] != '-') {
+				ascendingSum += parseFloat(tickets[num]['f3']/100);
+			}
 		}
 		return parseFloat(ascendingSum / num).toFixed(2);
 	}
