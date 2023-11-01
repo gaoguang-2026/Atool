@@ -349,7 +349,7 @@
 				month = 12;
 			}
 			month = month < 10 ? ('0' + month) : month;   //月份格式化：月份小于10则追加个0
-			let lastYearMonth = year + month;
+			let lastYearMonth = '' + year + month;
 			return lastYearMonth;
 		};
 		var backUpMonth = getLastMonth();
