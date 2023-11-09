@@ -11,22 +11,24 @@ var requests = (function(){
 	}
 	var request = function(url, callback, isFirst = false) {
 		const xhr = new XMLHttpRequest();
-		console.log('start request date from 东方财富');
+		console.log('request -> ' + url + ' time:' + new Date().toGMTString());
 		xhr.open('GET', url);
 		xhr.onload = () => {
 			if (xhr.status === 200) {
 				const responseText = xhr.responseText;
 				// 处理响应文本
-				console.info(responseText);
+				
 				var s = responseText.indexOf('(') + 1; 
 				var json_str = responseText.substr(s, responseText.length - s - 2);
 			    rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff']);
-				
+				console.log(JSON.parse(json_str));
 				if(typeof callback === 'function' && 
 					rtDataManager.checkIfRtDataUpdated() || 
 					isFirst) {
 					callback();
 				};
+			} else {
+				console.error('request error ' + xhr.status);
 			}
 		};
 		xhr.send();

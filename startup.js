@@ -143,6 +143,7 @@
 		}
 		AI.init();
 		dragons.init();
+		console.log("rtDataManager.init: " + (window.performance.now() - startTime) + "ms");
 		return rtDataManager.init();   // 读数据库，异步
 	};
 	
@@ -230,7 +231,9 @@
 			console.log('文件类型不正确');
 			return;
 		}
+		console.log("loadExcelDone: " + (window.performance.now() - startTime) + "ms");
 		init().then(()=>{							
+			console.log("start draw canvas: " + (window.performance.now() - startTime) + "ms");
 			const c = document.getElementById('drawing');
 			const ctx = c.getContext('2d');
 			ctx.clearRect(0, 0, c.width, c.height);
@@ -241,7 +244,7 @@
 			drawCanvasLeft();
 			drawCanvasRight();
 			fillTicketsTable();
-					
+			console.log("draw canvas done: " + (window.performance.now() - startTime) + "ms");
 			displayAI(AI.getRecommend());
 			AI.drawEmotionCycle();
 			
@@ -249,17 +252,21 @@
 					
 			//start requests
 			startRequests();
-			
+			console.log("Init done: " + (window.performance.now() - startTime) + "ms");
 		});
 	};
 	
     $('#excel-file').change(function(e) {
+		window.performance.mark("fileReader:change");
         var files = e.target.files;
 		Array.from(files).forEach((file, index)=>{
 			var fileReader = new FileReader();
 			fileReader.file = file;
 			fileReader.index = index;
 			fileReader.onload = function(ev) {
+				window.performance.mark("fileReader:onload");
+				console.log('Load file duration:' 
+					+ window.performance.measure("Duration:", "fileReader:change", "fileReader:onload").duration + 'ms');
 				var data = ev.target.result
 				if(ev.target.file.type == 'application/json') {
 					Downloader.upload(data, ev.target.index);   // 恢复数据库
@@ -274,6 +281,7 @@
 		})
     });
 	
+	var startTime = window.performance.now();  
 	window.onload = function(){
 		document.title = document.title + Configure.version;
 		$('#date').val(Configure.getDateStr(Configure.date, '-'));

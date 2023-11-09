@@ -235,10 +235,10 @@ var AI = (function(){
 		try {
 			cangMap.forEach(function(item, key){
 				item.conditions.forEach((condition, index)=>{
-					console.log('=> start check ' + item.stage + ' index ' + index);
+				//	console.log('=> start check ' + item.stage + ' index ' + index);
 					if(checkCondition(condition)) {
 						dataStorage.emotion = key;
-						console.log('Check done, ' + item.stage + ' index ' + index + '  selected!');
+				//		console.log('Check done, ' + item.stage + ' index ' + index + '  selected!');
 						throw new Error('LoopInterrupt');
 					};
 				});
