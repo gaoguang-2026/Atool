@@ -154,6 +154,8 @@
 				table.updateRow();
 				canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
 			});
+			// 初始化精灵
+			rtSpirit.init();
 		}
 	}; 
 	

@@ -31,6 +31,9 @@ var rtDataManager = (function(){
 			return t['f12'] == code || code.indexOf(t['f12']) != -1;
 		})
 	};
+	var getPreRTTickets = function() {
+		return preRealTimeTickets;
+	};
 	var getRTTickets = function() {
 		return realTimeTickets;
 	};
@@ -55,55 +58,54 @@ var rtDataManager = (function(){
 				t['f160'] > 3000 ||
 				t['f110'] > 4000;  
 	};
-
+	// 涨停
 	var boardFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
 		var per = Configure.isKechuangTicket(rtData['f12']) ? 1.2 : 1.1;
 		return  Math.round(rtData['f18'] * per) == rtData['f2'];
 	};
+	// 涨停过
 	var boardedFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
 		var per = Configure.isKechuangTicket(rtData['f12']) ? 1.2 : 1.1;
 		return  Math.round(rtData['f18'] * per) == rtData['f15'];
 	};
-	
+	// 大涨过     20cm涨幅 > 15% , 10cm涨幅 > 8%
+	var raisedFilter = function(rtData){
+		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
+		var per = Configure.isKechuangTicket(rtData['f12']) ? 1.15 : 1.08;
+		return  Math.round(rtData['f18'] * per) < rtData['f15'];
+	};
+	// 跌停
 	var floorFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
 		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
 		return  Math.round(rtData['f18'] * per) == rtData['f2'];
 	};
-	
+	// 跌停过
 	var flooredFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
 		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
 		return  Math.round(rtData['f18'] * per) == rtData['f16'];
 	};
-	
+	// 超跌过
 	var jumpedFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
 		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.95 : 0.93;
-		return  Math.round(rtData['f18'] * per) >= rtData['f16'];
+		return  Math.round(rtData['f18'] * per) > rtData['f16'];
 	};
 	
 	var getHistoryRTticketsLeader = function(dateStr) {
-		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
-			return  topFilter(t);
-		});
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter(topFilter);
 	};
 	var getHistoryRTticketsBoard = function(dateStr) {
-		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
-			return  boardFilter(t);
-		});
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter(boardFilter);
 	};
 	var getHistoryRTticketsFloored = function(dateStr) {
-		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
-			return  flooredFilter(t);
-		});
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter(flooredFilter);
 	};
 	var getHistoryRTticketsJumped = function(dateStr) {
-		return rtDataStore.getHistoryFromDatestr(dateStr).filter((t) =>{
-			return  jumpedFilter(t);
-		});
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter(jumpedFilter);
 	};
 	
 	var init = function() {
@@ -114,9 +116,13 @@ var rtDataManager = (function(){
 		init:init,
 		boardFilter:boardFilter,
 		boardedFilter:boardedFilter,
+		raisedFilter:raisedFilter,
 		floorFilter:floorFilter,
+		flooredFilter:flooredFilter,
+		jumpedFilter:jumpedFilter,
 		setRTTickets:setRTTickets,
 		getRTTickets:getRTTickets,
+		getPreRTTickets:getPreRTTickets,
 		getRTTicketsLeader:getRTTicketsLeader,
 		getActiveTickets:getActiveTickets,
 		getRTTicketFromCode:getRTTicketFromCode,
