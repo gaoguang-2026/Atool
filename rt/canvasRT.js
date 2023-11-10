@@ -285,7 +285,7 @@ var canvasRT = (function() {
 		if(!nameArr || nameArr.length == 0) {
 			drawLine('赚钱效应', -3, 10, 'red');
 			drawLine('涨停', 0, 60, 'blue');
-			drawLine('跌停', -14, 14, 'green');
+			drawLine('跌停', -20, 20, 'green');
 		}
 		drawEmotion();
 	}

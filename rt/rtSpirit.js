@@ -13,7 +13,7 @@ var rtSpirit = (function(){
 		return dataT['f100'];
 	};
 	
-	var remind = function(filter, type, isRevert = false) {
+	var remind = function(filter, type, isRevert = false, gain = false) {
 		var tPreArray = rtDataManager.getPreRTTickets().filter(filter);
 		var tArray = rtDataManager.getRTTickets().filter(filter);
 		if (tPreArray && tPreArray.length > 0) {
@@ -27,7 +27,7 @@ var rtSpirit = (function(){
 			if (tDiffArr.length > 0) {
 				var txt = '';
 				tDiffArr.forEach((t)=>{
-					txt += tDiffArr.length > 2 ? '' : getGain(t);
+					txt += tDiffArr.length == 1 && gain ? getGain(t) : '';
 					txt +=  t['f14'] + ' ';
 				});
 				txt += type;
@@ -37,10 +37,10 @@ var rtSpirit = (function(){
 	}
 	var init = function() {
 		Timer.addTimerCallback(()=>{
-			remind(rtDataManager.raisedFilter, '接近涨停');
-			remind(rtDataManager.jumpedFilter, '快速下跌');
-			remind(rtDataManager.boardedFilter, '涨停');
-			remind(rtDataManager.flooredFilter, '跌停');
+			remind(rtDataManager.raisedFilter, '接近涨停', false, true);
+			remind(rtDataManager.jumpedFilter, '快速下跌', false, true);
+			remind(rtDataManager.boardedFilter, '涨停', false, true);
+			remind(rtDataManager.flooredFilter, '跌停', false, true);
 			
 			remind(rtDataManager.boardFilter, '炸板', true);
 			remind(rtDataManager.floorFilter, '打开跌停', true);
