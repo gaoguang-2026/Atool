@@ -13,6 +13,30 @@ var rtSpirit = (function(){
 		return dataT['f100'];
 	};
 	
+	/// 加一个cache避免重复播报同一个票
+	var ticketCache = {};
+	var cacheRemind = function(ticketArr, type) {
+		if(Configure.isBidding()) return;
+		if(ticketCache[type] == undefined) {
+			ticketCache[type] = [];
+		}
+		ticketCache[type] = ticketCache[type].concat(ticketArr.filter((ticket) => {
+				return ticketCache[type].findIndex((t)=>{
+					return t['f12'] == ticket['f12'];
+				}) == -1;
+			}
+		));
+	};
+	var checkCache = function(t, type) {
+		return ticketCache[type] == undefined || ticketCache[type].findIndex((tCache)=>{
+			return  t['f12'] == tCache['f12'];
+		}) == -1;
+	};
+	var clearCache = function() {
+		ticketCache = {};
+	};
+	////
+	
 	var remind = function(filter, type, isRevert = false, gain = false) {
 		var tPreArray = rtDataManager.getPreRTTickets().filter(filter);
 		var tArray = rtDataManager.getRTTickets().filter(filter);
@@ -27,11 +51,15 @@ var rtSpirit = (function(){
 			var txt = '';
 			if (tDiffArr.length > 0 && tDiffArr.length < 5) {
 				tDiffArr.forEach((t)=>{
-					txt += tDiffArr.length == 1 && gain ? getGain(t) : '';
-					txt +=  t['f14'] + ' ';
+					if (checkCache(t, type)) {
+						txt += tDiffArr.length == 1 && gain ? getGain(t) : '';
+						txt +=  t['f14'] + ' ';
+					}
 				});
-				txt += type;
-				speecher.speak(txt);
+				if(txt != '') {
+					txt += type;
+					speecher.speak(txt);
+				}
 			} else if(tDiffArr.length >= 5) {
 				txt +=  tDiffArr[0]['f14'] + ' ' + tDiffArr[1]['f14'] + '等' + tDiffArr.length + '支票';
 				txt += type;
@@ -39,20 +67,25 @@ var rtSpirit = (function(){
 			} else {
 				// do noting...
 			}
+			return tDiffArr;
 		}
+		return [];
 	}
+
 	var init = function() {
 		Timer.addTimerCallback(()=>{
 			if (!Configure.isHalfBidding()) {
 				remind(rtDataManager.raisedFilter, '接近涨停', false, true);
 				remind(rtDataManager.jumpeFilter, '快速下跌', false, true);
-				remind(rtDataManager.boardedFilter, '涨停', false, true);
-				remind(rtDataManager.flooredFilter, '跌停', false, true);
 				
-				remind(rtDataManager.boardFilter, '炸板', true);
-				remind(rtDataManager.floorFilter, '打开跌停', true);
+				cacheRemind(remind(rtDataManager.floorFilter, '跌停', false, true), '跌停');
+				cacheRemind(remind(rtDataManager.boardFilter, '涨停', false, true), '涨停');
+				cacheRemind(remind(rtDataManager.boardFilter, '炸板', true), '炸板');
+				cacheRemind(remind(rtDataManager.floorFilter, '打开跌停', true), '打开跌停');
 			}
-		})
+		});
+		// 10min 清除cache
+		setInterval(clearCache, 10 * 60 * 1000);
 	};
 	
 	return {
