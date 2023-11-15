@@ -24,26 +24,34 @@ var rtSpirit = (function(){
 					return tPre['f12'] == t['f12'];
 				}) == -1;
 			});
-			if (tDiffArr.length > 0) {
-				var txt = '';
+			var txt = '';
+			if (tDiffArr.length > 0 && tDiffArr.length < 5) {
 				tDiffArr.forEach((t)=>{
 					txt += tDiffArr.length == 1 && gain ? getGain(t) : '';
 					txt +=  t['f14'] + ' ';
 				});
 				txt += type;
 				speecher.speak(txt);
+			} else if(tDiffArr.length >= 5) {
+				txt +=  tDiffArr[0]['f14'] + ' ' + tDiffArr[1]['f14'] + '等' + tDiffArr.length + '支票';
+				txt += type;
+				speecher.speak(txt);
+			} else {
+				// do noting...
 			}
 		}
 	}
 	var init = function() {
 		Timer.addTimerCallback(()=>{
-			remind(rtDataManager.raisedFilter, '接近涨停', false, true);
-			remind(rtDataManager.jumpedFilter, '快速下跌', false, true);
-			remind(rtDataManager.boardedFilter, '涨停', false, true);
-			remind(rtDataManager.flooredFilter, '跌停', false, true);
-			
-			remind(rtDataManager.boardFilter, '炸板', true);
-			remind(rtDataManager.floorFilter, '打开跌停', true);
+			if (!Configure.isHalfBidding()) {
+				remind(rtDataManager.raisedFilter, '接近涨停', false, true);
+				remind(rtDataManager.jumpeFilter, '快速下跌', false, true);
+				remind(rtDataManager.boardedFilter, '涨停', false, true);
+				remind(rtDataManager.flooredFilter, '跌停', false, true);
+				
+				remind(rtDataManager.boardFilter, '炸板', true);
+				remind(rtDataManager.floorFilter, '打开跌停', true);
+			}
 		})
 	};
 	

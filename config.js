@@ -641,6 +641,14 @@ var Configure = (function(){
 		}
 		return false;
 	};
+	var isHalfBidding = function(d = new Date()) {
+		var startD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),9,15,0);
+		var endD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),9,20,0);
+		if(d >= startD && d < endD) {
+			return true;
+		}
+		return false;
+	};
 	var isKeTicket = function(code) {
 		return (code.substr(0, 2) == 'SH' && code.substr(2, 2) == '68') || 
 					code.substr(0, 2) == '68';
@@ -817,6 +825,7 @@ var Configure = (function(){
 		isAfterTrading:isAfterTrading,
 		isNight:isNight,
 		isBidding:isBidding,
+		isHalfBidding:isHalfBidding,
 		isKeTicket:isKeTicket,
 		isChungTicket:isChungTicket,
 		isKechuangTicket:isKechuangTicket,

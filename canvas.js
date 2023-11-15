@@ -437,11 +437,11 @@ var canvas = (function(canvas) {
 					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, 800);
 			} 
 			if (echelonNames.length <= 1) {
-				drawHeadorFoot('rgba(0,158,0,0.4)', 0, 1000, Configure.title2.jumped, 1, true);
+				drawHeadorFoot('rgba(0,158,0,0.4)', 0, 2000, Configure.title2.jumped, 1, true);
 				drawHeadorFoot('rgba(0,50,0,0.4)', 0, 200, Configure.title2.floored, 2, true);
 				drawHeadorFoot('rgba(128,0,0,0.4)', 0, 200,  Configure.title2.lianban, 3,false);
-				drawHeadorFoot('rgba(255,0,0,0.4)', 0, 200,  Configure.title2.boardnum, 2,false);
-				drawHeadorFoot('rgba(255,140,0,0.4)', 0, 200,  Configure.title2.boardednum, 1,false);
+				drawHeadorFoot('rgba(255,0,0,0.4)', 0, 300,  Configure.title2.boardnum, 2,false);
+				drawHeadorFoot('rgba(255,140,0,0.4)', 0, 500,  Configure.title2.boardednum, 1,false);
 				
 				Configure.ZHISHU_TITLE == Configure.title2.qingxuzhishu ? 
 					drawUpon(site_MIN_qx, site_MAX_qx, Configure.title2.qingxuzhishu) :
@@ -460,7 +460,7 @@ var canvas = (function(canvas) {
 
 			// 3 资金热度    和短线资金配合
 			drawLine('rgba(75,0,130,0.5)', -10, 30, Configure.title2.lianban, /*'连扳数量'*/'涨停数量' == indecatorName);  
-			drawLine('blue', 0, 200, Configure.title2.boardnum, '涨停数量' == indecatorName);            
+			drawLine('red', 0, 300, Configure.title2.boardnum, '涨停数量' == indecatorName);            
 			
 			// 4 赚钱效益
 			drawLine('rgba(128,0,0,1)', -6, 16, Configure.title2.boardsR, '赚钱效应' == indecatorName);

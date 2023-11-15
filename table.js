@@ -10,6 +10,9 @@ var table = (function(){
 	var param;        // load param
 	var highlightTichets;  // highlight
 	
+	var btn_loadMore = document.getElementById('load-all-btn');
+	var load_item_num = 10;
+	
 	var updateForm = function() {
 		var fr = document.getElementById('form2');
 		var checkNameArr = [];
@@ -295,8 +298,7 @@ var table = (function(){
 			}
 			return x;
 		}
-	
-		rankTickets.forEach((ticket)=> {
+		function createRow(ticket) {
 			var tr = document.createElement('tr');
 			tr.dataset.ticketCode = ticket[Configure.title.code];
 			tHeadtds.forEach((t)=> {
@@ -386,7 +388,7 @@ var table = (function(){
 								var txt = '';
 								var arr = ticket[Configure.title.gainian].split(',');
 								if (arr.length <= 1) arr = ticket[Configure.title.gainian].split(';');   //兼容';'
-								for(i = arr.length - 1; i >= 0; i --) {
+								for(var i = arr.length - 1; i >= 0; i --) {
 									if(Configure.gaiBlackList_critical.indexOf(arr[i]) == -1 &&
 										Configure.gaiBlackList_verbose.indexOf(arr[i]) == -1) {
 										txt += '【';
@@ -407,12 +409,24 @@ var table = (function(){
 				tr.appendChild(td);
 			});
 			addDetailAndDelete(tr, ticket);
-		});
+		}
+		
+		if(rankTickets.length > load_item_num && load_item_num > 0) {
+			btn_loadMore.hidden = false;
+		} else {
+			load_item_num = rankTickets.length;
+			btn_loadMore.hidden = true;
+		}
+		for(var j = 0; j < load_item_num; j ++ ) {
+			createRow(rankTickets[j]);
+		}
 	};
 	var updateRow = function() {
 		Tip.remove();
 		if(param.type == 5) {
 			createRankRow();
+		} else {
+			btn_loadMore.hidden = true;
 		}
 		updateTd();
 		updateForm();
@@ -424,6 +438,12 @@ var table = (function(){
 		highlightTichets = h;
 		
 		createTableHead();
+		
+		btn_loadMore.addEventListener('click', () => {  
+			load_item_num = -1;
+			btn_loadMore.hidden = true;
+			updateRow();
+		});
 
 		param.type == 5 ? createRankRow() : createTicketRow(); 
 		updateRow();

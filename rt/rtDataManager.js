@@ -88,10 +88,16 @@ var rtDataManager = (function(){
 		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
 		return  Math.round(rtData['f18'] * per) == rtData['f16'];
 	};
-	// 超跌过
-	var jumpedFilter = function(rtData){
+	// 快速下跌
+	var jumpeFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
 		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.92 : 0.94;
+		return  Math.round(rtData['f18'] * per) > rtData['f16'];
+	};
+	// 超跌过  默认 -5%
+	var jumpedFilter = function(rtData){
+		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
+		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.95 : 0.93; 
 		return  Math.round(rtData['f18'] * per) > rtData['f16'];
 	};
 	
@@ -120,6 +126,7 @@ var rtDataManager = (function(){
 		floorFilter:floorFilter,
 		flooredFilter:flooredFilter,
 		jumpedFilter:jumpedFilter,
+		jumpeFilter:jumpeFilter,
 		setRTTickets:setRTTickets,
 		getRTTickets:getRTTickets,
 		getPreRTTickets:getPreRTTickets,
