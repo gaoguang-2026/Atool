@@ -32,6 +32,19 @@ var rtSpirit = (function(){
 			return  t['f12'] == tCache['f12'];
 		}) == -1;
 	};
+	var cacheReprot = function(gainName, type) {
+		if(Configure.isBidding()) return;
+		if(ticketCache[type] == undefined) {
+			ticketCache[type] = [];
+		}
+		if(!ticketCache[type].includes(gainName)) {
+			ticketCache[type].push(gainName);
+		};
+	};
+	var checkReport = function(gainName, type) {
+		return ticketCache[type] == undefined || !ticketCache[type].includes(gainName);
+	};
+	
 	var clearCache = function() {
 		ticketCache = {};
 	};
@@ -70,8 +83,51 @@ var rtSpirit = (function(){
 			return tDiffArr;
 		}
 		return [];
-	}
-
+	};
+	
+	// report 概念 
+	var GaiRankDataArr = [];
+	var GaiRaiseRateDuration = 3 * 60 * 1000;   // 3分钟
+	var GaiReportDuration = 0.5 * 60 * 1000;   // 半分钟播报一次
+	var GaiReportMax = 0.5;
+	var reportGain = function() {
+		if (GaiRankDataArr.length < GaiRaiseRateDuration / GaiReportDuration) {
+			GaiRankDataArr.push(parserRT.getGaiRankData().getLastRankData());
+		} else {
+			var preRankData = GaiRankDataArr.shift();
+			var currentRankData = parserRT.getGaiRankData().getLastRankData();
+			GaiRankDataArr.push(currentRankData);
+			var txt = '', txt1 = '';
+			currentRankData.forEach((g)=> {
+				var gPre = preRankData.find((gP)=>{
+					return gP[Configure.titleGainian.name] == g[Configure.titleGainian.name];
+				});
+				if (gPre && gPre[Configure.titleGainian.score]) {
+					var raiseRate = (g[Configure.titleGainian.score] - gPre[Configure.titleGainian.score])/ 
+									gPre[Configure.titleGainian.score];
+					if(raiseRate != 0) {
+						console.log('概念 ' + g[Configure.titleGainian.name] + ' ' + raiseRate);
+					}
+					if (raiseRate > GaiReportMax && checkReport(g[Configure.titleGainian.name], '概念快速流入')) {
+						txt += g[Configure.titleGainian.name] + ' ';
+						cacheReprot(g[Configure.titleGainian.name], '概念快速流入');
+					} else if(raiseRate < -GaiReportMax && checkReport(g[Configure.titleGainian.name], '概念快速流入')) {
+						txt1 += g[Configure.titleGainian.name] + ' ';
+						cacheReprot(g[Configure.titleGainian.name], '概念快速流出');
+					}
+				}
+			});
+			if (txt!='') {
+				txt += '概念快速流入';
+				speecher.speak(txt);
+			}
+			if (txt1!= '') {
+				txt1 += '概念快速流出';
+				speecher.speak(txt1);
+			}
+		};
+	};
+	/// 
 	var init = function() {
 		Timer.addTimerCallback(()=>{
 			if (!Configure.isHalfBidding()) {
@@ -84,6 +140,9 @@ var rtSpirit = (function(){
 				cacheRemind(remind(rtDataManager.floorFilter, '打开跌停', true), '打开跌停');
 			}
 		});
+		// 提示概念
+		setInterval(reportGain, GaiReportDuration);
+		
 		// 10min 清除cache
 		setInterval(clearCache, 10 * 60 * 1000);
 	};
