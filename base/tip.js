@@ -58,12 +58,12 @@ var Tip = (function () {
 		el.onmouseover  = function() {
 			$(this).tip(txt);
 		};
+		el.addEventListener('DOMNodeRemoved', function() {  
+			$(this).clear();
+		});
 	};
-	var remove = function() {
-		$(this).clear();
-	};
+
 	return {
-		show:show,
-		remove:remove
+		show:show
 	}
 })();

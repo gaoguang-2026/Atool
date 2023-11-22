@@ -1,7 +1,9 @@
 var speecher = (function(text) {
+	var speeckerEL = document.getElementById("speecker");
+	var textContainer = []; 
+	
 	// 创建一个SpeechSynthesisUtterance对象  
 	var utterance = new SpeechSynthesisUtterance();
-		
 	// 设置语音合成的语速  
 	utterance.rate = 0.8; // 0.5表示正常语速，可以设置为0.1到10之间的值 
 	// 设置语音合成的音调  
@@ -9,12 +11,31 @@ var speecher = (function(text) {
 	// 设置语音合成的音量  
 	utterance.volume = 1; // 1表示正常音量，可以设置为0到1之间的值  
 	// 设置要播报的文本内容  
+	
 	var speak = function(text) {
+		var d = new Date();
+		speeckerEL.innerHTML = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + ' ' + text;
+		textContainer.unshift(speeckerEL.innerHTML);
+		var textshow = '';
+		textContainer.forEach((txt)=>{
+			textshow += txt + '<br>';
+			if(textshow.length > 1000) return;
+		});
+		Tip.show(speeckerEL, textshow);
+		
 		utterance.text = text;  
 		window.speechSynthesis.speak(utterance);
 	};
-
+	
+	var init = function() {
+		var txt = Configure.apothegms[Math.round(Math.random() * Configure.apothegms.length)];
+		speeckerEL.innerHTML = txt ? txt : Configure.apothegms[0];
+	};
+	
 	return {
+		init:init,
 		speak:speak,
 	}
 })();
+
+speecher.init();

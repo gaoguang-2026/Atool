@@ -422,7 +422,6 @@ var table = (function(){
 		}
 	};
 	var updateRow = function() {
-		Tip.remove();
 		if(param.type == 5) {
 			createRankRow();
 		} else {

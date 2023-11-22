@@ -346,10 +346,6 @@
 				h = canvas.height;
 			ctx.drawImage(img, (canvas.width - w)/2, 0, w, h);
 		};
-				
-		var apothegm = document.getElementById("apothegm");
-		var txt = Configure.apothegms[Math.round(Math.random() * Configure.apothegms.length)];
-		apothegm.innerHTML = txt ? txt : Configure.apothegms[0];
 		
 		updateIndicator();
 		
