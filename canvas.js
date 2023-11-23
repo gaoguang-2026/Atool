@@ -218,12 +218,18 @@ var canvas = (function(canvas) {
 				ctx.font="14px 楷体";
 				ctx.fillStyle = cycle.cycles.includes('M') ? 'red' : 
 					cycle.cycles.includes('m') ? 'green' :
-					cycle.cycles.includes('H') || cycle.cycles.includes('P') ? 'blue' : Configure.site_color;
-				ctx.fillText(cycle.cycles, siteX + cellWidth  * i, siteY -5);
-				
-				if (!!cycle.hotpoint) {
-					ctx.fillStyle = 'orange';
-					ctx.fillText('<' + cycle.hotpoint + '>', siteX + cellWidth  * i + 20, siteY -5);
+					cycle.cycles.includes('H') || cycle.cycles.includes('P') ? 'blue' :
+					cycle.cycles.includes('s') || cycle.cycles.includes('S') ? 'grey' : Configure.site_color;
+				if (!cycle.cycles.includes('w') &&
+					!cycle.cycles.includes('W')) {    // 宏观周期阶段
+					ctx.fillText(cycle.cycles, siteX + cellWidth  * i, siteY -5);
+					if (!!cycle.hotpoint) {
+						ctx.fillStyle = 'orange';
+						ctx.fillText('<' + cycle.hotpoint + '>', siteX + cellWidth  * i + 20, siteY -5);
+					}
+				} else {   // 微观情绪
+					ctx.fillStyle = Configure.getColorFromWinC(cycle.cycles).color;
+					ctx.fillRect(siteX + cellWidth  * i, siteY + siteHeight*(1- winFactor) + 1, cellWidth, 5);
 				}
 			}
 		};		
@@ -273,8 +279,6 @@ var canvas = (function(canvas) {
 	};
 	var drawEmotionCycle = function(emotions, curEmotion) { 
 		var ctx = drawing.getContext("2d");		
-		ctx.beginPath();
-		
 		var center = Math.floor(emotions.length/2);
 		for(var i = 0; i < emotions.length; i ++) {
 			var xLv = i-center < 0 ? 0 : 1;
@@ -286,11 +290,12 @@ var canvas = (function(canvas) {
 			if(emotions[i] == curEmotion) {
 				ctx.beginPath();
 				ctx.font="bold 16px 楷体";
-				ctx.fillStyle = 'red';
+				ctx.fillStyle = Configure.getColorFromWinC('w' + i).color;
 				txt = curEmotion + (xLv == 0 ? '  <' : '<');
 			} else {
+				ctx.beginPath();
 				ctx.font="bold 14px 楷体";
-				ctx.fillStyle = 'grey';
+				ctx.fillStyle = Configure.getColorFromWinC('w' + i).color;
 				txt = emotions[i];
 			}
 			ctx.fillText(txt, x, y);

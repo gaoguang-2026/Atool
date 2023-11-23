@@ -9,7 +9,7 @@ var AI = (function(){
 	var Rectify_factor = 7;
 
 	// emotion v1
-	var dragonStage = ['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
+	var dragonStage = Configure.winCtxts;//['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
 	var cangMap1 = new Map([
 		['冰点', {winCtxt:'提防二次冰点，低位潜伏', stage:'退三', context:['退潮']}],    // 退三
 		['二次冰点', {winCtxt:'冰点衰竭，打板确认龙头', stage:'启动', context:['博弈']}],			

@@ -171,8 +171,48 @@ var Configure = (function(){
 						{k:{days:1, minDays:1, max:5}},
 						{i:{days:1, minDays:1, max:4}},
 						{m:{days:1, minDays:1, max:200}}
-		];						
-	
+		];	
+	var winCtxts = ['启动','分歧','确认', '加速', '加歧', '博傻', '冰启', '冰加', '冰衰'];
+	var getColorFromWinC = function(str) {
+		var retObj = {};
+		if(str.indexOf('w') >= 0 ||  str.indexOf('W')>=0) {
+			var index = str.indexOf('w') >= 0 ? str.indexOf('w') : str.indexOf('W');
+			var i = parseInt(str.substr(index+1, index + 1));
+			var color;
+			switch (i) {
+				case 0:
+					color = 'black';
+					break;
+				case 1:
+					color = 'grey';
+					break;
+				case 2:
+					color = 'Peru';
+					break;
+				case 3:
+					color = 'OrangeRed';
+					break;
+				case 4:
+					color = 'Orange';
+					break;
+				case 5:
+					color = 'Red';
+					break;
+				case 6:
+					color = 'DarkSeaGreen';
+					break;
+				case 7:
+					color = 'Darkgreen';
+					break;
+				case 8:
+					color = 'green';
+					break;
+			}
+			retObj.color = color;
+			retObj.des = winCtxts[i];
+		}
+		return retObj;
+	}
 	var cangMap2 = new Map([
 		['混沌', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
 							{a:{currentMax:45},b:{max:1},m:{days:7, minDays:4, max:100}, f:{days:3,minDays:2, min:25}}
@@ -180,24 +220,24 @@ var Configure = (function(){
 				winCtxt:'买入分歧卖出一致', winC:6, stage:'启动', context:['博弈']}],
 				
 		['二次冰点', {conditions:[{a:{max:0,currentMax: -5}, b:{max:1}, c:{days:4, minDays:3, min:0.25}}],
-				winCtxt:'低位分仓买入', winC:0, stage:'退三', context:['博弈']}], 
+				winCtxt:'低位分仓买入', winC:0, stage:'冰衰', context:['博弈']}], 
 				
 		['冰点衰竭', {conditions:[{a:{currentMin:15},b:{max:1},e:{min:0}}],
-			winCtxt:'右侧确认买入，低吸半路加打板', winC:1, stage:'启动', context:['博弈']}],	
+			winCtxt:'右侧确认买入，低吸半路加打板', winC:1, stage:'确认', context:['博弈']}],	
 			
 		['修复', {conditions:[{a:{ currentMin:15}, b:{max:1}, f:{min:25}, k:{min:5}}],
-								winCtxt:'自选龙头票看谁更强', winC:3,stage:'发酵', context:['主升']}],  
+								winCtxt:'自选龙头票看谁更强', winC:3,stage:'分歧', context:['主升']}],  
 		['持续修复', {conditions:[{a:{currentMin:30}, b:{min:1,max:2}, i:{min:5}, j:{min:3}}],
 			winCtxt:'不接一致再一致', winC:2, stage:'加速', context:['主升']}],
 		['分化', {conditions:[{a:{min:0, currentMax:0}, b:{min:2,max:3}, c:{max:0.3}, l:{days:3, minDays:3, min:5}}],
-			winCtxt:'往跑的快的切', winC:3, stage:'分歧', context:['主升']}],
+			winCtxt:'往跑的快的切', winC:3, stage:'加歧', context:['主升']}],
 		['高潮',{conditions:[{a:{min:0, currentMin:0}, b:{min:2,max:3}}],
-			winCtxt:'寻找低位补涨',winC:4, stage:'盘顶', context:['主升']}],
+			winCtxt:'寻找低位补涨',winC:4, stage:'博傻', context:['主升']}],
 			
 		['退潮', {conditions:[{a:{currentMax:0}, b:{min:2,max:2}, f:{max:40}}],
-			winCtxt:'减仓止盈', winC:6,stage:'退一', context:['退潮']}],
+			winCtxt:'减仓止盈', winC:6,stage:'冰启', context:['退潮']}],
 		['冰点', {conditions:[{b:{max:1}}],
-			winCtxt:'打一枪就跑', winC:5, stage:'退二', context:['退潮']}],
+			winCtxt:'打一枪就跑', winC:5, stage:'冰加', context:['退潮']}],
 			
 		['空白', {conditions:[{}],
 			winCtxt:'', winC:6,  stage:'启动', context:['主升']}]
@@ -283,9 +323,7 @@ var Configure = (function(){
 		return weeks;
 	};
 	
-	var winCtxts = ['试错对赌','确认加仓','一致', '分歧选强', '高低切换', '低吸反核', '轮动博弈'];
 	var getContextDescription = function(str) {
-		
 		str=str.replace('M', '周期');
 		str=str.replace('s', '阶段');
 		str=str.replace('S', '阶段');
@@ -549,9 +587,9 @@ var Configure = (function(){
 	
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
 	var BH_zero = BH_Draw_title == title2.height ? 
-							 	0 : 0 * 65537;    // boardHeight 0轴坐标
+							 	-2 : -2 * 65537;    // boardHeight 0轴坐标
 	var BH_MaxOffset = BH_Draw_title == title2.height ? 
-							10 : 10 * 65537;   // boardHeight 纵轴
+							12 : 10 * 65537;   // boardHeight 纵轴
 
 	
 	var Min_echelon_score = 0;    //Echelons_show_type == 'score' 时draw 的条件  
@@ -739,6 +777,7 @@ var Configure = (function(){
 		timerDuration:timerDuration,
 		apothegms: apothegms,
 		winCtxts: winCtxts,
+		getColorFromWinC:getColorFromWinC,
 		cangMap2: cangMap2,
 		bandConditions:bandConditions,
 		icePoint:icePoint,
