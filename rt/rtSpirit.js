@@ -6,11 +6,11 @@ var rtSpirit = (function(){
 			for(i = arr.length - 1; i >= 0; i --) {
 				if(Configure.gaiBlackList_critical.indexOf(arr[i]) == -1 &&
 					Configure.gaiBlackList_verbose.indexOf(arr[i]) == -1) {
-					return '<' + arr[i]+ '>';
+					return '[' + arr[i]+ ']';
 				}
 			};
 		}
-		return '<' + dataT['f100'] + '>';
+		return '[' + dataT['f100'] + ']';
 	};
 	
 	/// 加一个cache避免重复播报同一个票
@@ -124,13 +124,13 @@ var rtSpirit = (function(){
 				if(gaiNameArr[0].raiseRate > GaiReportThreshold.raise.Threshold
 					&& checkReport(gaiNameArr[0].name,  GaiReportThreshold.raise.des)) {
 					cacheReprot(gaiNameArr[0].name, GaiReportThreshold.raise.des);
-					speecher.speak('<' + gaiNameArr[0].name + '> ' + GaiReportThreshold.raise.des);
+					speecher.speak('[' + gaiNameArr[0].name + '] ' + GaiReportThreshold.raise.des);
 				}
 				// 最慢的那个判断是否需要播报
 				if(gaiNameArr[gaiNameArr.length - 1].raiseRate < GaiReportThreshold.drop.Threshold
 					&& checkReport(gaiNameArr[gaiNameArr.length - 1].name,  GaiReportThreshold.drop.des)) {
 					cacheReprot(gaiNameArr[gaiNameArr.length - 1].name, GaiReportThreshold.drop.des);
-					speecher.speak('<' + gaiNameArr[gaiNameArr.length - 1].name + '> ' + GaiReportThreshold.drop.des);
+					speecher.speak('[' + gaiNameArr[gaiNameArr.length - 1].name + '] ' + GaiReportThreshold.drop.des);
 				}
 			}
 		};

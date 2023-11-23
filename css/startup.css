@@ -50,8 +50,10 @@ footer {	margin-top:50px;
 	text-align:center;
 	color:red;
     overflow: hidden;  
-    white-space: nowrap;  
-}
+    white-space: nowrap; 
+}.speak {
+		margin-right: 100px;
+	}
 
 #AI {
 	background-color: blink;

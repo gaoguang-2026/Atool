@@ -153,16 +153,8 @@ var canvasRT = (function() {
 			}
 		});
 	};
-	var drawEmotion = function() {
+	var drawEmotion = function(isShowMA) {
 		var ctx = drawing.getContext("2d");		
-		ctx.beginPath();
-		var grd=ctx.createLinearGradient(siteX, siteY + siteHeight, siteX, siteY);
-		grd.addColorStop(0,"green");
-		grd.addColorStop(0.6,"orange");
-		grd.addColorStop(1,Configure.line_color);  
-		ctx.lineWidth="3";
-		ctx.fillStyle = grd;
-		ctx.strokeStyle = grd;
 		var rtRankData = parserRT.getGaiRankData();   // getRankData() -> {eDate:,data: []};
 		// 从数据中取要显示的第一天index 和最后一天 indexLast
 		var index = Configure.RT_data_length * 
@@ -173,40 +165,55 @@ var canvasRT = (function() {
 		var drawLength = indexLast - index;
 		var score = 0, scoreNext = 0;
 		for(i = 0; i < cellNum; i ++, index ++) {
+			function drawLine(score, scoreNext) {
+				if(score!=0) {
+					var pointH = siteHeight * 
+						(parseFloat(score) - 0)/ site_score_max;
+					var point = {x: siteX + cellWidth  * i,
+						y: siteY + siteHeight - pointH};
+					if (i * Configure.RT_canvas_record_days_num % Configure.RT_data_length == 0) {   // 每天的首个
+						ctx.fillRect(point.x - POINT_PIXEL / 2, point.y - POINT_PIXEL / 2, 
+											POINT_PIXEL + 2, POINT_PIXEL + 2);
+					}
+					if (i < drawLength - 1) {   // 不是最后一天
+						
+						var pointNextH = siteHeight * (parseFloat(scoreNext) - 0)/ site_score_max;
+						var pointNext = {x: siteX + cellWidth  * (i + 1),
+									y: siteY + siteHeight - pointNextH};
+						ctx.moveTo(point.x, point.y);
+						ctx.lineTo(pointNext.x, pointNext.y);
+					} 
+				}
+			}
+			
+			ctx.beginPath();
+			var grd=ctx.createLinearGradient(siteX, siteY + siteHeight, siteX, siteY);
+			grd.addColorStop(0,"green");
+			grd.addColorStop(0.6,"orange");
+			grd.addColorStop(1,Configure.line_color);  
+			ctx.lineWidth="3";
+			ctx.fillStyle = grd;
+			ctx.strokeStyle = grd;
 			score = parserRT.getScoreTotalByIndex(index);
 			score = score == 0 ? scoreNext : score;
-			if(score!=0) {
-				var pointH = siteHeight * 
-					(parseFloat(score) - 0)/ site_score_max;
-				var point = {x: siteX + cellWidth  * i,
-					y: siteY + siteHeight - pointH};
-				if (i * Configure.RT_canvas_record_days_num % Configure.RT_data_length == 0) {   // 每天的首个
-					ctx.fillRect(point.x - POINT_PIXEL / 2, point.y - POINT_PIXEL / 2, 
-										POINT_PIXEL + 2, POINT_PIXEL + 2);
-				}
-				if (i < drawLength - 1) {   // 不是最后一天
-					scoreNext = parserRT.getScoreTotalByIndex(index + 1);
-					scoreNext = scoreNext == 0 ? score : scoreNext;
-					var pointNextH = siteHeight * (parseFloat(scoreNext) - 0)/ site_score_max;
-					var pointNext = {x: siteX + cellWidth  * (i + 1),
-								y: siteY + siteHeight - pointNextH};
-					ctx.moveTo(point.x, point.y);
-					ctx.lineTo(pointNext.x, pointNext.y);
-				} else if(i == drawLength - 1){
-					// 前一天此时得分
-					var bscore = parserRT.getScoreTotalByIndex(index - 
-							Configure.RT_data_length / Configure.RT_canvas_record_days_num);
-					var o = Configure.isAfterTrading() ? -30 : 10;
-					if(bscore > 0) {
-						ctx.fillStyle= score > bscore ? 'red' : 'green';
-						ctx.fillText(score + '(' + (score - bscore) + ')', point.x + o, point.y - 15);
-					} else {
-						ctx.fillStyle= 'red';
-						ctx.fillText(score, point.x + o, point.y - 5);
-					}
-				}
+			scoreNext = parserRT.getScoreTotalByIndex(index + 1);
+			scoreNext = scoreNext == 0 ? score : scoreNext;
+			drawLine(score, scoreNext);
+			ctx.stroke();
+			
+			//  画均线
+			if (isShowMA && index >= 3 * Configure.RT_data_length / Configure.RT_canvas_record_days_num) {
+				ctx.beginPath();
+				ctx.lineWidth="2";
+				ctx.fillStyle = 'black';
+				ctx.strokeStyle = 'black';
+				var ma3 = parserRT.getScoreMAByIndex(index);
+				var ma3Next = parserRT.getScoreMAByIndex(index + 1);
+				ma3 = ma3 == 0 ? ma3Next : ma3;
+				ma3Next = ma3Next == 0 ? ma3 : ma3Next;
+				drawLine(ma3, ma3Next);
 				ctx.stroke();
-			}
+			} 
 		}
 	};
 	
@@ -248,8 +255,8 @@ var canvasRT = (function() {
 					ctx.lineTo(pointNext.x, pointNext.y);
 				} else if(i == drawLength - 1){
 					// 前一天此时得分
-					var bscore =rtRankData.getRankData().data[index - Configure.RT_data_length / 
-							Configure.RT_canvas_record_days_num].paramExt[type];
+				//	var bscore =rtRankData.getRankData().data[index - Configure.RT_data_length / 
+				//			Configure.RT_canvas_record_days_num].paramExt[type];
 				//	if(bscore > 0) {
 				//		ctx.fillStyle= score > bscore ? 'rgba(255,0,0,0.5)' : 'rgba(0,255,120,0.5)';
 				//		ctx.fillText(type + score + '(' + (score - bscore) + ')', point.x - 20, point.y - 15);
@@ -287,7 +294,7 @@ var canvasRT = (function() {
 			drawLine('涨停', 0, 60, 'blue');
 			drawLine('跌停', -20, 20, 'green');
 		}
-		drawEmotion();
+		drawEmotion(nameArr.length != 0 || rtShowD == 1);
 	}
 	var draw = function(c, r, nameArr, rtShowD) {
 		if (c.getContext){

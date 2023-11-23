@@ -179,6 +179,23 @@ var parserRT = (function(){
 		}
 		return retScoreTotal;
 	};
+	
+	var getScoreMAByIndex = function(index, num = 3) {
+		var retScoreTotal = 0;
+		var n = 0;
+		var dayIndexNum = Configure.RT_data_length / Configure.RT_canvas_record_days_num;
+		if (index > (num - 1) * dayIndexNum) {
+			for(var i = 0; i < num; i ++) {
+				var s = getScoreTotalByIndex(index - i * dayIndexNum);
+				if (s && s != 0) {   // 过滤掉没有数据的index
+					retScoreTotal += s;
+					n ++;
+				}
+			}
+		}
+		return retScoreTotal / n;
+	};
+	
 	var getMaxScoreWithDaynum = function(rtShowDaynum = 1, type = 'echelon') {
 		var max = 0;
 		var length = rtShowDaynum * Configure.RT_data_length / Configure.RT_canvas_record_days_num;
@@ -357,5 +374,6 @@ var parserRT = (function(){
 		getRankTickets:getRankTickets,
 		getHistoryEchelonFromDateStr:getHistoryEchelonFromDateStr,
 		getScoreTotalByIndex:getScoreTotalByIndex,
+		getScoreMAByIndex:getScoreMAByIndex,
 	}
 })();

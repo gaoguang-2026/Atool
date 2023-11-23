@@ -15,11 +15,12 @@ var speecher = (function(text) {
 	var speak = function(text) {
 		var d = new Date();
 		speeckerEL.innerHTML = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + ' ' + text;
+		speeckerEL.classList.add("speak");
 		textContainer.unshift(speeckerEL.innerHTML);
 		var textshow = '';
 		textContainer.forEach((txt)=>{
 			textshow += txt + '<br>';
-			if(textshow.length > 1000) return;
+			if(textshow.length > 700) return;
 		});
 		Tip.show(speeckerEL, textshow);
 		
