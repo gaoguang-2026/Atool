@@ -151,8 +151,6 @@ var Configure = (function(){
 				'昨日连板_含一字','昨日涨停_含一字',
 				];
 	
-
-	var EnableEmotionalogicV2 = true;
 	/* @AI emotion v2 
 	/	a情绪角度（d7）	b情绪level(M8,2)	c亏钱效应	d上证角度(d5)	
 	/	e情绪指数角度(d5)	f涨停数量	g跌停数量	h炸板数量	
@@ -213,35 +211,37 @@ var Configure = (function(){
 		}
 		return retObj;
 	}
-	var cangMap2 = new Map([
-		['混沌', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
+	var cangMap = new Map([
+		['启动', {conditions:[{b:{max:0}, j:{days:7, minDays:3, min:4}},
 							{a:{currentMax:45},b:{max:1},m:{days:7, minDays:4, max:100}, f:{days:3,minDays:2, min:25}}
-								],
-				winCtxt:'买入分歧卖出一致', winC:6, stage:'启动', context:['博弈']}],
-				
-		['二次冰点', {conditions:[{a:{max:0,currentMax: -5}, b:{max:1}, c:{days:4, minDays:3, min:0.25}}],
-				winCtxt:'低位分仓买入', winC:0, stage:'冰衰', context:['博弈']}], 
-				
-		['冰点衰竭', {conditions:[{a:{currentMin:15},b:{max:1},e:{min:0}}],
-			winCtxt:'右侧确认买入，低吸半路加打板', winC:1, stage:'确认', context:['博弈']}],	
-			
-		['修复', {conditions:[{a:{ currentMin:15}, b:{max:1}, f:{min:25}, k:{min:5}}],
-								winCtxt:'自选龙头票看谁更强', winC:3,stage:'分歧', context:['主升']}],  
-		['持续修复', {conditions:[{a:{currentMin:30}, b:{min:1,max:2}, i:{min:5}, j:{min:3}}],
-			winCtxt:'不接一致再一致', winC:2, stage:'加速', context:['主升']}],
-		['分化', {conditions:[{a:{min:0, currentMax:0}, b:{min:2,max:3}, c:{max:0.3}, l:{days:3, minDays:3, min:5}}],
-			winCtxt:'往跑的快的切', winC:3, stage:'加歧', context:['主升']}],
-		['高潮',{conditions:[{a:{min:0, currentMin:0}, b:{min:2,max:3}}],
-			winCtxt:'寻找低位补涨',winC:4, stage:'博傻', context:['主升']}],
-			
-		['退潮', {conditions:[{a:{currentMax:0}, b:{min:2,max:2}, f:{max:40}}],
-			winCtxt:'减仓止盈', winC:6,stage:'冰启', context:['退潮']}],
-		['冰点', {conditions:[{b:{max:1}}],
-			winCtxt:'打一枪就跑', winC:5, stage:'冰加', context:['退潮']}],
-			
-		['空白', {conditions:[{}],
-			winCtxt:'', winC:6,  stage:'启动', context:['主升']}]
+								], context:['博弈']}],
+		['冰衰', {conditions:[{a:{max:0,currentMax: -5}, b:{max:1}, c:{days:4, minDays:3, min:0.25}}], context:['博弈']}], 
+		['确认', {conditions:[{a:{currentMin:15},b:{max:1},e:{min:0}}], context:['博弈']}],	
+		['分歧', {conditions:[{a:{ currentMin:15}, b:{max:1}, f:{min:25}, k:{min:5}}], context:['主升']}],  
+		['加速', {conditions:[{a:{currentMin:30}, b:{min:1,max:2}, i:{min:5}, j:{min:3}}], context:['主升']}],
+		['加歧', {conditions:[{a:{min:0, currentMax:0}, b:{min:2,max:3}, c:{max:0.3}, l:{days:3, minDays:3, min:5}}], context:['主升']}],
+		['博傻',{conditions:[{a:{min:0, currentMin:0}, b:{min:2,max:3}}], context:['主升']}],
+		['冰启', {conditions:[{a:{currentMax:0}, b:{min:2,max:2}, f:{max:40}}], context:['退潮']}],
+		['冰加', {conditions:[{b:{max:1}}], context:['退潮']}],
+		['空白', {conditions:[{}], context:['主升']}]
 	]);
+	var getContextDescription = function(str) {
+		str=str.replace('M', '周期');
+		str=str.replace('s', '阶段');
+		str=str.replace('S', '阶段');
+		str=str.replace('m', '下跌');
+		str=str.replace('b', 'b浪反弹');
+		str=str.replace('H', '混沌');
+		str=str.replace('P', '炮灰');
+		if(str.indexOf('w') > 0 ||  str.indexOf('W')>0) {
+			var index = str.indexOf('w') >= 0 ? str.indexOf('w') : str.indexOf('W');
+			str = str.substr(0, index) + winCtxts[parseInt(str.substr(index+1, index + 1))] + 
+					str.substr(index+2, str.length);
+		} else if (str.indexOf('w') == 0 || str.indexOf('W')==0) {
+			str = '';
+		}
+		return str;
+	};
 	/// 
 
 	/**
@@ -321,22 +321,6 @@ var Configure = (function(){
 		var days = Math.ceil(distanceTimestamp / (24 * 60 * 60 * 1000)) + startWeek;
 		var weeks = Math.ceil(days / 7) + offsetWeek;
 		return weeks;
-	};
-	
-	var getContextDescription = function(str) {
-		str=str.replace('M', '周期');
-		str=str.replace('s', '阶段');
-		str=str.replace('S', '阶段');
-		str=str.replace('m', '下跌');
-		str=str.replace('b', 'b浪反弹');
-		str=str.replace('H', '混沌');
-		str=str.replace('P', '炮灰');
-		if(str.indexOf('w') >= 0 ||  str.indexOf('W')>=0) {
-			var index = str.indexOf('w') >= 0 ? str.indexOf('w') : str.indexOf('W');
-			str = str.substr(0, index) + winCtxts[parseInt(str.substr(index+1, index + 1))] + 
-					str.substr(index+2, str.length);
-		}
-		return str;
 	};
 	
 	var updatetitle = function (dateStr) {
@@ -778,10 +762,9 @@ var Configure = (function(){
 		apothegms: apothegms,
 		winCtxts: winCtxts,
 		getColorFromWinC:getColorFromWinC,
-		cangMap2: cangMap2,
+		cangMap: cangMap,
 		bandConditions:bandConditions,
 		icePoint:icePoint,
-		EnableEmotionalogicV2: EnableEmotionalogicV2,
 		showInTableTitile:showInTableTitile,
 		bandShowInTableTitile:bandShowInTableTitile,
 		rankShowInTableTitile:rankShowInTableTitile,

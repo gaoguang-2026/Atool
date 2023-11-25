@@ -7,24 +7,6 @@ var AI = (function(){
 	
 	var RectifyDay_num = Configure.Days_Max_lengh;
 	var Rectify_factor = 7;
-
-	// emotion v1
-	var dragonStage = Configure.winCtxts;//['启动', '发酵', '加速', /*'放量',*/'分歧', /*'反包',*/'盘顶', '退一', '退二','退三'];
-	var cangMap1 = new Map([
-		['冰点', {winCtxt:'提防二次冰点，低位潜伏', stage:'退三', context:['退潮']}],    // 退三
-		['二次冰点', {winCtxt:'冰点衰竭，打板确认龙头', stage:'启动', context:['博弈']}],			
-		['修复', {winCtxt:'加仓，打板龙头和低位首发', stage:'发酵', context:['博弈']}],    	// 启动
-		['持续修复', {winCtxt:'去弱留强', stage:'加速', context:['主升']}],				// 发酵
-		['分歧', {winCtxt:'关注中位大长腿', stage:'分歧', context:['主升']}],    						
-		['高潮', {winCtxt:'注意中位分化，关注低位补涨', stage:'加速', context:['主升']}],		// 加速
-		['继续高潮',{winCtxt:'注意兑现风险，高位减仓止盈', stage:'盘顶', context:['主升']}],			
-		['分化', {winCtxt:'减仓至二成以下，避免中位吹哨人', stage:'分歧', context:['主升']}],			// 分歧
-		['退潮', {winCtxt:'空仓，关注缠打趋势型品种', stage:'退一', context:['退潮']}],				// 退一
-		['持续退潮', {winCtxt:'空头衰竭，选强低吸反核', stage:'退二', context:['退潮']}],			// 退二
-		['混沌', {winCtxt:'资金没有主攻方向，趋势低吸', stage:'退三', context:['博弈']}]
-	]);
-	////////
-	var cangMap = Configure.EnableEmotionalogicV2 ? Configure.cangMap2 : cangMap1;
 	
 	var getAndUpdateLoacalstorage = function() {
 		var dateArr = workbook.getDateArr((a,b)=>{
@@ -231,9 +213,9 @@ var AI = (function(){
 		}
 		return ret;
 	};
-	var getEmotions2 = function() {
+	var getEmotions = function() {
 		try {
-			cangMap.forEach(function(item, key){
+			Configure.cangMap.forEach(function(item, key){
 				item.conditions.forEach((condition, index)=>{
 				//	console.log('=> start check ' + item.stage + ' index ' + index);
 					if(checkCondition(condition)) {
@@ -250,85 +232,24 @@ var AI = (function(){
 		} catch(e) {
 			if(e.message != 'LoopInterrupt') throw e;
 		}
-		
-		// 获取周期M 阶段S 环境C 窗口W 
+
+		// 从配置获取周期M 阶段S 环境C 窗口W 
 		var context = workbook.getEmotionalCycles(Configure.getDateStr(Configure.date, '-'));
+		if(context.cycles && Configure.getColorFromWinC(context.cycles).des) {   // 如果有配置w 就使用配置的
+			dataStorage.emotion = Configure.getColorFromWinC(context.cycles).des;
+		}
 		var contextstr = context.cycles ? Configure.getContextDescription(context.cycles) : '';
 		var contextTypeAndParam = context.cycles ? workbook.getContextTypeAndParam(context.cycles) : null;
 		if (contextTypeAndParam) {   // 根据窗口重新设置一下模式，如果没有使用默认的模式
-			var obj = Configure.cangMap2.get(dataStorage.emotion);
+			var obj = Configure.cangMap.get(dataStorage.emotion);
 			obj.context = [contextTypeAndParam.type];
-			Configure.cangMap2.set(dataStorage.emotion, obj);
+			Configure.cangMap.set(dataStorage.emotion, obj);
 			contextstr += '[' + contextTypeAndParam.type + '],';
 			contextstr += contextTypeAndParam.param ? contextTypeAndParam.param + '.' : '';
 		}
 		contextstr += context.hotpoint ? '热点' + context.hotpoint + ',' : '';
-		var emotionstr = dataStorage.emotion == '空白' ? '' : '情绪' + dataStorage.emotion + '，明日预期【' + 
-				Configure.winCtxts[Configure.cangMap2.get(dataStorage.emotion).winC] + '】';
-		emotionstr += Configure.cangMap2.get(dataStorage.emotion).winCtxt ? 
-				Configure.cangMap2.get(dataStorage.emotion).winCtxt + '。' : '';
+		var emotionstr = dataStorage.emotion == '空白' ? '' : '情绪' + dataStorage.emotion + '。';
 		return  contextstr  + emotionstr + getEmotionSuccessRate(dataStorage.emotion);
-	};
-	
-	var getEmotions = function() {
-		var emotionPoints = canvas.getLastEmotionPoints(3);    
-		var sumLevel = 0;
-		var BeiliOffset = Configure.MAX_BEILI - Configure.MIN_BEILI;
-		for(var i = 0; i < 3; i ++){
-			sumLevel += getLevel(emotionPoints[i]);
-		}
-		var angle = Configure.getAngle(emotionPoints[0].point, emotionPoints[1].point);
-		var value = parseFloat(emotionPoints[0].value);
-		var level = getLevel(emotionPoints[0]) - sumLevel/3;
-		if(value < BeiliOffset / 8) {
-			dataStorage.emotion = '冰点';
-			if (checkZBHigherDays(Configure.BH_Draw_title, 7, 3, 4) &&
-				(parseFloat(emotionPoints[1].value) < BeiliOffset / 4 || 
-					parseFloat(emotionPoints[2].value) < BeiliOffset / 4 )
-					){
-					dataStorage.emotion = '混沌';
-			}
-		} else if(value < BeiliOffset / 4) {
-			dataStorage.emotion = '冰点';
-			if (checkZBHigherDays(Configure.title2.failedRate, 4, 3, 0.25) &&
-				parseFloat(emotionPoints[1].value) < BeiliOffset / 4 || 
-				parseFloat(emotionPoints[2].value) < BeiliOffset / 4){
-					dataStorage.emotion = '二次冰点';
-			}
-			if(checkZBUnderDays(Configure.title2.totalFund, 7, 5, 200) || 
-				 checkZBHigherDays(Configure.title2.lianban, 1, 1, 7)) {
-				dataStorage.emotion = '混沌';
-			}
-			//////
-		} else if(value < BeiliOffset / 2) {
-			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
-			else {
-				if(angle > 0) {
-					dataStorage.emotion =  level > 0 ?  '修复' : '分歧';
-				} else {
-					dataStorage.emotion = level < 0 ?  '持续退潮' : '分歧';
-				}
-			}   
-		} else if(value < BeiliOffset * 3 / 4) {
-			if(Math.abs(angle) < 30) dataStorage.emotion = '分歧';
-			else  {
-				if(angle > 0) {
-					dataStorage.emotion = level > 0 ?  '持续修复' : '分歧';
-				} else {
-					dataStorage.emotion = level < 0 && 
-						checkZBunderDays(Configure.BH_Draw_title, 2, 2, 5) ?  '退潮' : '分歧';
-				}
-			}
-		} else {
-			dataStorage.emotion = '高潮';
-			if (parseFloat(emotionPoints[1].value) > BeiliOffset * 3 / 4 || 
-				parseFloat(emotionPoints[2].value) > BeiliOffset * 3 / 4){
-				dataStorage.emotion = angle > 0 ? '继续高潮' : '分化';
-			}
-		}		
-		return '情绪' + dataStorage.emotion + '，' + cangMap1.get(dataStorage.emotion).winCtxt + '。' + 
-				getEmotionSuccessRate(dataStorage.emotion) + ' 窗口：[' + 
-				cangMap1.get(dataStorage.emotion).context.toString() + ']，';
 	};
 	
 	// 根据题材、背离率、连扳和 封板强度 算最后的得分    
@@ -352,7 +273,7 @@ var AI = (function(){
 		var MA_value = (sumValue + parseInt(szPoinsts[Configure.Band_MA_NUM - 1].value))/Configure.Band_MA_NUM;
 		dataStorage.sz_ma_beili = parseFloat((szPoinsts[0].value - MA_value) / MA_value).toFixed(4);
 		
-		return '指数趋势' + (dataStorage.sz_average_angle > 0 ? '向上' : '向下，') + 'MA' + 
+		return '指数' + (dataStorage.sz_average_angle > 0 ? '向上' : '向下，') + 'MA' + 
 				Configure.Band_MA_NUM + '背离率' + (dataStorage.sz_ma_beili*100).toFixed(2) + '%。';
 	}
 	
@@ -448,7 +369,7 @@ var AI = (function(){
 				}
 			}
 		// 获取策略
-		cangMap.get(dataStorage.emotion).context.forEach((t)=>{
+		Configure.cangMap.get(dataStorage.emotion).context.forEach((t)=>{
 			var tactic = workbook.getTactics(t);
 			
 			titles.forEach((t) => {
@@ -508,20 +429,18 @@ var AI = (function(){
 			speecher.speak(recommendText);
 		} else {
 			recommendText += getSZEnv();
-			recommendText += Configure.EnableEmotionalogicV2 ? getEmotions2() : getEmotions(); 
+			recommendText += getEmotions(); 
 			recommendText += isBandInCharge() ? getBandtickets() : getTickits();
 		}		
-		
-		Configure.EnableEmotionalogicV2 ? getEmotions2() : getEmotions(); 
 		saveLoacalstorage(dataStorage);
 		
-		var displayColor = cangMap.get(dataStorage.emotion).context == '博弈' ? 'blue' :
-					cangMap.get(dataStorage.emotion).context == '主升' ? 'red' : 'green';
+		var displayColor = Configure.cangMap.get(dataStorage.emotion).context == '博弈' ? 'blue' :
+					Configure.cangMap.get(dataStorage.emotion).context == '主升' ? 'red' : 'green';
 		return {color: displayColor, txt: recommendText, tatics: getTaticsTxt()};
 	};
 	
 	var drawEmotionCycle = function(){
-		canvas.drawEmotionCycle(dragonStage, cangMap.get(dataStorage.emotion).stage);
+		canvas.drawEmotionCycle(Configure.cangMap.get(dataStorage.emotion).stage);
 	};
 	
 	var init = function() {

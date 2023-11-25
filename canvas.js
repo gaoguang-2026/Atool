@@ -220,14 +220,14 @@ var canvas = (function(canvas) {
 					cycle.cycles.includes('m') ? 'green' :
 					cycle.cycles.includes('H') || cycle.cycles.includes('P') ? 'blue' :
 					cycle.cycles.includes('s') || cycle.cycles.includes('S') ? 'grey' : Configure.site_color;
-				if (!cycle.cycles.includes('w') &&
-					!cycle.cycles.includes('W')) {    // 宏观周期阶段
+				if (!cycle.cycles.indexOf('w') == 0 && !cycle.cycles.indexOf('w') == 0) {    // 宏观周期阶段
 					ctx.fillText(cycle.cycles, siteX + cellWidth  * i, siteY -5);
 					if (!!cycle.hotpoint) {
 						ctx.fillStyle = 'orange';
 						ctx.fillText('<' + cycle.hotpoint + '>', siteX + cellWidth  * i + 20, siteY -5);
 					}
-				} else {   // 微观情绪
+				}  
+				if(Configure.getColorFromWinC(cycle.cycles).color){   // 微观情绪
 					ctx.fillStyle = Configure.getColorFromWinC(cycle.cycles).color;
 					ctx.fillRect(siteX + cellWidth  * i, siteY + siteHeight*(1- winFactor) + 1, cellWidth, 5);
 				}
@@ -277,17 +277,17 @@ var canvas = (function(canvas) {
 			ctx.stroke();
 		});
 	};
-	var drawEmotionCycle = function(emotions, curEmotion) { 
+	var drawEmotionCycle = function(curEmotion) { 
 		var ctx = drawing.getContext("2d");		
-		var center = Math.floor(emotions.length/2);
-		for(var i = 0; i < emotions.length; i ++) {
+		var center = Math.floor(Configure.winCtxts.length/2);
+		for(var i = 0; i < Configure.winCtxts.length; i ++) {
 			var xLv = i-center < 0 ? 0 : 1;
 			var yLv = i-center >= 0 ?  Math.abs(i-center) + 0.5 :  Math.abs(i-center);
 		//	console.log('x = ' + xLv + '  y = ' + yLv);
 			var x = siteX + siteWidth + 15 * xLv;
 			var y = siteY + 5 + 30 * yLv;
 			var txt = '';
-			if(emotions[i] == curEmotion) {
+			if(Configure.winCtxts[i] == curEmotion) {
 				ctx.beginPath();
 				ctx.font="bold 16px 楷体";
 				ctx.fillStyle = Configure.getColorFromWinC('w' + i).color;
@@ -296,7 +296,7 @@ var canvas = (function(canvas) {
 				ctx.beginPath();
 				ctx.font="bold 14px 楷体";
 				ctx.fillStyle = Configure.getColorFromWinC('w' + i).color;
-				txt = emotions[i];
+				txt = Configure.winCtxts[i];
 			}
 			ctx.fillText(txt, x, y);
 			ctx.stroke();
