@@ -294,7 +294,7 @@ var canvasRT = (function() {
 			drawLine('涨停', 0, 60, 'blue');
 			drawLine('跌停', -20, 20, 'green');
 		}
-		drawEmotion(nameArr.length != 0 || rtShowD == 1);
+		drawEmotion(nameArr.length != 0 || rtShowD <= 2);
 	}
 	var draw = function(c, r, nameArr, rtShowD) {
 		if (c.getContext){
