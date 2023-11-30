@@ -487,11 +487,11 @@ var canvas = (function(canvas) {
 					Configure.BH_MaxOffset, Configure.BH_Draw_title, /*'连扳高度' == indecatorName*/ true);
 			if (/*'连扳高度' == indecatorName &&*/
 				i < Days.length - 1 && i > 0 && Days[i][Configure.title2.dragon] &&
-				Days[i][Configure.BH_Draw_title] >= Days[i+1][Configure.BH_Draw_title] &&
-					Days[i][Configure.BH_Draw_title] > Days[i-1][Configure.BH_Draw_title]) {    // 只写最高点的名字
+				parseInt(Days[i][Configure.BH_Draw_title]) >= parseInt(Days[i+1][Configure.BH_Draw_title]) &&
+					parseInt(Days[i][Configure.BH_Draw_title]) > parseInt(Days[i-1][Configure.BH_Draw_title])) {    // 只写最高点的名字
 				ctx.fillStyle= 'rgba(0,0,0,0.8)';
 				ctx.fillText(Days[i][Configure.title2.dragon].substr(0,2) + Days[i][Configure.BH_Draw_title]
-							, point.x - 10, point.y - 5);
+							, point.x - 10, point.y - 5 < siteY ? siteY : point.y - 5);
 				ctx.stroke();
 			}
 			////连扳高度

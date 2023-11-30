@@ -1,3 +1,5 @@
+var startup = (function(text) {
+	var startTime;   // 记录启动时间 优化
 
 	var displayAI = function (recommend) {
 		var oDiv = document.getElementById("AI");
@@ -260,7 +262,7 @@
 			document.querySelector('.loader-container').style.display = 'none';
 		});
 	};
-	
+
     $('#excel-file').change(function(e) {
 		startTime = window.performance.now();  
 		document.querySelector('.loader-container').style.display = 'block';
@@ -285,83 +287,91 @@
 		})
     });
 	
-	var startTime;
-	window.onload = function(){
-		document.title = document.title + Configure.version;
-		$('#date').val(Configure.getDateStr(Configure.date, '-'));
-		//$('#rtShowdays').val(Configure.RT_canvas_show_days_num);
-		if (Configure.isAfterNoon()) {
-			$('#rtShowdays').val(1);
-		} else {
-			$('#rtShowdays').val(2);
-		}
-		var fp = function() {
-			document.getElementById('form1').gtype[2].checked = true;
-			document.getElementById('form1').sort[2].checked = true;
-			document.getElementById('showdays').value = 60;
-			document.getElementById('rtShowdays').hidden = true;
-		};
-		var dp = function() {
-			document.getElementById('form1').gtype[5].checked = true;
-			document.getElementById('form1').sort[0].checked = true;
-			document.getElementById('showdays').value = 30;
-			document.getElementById('rtShowdays').hidden = false;
-		};
-		
-		var updateIndicator = function() {
-			var indecator = document.getElementById('indecator');
-			var options = indecator.getElementsByTagName("option");
-			for(var i = 0; i < options.length; i++) {
-				indecator.removeChild(options[i]);
-				i--;
+	var start = function() {
+		window.onload = function(){
+			document.title = document.title + Configure.version;
+			$('#date').val(Configure.getDateStr(Configure.date, '-'));
+			//$('#rtShowdays').val(Configure.RT_canvas_show_days_num);
+			if (Configure.isAfterNoon()) {
+				$('#rtShowdays').val(1);
+			} else {
+				$('#rtShowdays').val(2);
 			}
-			for(var i = 0; i < Configure.selectIndicators.length; i++) {
-				var option1 = document.createElement("option");
-				var text1 = document.createTextNode(Configure.selectIndicators[i].name);
-				option1.appendChild(text1);
-				indecator.appendChild(option1);
+			var fp = function() {
+				document.getElementById('form1').gtype[2].checked = true;
+				document.getElementById('form1').sort[2].checked = true;
+				document.getElementById('showdays').value = 60;
+				document.getElementById('rtShowdays').hidden = true;
+			};
+			var dp = function() {
+				document.getElementById('form1').gtype[5].checked = true;
+				document.getElementById('form1').sort[0].checked = true;
+				document.getElementById('showdays').value = 30;
+				document.getElementById('rtShowdays').hidden = false;
+			};
+			
+			var updateIndicator = function() {
+				var indecator = document.getElementById('indecator');
+				var options = indecator.getElementsByTagName("option");
+				for(var i = 0; i < options.length; i++) {
+					indecator.removeChild(options[i]);
+					i--;
+				}
+				for(var i = 0; i < Configure.selectIndicators.length; i++) {
+					var option1 = document.createElement("option");
+					var text1 = document.createTextNode(Configure.selectIndicators[i].name);
+					option1.appendChild(text1);
+					indecator.appendChild(option1);
+				}
+			};
+			if(Configure.isAfterTrading() || Configure.isWeekend()){
+				document.getElementById('mode').value = 0;
+				fp()
+			} else {
+				document.getElementById('mode').value = 1;
+				dp();
 			}
-		};
-		if(Configure.isAfterTrading() || Configure.isWeekend()){
-			document.getElementById('mode').value = 0;
-			fp()
-		} else {
-			document.getElementById('mode').value = 1;
-			dp();
-		}
-		Configure.setMode($('#mode')[0].value);
-		$('#mode').change((e)=>{
 			Configure.setMode($('#mode')[0].value);
-			Configure.getMode() == Configure.modeType.DP ? dp() : fp();
-			updateIndicator();
-		});
+			$('#mode').change((e)=>{
+				Configure.setMode($('#mode')[0].value);
+				Configure.getMode() == Configure.modeType.DP ? dp() : fp();
+				updateIndicator();
+			});
 
-		const canvas = document.getElementById('drawing');
-		canvas.width = window.outerWidth;
-		const ctx = canvas.getContext('2d');
-		const img = new Image();
-		img.src = 'img/情绪周期.png';
-		img.onload = function() {
-			var w = img.width  * canvas.height/img.height, 
-				h = canvas.height;
-			ctx.drawImage(img, (canvas.width - w)/2, 0, w, h);
+			const canvas = document.getElementById('drawing');
+			canvas.width = window.outerWidth;
+			const ctx = canvas.getContext('2d');
+			const img = new Image();
+			img.src = 'img/情绪周期.png';
+			img.onload = function() {
+				var w = img.width  * canvas.height/img.height, 
+					h = canvas.height;
+				ctx.drawImage(img, (canvas.width - w)/2, 0, w, h);
+			};
+			
+			updateIndicator();
+			
+			// 当月备份上一个月的数据
+			function getLastMonth() {
+				var date = new Date();
+				var year = date.getFullYear();   //当前年：四位数字
+				var month = date.getMonth();     //当前月：0-11
+				if (month == 0) {   //如果是0，则说明是1月份，上一个月就是去年的12月
+					year -= 1;
+					month = 12;
+				}
+				month = month < 10 ? ('0' + month) : month;   //月份格式化：月份小于10则追加个0
+				let lastYearMonth = '' + year + month;
+				return lastYearMonth;
+			};
+			var backUpMonth = getLastMonth();
+			Downloader.download('备份数据' + backUpMonth + '.backup', backUpMonth);
 		};
-		
-		updateIndicator();
-		
-		// 当月备份上一个月的数据
-		function getLastMonth() {
-			var date = new Date();
-			var year = date.getFullYear();   //当前年：四位数字
-			var month = date.getMonth();     //当前月：0-11
-			if (month == 0) {   //如果是0，则说明是1月份，上一个月就是去年的12月
-				year -= 1;
-				month = 12;
-			}
-			month = month < 10 ? ('0' + month) : month;   //月份格式化：月份小于10则追加个0
-			let lastYearMonth = '' + year + month;
-			return lastYearMonth;
-		};
-		var backUpMonth = getLastMonth();
-		Downloader.download('备份数据' + backUpMonth + '.backup', backUpMonth);
 	};
+	
+	return {
+		start:start,
+	}
+})();
+
+startup.start();

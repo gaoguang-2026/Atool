@@ -571,9 +571,9 @@ var Configure = (function(){
 	
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
 	var BH_zero = BH_Draw_title == title2.height ? 
-							 	-2 : -2 * 65537;    // boardHeight 0轴坐标
+							 	0 : 0 * 65537;    // boardHeight 0轴坐标
 	var BH_MaxOffset = BH_Draw_title == title2.height ? 
-							12 : 10 * 65537;   // boardHeight 纵轴
+							10 : 10 * 65537;   // boardHeight 纵轴
 
 	
 	var Min_echelon_score = 0;    //Echelons_show_type == 'score' 时draw 的条件  
