@@ -141,13 +141,13 @@ var canvasRT = (function() {
 				})
 				if(idx >= 0) {*/      // 画top echelons
 				if (displayIndex < 1) {	  // 画前1个
-					drawEchelonLine(e, color, displayIndex, 1);
+					drawEchelonLine(e, color, displayIndex, 1, true);
 					displayIndex ++;
 				}
 			} else {
 				if(nameArr.includes(e.name) && 
 					displayIndex <= Configure.RT_canvas_show_echelons_num){
-					drawEchelonLine(e, color, displayIndex, nameArr.length, nameArr.length > 2 && rtShowDays_num <= 2);
+					drawEchelonLine(e, color, displayIndex, nameArr.length, nameArr.length > 2);
 					displayIndex ++;
 				};
 			}
