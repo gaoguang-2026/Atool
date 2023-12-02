@@ -20,6 +20,7 @@
 	};
 
 	let bandEchelon = function (canvas, e, rect) {
+		window.performance.mark("bandEchelon:constructor");
 		Echelon.call(this, canvas, e, rect);
 
 		this.points = [[1/2, 1/12],
@@ -29,6 +30,10 @@
 												[1/8, 9/12],[3/4, 7/12],[3/4, 11/12],
 															[1/2, 7/12],[1/2,11/12],
 																		[1/4, 11/12]];
+																		
+		window.performance.mark("bandEchelon:constructor End");
+			console.log('bandEchelon constructor duration:' 
+				+ window.performance.measure("bandEchelon", "bandEchelon:constructor", "bandEchelon:constructor End").duration + 'ms');
 	};			
 	
 	function F() {

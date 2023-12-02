@@ -1,11 +1,16 @@
-var speecher = (function(text) {
+var speecher = (function() {
 	var speeckerEL = document.getElementById("speecker");
 	var textContainer = []; 
-	
-	var speak = function(text) {
+	var showText = function (t) {
 		var d = new Date();
-		speeckerEL.innerHTML = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + ' ' + text;
-		speeckerEL.classList.add("speak");
+		var h = d.getHours();
+		var m = d.getMinutes();
+		var s = d.getSeconds();
+		speeckerEL.innerHTML = (h < 10 ? '0' + h : h) + ':' + 
+									(m < 10 ? '0' + m : m) + ':' + 
+									(s < 10 ? '0'+ s : s)+ ' ' + t;
+		/涨|流入|打开跌停/g.test(t) ? speeckerEL.className = ("speak fontRed") : 
+				/跌|流出|炸板/g.test(t) ? speeckerEL.className = ("speak fontGreen") : speeckerEL.className = ("speak fontBlue");
 		textContainer.unshift(speeckerEL.innerHTML);
 		var textshow = '';
 		textContainer.forEach((txt)=>{
@@ -13,7 +18,9 @@ var speecher = (function(text) {
 			if(textshow.length > 700) return;
 		});
 		Tip.show(speeckerEL, textshow);
-		
+	};
+	var speak = function(text) {
+		showText(text);
 		// 创建一个SpeechSynthesisUtterance对象  
 		var utterance = new SpeechSynthesisUtterance();
 		// 设置语音合成的语速  

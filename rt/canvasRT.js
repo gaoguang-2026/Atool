@@ -134,20 +134,19 @@ var canvasRT = (function() {
 		var displayIndex = 0;
 		Array.from(parserRT.getRTEchelons()).forEach((e) => {
 			var color = Configure.echelon_color[displayIndex%Configure.echelon_color.length];
+			var topEchelons = parserRT.getGaiRankData().getTopEchelons();
+			var idx = topEchelons.findIndex((tEchelon)=>{
+				return tEchelon.name == e.name;
+			})
 			if(!nameArr || nameArr.length == 0) {   // 默认显示top echelons
-				var topEchelons = parserRT.getGaiRankData().getTopEchelons();//.slice(0,2);
-			/*	var idx = topEchelons.findIndex((tEchelon)=>{
-					return tEchelon.name == e.name;
-				})
-				if(idx >= 0) {*/      // 画top echelons
-				if (displayIndex < 1) {	  // 画前1个
-					drawEchelonLine(e, color, displayIndex, 1, true);
+				if(idx >= 0) {
+					drawEchelonLine(e, color, displayIndex, topEchelons.length, true);
 					displayIndex ++;
 				}
 			} else {
 				if(nameArr.includes(e.name) && 
 					displayIndex <= Configure.RT_canvas_show_echelons_num){
-					drawEchelonLine(e, color, displayIndex, nameArr.length, nameArr.length > 2);
+					drawEchelonLine(e, color, displayIndex, nameArr.length, idx >= 0);
 					displayIndex ++;
 				};
 			}
@@ -278,7 +277,6 @@ var canvasRT = (function() {
 	};
 	var reDraw = function(nameArr, rtShowD) {
 		clear();
-		console.log('canvasRT redraw');
 		site_weight_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'echelon'));
 		site_weight_max = site_weight_max > 10 ? site_weight_max : 10;
 		site_score_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'total') / 1000) * 1000;
@@ -298,6 +296,7 @@ var canvasRT = (function() {
 	}
 	var draw = function(c, r, nameArr, rtShowD) {
 		if (c.getContext){
+			window.performance.mark("CanvasRT:draw");
 			drawing = c;
 			rect = r;
 			
@@ -314,6 +313,9 @@ var canvasRT = (function() {
 					' siteWidth:' + siteWidth + 
 					' siteHeight:' + siteHeight);		
 			reDraw(nameArr, rtShowD);
+			window.performance.mark("CanvasRT:drawDone");
+			console.log('CanvasRT draw duration:' 
+				+ window.performance.measure("CanvasRT", "CanvasRT:draw", "CanvasRT:drawDone").duration + 'ms');
 		}
 	};
 	return {

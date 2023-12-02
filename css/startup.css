@@ -52,8 +52,10 @@ footer {	margin-top:50px;
     overflow: hidden;  
     white-space: nowrap; 
 }.speak {
-		margin-right: 100px;
-	}
+		margin-right: 100px;}
+  .fontRed { color:red !important}
+  .fontGreen { color:green !important}
+  .fontBlue { color:blue !important}
 
 #AI {
 	background-color: blink;

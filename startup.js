@@ -236,7 +236,7 @@ var startup = (function(text) {
 		}
 		window.performance.mark("XLSX:readDone");
 				console.log('XLSX read data duration:' 
-					+ window.performance.measure("Duration:", "XLSX:read", "XLSX:readDone").duration + 'ms');
+					+ window.performance.measure("XLSX", "XLSX:read", "XLSX:readDone").duration + 'ms');
 		console.log("Startup:init " + (window.performance.now() - startTime) + "ms");
 		init().then(()=>{							
 			console.log("Draw canvas: " + (window.performance.now() - startTime) + "ms");

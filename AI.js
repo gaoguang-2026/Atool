@@ -195,8 +195,8 @@ var AI = (function(){
 				(condition[i].max!=undefined && value != -1 && value > condition[i].max) ||
 				(condition[i].currentMin!=undefined && currentValue !=-1 && currentValue < condition[i].currentMin) ||
 				(condition[i].currentMax!=undefined && currentValue !=-1 && currentValue > condition[i].currentMax )) {
-					console.log('checkCondition failed for ' + (i =='a' ? '情绪角度' : '情绪level') + 
-						' value:' + value + '  currentValue:' + currentValue);
+			//		console.log('checkCondition failed for ' + (i =='a' ? '情绪角度' : '情绪level') + 
+			//			' value:' + value + '  currentValue:' + currentValue);
 					ret = false;
 			}
 			
@@ -207,7 +207,7 @@ var AI = (function(){
 				ret = condition[i].min!=undefined ? checkZBHigherDays(title, days, minDays, condition[i].min) : ret;
 				ret = condition[i].max!=undefined ? checkZBUnderDays(title, days, minDays, condition[i].max) : ret; 
 				if(!ret) {
-					console.log('checkCondition failed for ' + title);
+			//		console.log('checkCondition failed for ' + title);
 				}
 			}			
 		}
@@ -397,7 +397,7 @@ var AI = (function(){
 	var isBandInCharge = function() {
 		var ret = false;
 		Configure.bandConditions.forEach((c, index)=>{
-			console.log('start check bandConditions index = ' + index);
+			//console.log('start check bandConditions index = ' + index);
 			if(checkCondition(c)){
 				ret = true;
 			};
@@ -410,7 +410,7 @@ var AI = (function(){
 	var isIcePoint = function() {
 		var ret = true;
 		Configure.icePoint.forEach((c, index)=>{
-			console.log('start check icePoint index = ' + index);
+			//console.log('start check icePoint index = ' + index);
 			if(!checkCondition(c)){
 				ret = false;
 			};

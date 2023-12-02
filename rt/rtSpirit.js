@@ -85,7 +85,7 @@ var rtSpirit = (function(){
 		return [];
 	};
 	
-	// report 概念 
+	/// report 概念 
 	var GaiRankDataArr = [];
 	var GaiRaiseRateDuration = 3 * 60 * 1000;   // 3分钟
 	var GaiReportDuration = 0.5 * 60 * 1000;   // 半分钟播报一次
@@ -135,7 +135,25 @@ var rtSpirit = (function(){
 			}
 		};
 	};
-	/// 
+	/// monitor echelons
+	var preRTEchelons;
+	var monitorEchelons = function() {
+		if(!preRTEchelons) {
+			preRTEchelons = parserRT.getRTEchelons();
+		} else {
+			var curRTEcholons = parserRT.getRTEchelons();
+			curRTEcholons.forEach((curE)=> {
+				var index = preRTEchelons.findIndex((preE)=>{
+					return preE.name == curE.name;
+				});
+				if(index == -1) {
+					speecher.speak('非主流[' + curE.name + ']快速流入');
+				}
+			});
+			preRTEchelons = curRTEcholons;
+		}
+	};
+	
 	var init = function() {
 		Timer.addTimerCallback(()=>{
 			if (!Configure.isHalfBidding()) {
@@ -148,8 +166,11 @@ var rtSpirit = (function(){
 				cacheRemind(remind(rtDataManager.floorFilter, '打开跌停', true), '打开跌停');
 			}
 		});
-		// 提示概念
-		setInterval(reportGain, GaiReportDuration);
+		// 提示概念和echelons
+		setInterval(()=>{
+			reportGain();
+			monitorEchelons();
+		}, GaiReportDuration);
 		
 		// 10min 清除cache
 		setInterval(clearCache, 10 * 60 * 1000);

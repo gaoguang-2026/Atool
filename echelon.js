@@ -214,6 +214,7 @@
 		ctx.fillText('<' + Configure.Echelons_miss_tickit_period + '天连板>', this.rect.x + 5, this.rect.y + 30);
 	};
 	Echelon.prototype.draw = function () {
+		window.performance.mark("Echelon:draw");
 		var ctx = this.canvas.getContext("2d");	
 		ctx.clearRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);
 		ctx.beginPath();
@@ -232,7 +233,9 @@
 			}
 			
 		});
-		
+		window.performance.mark("Echelon:drawDone");
+			console.log('Echelon draw duration:' 
+				+ window.performance.measure("Echelon", "Echelon:draw", "Echelon:drawDone").duration + 'ms');
 	};
 	
 	Echelon.prototype.getTickets = function() {

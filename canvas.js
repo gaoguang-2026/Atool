@@ -721,6 +721,7 @@ var canvas = (function(canvas) {
 	};
 	var draw = function(echelonNames, indecatorName, showDaysNumber) {
 		if (drawing.getContext){
+			window.performance.mark("Canvas:draw");
 			var ctx = drawing.getContext("2d");
 			ctx.clearRect(0, 0, width, height);
 			clear();
@@ -753,6 +754,9 @@ var canvas = (function(canvas) {
 			var emotionPoints = getLastEmotionPoints(Configure.Days_Max_lengh);    
 			findTurnintPoint(emotionPoints, Configure.EmotionAngleDeafultDays + 1);
 			drawEmotionTurning();
+			window.performance.mark("Canvas:drawDone");
+			console.log('Canvas draw duration:' 
+				+ window.performance.measure("Canvas", "Canvas:draw", "Canvas:drawDone").duration + 'ms');
 		}
 	}
 	

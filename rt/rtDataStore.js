@@ -52,6 +52,7 @@ var rtDataStore = (function(){
 	};
 	
 	var getAllRtTicketsFromDB = function() {
+		
 		return IndexDB.openDB(indexDBName, onupgradeneeded, indexDBver).then((db)=>{
 			var promise = IndexDB.cursorGetData(db, dataStoreName);
 			IndexDB.closeDB(db);
@@ -62,7 +63,11 @@ var rtDataStore = (function(){
 	var init = function(){
 		return new Promise((resolve, reject) => {
 			if(!historyRtTicketsArray || !historyRtTicketsArray.length) {
+				window.performance.mark("IndexDB:readAll");
 				getAllRtTicketsFromDB().then((list)=>{
+					window.performance.mark("IndexDB:readAllDone");
+					console.log('Load db duration:' 
+						+ window.performance.measure("IndexDB", "IndexDB:readAll", "IndexDB:readAllDone").duration + 'ms');
 					historyRtTicketsArray = list;
 					resolve();
 				});
