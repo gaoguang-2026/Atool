@@ -115,8 +115,8 @@ var table = (function(){
 				tr.appendChild(td);
 			}
 		} else {
-			var titleArr = document.getElementById('form1').gtype[5].checked ?  Configure.rankShowInTableTitile :
-						document.getElementById('form1').gtype[4].checked ? 
+			var titleArr = document.getElementById('form1').gtype[2].checked ?  Configure.rankShowInTableTitile :
+						document.getElementById('form1').gtype[1].checked ? 
 						Configure.bandShowInTableTitile : Configure.showInTableTitile;
 			titleArr.forEach((t)=> {
 				var td = document.createElement('td');
@@ -422,7 +422,7 @@ var table = (function(){
 		}
 	};
 	var updateRow = function() {
-		if(param.type == 5) {
+		if(param.type == 2) {
 			createRankRow();
 		} else {
 			btn_loadMore.hidden = true;
@@ -444,7 +444,7 @@ var table = (function(){
 			updateRow();
 		});
 
-		param.type == 5 ? createRankRow() : createTicketRow(); 
+		param.type == 2 ? createRankRow() : createTicketRow(); 
 		updateRow();
 	};
 	
@@ -480,6 +480,16 @@ var table = (function(){
 							parseFloat(dataT['f3']/100) > 25) {
 								td.className += ' highlight';
 						}
+						break;
+					case 'f6':
+						td.innerHTML = dataT && dataT[t.dataset.titleProp] != '-' ? 
+									parseFloat(dataT[t.dataset.titleProp]/100000000).toFixed(2) : '-';
+						break;
+					case 'f109': 
+					case 'f110': 
+					case 'f160':
+						td.innerHTML = dataT && dataT[t.dataset.titleProp] != '-' ? 
+									parseFloat(dataT[t.dataset.titleProp]/100).toFixed(2) : '-';
 						break;
 					case 'gainianDragon':
 						// 显示最后三个概念

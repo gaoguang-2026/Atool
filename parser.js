@@ -142,12 +142,12 @@ var parser = (function(){
 	
 	//param : {hotpointArr: ['光伏','储能'], type: 1, sort: 0, other: false}
 	/*hotpointArr  热点概念排序的索引 
-	/*type  0 首板 ， 1 连板 , 2 涨停,  3 科创 4 中军趋势  5排名 6 全部
+	/*type  0 游资 1 庄游  2排名  -1 all
 	/*sort  0 得分 ， 1 高度,  2 涨速
 	/*other  true 热点外的其他票
 	//*/
 	var getTickets = function(dateStr, obj) {
-		if(obj.type == 4) {
+		if(obj.type == 1) {
 			return getBandTickets(obj);
 		};
 		
@@ -162,7 +162,7 @@ var parser = (function(){
 						a[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] ;
 				}
 			} else if (obj && obj.sort == 2){
-				if(obj.type == 5) {
+				if(obj.type == 2) {
 					var bData = rtDataManager.getRTTicketFromCode(b[Configure.title.code]);
 					var aData = rtDataManager.getRTTicketFromCode(a[Configure.title.code]);
 					if(bData && bData['f3'] && aData && aData['f3']) {
@@ -181,23 +181,14 @@ var parser = (function(){
 			
 		// type
 		var retArr = tickets;
-		if (obj.type == 0 || obj.type == 1) {
-			retArr= tickets.filter((t)=>{
-				return obj.type === 1 ?  t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] > 1 : 
-									t[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] == 1;
-			});			
-		} else if (obj.type == 3) { // 科创
-			retArr= tickets.filter((t)=>{
-				return Configure.isKechuangTicket(t[Configure.title.code]);
-			});			
-		} else if (obj.type == 2){
-			// type = 2, 过滤掉跌停和炸板
+		if (obj.type == 0){
+			// type = 0, 过滤掉跌停和炸板
 			retArr= tickets.filter((t)=>{
 				return Configure.isFloorOrFailed(t, dateStr);
 			});	
 		} else {
-			// type = 6  do nothing
-		}
+			// do notiing
+		};
 		
 		// gainian
 		if (obj.hotpointArr && obj.hotpointArr.length != 0) {
@@ -225,7 +216,7 @@ var parser = (function(){
 			var fundtotal = 0;
 			var param = {
 				hotpointArr: hotPoints,
-				type:2,
+				type:0,
 				sort:1
 			}
 			var tickets = getTickets(dateStr, param);

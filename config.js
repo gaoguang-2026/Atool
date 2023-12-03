@@ -447,8 +447,9 @@ var Configure = (function(){
 		
 		// 实时数据，通过抓取东方财富数据
 		f3: '今日涨跌幅',
-		f8: '今日换手率',
 		f2: '今日价格',
+		f8: '今日换手率',
+		f6: '今日金额',
 
 		// 涨幅排名独有
 		rise_1:'涨幅',
@@ -735,13 +736,13 @@ var Configure = (function(){
 									'rise_20', 'value', 'gainianDragon', 'time'];
 									
 			this.WinXFactor = 0.6;
-			this.Echelons_Draw_NUM = 2;
+			this.Echelons_Draw_NUM = 2;   
 		} else  {                      // 盯盘配置
-			this.showInTableTitile = ['name', 'f2', 'f8', 'f3','realValue','score','totalDivergence', 
+			this.showInTableTitile = ['name', 'f2',  'f3','f8','f6','realValue','score','totalDivergence', 
 							'boardStrength','reason', 'boardAndDay'];
-			this.bandShowInTableTitile = ['name', 'f2','f8', 'f3','realValue','score','totalDivergence',
+			this.bandShowInTableTitile = ['name', 'f2', 'f3','f8','f6','realValue','score','totalDivergence',
 						'selectDate','reason'];
-			this.rankShowInTableTitile = ['index','name', 'f2','f8', 'f3', 'rise_5','rise_10',
+			this.rankShowInTableTitile = ['index','name', 'f2', 'f3','f8','f6', 'rise_5','rise_10',
 											'rise_20', 'value','gainianDragon'];
 			this.WinXFactor = 0.3;
 			this.Echelons_Draw_NUM = 1;

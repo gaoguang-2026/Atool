@@ -46,7 +46,7 @@ var canvas = (function(canvas) {
 		if (!day[Configure.title2.erban] || !day[Configure.title2.boardnum]) {
 			var param = {
 				hotpointArr: [],
-				type:5,
+				type:-1,
 				sort:1
 			};
 			var tickets =  parser.getTickets(dateArr[dayIndex], param);

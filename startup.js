@@ -58,8 +58,8 @@ var startup = (function(text) {
 				return b - a;
 			});
 		var echelonNames = getParamEchelons();
-		var type = document.getElementById('form1').gtype[4].checked ? 
-							4 : 0;   // type = 0 画连扳， 4画趋势 
+		var type = document.getElementById('form1').gtype[1].checked ? 
+							1 : 0;   // type = 0 画连扳， 1画趋势 
 							
 		var echelons = echelonNames.length ?  
 						[(parser.getCombinedEchelon(dateArr[0], echelonNames))] : [];
@@ -75,7 +75,7 @@ var startup = (function(text) {
 			let e1;
 			if(type == 0) {
 				e1 = new window.Echelon(elCanvas, echelons[i], rect);      //连板
-			} else {  // type = 4
+			} else {  // type = 1
 				e1 = new window.bandEchelon(elCanvas, echelons[i], rect);   // 趋势，首板断板
 			}
 			e1.draw();
@@ -116,11 +116,7 @@ var startup = (function(text) {
 		var isOther = fr2.all[1].checked;  // other 选项
 		var param = {
 			hotpointArr: isOther ? paramGainianForOther : paramGainian,
-			type: fr.gtype[6].checked ? 6 :
-				fr.gtype[5].checked ? 5 :
-				fr.gtype[4].checked ? 4 :
-				fr.gtype[3].checked ? 3 :
-				fr.gtype[2].checked ? 2 : 
+			type: fr.gtype[2].checked ? 2 : 
 				fr.gtype[0].checked ? 0 : 1,   
 			sort: fr.sort[2].checked ? 2 :
 				fr.sort[0].checked ? 0 : 1,
@@ -298,13 +294,13 @@ var startup = (function(text) {
 				$('#rtShowdays').val(2);
 			}
 			var fp = function() {
-				document.getElementById('form1').gtype[2].checked = true;
+				document.getElementById('form1').gtype[0].checked = true;
 				document.getElementById('form1').sort[2].checked = true;
 				document.getElementById('showdays').value = 60;
 				document.getElementById('rtShowdays').hidden = true;
 			};
 			var dp = function() {
-				document.getElementById('form1').gtype[5].checked = true;
+				document.getElementById('form1').gtype[2].checked = true;
 				document.getElementById('form1').sort[0].checked = true;
 				document.getElementById('showdays').value = 30;
 				document.getElementById('rtShowdays').hidden = false;

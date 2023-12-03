@@ -246,7 +246,7 @@ var parserRT = (function(){
 	};
 	
 	/* 
-	* Param 见 parser getTickets， type = 5 排名
+	* Param 见 parser getTickets， type = 2 排名
 	*/
 	var getRankTickets = function(datestr, param) {
 		var ticketsArr = [];

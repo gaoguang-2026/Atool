@@ -48,7 +48,7 @@ var AI = (function(){
 		// 计算 bandScoreFator
 		var param = {
 			hotpointArr: [],
-			type:2,
+			type:0,
 			sort:1
 		}
 		var tickets =  parser.getTickets(datestr, param);
@@ -314,7 +314,7 @@ var AI = (function(){
 		
 		var param = {
 			hotpointArr: hotpoints,
-			type:2,
+			type:0,
 			sort:1
 		}
 		var tickets =  parser.getTickets(dateStr, param);
