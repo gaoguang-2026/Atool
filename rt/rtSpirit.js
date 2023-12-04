@@ -138,6 +138,7 @@ var rtSpirit = (function(){
 	/// monitor echelons
 	var preRTEchelons;
 	var monitorEchelons = function() {
+		if(Configure.isBidding()) return;   // 竞价
 		if(!preRTEchelons) {
 			preRTEchelons = parserRT.getRTEchelons();
 		} else {
