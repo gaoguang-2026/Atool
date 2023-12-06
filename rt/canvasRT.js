@@ -63,17 +63,25 @@ var canvasRT = (function() {
 		ctx.stroke(); 
 		
 		// 画涨跌个数
+		ctx.beginPath();
+		ctx.lineWidth="4";
+		ctx.strokeStyle = 'red';
 		ctx.fillStyle = 'red';
-		var red = rtDataManager.getRTTickets().filter((rtData)=>{
+		ctx.font="bold 16px";
+		var up = rtDataManager.getRTTickets().filter((rtData)=>{
 			return rtData['f3'] > 0;
 		}).length;
-		ctx.fillText( red, siteX + siteWidth * (rtShowDays_num - 1)/ rtShowDays_num + 80, siteY - 10);
+		var down = rtDataManager.getRTTickets().length - up;
+		ctx.fillText( up, siteX + siteWidth * (rtShowDays_num - 1)/ rtShowDays_num + 80, siteY - 10);
+		ctx.moveTo(siteX,siteY);
+		ctx.lineTo(siteX + siteWidth * (up / (down + up)),siteY);
 		ctx.stroke(); 
+		ctx.beginPath();
 		ctx.fillStyle = 'green';
-		var red = rtDataManager.getRTTickets().filter((rtData)=>{
-			return rtData['f3'] < 0;
-		}).length;
-		ctx.fillText( red, siteX + siteWidth * (rtShowDays_num - 1)/ rtShowDays_num + 110, siteY - 10);
+		ctx.strokeStyle = 'green';
+		ctx.fillText( down, siteX + siteWidth * (rtShowDays_num - 1)/ rtShowDays_num + 110, siteY - 10);
+		ctx.moveTo(siteX + siteWidth * (up / (down + up)),siteY);
+		ctx.lineTo(siteX + siteWidth,siteY);
 		ctx.stroke(); 
 	};
 	

@@ -279,7 +279,7 @@ var canvas = (function(canvas) {
 	};
 	var drawEmotionCycle = function(curEmotion) { 
 		var ctx = drawing.getContext("2d");		
-		var center = Math.floor(Configure.winCtxts.length/2);
+		var center = Math.ceil(Configure.winCtxts.length/2);
 		for(var i = 0; i < Configure.winCtxts.length; i ++) {
 			var xLv = i-center < 0 ? 0 : 1;
 			var yLv = i-center >= 0 ?  Math.abs(i-center) + 0.5 :  Math.abs(i-center);
@@ -291,10 +291,10 @@ var canvas = (function(canvas) {
 				ctx.beginPath();
 				ctx.font="bold 16px 楷体";
 				ctx.fillStyle = Configure.getColorFromWinC('w' + i).color;
-				txt = curEmotion + (xLv == 0 ? '  <' : '<');
+				txt = curEmotion + (xLv == 0 ? ' <' : '<');
 			} else {
 				ctx.beginPath();
-				ctx.font="bold 14px 楷体";
+				ctx.font="bold 12px 楷体";
 				ctx.fillStyle = Configure.getColorFromWinC('w' + i).color;
 				txt = Configure.winCtxts[i];
 			}

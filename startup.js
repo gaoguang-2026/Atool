@@ -287,12 +287,8 @@ var startup = (function(text) {
 		window.onload = function(){
 			document.title = document.title + Configure.version;
 			$('#date').val(Configure.getDateStr(Configure.date, '-'));
-			//$('#rtShowdays').val(Configure.RT_canvas_show_days_num);
-			if (Configure.isAfterNoon()) {
-				$('#rtShowdays').val(1);
-			} else {
-				$('#rtShowdays').val(2);
-			}
+			$('#rtShowdays').val(Configure.RT_canvas_show_days_num/2);
+
 			var fp = function() {
 				document.getElementById('form1').gtype[0].checked = true;
 				document.getElementById('form1').sort[2].checked = true;

@@ -440,7 +440,7 @@ var AI = (function(){
 	};
 	
 	var drawEmotionCycle = function(){
-		canvas.drawEmotionCycle(Configure.cangMap.get(dataStorage.emotion).stage);
+		canvas.drawEmotionCycle(dataStorage.emotion);
 	};
 	
 	var init = function() {
