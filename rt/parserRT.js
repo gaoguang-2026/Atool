@@ -212,9 +212,9 @@ var parserRT = (function(){
 		}
 		return max;
 	};
-	var getRTEchelons = function() {
+	var getRTEchelons = function(num = Configure.RT_echelons_max_num) {
 		// 选出全天最高的RT_echelons_max_num个 
-		var topEchelons = rtRankData.getEchelons().slice(0, Configure.RT_echelons_max_num);
+		var topEchelons = rtRankData.getEchelons().slice(0, num);
 		
 		// 更新当前的得分, 需要拷贝对象
 		var gaiNianArr = rtRankData.getLastRankData();
@@ -243,6 +243,19 @@ var parserRT = (function(){
 		};
 		return retEchelons.concat(verboseEchelons).sort(sort); 
 //		return retEchelons.sort(sort).concat(verboseEchelons.sort(sort));  // 分开排序
+	};
+	var getEchelonsTxt = function() {
+		var txt = 'Echelon排名：<br>';
+		getRTEchelons(99).forEach((e, index) => {
+			txt += '【' + (index + 1) + '】' + 
+				e.name + '  ' + '    score:' + parseFloat(e.score).toFixed(1) + '<br>\t\r\n';
+		});
+		txt += 'topEchelon排名：<br>';
+		rtRankData.getEchelons().forEach((e, index) => {
+			txt += '【' + (index + 1) + '】' + 
+				e.name + '  ' + '    score:' + parseFloat(e.score).toFixed(1) + '<br>\t\r\n';
+		});
+		return txt;
 	};
 	
 	/* 
@@ -368,6 +381,7 @@ var parserRT = (function(){
 	return {
 		parseAndStoreRTData:parseAndStoreRTData,
 		getRTEchelons:getRTEchelons,
+		getEchelonsTxt:getEchelonsTxt,
 		getGaiRankData:getGaiRankData,
 		getEchelonByIndex:getEchelonByIndex,
 		getMaxScoreWithDaynum:getMaxScoreWithDaynum,

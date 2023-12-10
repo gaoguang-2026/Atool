@@ -80,14 +80,14 @@ var parser = (function(){
 	};
 	
 	var getHotpointstxt = function(dateStr) {
-		var txt = '热点概念排名：';
+		var txt = '热点概念排名：<br>';
 		var index = 0;
 		var arr = getHotpoints(dateStr);
 
 		arr.forEach((a) => {   // a = ['猪肉'， 13]
 			if(a[1].times >= Configure.MIN_KAINIAN) {
 				txt += '【' + (++index) + '】' + 
-				a[0] + '  ' + a[1].times + '    score:' + a[1].weight + '   \t\r\n';
+				a[0] + '  ' + a[1].times + '    score:' + a[1].weight + '  <br>\t\r\n';
 			}
 		});
 		return txt;

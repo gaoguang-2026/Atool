@@ -401,6 +401,7 @@ var table = (function(){
 						}
 						value == '--' ? Tip.show(td, ticket[Configure.title.gainian]) 
 										: Tip.show(td,  value);
+						Tip.show(t, parserRT.getEchelonsTxt());
 						break;
 					default :
 						break;
