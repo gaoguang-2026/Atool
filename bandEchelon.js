@@ -133,6 +133,7 @@
 			}
 			return isSelect;
 		});  
+		workbook.setBandTickets(this.tickets);   // 剔除之前记录
 		
 		// 计算涨速
 		this.tickets.forEach((ticket)=>{
@@ -147,7 +148,7 @@
 			ticket.increaseRate = (!priceStart || priceStart == 0 || dayNum == 0) ? 0 : 
 				parseFloat((parseFloat(ticket[Configure.title.price]) - priceStart) / (priceStart * dayNum)).toFixed(4);
 		});
-		workbook.setBandTicket(this.tickets);   // 显示剔除前保存
+	
 		// echelon股票
 		this.tickets = this.tickets.filter((t) => {
 			var isSelect = false;

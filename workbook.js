@@ -38,12 +38,9 @@
         } */
 		return persons;
 	};
-	
-	var setBandTicket = function(ticketArr) {
-		BandTickets = [];
-		ticketArr.forEach((t)=>{
-			BandTickets.push(t);
-		});
+
+	var setBandTickets = function(ticketArr) {
+		BandTickets = ticketArr.slice(0);
 	};
 	
 	var getBandTickets = function() {
@@ -189,7 +186,7 @@
 		getPreDate:getPreDate,
 		getNextDate:getNextDate,
 		getLastDate:getLastDate,
-		setBandTicket:setBandTicket,
+		setBandTickets:setBandTickets,
 		getBandTickets:getBandTickets,
 		getRankTickets:getRankTickets,
 		getRankTicketFromCode:getRankTicketFromCode,

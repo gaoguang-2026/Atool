@@ -315,16 +315,18 @@ var table = (function(){
 							} else if (Configure.isKeTicket(ticket[Configure.title.code])) {
 								td.innerHTML += '(科)';
 							} else if (Configure.isBJTicket(ticket[Configure.title.code])) {
-									td.innerHTML += '(京)';		
-									tr.className = 'grey';
+								td.innerHTML += '(京)';		
+								tr.className = 'grey';
 							} else if(Configure.isSHTicket(ticket[Configure.title.code])){
-									td.innerHTML += '(SH)';
-							};
+								td.innerHTML += '(SH)';
+							} 
 						};
 						if(Configure.isNew(ticket[Configure.title.time])) {
 							td.innerHTML += '(新)';
 							td.className = 'grey';
-						}
+						} else if(AI.isBandTicket(ticket[Configure.title.code])) {
+								td.className = 'blue';
+						};
 						if (ticket[Configure.title.dragonTag]) {
 							td.innerHTML += '  (' + ticket[Configure.title.dragonTag].tagDes.substr(0,2) + ')';
 							tr.className = ticket[Configure.title.dragonTag].style;

@@ -49,7 +49,7 @@
                 break;
         }
         _this.bind(_param.hideEvent,function(){box.hide(_param.hideTime,function(){$(this).remove();});});
-	//	_this.bind('remove',function(){box.hide(_param.hideTime,function(){$(this).remove();});});
+		_this.bind('DOMNodeRemoved',function(){box.hide(_param.hideTime,function(){$(this).remove();});});
     });
 })(jQuery);
 
@@ -58,9 +58,6 @@ var Tip = (function () {
 		el.onmouseover  = function() {
 			$(this).tip(txt);
 		};
-		el.addEventListener('DOMNodeRemoved', function() {  
-			$(this).clear();
-		});
 	};
 
 	return {

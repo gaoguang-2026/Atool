@@ -8,6 +8,8 @@ var AI = (function(){
 	var RectifyDay_num = Configure.Days_Max_lengh;
 	var Rectify_factor = 7;
 	
+	var boardedTickets_10day;   //记录10天内所有涨停过的票
+	
 	var getAndUpdateLoacalstorage = function() {
 		var dateArr = workbook.getDateArr((a,b)=>{
 				return b - a;
@@ -277,9 +279,15 @@ var AI = (function(){
 				Configure.Band_MA_NUM + '背离率' + (dataStorage.sz_ma_beili*100).toFixed(2) + '%。';
 	}
 	
+	var isBandTicket = function(code) {
+		return boardedTickets_10day.findIndex((t)=>{
+			return t[Configure.title.code].includes(code);
+		}) == -1;
+	};
+	
 	var getBandtickets = function() {
 		//选出趋势票
-		var tickets = parser.getBandTickets({hotpointArr:[], sort:2, type:3});
+		var tickets = parser.getBandTickets({hotpointArr:[], sort:2});
 		tickets.sort((a, b)=>{
 			return window.GetBandFinalScroe(b, dataStorage.bandScoreFator) - 
 						window.GetBandFinalScroe(a, dataStorage.bandScoreFator);
@@ -457,11 +465,14 @@ var AI = (function(){
 				}
 			}
 		});
+		
+		boardedTickets_10day = parser.getAllBoardedTicketsFromDays(10);
 	};
 	
 	return {
 		init:init,
 		getRecommend:getRecommend,
+		isBandTicket:isBandTicket,
 		isBandInCharge:isBandInCharge,
 		drawEmotionCycle:drawEmotionCycle,
 	}

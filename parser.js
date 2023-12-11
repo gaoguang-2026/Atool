@@ -103,6 +103,38 @@ var parser = (function(){
 		});
 		return ret;
 	};
+	// 获取过去num天内涨停过的所有票
+	var getAllBoardedTicketsFromDays = function (num){
+		var retTickets = [];
+		var dateArr = workbook.getDateArr((a,b)=>{
+			return b - a;
+		});
+		
+		for (var i = 0; i < num; i ++ ) {
+			var param = {
+				hotpointArr: [],
+				type:0,
+				sort:1
+			}
+			var tArr = parser.getTickets(dateArr[i],param);
+			tArr = tArr.filter((t1)=>{
+				var isSelect = true;
+				retTickets.forEach((t2)=> {
+					if(t2[Configure.title.code] == t1[Configure.title.code]){
+						isSelect = false;
+					}
+				})
+				
+				if(isSelect) {
+					t1.selectDate = dateArr[i];
+				}
+				return isSelect;
+			});
+			
+			retTickets = retTickets.concat(tArr);
+		};
+		return retTickets;
+	}
 	
 	var getBandTickets = function(obj) {
 		var retArr = workbook.getBandTickets();
@@ -327,6 +359,7 @@ var parser = (function(){
 		getBandTickets:getBandTickets,
 		getEchelons:getEchelons,
 		getCombinedEchelon:getCombinedEchelon,
-		getBoardHeight:getBoardHeight
+		getBoardHeight:getBoardHeight,
+		getAllBoardedTicketsFromDays:getAllBoardedTicketsFromDays,
 	}
 })();

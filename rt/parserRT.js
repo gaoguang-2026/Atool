@@ -351,7 +351,7 @@ var parserRT = (function(){
 			});
 		}
 		tagDargon(Configure.title.rise_20, {tagDes:'高度龙头', style: 'orange'});
-		tagDargon(Configure.title.rise_5, {tagDes:'强度龙头', style: 'blue'});
+		tagDargon(Configure.title.rise_5, {tagDes:'强度龙头', style: 'orange'});
 		tagDargon(Configure.title.riseTotal, {tagDes:'总龙', style: 'pink bold'});
 		tagDargon(Configure.title.rise_1, {tagDes:'补涨新发', style: 'LightYellow'});
 
