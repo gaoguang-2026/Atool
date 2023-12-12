@@ -1,4 +1,5 @@
 var speecher = (function() {
+	var storeId = 'speecker';
 	var speeckerEL = document.getElementById("speecker");
 	var textContainer = []; 
 	var showText = function (t) {
@@ -11,10 +12,11 @@ var speecher = (function() {
 									(s < 10 ? '0'+ s : s)+ ' ' + t;
 		/涨|流入|打开跌停/g.test(t) ? speeckerEL.className = ("speak fontRed") : 
 				/跌|流出|炸板/g.test(t) ? speeckerEL.className = ("speak fontGreen") : speeckerEL.className = ("speak fontBlue");
-		textContainer.unshift(speeckerEL.innerHTML);
+		textContainer.unshift({date: d, txt:speeckerEL.innerHTML});
+		LocalStore.set(storeId, textContainer);
 		var textshow = '';
-		textContainer.forEach((txt)=>{
-			textshow += txt + '<br>';
+		textContainer.forEach((obj)=>{
+			textshow += obj.txt + '<br>';
 			if(textshow.length > 700) return;
 		});
 		Tip.show(speeckerEL, textshow);
@@ -36,6 +38,16 @@ var speecher = (function() {
 	var init = function() {
 		var txt = Configure.apothegms[Math.round(Math.random() * Configure.apothegms.length)];
 		speeckerEL.innerHTML = txt ? txt : Configure.apothegms[0];
+		
+		textContainer = LocalStore.get(storeId);
+		if(textContainer &&  textContainer.length >0) {
+			var today = new Date();
+			if(!Configure.datesAreOnSameDay(new Date(textContainer[0].date), today) && !Configure.isWeekend(today)) {
+				textContainer =  [];
+			}
+		} else {
+			textContainer =  [];
+		};
 	};
 	
 	return {
