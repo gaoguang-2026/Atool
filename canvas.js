@@ -224,7 +224,7 @@ var canvas = (function(canvas) {
 					ctx.fillText(cycle.cycles, siteX + cellWidth  * i, siteY -5);
 					if (!!cycle.hotpoint) {
 						ctx.fillStyle = 'orange';
-						ctx.fillText('<' + cycle.hotpoint + '>', siteX + cellWidth  * i + 20, siteY -5);
+						ctx.fillText(cycle.hotpoint, siteX + cellWidth  * i + 20, siteY -5);
 					}
 				}  
 				if(Configure.getColorFromWinC(cycle.cycles).color){   // 微观情绪

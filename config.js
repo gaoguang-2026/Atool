@@ -614,7 +614,7 @@ var Configure = (function(){
 	var Band_miss_tickit_period = 11;    //趋势检查断板的期限     SED + TFD
 	var Band_tickit_filter_period = 0;   //趋势票涨停过滤期限     0 是一个涨停
 	var Band_MA_NUM = 5;    //MA5
-	var Band_Min_Value = 20000000000;  // 趋势票最小流通市值
+	var Band_Min_Value = 15000000000;  // 趋势票最小流通市值
 	
 	var AI_Default_Factor = 50;        // 超短选票默认因子   越大结构权重越大，越小题材权重越大
 	var AI_Default_Band_Factor = 2;   // 趋势选票默认因子  越大涨速权重越大，越小题材权重越大
