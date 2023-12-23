@@ -341,7 +341,7 @@ var parser = (function(){
 	var getBoardHeight = function(dateStr, titleName) {
 		loadSheet(dateStr);
 		tickets.sort((a, b) => {
-			return b[titleName] - a[titleName];
+			return b[Configure.title.dayNumber] - a[Configure.title.dayNumber];
 		})
 		return {name: tickets[0][Configure.title.name], value:tickets[0][titleName]};
 	};
