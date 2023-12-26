@@ -143,14 +143,16 @@ var rtSpirit = (function(){
 			preRTEchelons = parserRT.getRTEchelons();
 		} else {
 			var curRTEcholons = parserRT.getRTEchelons();
-			curRTEcholons.forEach((curE)=> {
-				var index = preRTEchelons.findIndex((preE)=>{
-					return preE.name == curE.name;
+			if(curRTEcholons.length == preRTEchelons.length) {
+				curRTEcholons.forEach((curE)=> {
+					var index = preRTEchelons.findIndex((preE)=>{
+						return preE.name == curE.name;
+					});
+					if(index == -1) {
+						speecher.speak('非主流[' + curE.name + ']快速流入');
+					}
 				});
-				if(index == -1) {
-					speecher.speak('非主流[' + curE.name + ']快速流入');
-				}
-			});
+			}
 			preRTEchelons = curRTEcholons;
 		}
 	};
