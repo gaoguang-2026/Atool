@@ -11,7 +11,7 @@ var table = (function(){
 	var highlightTichets;  // highlight
 	
 	var btn_loadMore = document.getElementById('load-all-btn');
-	var load_item_num = 10;
+	var load_item_num = 20;
 	
 	var updateForm = function() {
 		var fr = document.getElementById('form2');
@@ -316,7 +316,6 @@ var table = (function(){
 								td.innerHTML += '(科)';
 							} else if (Configure.isBJTicket(ticket[Configure.title.code])) {
 								td.innerHTML += '(京)';		
-								tr.className = 'grey';
 							} else if(Configure.isSHTicket(ticket[Configure.title.code])){
 								td.innerHTML += '(SH)';
 							} 

@@ -40,7 +40,8 @@ var rtDataManager = (function(){
 	// 当前涨幅大于6切最大涨幅回撤不到30%   或者5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
 	var getRTTicketsLeader = function() {
 		return realTimeTickets.filter((t)=>{
-			return  (t['f3'] > 600 &&  (t['f15'] - t['f2'])/(t['f15'] - t['f18']) < 0.3)
+			return  (t['f3'] > (Configure.isBJTicket(t['f12']) ? 1200 : 600) &&  
+					(t['f15'] - t['f2'])/(t['f15'] - t['f18']) < 0.3)
 					||  topFilter(t);          
 		});
 	};
@@ -54,50 +55,57 @@ var rtDataManager = (function(){
 	};
 		
 	var topFilter = function(t){
-		return t['f109'] > 2000 ||
-				t['f160'] > 3000 ||
-				t['f110'] > 4000;  
+		return t['f109'] > (Configure.isBJTicket(t['f12']) ? 6000 : 2000) ||
+				t['f160'] > (Configure.isBJTicket(t['f12']) ? 8000 : 3000) ||
+				t['f110'] > (Configure.isBJTicket(t['f12']) ? 12000 : 4000);  
 	};
 	// 涨停
 	var boardFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
-		var per = Configure.isKechuangTicket(rtData['f12']) ? 1.2 : 1.1;
+		var per = Configure.isBJTicket(rtData['f12']) ? 1.3 :
+				Configure.isKechuangTicket(rtData['f12']) ? 1.2 : 1.1;
 		return  Math.round(rtData['f18'] * per) == rtData['f2'];
 	};
 	// 涨停过
 	var boardedFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
-		var per = Configure.isKechuangTicket(rtData['f12']) ? 1.2 : 1.1;
+		var per = Configure.isBJTicket(rtData['f12']) ? 1.3 :
+					Configure.isKechuangTicket(rtData['f12']) ? 1.2 : 1.1;
 		return  Math.round(rtData['f18'] * per) == rtData['f15'];
 	};
 	// 大涨过     20cm涨幅 > 15% , 10cm涨幅 > 8%
 	var raisedFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
-		var per = Configure.isKechuangTicket(rtData['f12']) ? 1.15 : 1.08;
+		var per = Configure.isBJTicket(rtData['f12']) ? 1.20 :
+					Configure.isKechuangTicket(rtData['f12']) ? 1.15 : 1.08;
 		return  Math.round(rtData['f18'] * per) < rtData['f15'];
 	};
 	// 跌停
 	var floorFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
-		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
+		var per =  Configure.isBJTicket(rtData['f12']) ? 0.7 :
+					Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
 		return  Math.round(rtData['f18'] * per) == rtData['f2'];
 	};
 	// 跌停过
 	var flooredFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
-		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
+		var per = Configure.isBJTicket(rtData['f12']) ? 0.7 :
+					Configure.isKechuangTicket(rtData['f12']) ? 0.8 : 0.9;
 		return  Math.round(rtData['f18'] * per) == rtData['f16'];
 	};
 	// 快速下跌
 	var jumpeFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
-		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.92 : 0.94;
+		var per = Configure.isBJTicket(rtData['f12']) ? 0.88 :
+					Configure.isKechuangTicket(rtData['f12']) ? 0.92 : 0.94;
 		return  Math.round(rtData['f18'] * per) > rtData['f16'];
 	};
 	// 超跌过  默认 -5%
 	var jumpedFilter = function(rtData){
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
-		var per = Configure.isKechuangTicket(rtData['f12']) ? 0.95 : 0.93; 
+		var per = Configure.isBJTicket(rtData['f12']) ? 0.85 :
+					Configure.isKechuangTicket(rtData['f12']) ? 0.9 : 0.93; 
 		return  Math.round(rtData['f18'] * per) > rtData['f16'];
 	};
 	
