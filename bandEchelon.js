@@ -7,7 +7,7 @@
 	
 		// 根据 题材、排名涨速算最后的得分    
 	var GetBandFinalScroe = function(t, scoreFactor = Configure.AI_Default_Band_Factor) {
-		var ticket = workbook.getRankTicketFromCode(t[Configure.title.code]);
+		var ticket = parserRT.getRankTicketFromCode(t[Configure.title.code]);
 		var sum = 0;
 		if(ticket) {
 			sum += !!parseFloat(ticket[Configure.title.rise_5]) ? parseFloat(ticket[Configure.title.rise_5]) : 0;
@@ -116,9 +116,9 @@
 	bandEchelon.prototype.get_tickit_period = function() {
 		return Configure.Band_tickit_period;
 	};
-	
+
 	bandEchelon.prototype.filterTickets = function() {
-		this.tickets = this.tickets.filter((t)=>{
+		this.tickets = this.tickets.filter((t, index)=>{
 			var isSelect = true;
 			//首板
 			var dayNumber = t[Configure.replaceTitleDate(Configure.title.dayNumber, t.selectDate)];
@@ -128,13 +128,12 @@
 			} 
 			//市值 && 没有进入排名
 			if(t[Configure.title.value] < Configure.Band_Min_Value && 
-				!workbook.getRankTicketFromCode(t[Configure.title.code])) {
+				!parserRT.getRankTicketFromCode(t[Configure.title.code])) {
 				isSelect = false;
 			}
 			return isSelect;
 		});  
 		workbook.setBandTickets(this.tickets);   // 剔除之前记录
-		
 		// 计算涨速
 		this.tickets.forEach((ticket)=>{
 			var param = {
@@ -148,7 +147,6 @@
 			ticket.increaseRate = (!priceStart || priceStart == 0 || dayNum == 0) ? 0 : 
 				parseFloat((parseFloat(ticket[Configure.title.price]) - priceStart) / (priceStart * dayNum)).toFixed(4);
 		});
-	
 		// echelon股票
 		this.tickets = this.tickets.filter((t) => {
 			var isSelect = false;

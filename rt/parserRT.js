@@ -261,7 +261,7 @@ var parserRT = (function(){
 	/* 
 	* Param 见 parser getTickets， type = 2 排名
 	*/
-	var getRankTickets = function(datestr, param) {
+	var getRankTickets = function(datestr, param, preWeek = false) {
 		var ticketsArr = [];
 		var tDatas = Configure.getMode() == Configure.modeType.DP ? 
 							rtDataManager.getRTTicketsLeader() : 
@@ -291,7 +291,7 @@ var parserRT = (function(){
 		});
 		// 如果没有抓取的数据就从默认的表格中取数据
 		if (ticketsArr.length == 0) {   
-			ticketsArr = workbook.getRankTickets();
+			ticketsArr = workbook.getRankTickets(preWeek);
 		}
 		
 		if (param.hotpointArr && param.hotpointArr.length != 0) {
@@ -377,6 +377,13 @@ var parserRT = (function(){
 		});
 		return ticketsArr;
 	};
+	
+	var getRankTicketFromCode = function(code, preWeek = false) {
+		var tickets = getRankTickets(Configure.getDateStr(Configure.date), {}, preWeek);
+		return tickets.find((t)=>{
+			return code.includes(t[Configure.title.code]);
+		});
+	};
 
 	return {
 		parseAndStoreRTData:parseAndStoreRTData,
@@ -386,6 +393,7 @@ var parserRT = (function(){
 		getEchelonByIndex:getEchelonByIndex,
 		getMaxScoreWithDaynum:getMaxScoreWithDaynum,
 		getRankTickets:getRankTickets,
+		getRankTicketFromCode:getRankTicketFromCode,
 		getHistoryEchelonFromDateStr:getHistoryEchelonFromDateStr,
 		getScoreTotalByIndex:getScoreTotalByIndex,
 		getScoreMAByIndex:getScoreMAByIndex,

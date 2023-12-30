@@ -67,10 +67,14 @@ var canvas = (function(canvas) {
 				day[Configure.title2.jinji] = parseFloat((day[Configure.title2.lianban] -  day[Configure.title2.erban]) * 100/
 												preDay[Configure.title2.lianban]).toFixed(2);
 				if(!day[Configure.title2.zhangtingzhishu]) {
+					preDay[Configure.title2.zhangtingzhishu] = preDay[Configure.title2.zhangtingzhishu] ? 
+									preDay[Configure.title2.zhangtingzhishu] : 100;  // 如果表格中第一天没有初始化给一个初始值100
 					day[Configure.title2.zhangtingzhishu] = parseInt(preDay[Configure.title2.zhangtingzhishu]) * 
 															(100 + parseFloat(day[Configure.title2.boardR])) / 100;
 				}
 				if(!day[Configure.title2.lianbanzhishu]) {
+					preDay[Configure.title2.lianbanzhishu] = preDay[Configure.title2.lianbanzhishu] ? 
+									preDay[Configure.title2.lianbanzhishu] : 100;  // 如果表格中第一天没有初始化给一个初始值100
 					day[Configure.title2.lianbanzhishu] = parseInt(preDay[Configure.title2.lianbanzhishu]) * 
 															(100 + parseFloat(day[Configure.title2.boardsR])) / 100;
 				}

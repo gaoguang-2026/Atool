@@ -144,21 +144,12 @@
 	var getRankTickets = function(preWeek = false) {
 		var weeknum = Configure.getWeek(Configure.date);
 		if(preWeek) weeknum --;
-		while(!sheetExist('W' + weeknum)){
+		while(!sheetExist('W' + weeknum) && weeknum > 0){
 			weeknum --;
 		}
 		return getSheet('W' + weeknum);
 	};
 
-	var getRankTicketFromCode = function(code, preWeek = false) {
-		var tickets = getRankTickets(preWeek);
-		return tickets.filter((t)=>{
-			return t[Configure.title.code] == code;
-		})[0];
-	};
-	
-
-	
 	// param = {sheetName: '0707',ticketCode:'SZ002527'}}
 	// A : 今日非ST涨停板或者今日涨停过或者今日跌停或者今日跌停过 上市时间超过30天
 	var getValue = function(param) {
@@ -189,6 +180,5 @@
 		setBandTickets:setBandTickets,
 		getBandTickets:getBandTickets,
 		getRankTickets:getRankTickets,
-		getRankTicketFromCode:getRankTicketFromCode,
 	}
  })();

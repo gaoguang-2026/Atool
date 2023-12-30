@@ -362,7 +362,7 @@ var table = (function(){
 					case 'rise_5':	
 						if(Configure.getMode() == Configure.modeType.FP) {
 							// check is new for this week;
-							if(!workbook.getRankTicketFromCode(ticket[Configure.title.code], true) &&
+							if(!parserRT.getRankTicketFromCode(ticket[Configure.title.code], true) &&
 							   td.innerHTML != '--') {
 								td.className = 'highlight';
 							} 
@@ -415,12 +415,14 @@ var table = (function(){
 		
 		if(rankTickets.length > load_item_num && load_item_num > 0) {
 			btn_loadMore.hidden = false;
-		} else {
+		} else if(rankTickets.length > 0){
 			load_item_num = rankTickets.length;
 			btn_loadMore.hidden = true;
 		}
 		for(var j = 0; j < load_item_num; j ++ ) {
-			createRow(rankTickets[j]);
+			if(rankTickets[j]) {
+				createRow(rankTickets[j]);
+			}
 		}
 	};
 	var updateRow = function() {
