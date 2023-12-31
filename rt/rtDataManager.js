@@ -122,8 +122,8 @@ var rtDataManager = (function(){
 		return rtDataStore.getHistoryFromDatestr(dateStr).filter(jumpedFilter);
 	};
 	
-	var init = function() {
-		return rtDataStore.init();
+	var init = function(dateArr) {
+		return rtDataStore.init(dateArr);
 	};
 
 	return {

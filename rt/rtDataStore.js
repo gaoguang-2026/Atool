@@ -51,20 +51,19 @@ var rtDataStore = (function(){
 		});
 	};
 	
-	var getAllRtTicketsFromDB = function() {
-		
+	var getAllRtTicketsFromDB = function(startDate, endDate) {
 		return IndexDB.openDB(indexDBName, onupgradeneeded, indexDBver).then((db)=>{
-			var promise = IndexDB.cursorGetData(db, dataStoreName);
+			var promise = IndexDB.cursorGetDataByIndexRange(db, dataStoreName, 'ID', startDate, endDate);
 			IndexDB.closeDB(db);
 			return promise;
 		});
 	};
 	
-	var init = function(){
+	var init = function(dateArr){
 		return new Promise((resolve, reject) => {
 			if(!historyRtTicketsArray || !historyRtTicketsArray.length) {
 				window.performance.mark("IndexDB:readAll");
-				getAllRtTicketsFromDB().then((list)=>{
+				getAllRtTicketsFromDB(dateArr[0], dateArr[dateArr.length - 1]).then((list)=>{
 					window.performance.mark("IndexDB:readAllDone");
 					console.log('Load db duration:' 
 						+ window.performance.measure("IndexDB", "IndexDB:readAll", "IndexDB:readAllDone").duration + 'ms');
