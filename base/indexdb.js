@@ -151,39 +151,6 @@ var IndexDB = (function(){
 	  };
 	  request.onerror = function (e) {};
 	}
-	
-		
-	/**
-	 * 通过索引范围和游标读取数据
-	 * @param {object} db 数据库实例
-	 * @param {string} storeName 仓库名称
-	 * @param {string} indexName 索引名称
-	 * @param {string} indexValueMin 索引最小值
-	 * @param {string} indexValueMin 索引最大值
-	 */
-	function cursorGetDataByIndexRange(db, storeName, indexName, indexValueMin, indexValueMax) {
-		return new Promise((resolve, reject) => {
-		  let list = [];
-		  var store = db
-			.transaction(storeName, "readwrite") // 事务
-			.objectStore(storeName); // 仓库对象
-		  var request = store
-			.index(indexName) // 索引对象
-			.openCursor(IDBKeyRange.bound(indexValueMin, indexValueMax)); // 指针对象
-		  // 游标开启成功，逐行读数据
-		  request.onsuccess = function (e) {
-			var cursor = e.target.result;
-			if (cursor) {
-			  // 必须要检查
-			  list.push(cursor.value);
-			  cursor.continue(); // 遍历了存储对象中的所有内容
-			} else {
-			  console.log("游标读取的数据：", list);
-			  resolve(list);
-			}
-		  };
-		});
-	}
 
 	/**
 	 * 通过索引和游标分页查询记录
@@ -334,7 +301,6 @@ var IndexDB = (function(){
 		cursorGetData:cursorGetData,
 		getDataByIndex:getDataByIndex,
 		cursorGetDataByIndex:cursorGetDataByIndex,
-		cursorGetDataByIndexRange:cursorGetDataByIndexRange,
 		cursorGetDataByIndexAndPage:cursorGetDataByIndexAndPage,
 		updateDB:updateDB,
 		deleteDB:deleteDB,

@@ -42,9 +42,6 @@
 	F.prototype = Echelon.prototype;
 	bandEchelon.prototype = new F();
 	bandEchelon.prototype.constructor = bandEchelon;
-	Echelon.prototype.obtainCacheTickets = function() {
-		return workbook.getBandTickets();
-	};
 	bandEchelon.prototype.getBoardDateIndex = function(ticket, selectDate) {
 		var dayNumber = parseInt(ticket[Configure.replaceTitleDate(Configure.title.dayNumber, selectDate)]);
 		dayNumber = dayNumber > 0 ? dayNumber : 1;  // check valid 

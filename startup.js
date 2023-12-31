@@ -142,7 +142,7 @@ var startup = (function(text) {
 		AI.init();
 		dragons.init();
 		console.log("rtDataManager.init: " + (window.performance.now() - startTime) + "ms");
-		return rtDataManager.init(workbook.getDateArr(()=>{}));   // 读数据库，异步
+		return rtDataManager.init();   // 读数据库，异步
 	};
 	
 	var startRequests = function() {

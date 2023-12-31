@@ -1,10 +1,7 @@
  var workbook = (function() {
 	var Book;
+	var BandTickets = [];
 	
-	// 生成动作很耗时 cache一下
-	var BandTicketsCache = [];
-	var SheetCache = {};  // 存储要使用的表
-		
 	var Book = function(b){
 		Book = b
 	};
@@ -17,19 +14,16 @@
 	};
 	
 	var getSheet = function(name) {
-		if (SheetCache[name]) {
-			return SheetCache[name];
-		}
 		// 表格的表格范围，可用于判断表头是否数量是否正确
         var fromTo = '';
-		SheetCache[name] = [];  // 存储要使用的表
+		var persons = [];  // 存储要使用的表
 		if(sheetExist(name)) {
-			SheetCache[name] = SheetCache[name].concat(XLSX.utils.sheet_to_json(Book.Sheets[name]));
+			persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[name]));
 			 //兼容老版本不完整得日期表格
-			if(!SheetCache[name].length) {   
-				SheetCache[name] = SheetCache[name].concat(XLSX.utils.sheet_to_json(Book.Sheets[name.substr(-6)]));
-				if(!SheetCache[name].length) {
-					SheetCache[name] = SheetCache[name].concat(XLSX.utils.sheet_to_json(Book.Sheets[name.substr(-4)]));
+			if(!persons.length) {   
+				persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[name.substr(-6)]));
+				if(!persons.length) {
+					persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[name.substr(-4)]));
 				}
 			}
 			// 兼容老版本不完整得日期表格 end 
@@ -38,19 +32,19 @@
    /*     for (var sheet in Book.Sheets) {
             if (Book.Sheets.hasOwnProperty(sheet) && name && name.substr(-4) == (sheet)) {
 				fromTo = Book.Sheets[sheet]['!ref'];
-                SheetCache[name] = SheetCache[name].concat(XLSX.utils.sheet_to_json(Book.Sheets[sheet]));
+                persons = persons.concat(XLSX.utils.sheet_to_json(Book.Sheets[sheet]));
                 //  break; // 如果只取第一张表，就取消注释这行
             }
         } */
-		return SheetCache[name];
+		return persons;
 	};
 
 	var setBandTickets = function(ticketArr) {
-		BandTicketsCache = ticketArr.slice(0);
+		BandTickets = ticketArr.slice(0);
 	};
 	
 	var getBandTickets = function() {
-		return BandTicketsCache;
+		return BandTickets;
 	};
 	
 	var getEmotionalCycles = function(dateStr) {

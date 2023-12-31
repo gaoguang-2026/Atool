@@ -13,30 +13,25 @@
 		this.points2 = [[3/8, 5/12], [5/8, 5/12],[1/8, 5/12],  [7/8, 5/12],[3/4, 3/12],[1/4, 7/12], [7/8, 3/12],[3/4, 7/12],];
 		this.points3 = [[3/8, 9/12],[5/8, 9/12],[1/8, 9/12], [1/2, 7/12],[1/4, 7/12], [3/4, 7/12], [7/8, 9/12],
 						[3/4, 11/12], [1/2,11/12], [1/4, 11/12]];
-		
-		this.dateArr = workbook.getDateArr((a,b)=>{
-			return b - a;
-		});
 
-		this.tickets = this.obtainCacheTickets();   // cache 重复collect很耗时
-		if(this.tickets.length == 0) {
-			this.collectTickets();
-			// 检查断板
-			this.tickets.forEach((ticket)=>{
-				ticket.startDate = this.dateArr[this.getBoardDateIndex(ticket, ticket.selectDate)];
-			});
-		}
+		this.tickets = [];
+		this.collectTickets();
+		// 检查断板
+		this.tickets.forEach((ticket)=>{
+			ticket.startDate = this.dateArr[this.getBoardDateIndex(ticket, ticket.selectDate)];
+		});
 		this.filterTickets();
 	};
 	
 	Echelon.prototype.get_tickit_period = function() {
 		return Configure.Echelons_tickit_period;
 	};
-	Echelon.prototype.obtainCacheTickets = function() {
-		return [];
-	};
 	
 	Echelon.prototype.collectTickets = function() {
+		this.dateArr = workbook.getDateArr((a,b)=>{
+			return b - a;
+		});
+		
 		for (var i = 0; i < this.get_tickit_period(); i ++ ) {
 			var param = {
 				hotpointArr: [],
