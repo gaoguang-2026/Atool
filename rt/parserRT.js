@@ -379,7 +379,7 @@ var parserRT = (function(){
 	};
 	
 	var getRankTicketFromCode = function(code, preWeek = false) {
-		var tickets = getRankTickets(Configure.getDateStr(Configure.date), {}, preWeek);
+		var tickets = getRankTickets(workbook.getLastDate(), {}, preWeek);
 		return tickets.find((t)=>{
 			return code.includes(t[Configure.title.code]);
 		});

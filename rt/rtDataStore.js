@@ -51,7 +51,15 @@ var rtDataStore = (function(){
 		});
 	};
 	
-	var getAllRtTicketsFromDB = function(startDate, endDate) {
+	var getAllRtTicketsFromDB = function() {
+		return IndexDB.openDB(indexDBName, onupgradeneeded, indexDBver).then((db)=>{
+			var promise = IndexDB.cursorGetData(db, dataStoreName);
+			IndexDB.closeDB(db);
+			return promise;
+		});
+	};
+	
+	var getRtTicketsFromDates = function(startDate, endDate) {
 		return IndexDB.openDB(indexDBName, onupgradeneeded, indexDBver).then((db)=>{
 			var promise = IndexDB.cursorGetDataByIndexRange(db, dataStoreName, 'ID', startDate, endDate);
 			IndexDB.closeDB(db);
@@ -63,7 +71,7 @@ var rtDataStore = (function(){
 		return new Promise((resolve, reject) => {
 			if(!historyRtTicketsArray || !historyRtTicketsArray.length) {
 				window.performance.mark("IndexDB:readAll");
-				getAllRtTicketsFromDB(dateArr[0], dateArr[dateArr.length - 1]).then((list)=>{
+				getRtTicketsFromDates(dateArr[0], dateArr[dateArr.length - 1]).then((list)=>{
 					window.performance.mark("IndexDB:readAllDone");
 					console.log('Load db duration:' 
 						+ window.performance.measure("IndexDB", "IndexDB:readAll", "IndexDB:readAllDone").duration + 'ms');
