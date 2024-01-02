@@ -187,12 +187,8 @@ var parser = (function(){
 		// sort
 		tickets.sort((a, b) => {
 			if (obj && obj.sort == 1) {
-				if(obj.type == 0) {
-					return  b[Configure.title.boardAndDay] - a[Configure.title.boardAndDay];
-				} else {
-					return b[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)]  - 
+				return b[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)]  - 
 						a[Configure.replaceTitleDate(Configure.title.dayNumber, dateStr)] ;
-				}
 			} else if (obj && obj.sort == 2){
 				if(obj.type == 2) {
 					var bData = rtDataManager.getRTTicketFromCode(b[Configure.title.code]);

@@ -1,5 +1,15 @@
 var rtSpirit = (function(){
 	
+	var getDes = function(dataT) {
+		var des = '';
+		if(Configure.isBJTicket(dataT['f12']) ) {
+			des += '北交所';
+		} else if(Configure.isKechuangTicket(dataT['f12'])) {
+			des += '科/创板';
+		}
+		return des;
+	};
+	
 	var getGain = function(dataT) {
 		if(dataT && dataT['f103']) {
 			var arr = dataT['f103'].split(',');
@@ -65,6 +75,7 @@ var rtSpirit = (function(){
 			if (tDiffArr.length > 0 && tDiffArr.length < 5) {
 				tDiffArr.forEach((t)=>{
 					if (checkCache(t, type)) {
+						txt += getDes(t);
 						txt += tDiffArr.length == 1 && gain ? getGain(t) + ' ' : '';
 						txt +=  '【' + t['f14'] + '】';
 					}

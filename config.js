@@ -94,7 +94,9 @@ var Configure = (function(){
 		{name: '半导体芯片', hotPoints:['汽车芯片', '半导体', 'PCB概念', 'wifi6', '5G', '国产芯片', '半导体概念',
 				'第三代半导体', '中芯国际概念','芯片','集成电路', 'pcb', '光刻机', '光刻胶', '先进封装', 'chiplet']},
 		{name: '机器人', hotPoints:['机器人', '智能制造', '减速器']},
-		{name: '传媒', hotPoints:['传媒','文化传媒', '元宇宙', 'VR', '虚拟现实', '游戏', '云游戏','手机游戏']},
+		{name: '传媒', hotPoints:['传媒','文化传媒', '游戏', '云游戏','手机游戏']},
+		{name: 'MR', hotPoints:['元宇宙', 'VR', '虚拟现实', '空间计算', 'OLED' , '裸眼3D']},
+	
 		{name: '数据要素', hotPoints:['数据要素','数据确权','信创', '数字经济','Web3.0','计算机软件', '国产操作系统']},
 		{name: '算力', hotPoints:['算力','数据中心','云计算', '东数西算']},				
 		{name: 'AI+', hotPoints:['AI','人工智能','AIGC','ChatGPT', '百度文心一言']},
@@ -107,7 +109,7 @@ var Configure = (function(){
 		// 消费
 		{name: '白酒', hotPoints:['白酒','啤酒概念','白酒概念', '烟草']},
 		{name: '医药', hotPoints:['新冠药物', '医药', '中药', '新冠治疗', '维生素', '医美', '医疗器械', '医疗', '减肥药', '肝炎概念', '创新药', 'CRO', '中药概念']},
-		{name: '消费电子', hotPoints:['消费电子','智能穿戴','无线耳机', '智能音箱', 'OLED', '裸眼3D', '空间计算']},
+		{name: '消费电子', hotPoints:['消费电子','智能穿戴','无线耳机', '智能音箱']},
 		{name: '家电', hotPoints:['白色家电','黑色家电', '小家电', '家电行业']},
 		{name: '农业', hotPoints:['农业种植', '大豆', '玉米', '农产品加工', '养殖']},	
 		{name: '大消费', hotPoints:['酒店旅游', '乳业', '食品饮料']},	
@@ -185,13 +187,13 @@ var Configure = (function(){
 					color = 'grey';
 					break;
 				case 2:
-					color = 'Peru';
+					color = 'Orange';
 					break;
 				case 3:
 					color = 'OrangeRed';
 					break;
 				case 4:
-					color = 'Orange';
+					color = 'Peru';
 					break;
 				case 5:
 					color = 'Red';
@@ -200,10 +202,10 @@ var Configure = (function(){
 					color = 'DarkSeaGreen';
 					break;
 				case 7:
-					color = 'Darkgreen';
+					color = 'green';
 					break;
 				case 8:
-					color = 'green';
+					color = 'Darkgreen';
 					break;
 			}
 			retObj.color = color;
@@ -592,7 +594,7 @@ var Configure = (function(){
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
-	var Echelons_show_min_score = 7;  // 最小显示限制
+	var Echelons_show_min_score = 10;  // 最小显示限制
 	var Echelons_show_type = 'score';   //  'fund' or 'score'
 	
 	// rt
@@ -709,7 +711,8 @@ var Configure = (function(){
 	};
 	var isBoardDone = function(rtData) {   // 判断实时数据是否涨停
 		if(!rtData || !rtData['f18'] || ! rtData['f2']) return false;
-		var per = isKechuangTicket(rtData['f12']) ? 1.20 : 1.10;
+		var per = isBJTicket(rtData['f12']) ? 1.30 :
+					isKechuangTicket(rtData['f12']) ? 1.20 : 1.10;
 		return  Math.round(rtData['f18'] * per) == rtData['f2'];
 	};
 	var calScoreFromRtData = function(rtData) {
