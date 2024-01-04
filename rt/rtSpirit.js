@@ -60,7 +60,7 @@ var rtSpirit = (function(){
 	};
 	////
 	
-	var remind = function(filter, type, isRevert = false, gain = false) {
+	var remind = function(filter, type, isRevert = false, prefix = false) {
 		var tPreArray = rtDataManager.getPreRTTickets().filter(filter);
 		var tArray = rtDataManager.getRTTickets().filter(filter);
 		if (tPreArray && tPreArray.length > 0) {
@@ -75,8 +75,8 @@ var rtSpirit = (function(){
 			if (tDiffArr.length > 0 && tDiffArr.length < 5) {
 				tDiffArr.forEach((t)=>{
 					if (checkCache(t, type)) {
-						txt += getDes(t);
-						txt += tDiffArr.length == 1 && gain ? getGain(t) + ' ' : '';
+						txt += tDiffArr.length == 1 && prefix ? getDes(t) + ' ': '';
+						txt += tDiffArr.length == 1 && prefix ? getGain(t) + ' ' : '';
 						txt +=  '【' + t['f14'] + '】';
 					}
 				});

@@ -42,7 +42,7 @@
 	F.prototype = Echelon.prototype;
 	bandEchelon.prototype = new F();
 	bandEchelon.prototype.constructor = bandEchelon;
-	Echelon.prototype.obtainCacheTickets = function() {
+	bandEchelon.prototype.obtainCacheTickets = function() {
 		return workbook.getBandTickets();
 	};
 	bandEchelon.prototype.getBoardDateIndex = function(ticket, selectDate) {
