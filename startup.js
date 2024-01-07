@@ -256,6 +256,7 @@ var startup = (function(text) {
 			startRequests();
 			console.log("Init done: " + (window.performance.now() - startTime) + "ms");
 			document.querySelector('.loader-container').style.display = 'none';
+			updateTitle(Configure.getMode() == 0 ? 'fp' : 'dp');
 		});
 	};
 
@@ -274,6 +275,8 @@ var startup = (function(text) {
 					Downloader.upload(data, ev.target.index);   // 恢复数据库
 				} else {
 					if(ev.target.index == 0) {  // excel只加载第一个
+						var name =ev.target.file.name;
+						updateTitle(name.slice(name.indexOf('20'), name.indexOf('20') + 4));
 						loadExcelDone(data);   
 					}
 				}
@@ -283,9 +286,12 @@ var startup = (function(text) {
 		})
     });
 	
+	var updateTitle = function(str) {
+		document.title = document.title + '.' +  str;
+	};
 	var start = function() {
 		window.onload = function(){
-			document.title = document.title + Configure.version;
+			updateTitle(Configure.version);
 			$('#date').val(Configure.getDateStr(Configure.date, '-'));
 			$('#rtShowdays').val(Configure.RT_canvas_show_days_num/2);
 
