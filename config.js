@@ -140,8 +140,7 @@ var Configure = (function(){
 		{name: '抗病毒', hotPoints:['抗原检测', '抗病毒材料', '抗病毒面料']},
 		{name: '铜箔', hotPoints:['锂电隔膜' , 'PET铜箔', '薄膜电容器']}
 	];
-	var gaiBlackList_verbose = [
-				'次新股','注册制次新股','科创次新股','专精特新','昨日触板','昨日连板',
+	var gaiBlackList_verbose = ['注册制次新股','科创次新股','专精特新','昨日触板','昨日连板',
 				 '昨日涨停', 'ST股','破净股','百元股','科创板做市商', '科创板做市股',
 				];
 	var gaiBlackList_critical = ['-', '融资融券', '深股通', '创业板综', '预亏预减', '预盈预增', '富时罗素',
