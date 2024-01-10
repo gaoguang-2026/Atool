@@ -107,9 +107,10 @@
 	};
 	rtGaiData.prototype.getEchelons = function() {
 		var retEchelons = this.gRankData.topEchelons.slice();
-		this.gRankData.echelons.sort((a, b) => {
+		var sortFunc = (a, b) => {
 			return parseFloat(b.score) - parseFloat(a.score);
-		});
+		}
+		this.gRankData.echelons.sort(sortFunc);
 		this.gRankData.echelons.forEach((e)=>{
 			var fEhelon = retEchelons.find((topE)=>{
 				return topE.name == e.name;
@@ -118,6 +119,7 @@
 				retEchelons.push(e);
 			}
 		});
+		retEchelons.sort(sortFunc);
 		return retEchelons;
 	};	
 
