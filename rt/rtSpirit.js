@@ -187,7 +187,7 @@ var rtSpirit = (function(){
 		}, GaiReportDuration);
 		
 		// 10min 清除cache
-		setInterval(clearCache, 10 * 60 * 1000);
+		setInterval(clearCache, 15 * 60 * 1000);
 	};
 	
 	return {
