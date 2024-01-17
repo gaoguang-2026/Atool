@@ -98,10 +98,10 @@ var rtSpirit = (function(){
 	
 	/// report 概念 
 	var GaiRankDataArr = [];
-	var GaiRaiseRateDuration = 3 * 60 * 1000;   // 3分钟
-	var GaiReportDuration = 0.5 * 60 * 1000;   // 半分钟播报一次
-	var GaiReportThreshold = {raise:{des:'快速流入', Threshold: 0.6},
-								drop:{des:'快速流出', Threshold: -0.5}
+	var GaiRaiseRateDuration = 1 * 60 * 1000;   // 1分钟
+	var GaiReportDuration = 0.2 * 60 * 1000;   // 12s播报一次
+	var GaiReportThreshold = {raise:{des:'快速流入', Threshold: 0.4},
+								drop:{des:'快速流出', Threshold: -0.3}
 								};
 	var reportGain = function() {
 		if(Configure.isBidding()) return;   // 竞价不report
@@ -160,13 +160,37 @@ var rtSpirit = (function(){
 						return preE.name == curE.name;
 					});
 					if(index == -1) {
-						speecher.speak('非主流[' + curE.name + ']快速流入');
+						speecher.speak('注意 非主流[' + curE.name + ']快速流入');
 					}
 				});
 			}
 			preRTEchelons = curRTEcholons;
 		}
 	};
+	
+	var reportEmotion = function () {
+		let now = new Date();  
+		let hours = now.getHours();  
+		let minutes = now.getMinutes();  
+		let seconds = now.getSeconds();  
+		  
+		// 确保小时、分钟和秒都是两位数  
+		hours = hours < 10 ? "0" + hours : hours;  
+		minutes = minutes < 10 ? "0" + minutes : minutes;  
+		seconds = seconds < 10 ? "0" + seconds : seconds;  
+		
+		var ztNum = rtDataManager.getRTTickets().filter(rtDataManager.boardFilter).length;
+		var dtNum = rtDataManager.getRTTickets().filter(rtDataManager.floorFilter).length;
+		var zbNum = rtDataManager.getRTTickets().filter(rtDataManager.boardedFilter).length - ztNum;
+		var szNum = rtDataManager.getRTTickets().filter((rtData)=>{
+			return rtData['f3'] > 0;
+		}).length;
+		speecher.speak(hours + ":" + minutes + '整刻播报' +
+						'上涨' + szNum + '家，' +
+						'涨停' + ztNum + '家，' +
+						'跌停' + dtNum + '家，' +
+						'炸板' + zbNum + '家。  ');
+	}
 	
 	var init = function() {
 		Timer.addTimerCallback(()=>{
@@ -186,8 +210,22 @@ var rtSpirit = (function(){
 			monitorEchelons();
 		}, GaiReportDuration);
 		
-		// 10min 清除cache
-		setInterval(clearCache, 15 * 60 * 1000);
+		// 整刻播报和cache清除
+		var duration = 15 * 60 * 1000;
+		var m = new Date().getMinutes();
+		var delay = duration - (m * 60 * 1000)%duration;
+		var doAction = function() {
+			clearCache();
+			if (rtDataManager.checkIfRtDataUpdated()) {
+				reportEmotion();
+			}
+		};
+		setTimeout(function() {  
+			doAction();
+			setInterval(()=>{
+				doAction();
+			}, duration);
+		}, delay);
 	};
 	
 	return {
