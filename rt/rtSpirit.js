@@ -185,7 +185,7 @@ var rtSpirit = (function(){
 		var szNum = rtDataManager.getRTTickets().filter((rtData)=>{
 			return rtData['f3'] > 0;
 		}).length;
-		speecher.speak(hours + ":" + minutes + '整刻播报' +
+		speecher.speak(hours + ":" + minutes + '一刻播报' +
 						'上涨' + szNum + '家，' +
 						'涨停' + ztNum + '家，' +
 						'跌停' + dtNum + '家，' +
@@ -212,7 +212,7 @@ var rtSpirit = (function(){
 		
 		// 整刻播报和cache清除
 		var duration = 15 * 60 * 1000;
-		var m = new Date().getMinutes();
+		var m = new Date().getMinutes() + 1;
 		var delay = duration - (m * 60 * 1000)%duration;
 		var doAction = function() {
 			clearCache();
