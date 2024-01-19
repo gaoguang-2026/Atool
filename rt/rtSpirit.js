@@ -100,8 +100,8 @@ var rtSpirit = (function(){
 	var GaiRankDataArr = [];
 	var GaiRaiseRateDuration = 1 * 60 * 1000;   // 1分钟
 	var GaiReportDuration = 0.2 * 60 * 1000;   // 12s播报一次
-	var GaiReportThreshold = {raise:{des:'快速流入', Threshold: 0.4},
-								drop:{des:'快速流出', Threshold: -0.3}
+	var GaiReportThreshold = {raise:{des:'快速流入', Threshold: 0.6},
+								drop:{des:'快速流出', Threshold: -0.5}
 								};
 	var reportGain = function() {
 		if(Configure.isBidding()) return;   // 竞价不report
