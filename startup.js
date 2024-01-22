@@ -290,6 +290,7 @@ var startup = (function(text) {
 		document.title = document.title + '.' +  str;
 	};
 	var start = function() {
+		window.performance.mark("startup:start");
 		window.onload = function(){
 			updateTitle(Configure.version);
 			$('#date').val(Configure.getDateStr(Configure.date, '-'));
@@ -364,6 +365,9 @@ var startup = (function(text) {
 			};
 			var backUpMonth = getLastMonth();
 			Downloader.download('备份数据' + backUpMonth + '.backup', backUpMonth);
+			window.performance.mark("startup:start done");
+				console.log('startup:start duration:' 
+					+ window.performance.measure("startup", "startup:start", "startup:start done").duration + 'ms');
 		};
 	};
 	
