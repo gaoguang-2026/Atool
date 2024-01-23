@@ -203,10 +203,10 @@ var Configure = (function(){
 					color = 'DarkSeaGreen';
 					break;
 				case 7:
-					color = 'green';
+					color = 'Darkgreen';
 					break;
 				case 8:
-					color = 'Darkgreen';
+					color = 'green';
 					break;
 			}
 			retObj.color = color;
@@ -486,6 +486,7 @@ var Configure = (function(){
 		boardR: '昨涨停收益率',
 		boardedR: '昨涨停过收益率',
 		
+		noon:'0.午评和下半场看点',
 		context:'1指数与情绪',
 		qst1:'2.趋势连扳和特点？',
 		qst2:'3主流和次主流？',

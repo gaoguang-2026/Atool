@@ -99,7 +99,7 @@ var rtSpirit = (function(){
 	/// report 概念 
 	var GaiRankDataArr = [];
 	var GaiRaiseRateDuration = 1 * 60 * 1000;   // 1分钟
-	var GaiReportDuration = 0.2 * 60 * 1000;   // 12s播报一次
+	var GaiReportDuration = 0.5 * 60 * 1000;   //  ?s播报一次
 	var GaiReportThreshold = {raise:{des:'快速流入', Threshold: 2},
 								drop:{des:'快速流出', Threshold: -1.5}
 								};
@@ -197,17 +197,17 @@ var rtSpirit = (function(){
 			if (!Configure.isHalfBidding()) {
 				remind(rtDataManager.raisedFilter, '接近涨停', false, true);
 				remind(rtDataManager.jumpeFilter, '快速下跌', false, true);
-				
-				cacheRemind(remind(rtDataManager.floorFilter, '跌停', false, true), '跌停');
-				cacheRemind(remind(rtDataManager.boardFilter, '涨停', false, true), '涨停');
-				cacheRemind(remind(rtDataManager.boardFilter, '炸板', true), '炸板');
-				cacheRemind(remind(rtDataManager.floorFilter, '打开跌停', true), '打开跌停');
 			}
 		});
-		// 提示概念和echelons
+		// 提示概念\echelons\个股状态
 		setInterval(()=>{
 			reportGain();
 			monitorEchelons();
+			// 个股状态更新				
+			cacheRemind(remind(rtDataManager.floorFilter, '跌停', false, true), '跌停');
+			cacheRemind(remind(rtDataManager.boardFilter, '涨停', false, true), '涨停');
+			cacheRemind(remind(rtDataManager.boardFilter, '炸板', true), '炸板');
+			cacheRemind(remind(rtDataManager.floorFilter, '打开跌停', true), '打开跌停');
 		}, GaiReportDuration);
 		
 		// 整刻播报和cache清除

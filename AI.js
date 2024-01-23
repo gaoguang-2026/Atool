@@ -353,12 +353,14 @@ var AI = (function(){
 		// 获取明天的交易计划
 		var arr = workbook.getDatesSheet();
 		var d = arr[arr.length-1];
-		var titles = [Configure.title2.context, Configure.title2.qst1, 
+		var titles = [Configure.title2.noon, Configure.title2.context, Configure.title2.qst1, 
 				Configure.title2.qst2, Configure.title2.qst3, Configure.title2.qst4, 
 				Configure.title2.currentOpt, Configure.title2.objOpt,
 				 Configure.title2.optReason, Configure.title2.nextOpt];
 		titles.forEach((t)=> {
-			retTxt += '【' + t + '】:  ' + d[t] + '<br>';
+			if (d[t]) {
+				retTxt += '【' + t + '】:  ' + d[t] + '<br>';
+			}
 		});
 		retTxt += '--------------------------------------------------------------------------------------<br>';
 		// 获取窗口详细说明
