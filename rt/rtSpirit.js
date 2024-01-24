@@ -203,11 +203,13 @@ var rtSpirit = (function(){
 		setInterval(()=>{
 			reportGain();
 			monitorEchelons();
-			// 个股状态更新				
-			cacheRemind(remind(rtDataManager.floorFilter, '跌停', false, true), '跌停');
-			cacheRemind(remind(rtDataManager.boardFilter, '涨停', false, true), '涨停');
-			cacheRemind(remind(rtDataManager.boardFilter, '炸板', true), '炸板');
-			cacheRemind(remind(rtDataManager.floorFilter, '打开跌停', true), '打开跌停');
+			if (!Configure.isHalfBidding()) {
+				// 个股状态更新		
+				cacheRemind(remind(rtDataManager.floorFilter, '跌停', false, true), '跌停');
+				cacheRemind(remind(rtDataManager.boardFilter, '涨停', false, true), '涨停');
+				cacheRemind(remind(rtDataManager.boardFilter, '炸板', true), '炸板');
+				cacheRemind(remind(rtDataManager.floorFilter, '打开跌停', true), '打开跌停');
+			}
 		}, GaiReportDuration);
 		
 		// 整刻播报和cache清除
