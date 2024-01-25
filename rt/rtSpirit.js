@@ -196,7 +196,7 @@ var rtSpirit = (function(){
 		Timer.addTimerCallback(()=>{
 			if (!Configure.isHalfBidding()) {
 				remind(rtDataManager.raisedFilter, '接近涨停', false, true);
-				remind(rtDataManager.jumpeFilter, '快速下跌', false, true);
+				cacheRemind(remind(rtDataManager.boardFilter, '涨停', false, true), '涨停');
 			}
 		});
 		// 提示概念\echelons\个股状态
@@ -205,8 +205,8 @@ var rtSpirit = (function(){
 			monitorEchelons();
 			if (!Configure.isHalfBidding()) {
 				// 个股状态更新		
+				remind(rtDataManager.jumpeFilter, '快速下跌', false, true);
 				cacheRemind(remind(rtDataManager.floorFilter, '跌停', false, true), '跌停');
-				cacheRemind(remind(rtDataManager.boardFilter, '涨停', false, true), '涨停');
 				cacheRemind(remind(rtDataManager.boardFilter, '炸板', true), '炸板');
 				cacheRemind(remind(rtDataManager.floorFilter, '打开跌停', true), '打开跌停');
 			}
