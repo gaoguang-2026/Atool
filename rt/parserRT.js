@@ -118,12 +118,18 @@ var parserRT = (function(){
 		
 		// ext params
 		var param = {};
-		param['赚钱效应'] = calAverageAscending(rtDataManager.getActiveTickets());
+		param['上涨'] = rtTickets.filter((rtData)=>{
+			return rtData['f3'] > 0;
+		}).length;
+	//	param['赚钱效应'] = calAverageAscending(rtDataManager.getActiveTickets());
 		param['涨停'] = rtTickets.filter((rtData)=>{
 			return rtDataManager.boardFilter(rtData);
 		}).length;
 		param['跌停'] = -rtTickets.filter((rtData)=>{
 			return rtDataManager.floorFilter(rtData);
+		}).length;
+		param['炸板'] = param['涨停'] - rtTickets.filter((rtData)=>{
+			return rtDataManager.boardedFilter(rtData);
 		}).length;
 		rtRankData.setRankDataFromNow( retArr.slice(0, retArr.length > Configure.RT_GAI_rank_max_length ?  
 												Configure.RT_GAI_rank_max_length : retArr.length - 1), 
