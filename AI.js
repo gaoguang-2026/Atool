@@ -381,10 +381,9 @@ var AI = (function(){
 		// 获取策略
 		Configure.cangMap.get(dataStorage.emotion).context.forEach((t)=>{
 			var tactic = workbook.getTactics(t);
-			
-			titles.forEach((t) => {
-				if (tactic && tactic[t]) {
-					retTxt += tactic[t] ? '【' + t + '】:  ' + tactic[t] + '<br>' : '';
+			Object.keys(tactic).forEach(key => { 
+				if (tactic && tactic[key]) {
+					retTxt += tactic[key] ? '【' + key + '】:  ' + tactic[key] + '<br>' : '';
 				}
 			})
 			retTxt += '<br>';
