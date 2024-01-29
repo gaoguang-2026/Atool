@@ -296,7 +296,7 @@ var canvasRT = (function() {
 		drawEchelons(nameArr);
 
 		if(!nameArr || nameArr.length == 0) {
-			drawLine('上涨', 0, 5500, 'OrangeRed');
+			drawLine('上涨', 0, 5500, '#FFC0CB');
 		//	drawLine('赚钱效应', -3, 10, 'blue');
 			drawLine('涨停', 0, 60, 'red');
 			drawLine('跌停', -20, 20, 'green');
