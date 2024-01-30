@@ -7,6 +7,9 @@ var requests = (function(){
 	&fields=f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f12,f13,f14,f15,f16,f17,f18,f20,f21,f23,f24,f25,f22,f11,f62,f128,f136,f115,f152
 	&_=1703817250480 */
 	
+	// 淘股吧动态
+	// https://www.taoguba.com.cn/spmatch/spefocus/getSpeFriensAction?perPageNum=20&actionID=0
+	
 	var urlH = 'http://23.push2.eastmoney.com/api/qt/clist/get?cb=jQuery112403461296577881501_1600744555568';
 	var param = {
 		pn:1,

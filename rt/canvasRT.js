@@ -299,8 +299,8 @@ var canvasRT = (function() {
 			drawLine('上涨', 0, 5500, '#FFC0CB');
 		//	drawLine('赚钱效应', -3, 10, 'blue');
 			drawLine('涨停', 0, 60, 'red');
-			drawLine('跌停', -20, 20, 'green');
-			drawLine('炸板', -20, 20, 'DarkSeaGreen');
+			drawLine('跌停', -50, 50, 'green');
+			drawLine('炸板', -30, 30, 'DarkSeaGreen');
 		}
 		drawEmotion(nameArr.length != 0 || rtShowD <= 2);
 	}
