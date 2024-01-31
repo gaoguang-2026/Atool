@@ -196,17 +196,25 @@ var rtSpirit = (function(){
 		Timer.addTimerCallback(()=>{
 			if (!Configure.isHalfBidding()) {
 				remind(rtDataManager.raisedFilter, '接近涨停', false, true);
+				cacheRemind(remind(rtDataManager.boardFilter, '涨停', false, true), '涨停');
+			}
+		});
+		// 提示个股状态
+		setInterval(()=>{
+			if (!Configure.isHalfBidding()) {
 				remind(rtDataManager.jumpeFilter, '快速下跌', false, true);
-				
 				cacheRemind(remind(rtDataManager.floorFilter, '跌停', false, true), '跌停');
 				cacheRemind(remind(rtDataManager.boardFilter, '炸板', true), '炸板');
 				cacheRemind(remind(rtDataManager.floorFilter, '打开跌停', true), '打开跌停');
-				cacheRemind(remind(rtDataManager.boardFilter, '涨停', false, true), '涨停');
 				cacheRemind(remind((rtData) => {
-					return rtDataManager.flooredFilter(rtData) && rtData['f3'] > 0;
+					return rtDataManager.jumpedFilter(rtData) && rtData['f3'] > 0;
 				}, '翻红', false, true), '翻红');
+				cacheRemind(remind((rtData) => {
+					return rtDataManager.raisedFilter(rtData) && rtData['f3'] < 0;
+				}, '跳水', false, true), '跳水');
 			}
-		});
+		}, 1 * 60 * 1000);
+		
 		// 提示概念\echelons
 		setInterval(()=>{
 			reportGain();
