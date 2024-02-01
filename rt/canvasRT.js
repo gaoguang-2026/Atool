@@ -296,11 +296,14 @@ var canvasRT = (function() {
 		drawEchelons(nameArr);
 
 		if(!nameArr || nameArr.length == 0) {
-			drawLine('上涨', 0, 5500, '#FFC0CB');
+			
 		//	drawLine('赚钱效应', -3, 10, 'blue');
 			drawLine('涨停', 0, 60, 'red');
 			drawLine('跌停', -50, 50, 'green');
-			drawLine('炸板', -30, 30, 'DarkSeaGreen');
+			if (rtShowD < 2) {
+				drawLine('上涨', 0, 5500, '#FFC0CB');
+				drawLine('炸板', -30, 30, 'DarkSeaGreen');
+			}
 		}
 		drawEmotion(nameArr.length != 0 || rtShowD <= 2);
 	}
