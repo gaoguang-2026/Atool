@@ -290,16 +290,18 @@ var canvasRT = (function() {
 		site_score_max = Math.ceil(parserRT.getMaxScoreWithDaynum(rtShowD, 'total') / 1000) * 1000;
 		site_score_max = site_score_max > 4000 ? site_score_max : 4000;
 		rtShowDays_num = rtShowD;
+		var sitefloorMax = rtDataManager.getRTTickets().filter(rtDataManager.floorFilter).length;
+		sitefloorMax = sitefloorMax > 100 ?  Math.ceil(sitefloorMax/100)*100 :
+						sitefloorMax > 20 ?  Math.ceil(sitefloorMax/10)*10 : 20;
 		
 		reload();
 		drawSite();
 		drawEchelons(nameArr);
 
-		if(!nameArr || nameArr.length == 0) {
-			
+		if(!nameArr || nameArr.length == 0) {	
 		//	drawLine('赚钱效应', -3, 10, 'blue');
 			drawLine('涨停', 0, 60, 'red');
-			drawLine('跌停', -50, 50, 'green');
+			drawLine('跌停', -sitefloorMax, sitefloorMax, 'green');
 			if (rtShowD < 2) {
 				drawLine('上涨', 0, 5500, '#FFC0CB');
 				drawLine('炸板', -30, 30, 'DarkSeaGreen');
