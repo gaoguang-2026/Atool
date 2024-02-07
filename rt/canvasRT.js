@@ -291,8 +291,16 @@ var canvasRT = (function() {
 		site_score_max = site_score_max > 4000 ? site_score_max : 4000;
 		rtShowDays_num = rtShowD;
 		var sitefloorMax = rtDataManager.getRTTickets().filter(rtDataManager.floorFilter).length;
-		sitefloorMax = sitefloorMax > 100 ?  Math.ceil(sitefloorMax/100)*100 :
-						sitefloorMax > 20 ?  Math.ceil(sitefloorMax/10)*10 : 20;
+		sitefloorMax = sitefloorMax > 100 ?  Math.ceil(sitefloorMax/200)*200 :
+						sitefloorMax > 20 ?  Math.ceil(sitefloorMax/20)*20 : 20;
+		var siteboardMax = rtDataManager.getRTTickets().filter(rtDataManager.boardFilter).length;
+		siteboardMax = siteboardMax > 100 ?  Math.ceil(siteboardMax/100)*100 :
+						siteboardMax > 60 ?  Math.ceil(siteboardMax/10)*10 : 60;
+		var siteboardFailMax = rtDataManager.getRTTickets().filter((data)=>{
+			return rtDataManager.boardedFilter(data) && !rtDataManager.boardFilter(data);
+		}).length;
+		siteboardFailMax = siteboardFailMax > 100 ?  Math.ceil(siteboardFailMax/100)*100 :
+						siteboardFailMax > 30 ?  Math.ceil(siteboardFailMax/10)*10 : 30;
 		
 		reload();
 		drawSite();
@@ -300,11 +308,11 @@ var canvasRT = (function() {
 
 		if(!nameArr || nameArr.length == 0) {	
 		//	drawLine('赚钱效应', -3, 10, 'blue');
-			drawLine('涨停', 0, 60, 'red');
+			drawLine('涨停', 0, siteboardMax, 'red');
 			drawLine('跌停', -sitefloorMax, sitefloorMax, 'green');
 			if (rtShowD < 2) {
 				drawLine('上涨', 0, 5500, '#FFC0CB');
-				drawLine('炸板', -30, 30, 'DarkSeaGreen');
+				drawLine('炸板', -siteboardFailMax, siteboardFailMax, 'DarkSeaGreen');
 			}
 		}
 		drawEmotion(nameArr.length != 0 || rtShowD <= 2);
