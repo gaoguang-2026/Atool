@@ -13,6 +13,9 @@ var speecher = (function() {
 		/涨|流入|打开跌停/g.test(t) ? speeckerEL.className = ("speak fontRed") : 
 				/跌|流出|炸板/g.test(t) ? speeckerEL.className = ("speak fontGreen") : speeckerEL.className = ("speak fontBlue");
 		textContainer.unshift({date: d, txt:speeckerEL.innerHTML});
+		if(textContainer.length > 2000) {
+			textContainer.pop();
+		} 
 		LocalStore.set(storeId, textContainer);
 		var textshow = '';
 		textContainer.forEach((obj)=>{

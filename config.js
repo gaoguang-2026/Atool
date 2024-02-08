@@ -539,7 +539,7 @@ var Configure = (function(){
 	var titleGainian = {
 		name: '概念名称',
 		ticketNum: '股票数量',
-		ticketsCode: '股票代码',
+	//	ticketsCode: '股票代码',
 		score: '得分',
 		weight: '权重',
 	};

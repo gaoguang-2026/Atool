@@ -77,13 +77,13 @@ var parserRT = (function(){
 						gain = {};
 						gain[Configure.titleGainian.name] = gtxt;
 						gain[Configure.titleGainian.ticketNum] = 0;
-						gain[Configure.titleGainian.ticketsCode] = [];
+					//	gain[Configure.titleGainian.ticketsCode] = [];
 						gain[Configure.titleGainian.score] = 0;
 						retArr.push(gain);
 					} 
 					
 					gain[Configure.titleGainian.ticketNum] += 1;
-					gain[Configure.titleGainian.ticketsCode].push(rtData['f12']);
+				//	gain[Configure.titleGainian.ticketsCode].push(rtData['f12']);
 					// 计算score
 					var s = Configure.calScoreFromRtData(rtData);
 					gain[Configure.titleGainian.score] += s;
