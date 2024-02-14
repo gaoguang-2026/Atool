@@ -381,11 +381,13 @@ var AI = (function(){
 		// 获取策略
 		Configure.cangMap.get(dataStorage.emotion).context.forEach((t)=>{
 			var tactic = workbook.getTactics(t);
-			Object.keys(tactic).forEach(key => { 
-				if (tactic && tactic[key]) {
-					retTxt += tactic[key] ? '【' + key + '】:  ' + tactic[key] + '<br>' : '';
-				}
-			})
+			if(tactic) {
+				Object.keys(tactic).forEach(key => { 
+					if (tactic && tactic[key]) {
+						retTxt += tactic[key] ? '【' + key + '】:  ' + tactic[key] + '<br>' : '';
+						}
+				})
+			}
 			retTxt += '<br>';
 		});
 		return retTxt;
@@ -428,6 +430,7 @@ var AI = (function(){
 	};
 	var getRecommend = function() {
 		clear();
+		boardedTickets_10day = parser.getAllBoardedTicketsFromDays(10);
 		// 更新获取storage的数据
 		getAndUpdateLoacalstorage();
 		
@@ -466,8 +469,6 @@ var AI = (function(){
 				}
 			}
 		});
-		
-		boardedTickets_10day = parser.getAllBoardedTicketsFromDays(10);
 	};
 	
 	return {
