@@ -25,8 +25,9 @@
 			this.tickets.forEach((ticket)=>{
 				ticket.startDate = this.dateArr[this.getBoardDateIndex(ticket, ticket.selectDate)];
 			});
+			this.filterTickets();
 		}
-		this.filterTickets();
+		this.cutTickets();
 	};
 	
 	Echelon.prototype.get_tickit_period = function() {
@@ -95,7 +96,9 @@
 			}
 			return isSelect;
 		});  
+	};
 	
+	Echelon.prototype.cutTickets = function() {
 		// 按得分排序，减除多余的
 		this.tickets.sort((a, b)=> {
 			return b[Configure.title.score] - a[Configure.title.score];

@@ -121,6 +121,7 @@
 	};
 
 	bandEchelon.prototype.filterTickets = function() {
+		window.performance.mark("bandEchelon:filterTickets");
 		this.tickets = this.tickets.filter((t, index)=>{
 			var isSelect = true;
 			//首板
@@ -137,6 +138,13 @@
 			return isSelect;
 		});  
 		workbook.setBandTickets(this.tickets);   // 剔除之前记录
+		window.performance.mark("bandEchelon:filterTickets End");
+			console.log('bandEchelon filterTickets duration:' 
+				+ window.performance.measure("bandEchelon", "bandEchelon:filterTickets", "bandEchelon:filterTickets End").duration + 'ms');
+	};
+	
+	bandEchelon.prototype.cutTickets = function() {
+		window.performance.mark("bandEchelon:cutTickets");
 		// 计算涨速
 		this.tickets.forEach((ticket)=>{
 			var param = {
@@ -166,6 +174,9 @@
 			return GetBandFinalScroe(b) - GetBandFinalScroe(a);
 		});
 		this.tickets = this.tickets.slice(0,Configure.Echelons_ticket_NUM);
+		window.performance.mark("bandEchelon:cutTickets End");
+			console.log('bandEchelon cutTickets duration:' 
+				+ window.performance.measure("bandEchelon", "bandEchelon:cutTickets", "bandEchelon:cutTickets End").duration + 'ms');
 	};
 	
 	exports.bandEchelon = bandEchelon;
