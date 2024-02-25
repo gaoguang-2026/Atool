@@ -474,7 +474,7 @@ var canvas = (function(canvas) {
 			// 4 赚钱效益
 			drawLine('rgba(128,0,0,1)', -6, 16, Configure.title2.boardsR, '赚钱效应' == indecatorName);
 			drawLine('rgba(255,0,0,1)', -6, 16, Configure.title2.boardR, /*'涨停收益'*/ '赚钱效应' == indecatorName);
-			drawLine('green', -8, 16, Configure.title2.boardedR, '赚钱效应' == indecatorName);
+			drawLine('orange', -6, 16, Configure.title2.boardedR, '赚钱效应' == indecatorName);
 			
 			// 5 恐慌指数
 			drawLine('green', -1, 1, Configure.title2.failedRate, '亏钱效应' == indecatorName);
