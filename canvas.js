@@ -106,9 +106,9 @@ var canvas = (function(canvas) {
 							ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100 : 0;
 				if(ticket[dayNumberTitle] >= 1) {
 					day[Configure.title2.totalFund] += fund;
-				} /*else if(ticket[dayNumberTitle] == 0 && ticket[boardTimeTilte] == '--') {
+				} else if(ticket[dayNumberTitle] == 0 && ticket[boardTimeTilte] == '--') {
 					day[Configure.title2.totalFund] -= fund;
-				}*/
+				}
 			});
 			day[Configure.title2.totalFund] = (day[Configure.title2.totalFund] / 100000000).toFixed(2);   // 亿为单位
 		}
@@ -468,7 +468,7 @@ var canvas = (function(canvas) {
 			drawLine('blue', -4, 16, Configure.title2.beili, indecatorName == '涨停背离');   
 
 			// 3 资金热度    和短线资金配合
-			drawLine('rgba(75,0,130,0.5)', -10, 30, Configure.title2.lianban, /*'连扳数量'*/'涨停数量' == indecatorName);  
+			drawLine('rgba(75,0,130,0.5)', -20, 50, Configure.title2.lianban, /*'连扳数量'*/'涨停数量' == indecatorName);  
 			drawLine('red', 0, 300, Configure.title2.boardnum, '涨停数量' == indecatorName);            
 			
 			// 4 赚钱效益
