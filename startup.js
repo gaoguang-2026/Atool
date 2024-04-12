@@ -171,6 +171,8 @@ var startup = (function(text) {
 			
 			// table update
 			fillTicketsTable();
+			
+			AI.drawEmotionCycle();
 		};
 		
 		var showDaysUpdate = function() {
