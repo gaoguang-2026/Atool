@@ -226,7 +226,7 @@ var Configure = (function(){
 		['博傻',{conditions:[{a:{min:0, currentMin:0}, b:{min:2,max:3}}], context:['主升']}],
 		['冰启', {conditions:[{a:{currentMax:0}, b:{min:2,max:2}, f:{max:40}}], context:['退潮']}],
 		['冰加', {conditions:[{b:{max:1}}], context:['退潮']}],
-		['空白', {conditions:[{}], context:['主升']}]
+		['', {conditions:[{}], context:['主升']}]
 	]);
 	var getContextDescription = function(str) {
 		str=str.replace('M', '周期');

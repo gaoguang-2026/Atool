@@ -8,7 +8,7 @@ var AI = (function(){
 	var RectifyDay_num = Configure.Days_Max_lengh;
 	var Rectify_factor = 7;
 	
-	var boardedTickets_10day;   //记录10天内所有涨停过的票
+	var boardedTickets_10day = [];   //记录10天内所有涨停过的票
 	
 	var getAndUpdateLoacalstorage = function() {
 		var dateArr = workbook.getDateArr((a,b)=>{
@@ -404,6 +404,8 @@ var AI = (function(){
 		bandScoreFator: Configure.AI_Default_Band_Factor,   // 默认值，localstorage没有值使用它； 
 		band_ticktes:[]
 		};
+		
+		boardedTickets_10day = [];
 	};
 	var isBandInCharge = function() {
 		var ret = false;
