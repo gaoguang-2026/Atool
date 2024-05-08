@@ -503,6 +503,7 @@ var Configure = (function(){
 		boardHeight: 'height',   // 记录当天最高高度   BH_Draw_title
 		dragon: 'dragon',   // 记录当天的龙头名字
 		boardnum: '涨停数',
+		boardnum_20cm: '20cm涨停数',
 		boardednum: '曾涨停数',
 		floornum: '跌停数',
 		failednum: '炸板数',

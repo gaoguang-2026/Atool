@@ -83,6 +83,9 @@ var canvas = (function(canvas) {
 			day[Configure.title2.boardnum] = tickets.filter((t)=>{
 				return t[dayNumberTitle] >= 1;
 			}).length;
+			day[Configure.title2.boardnum_20cm] = tickets.filter((t)=>{
+				return t[dayNumberTitle] >= 1 && Configure.isKechuangTicket(t[Configure.title.code]);
+			}).length;
 			day[Configure.title2.floornum] = - tickets.filter((t)=>{
 				return t[dayNumberTitle] == 0 && t[boardTimeTilte] == '--';
 			}).length;
@@ -471,7 +474,8 @@ var canvas = (function(canvas) {
 
 			// 3 资金热度    和短线资金配合
 			drawLine('rgba(75,0,130,0.5)', -20, 50, Configure.title2.lianban, /*'连扳数量'*/'涨停数量' == indecatorName);  
-			drawLine('red', 0, 300, Configure.title2.boardnum, '涨停数量' == indecatorName);            
+			drawLine('red', 0, 300, Configure.title2.boardnum, '涨停数量' == indecatorName);          
+			drawLine('blue', 5, 10, Configure.title2.boardnum_20cm, '涨停数量' == indecatorName);   
 			
 			// 4 赚钱效益
 			drawLine('rgba(128,0,0,1)', -6, 16, Configure.title2.boardsR, '赚钱效应' == indecatorName);
