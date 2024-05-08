@@ -219,14 +219,16 @@ var canvas = (function(canvas) {
 			//画大周期
 			var cycle = workbook.getEmotionalCycles(Configure.formatExcelDate(Days[i][Configure.title2.date]));
 			if (cycle && !!cycle.cycles && cycle.isTurning) {
-				ctx.font="14px 楷体";
+				ctx.font="12px 楷体 bold";
 				ctx.fillStyle = cycle.cycles.includes('M') ? 'red' : 
-					cycle.cycles.includes('m') ? 'green' :
-					cycle.cycles.includes('H') || cycle.cycles.includes('P') ? 'blue' :
+					cycle.cycles.includes('Q') ? 'blue' :
+					cycle.cycles.includes('m') || cycle.cycles.includes('q')? 'green' :
+					cycle.cycles.includes('H') || cycle.cycles.includes('P') ? 'black' :
 					cycle.cycles.includes('s') || cycle.cycles.includes('S') ? 'grey' : Configure.site_color;
 				if (!cycle.cycles.indexOf('w') == 0 && !cycle.cycles.indexOf('w') == 0) {    // 宏观周期阶段
 					ctx.fillText(cycle.cycles, siteX + cellWidth  * i, siteY -5);
 					if (!!cycle.hotpoint) {
+						ctx.font="12px 楷体";
 						ctx.fillStyle = 'orange';
 						ctx.fillText(cycle.hotpoint, siteX + cellWidth  * i + 20, siteY -5);
 					}
