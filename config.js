@@ -670,6 +670,14 @@ var Configure = (function(){
 		}
 		return false;
 	};
+	var isPreBidding = function(d = new Date()) {
+		var startD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),8,45,0);
+		var endD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),9,15,0);
+		if(d >= startD && d < endD) {
+			return true;
+		}
+		return false;
+	};
 	var isHalfBidding = function(d = new Date()) {
 		var startD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),9,15,0);
 		var endD = new Date(d.getFullYear(),d.getMonth(),d.getDate(),9,20,0);
@@ -854,6 +862,7 @@ var Configure = (function(){
 		isAfterNoon:isAfterNoon,
 		isAfterTrading:isAfterTrading,
 		isNight:isNight,
+		isPreBidding:isPreBidding,
 		isBidding:isBidding,
 		isHalfBidding:isHalfBidding,
 		isKeTicket:isKeTicket,

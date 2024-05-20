@@ -24,8 +24,10 @@ var speecher = (function() {
 		});
 		Tip.show(speeckerEL, textshow);
 	};
-	var speak = function(text) {
-		showText(text);
+	var speak = function(text, showText) {
+		if (showText) {
+			showText(text);
+		}
 		// 创建一个SpeechSynthesisUtterance对象  
 		var utterance = new SpeechSynthesisUtterance();
 		// 设置语音合成的语速  

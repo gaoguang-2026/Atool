@@ -440,7 +440,7 @@ var AI = (function(){
 		if (isIcePoint()) {
 			recommendText += 'Fire the hole! 冰点出现! 冰点出现! ';
 			recommendText += getSZEnv();
-			speecher.speak(recommendText);
+			speecher.speak(recommendText, false);
 		} else {
 			recommendText += getSZEnv();
 			recommendText += getEmotions(); 
@@ -448,9 +448,14 @@ var AI = (function(){
 		}		
 		saveLoacalstorage(dataStorage);
 		
+		var tatics = getTaticsTxt();
+		if(Configure.isPreBidding()) {
+			speecher.speak(tatics, false);
+		}
+		
 		var displayColor = Configure.cangMap.get(dataStorage.emotion).context == '博弈' ? 'blue' :
 					Configure.cangMap.get(dataStorage.emotion).context == '主升' ? 'red' : 'green';
-		return {color: displayColor, txt: recommendText, tatics: getTaticsTxt()};
+		return {color: displayColor, txt: recommendText, tatics: tatics};
 	};
 	
 	var drawEmotionCycle = function(){
