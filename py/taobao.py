@@ -7,7 +7,7 @@ import win32com.client
 
 speaker = win32com.client.Dispatch("SAPI.SpVoice")
 
-times = '2023-11-15 16:04:00'
+times = '2024-05-20 20:00:00'
 
 browser = webdriver.Chrome()
 browser.maximize_window()
