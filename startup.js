@@ -211,10 +211,51 @@ var startup = (function(text) {
 			dateChange();
 		};
 		
+		var keyBoardEvent = function(event) {
+			console.log('Keydown:', event.key);  
+			switch(event.key) {
+				case '1':
+				case '2':
+				case '3':
+					document.getElementById('form1').gtype[event.key - 1].click();
+					break;
+				case 's': 
+					document.getElementById('form1').sort[0].click();
+					break;
+				case 'h': 
+					document.getElementById('form1').sort[1].click();
+					break;
+				case 'r': 
+					document.getElementById('form1').sort[2].click();
+					break;
+				case 'ArrowDown': 
+					break;
+				case 'ArrowUp': 
+					break;
+				case 'ArrowRight': 
+					document.getElementById('next').click();
+					break;
+				case 'ArrowLeft': 
+					document.getElementById('pre').click();
+					break;
+				case 'Escape': 
+					document.getElementById('last').click();
+					break;
+				case 'Enter': 
+					break;
+				case 'F1': 
+					break;
+			}
+			//event.stopPropagation(); 
+			//event.preventDefault();
+		}
+		
 		$('#date').change(dateChange);
 		$('#pre').click(dateOnclick);
 		$('#next').click(dateOnclick);
 		$('#last').click(dateOnclick);
+		
+		document.addEventListener('keydown', keyBoardEvent);
 		
 		// link
 		$('#jiuyan').click((e)=>{
