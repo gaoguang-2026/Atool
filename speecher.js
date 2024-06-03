@@ -24,8 +24,8 @@ var speecher = (function() {
 		});
 		Tip.show(speeckerEL, textshow);
 	};
-	var speak = function(text, showText) {
-		if (showText) {
+	var speak = function(text, show = true) {
+		if (show) {
 			showText(text);
 		}
 		// 创建一个SpeechSynthesisUtterance对象  
