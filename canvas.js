@@ -96,10 +96,12 @@ var canvas = (function(canvas) {
 						day[Configure.title2.boardnum];
 			day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
 						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
-			// 曾跌停数 和 超跌数
-			if(!day[Configure.title2.floored] || !day[Configure.title2.jumped]) {
+			// 曾跌停数 和 超跌数  
+			if(!day[Configure.title2.floored] || !day[Configure.title2.jumped] ||
+				!day[Configure.title2.leader] ) {
 				day[Configure.title2.floored] = - rtDataManager.getHistoryRTticketsFloored(dateArr[dayIndex]).length;
 				day[Configure.title2.jumped]  = - rtDataManager.getHistoryRTticketsJumped(dateArr[dayIndex]).length;
+				day[Configure.title2.leader]  = rtDataManager.getHistoryRTticketsLeader(dateArr[dayIndex]).length;
 			}
 			
 			// 资金总量  涨停的总    ###和-跌停的总和###
@@ -467,6 +469,7 @@ var canvas = (function(canvas) {
 								Configure.title2.sz ,indecatorName == '上证指数');	
 			drawLine(Configure.sz_color, site_MIN_zs, site_MAX_zs - site_MIN_zs, 
 							Configure.title2.qadq , indecatorName == '全A等权');	
+			drawLine('black', 0, 200, Configure.title2.leader, '上证指数' == indecatorName);  
 			
 			// 2 风险偏好
 			drawLine('rgba(75,0,130,0.5)', -4, 16, Configure.title2.subBeili, indecatorName == '涨停背离'/*'连扳背离'*/); 
@@ -475,7 +478,8 @@ var canvas = (function(canvas) {
 			// 3 资金热度    和短线资金配合
 			drawLine('rgba(75,0,130,0.5)', -20, 50, Configure.title2.lianban, /*'连扳数量'*/'涨停数量' == indecatorName);  
 			drawLine('red', 0, 300, Configure.title2.boardnum, '涨停数量' == indecatorName);          
-			drawLine('blue', 5, 10, Configure.title2.boardnum_20cm, '涨停数量' == indecatorName);   
+			drawLine('steelBlue', 5, 10, Configure.title2.boardnum_20cm, '涨停数量' == indecatorName);   
+			 
 			
 			// 4 赚钱效益
 			drawLine('rgba(128,0,0,1)', -6, 16, Configure.title2.boardsR, '赚钱效应' == indecatorName);

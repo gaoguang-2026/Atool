@@ -483,6 +483,7 @@ var Configure = (function(){
 		qadq:'全A等权',
 		floored:'曾跌停数',    
 		jumped:'曾超跌数',    // 盘中跌超-5%
+		leader: '排名股选入个数', // 5日涨幅大于20%或者10日涨幅大于30%或者20日涨幅大于40%
 		boardsR: '昨连扳收益率',
 		boardR: '昨涨停收益率',
 		boardedR: '昨涨停过收益率',
