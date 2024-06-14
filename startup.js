@@ -210,6 +210,27 @@ var startup = (function(text) {
 			$('#date').val(retDatestr);
 			dateChange();
 		};
+		var nextOption = function(elementID, reverse = false) {  
+			var selectElement = document.getElementById(elementID);  
+			var currentIndex = selectElement.selectedIndex;  
+			var optionsCount = selectElement.options.length;  
+			if (reverse) {
+				if (currentIndex > 0) {  
+					selectElement.selectedIndex = currentIndex - 1;  
+				} else {  
+					selectElement.selectedIndex = optionsCount - 1;
+				} 
+			} else {
+				if (currentIndex < optionsCount - 1) {  
+					selectElement.selectedIndex = currentIndex + 1;  
+				} else {  
+					selectElement.selectedIndex = 0;
+				} 
+			}
+			 
+			var event = new Event('change', { bubbles: true });  
+			selectElement.dispatchEvent(event);  
+		};
 		
 		var keyBoardEvent = function(event) {
 			console.log('Keydown:', event.key);  
@@ -229,25 +250,49 @@ var startup = (function(text) {
 					document.getElementById('form1').sort[2].click();
 					break;
 				case 'ArrowDown': 
+					nextOption('rtShowdays');
+					event.stopPropagation(); 
+					event.preventDefault();
 					break;
 				case 'ArrowUp': 
+					nextOption('rtShowdays', true);
+					event.stopPropagation(); 
+					event.preventDefault();
 					break;
 				case 'ArrowRight': 
 					document.getElementById('next').click();
+					event.stopPropagation(); 
+					event.preventDefault();
 					break;
 				case 'ArrowLeft': 
 					document.getElementById('pre').click();
+					event.stopPropagation(); 
+					event.preventDefault();
 					break;
 				case 'Escape': 
 					document.getElementById('last').click();
 					break;
 				case 'Enter': 
+					nextOption('indecator');
+					event.stopPropagation(); 
+					event.preventDefault();
+					break;
+				case 'Tab': 
+					nextOption('showdays');
+					event.stopPropagation(); 
+					event.preventDefault();
 					break;
 				case 'F1': 
+					document.getElementById('cailianshe').click();
+					event.stopPropagation(); 
+					event.preventDefault();
+					break;
+				case 'F2': 
+					document.getElementById('jiuyan').click();
+					event.stopPropagation(); 
+					event.preventDefault();
 					break;
 			}
-			//event.stopPropagation(); 
-			//event.preventDefault();
 		}
 		
 		$('#date').change(dateChange);
