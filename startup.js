@@ -292,6 +292,11 @@ var startup = (function(text) {
 					event.stopPropagation(); 
 					event.preventDefault();
 					break;
+				case 'F3': 
+					document.getElementById('taogu').click();
+					event.stopPropagation(); 
+					event.preventDefault();
+					break;
 			}
 		}
 		
