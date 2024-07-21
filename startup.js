@@ -12,10 +12,13 @@ var startup = (function(text) {
         var oStrong = document.createElement("div");
         var oTxt = document.createTextNode(recommend.txt);
 		Tip.show(oDiv, recommend.tatics);
+		oDiv.addEventListener('click', function(event){
+			console.log('click');
+			speecher.speak(recommend.tatics, false);
+		});
 		
 		oStrong.appendChild(oTxt);
 		oDiv.appendChild(oStrong);
-		
 	};
 	
 	var getParamEchelons = function() {
