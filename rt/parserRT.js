@@ -336,8 +336,8 @@ var parserRT = (function(){
 					t[Configure.title.index] = index + 1;
 				}
 				if(tagObj && !Configure.isNew(t[Configure.title.time]) &&
-					!Configure.isSuspend(t[Configure.title.price]) && 
-					!Configure.isBJTicket(t[Configure.title.code])) {
+					!Configure.isSuspend(t[Configure.title.price]) /*&& 
+					!Configure.isBJTicket(t[Configure.title.code])*/) {
 					if(tagObj.tagDes == '补涨新发') {
 						var rise_20 = parseFloat(t[Configure.title.rise_20] == '--' ? 0 : t[Configure.title.rise_20]);
 						var rise_10 = parseFloat(t[Configure.title.rise_10] == '--' ? 0 : t[Configure.title.rise_10]);
