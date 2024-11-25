@@ -231,7 +231,8 @@ var canvas = (function(canvas) {
 					cycle.cycles.includes('H') || cycle.cycles.includes('P') ? 'black' :
 					cycle.cycles.includes('s') || cycle.cycles.includes('S') ? 'grey' : Configure.site_color;
 				if (!cycle.cycles.indexOf('w') == 0 && !cycle.cycles.indexOf('w') == 0) {    // 宏观周期阶段
-					ctx.fillText(cycle.cycles, siteX + cellWidth  * i, siteY -5);
+					ctx.fillText(cycle.cycles.substring(0, cycle.cycles.indexOf('w')), 
+														siteX + cellWidth  * i, siteY -5);
 					if (!!cycle.hotpoint) {
 						ctx.font="12px 楷体";
 						ctx.fillStyle = 'orange';
