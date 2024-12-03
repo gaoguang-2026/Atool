@@ -156,7 +156,9 @@ var startup = (function(text) {
 			requests.start(()=>{
 				parserRT.parseAndStoreRTData();
 				table.updateRow();
-				canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
+				if (document.getElementById('showdays').value < 120 ) { //canvas显示大于等于120天时不显示right
+					canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
+				}
 			});
 			// 初始化精灵
 			rtSpirit.init();
