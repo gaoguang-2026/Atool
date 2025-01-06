@@ -54,7 +54,7 @@ var parser = (function(){
 			ticket[Configure.title.priceDivergence] = parseFloat((ticket[Configure.title.price] - dragon.price)/
 					dragon.price).toFixed(2);
 			// 实际换手率
-			ticket[Configure.title.realHandoverPercent] = parseFloat(ticket[Configure.title.handoverPercent] * ticket[Configure.title.value] /
+			ticket[Configure.title.realHandoverPercent] = parseFloat(parseFloat(ticket[Configure.title.handoverPercent]) * ticket[Configure.title.value] /
 															ticket[Configure.title.realValue]).toFixed(2);
 			//筹码背离率  X10
 			ticket[Configure.title.profitDivergence] = ticket[Configure.title.profitProportion] - dragon.profitProportion > 0 ? 0 : 
