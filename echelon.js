@@ -185,7 +185,7 @@
 			var realHandoverPer = -1;
 			var boardStrength = '';
 			if (tkt && tkt[Configure.replaceTitleDate(Configure.title.dayNumber,this.dateArr[i])] != 0) {
-				realHandoverPer = parseFloat(tkt[Configure.replaceTitleDate(Configure.title.handoverPercent, this.dateArr[i])] 
+				realHandoverPer = parseFloat(parseFloat(tkt[Configure.replaceTitleDate(Configure.title.handoverPercent, this.dateArr[i])]) 
 										/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';
 				boardStrength = Configure.getBoardStrength(tkt[Configure.title.boardType], 
 									tkt[Configure.replaceTitleDate(Configure.title.boardPercent, this.dateArr[i])]).description;
