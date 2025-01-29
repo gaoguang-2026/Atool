@@ -56,6 +56,11 @@ var parser = (function(){
 			// 实际换手率
 			ticket[Configure.title.realHandoverPercent] = parseFloat(parseFloat(ticket[Configure.title.handoverPercent]) * ticket[Configure.title.value] /
 															ticket[Configure.title.realValue]).toFixed(2);
+			// 总金额
+			if(!ticket[Configure.title.turnOver]) {
+				ticket[Configure.title.turnOver] = (ticket[Configure.title.realHandoverPercent] / 100)
+														* ticket[Configure.title.realValue] ;
+			}
 			//筹码背离率  X10
 			ticket[Configure.title.profitDivergence] = ticket[Configure.title.profitProportion] - dragon.profitProportion > 0 ? 0 : 
 				parseFloat((ticket[Configure.title.profitProportion] - dragon.profitProportion)/dragon.profitProportion * 10).toFixed(2);

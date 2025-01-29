@@ -52,7 +52,7 @@ var startup = (function(text) {
 		if(Configure.getMode() == Configure.modeType.DP) {
 			rtCanvasFactor = Configure.WinRTfactor;
 			var rect = {x: elCanvas.width * Configure.WinXFactor  + 30, y:0,
-						width: elCanvas.width * rtCanvasFactor, height:elCanvas.height};
+						width: elCanvas.width * rtCanvasFactor - 30, height:elCanvas.height};
 			canvasRT.draw(elCanvas, rect, getParamEchelons(), document.getElementById('rtShowdays').value);
 		} 
 				
@@ -69,7 +69,7 @@ var startup = (function(text) {
 		echelons = echelons.concat([(parser.getCombinedEchelon(dateArr[0]))]);
 		echelons = echelons.concat(parser.getEchelons(dateArr[0]));
 		for (var i = 0; i < Configure.Echelons_Draw_NUM; i ++) {
-			var rect = {x: elCanvas.width * (Configure.WinXFactor + rtCanvasFactor) + 30 +
+			var rect = {x: elCanvas.width * (Configure.WinXFactor + rtCanvasFactor) +
 								i * elCanvas.width * (1-Configure.WinXFactor)/Configure.Echelons_Draw_NUM, 
 							y:0,
 							width:elCanvas.width * (1-Configure.WinXFactor-rtCanvasFactor)/
@@ -438,7 +438,7 @@ var startup = (function(text) {
 			});
 
 			const canvas = document.getElementById('drawing');
-			canvas.width = window.outerWidth;
+			canvas.width = window.innerWidth;
 			const ctx = canvas.getContext('2d');
 			const img = new Image();
 			img.src = 'img/情绪周期.png';

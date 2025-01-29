@@ -414,6 +414,7 @@ var Configure = (function(){
 		price: '现价',
 		value: '流通市值',
 		totalValue:'总市值',
+		turnOver:'总金额',
 		reason: '涨停原因类别' + '[' + 
 				getDateStr(date) +
 				']',
@@ -595,7 +596,7 @@ var Configure = (function(){
 	
 	var Echelons_Draw_NUM = 2;
 	var Echelons_ticket_NUM = 7;     // 画出来的数量
-	var Echelons_handover_factor = 2; // 换手放大便于观察
+	var Echelons_handover_factor = 10; // 换手放大便于观察
 	
 	var Echelons_miss_tickit_period = 3; //连扳检查断板的期限  ’几天几板‘ 是3
 	var Echelons_tickit_period = 1;    // 连扳选出股票的期限
@@ -745,7 +746,7 @@ var Configure = (function(){
 		mode = type;
 		if(mode == modeType.FP) {    // 复盘配置
 			this.showInTableTitile = ['name',  'realValue','score','totalDivergence',
-							'realHandoverPercent', 'boardTime','boardStrength','reason', 'boardAndDay'];
+							'realHandoverPercent','turnOver', 'boardTime','boardStrength','reason', 'boardAndDay'];
 			this.bandShowInTableTitile = ['name', 'realValue','score','price','increaseRate','totalDivergence',
 							'selectDate','reason'];
 			this.rankShowInTableTitile = ['index', 'name', 'price', 'rise_1', 'rise_5','rise_10',

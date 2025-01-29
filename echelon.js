@@ -169,7 +169,7 @@
 	//		ctx.fillStyle= 'black';			
 	//		ctx.fillText(realHandoverPer, rect.x + 100, rect.y + rect.height - barHeight);
 		} else {
-			ctx.fillStyle= 'grey';
+			ctx.fillStyle= 'rgba(128,128,128,0.2)';
 			ctx.fillRect(rect.x, rect.y, rect.width * 0.9, rect.height);	
 		}
 	};
@@ -182,11 +182,12 @@
 			var param = {sheetName:this.dateArr[i],
 					ticketCode:ticket[Configure.title.code]};
 			var tkt = workbook.getValue(param);
-			var realHandoverPer = -1;
+			var /*realHandoverPer = -1 ,*/ turnOver = -1;
 			var boardStrength = '';
 			if (tkt && tkt[Configure.replaceTitleDate(Configure.title.dayNumber,this.dateArr[i])] != 0) {
-				realHandoverPer = parseFloat(parseFloat(tkt[Configure.replaceTitleDate(Configure.title.handoverPercent, this.dateArr[i])]) 
-										/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';
+				//realHandoverPer = parseFloat(parseFloat(tkt[Configure.replaceTitleDate(Configure.title.handoverPercent, this.dateArr[i])]) 
+				//						/ ((100 - tkt[Configure.title.orgProportion])/100)).toFixed(2) + '  ';
+				turnOver = tkt[Configure.title.turnOver] / 100000000;
 				boardStrength = Configure.getBoardStrength(tkt[Configure.title.boardType], 
 									tkt[Configure.replaceTitleDate(Configure.title.boardPercent, this.dateArr[i])]).description;
 									
@@ -196,7 +197,7 @@
 			}
 			
 			var barRect = this.calBarRect(startPoint, drawLenth, i);
-			this.drawBar(barRect, realHandoverPer, boardStrength);
+			this.drawBar(barRect, turnOver, boardStrength);
 		}
 		// 名字
 		var ctx = this.canvas.getContext("2d");		

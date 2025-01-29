@@ -252,6 +252,9 @@ var table = (function(){
 							td.className = 'green';
 						}
 						break;
+					case 'turnOver' : 
+						td.innerHTML = parseFloat(ticket[Configure.title.turnOver] / 100000000).toFixed(2);
+						break;
 					case 'reason':
 						Tip.show(t, parser.getHotpointstxt(datetoload));
 						break;
