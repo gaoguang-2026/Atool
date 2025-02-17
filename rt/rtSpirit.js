@@ -61,8 +61,8 @@ var rtSpirit = (function(){
 	////
 	
 	var remind = function(filter, type, isRevert = false, prefix = false) {
-		var tPreArray = rtDataManager.getPreRTTickets().filter(filter);
-		var tArray = rtDataManager.getRTTickets().filter(filter);
+		var tPreArray = rtDataManager.getPreRTTicketsFromUpdate().filter(filter);
+		var tArray = rtDataManager.getUpdateTickets().filter(filter);
 		if (tPreArray && tPreArray.length > 0) {
 			var tA = isRevert ? tArray : tPreArray;
 			var tB = isRevert ? tPreArray : tArray;

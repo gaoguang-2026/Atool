@@ -1,16 +1,22 @@
 
 var rtDataManager = (function(){
 	var storageNamePrefix = 'rtData';
+	var curUpdateTickets = [];   // 保存一字请求更新的数据
 	var realTimeTickets = [];
-	var preRealTimeTickets;   // 保存上一次获取的数据
+	var preRealTimeTickets = [];   // 保存上一次获取的数据
 
 	// 实时数据
-	var setRTTickets = function(ticketArr) {
-		preRealTimeTickets = realTimeTickets.slice();
-		realTimeTickets = [];
-		ticketArr.forEach((t)=>{
-			realTimeTickets.push(t);
-		});
+	var setRTTickets = function(ticketArr, maxTicketNum, pageIndex, maxPageNum, pageSize) {
+		curUpdateTickets = ticketArr.slice();
+		if(realTimeTickets.length != maxTicketNum) {
+			realTimeTickets = new Array(maxTicketNum);
+		}
+		for(var i = 0; i < ticketArr.length; i ++) {
+			realTimeTickets[(pageIndex-1)*pageSize + i] = ticketArr[i];
+		}
+		if (pageIndex == maxPageNum) {
+			preRealTimeTickets = realTimeTickets.slice();
+		}
 		rtDataStore.storeToday(realTimeTickets);
 	};
 	
@@ -33,6 +39,16 @@ var rtDataManager = (function(){
 	};
 	var getPreRTTickets = function() {
 		return preRealTimeTickets;
+	};
+	var getPreRTTicketsFromUpdate = function() {
+		return preRealTimeTickets.filter((tPre)=>{
+			return curUpdateTickets.findIndex((t)=>{
+					return tPre['f12'] == t['f12'];
+				}) != -1;
+		});
+	};
+	var getUpdateTickets = function() {
+		return curUpdateTickets;
 	};
 	var getRTTickets = function() {
 		return realTimeTickets;
@@ -137,6 +153,8 @@ var rtDataManager = (function(){
 		jumpeFilter:jumpeFilter,
 		setRTTickets:setRTTickets,
 		getRTTickets:getRTTickets,
+		getUpdateTickets:getUpdateTickets,
+		getPreRTTicketsFromUpdate:getPreRTTicketsFromUpdate,
 		getPreRTTickets:getPreRTTickets,
 		getRTTicketsLeader:getRTTicketsLeader,
 		getActiveTickets:getActiveTickets,

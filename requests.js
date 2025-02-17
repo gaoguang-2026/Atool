@@ -13,13 +13,17 @@ var requests = (function(){
 	var urlH = 'http://23.push2.eastmoney.com/api/qt/clist/get?cb=jQuery112403461296577881501_1600744555568';
 	var param = {
 		pn:1,
-		pz:10000,
-		po:1,
+		pz:200,
+		po:0,
 		np:1,
-		ut:'bd1d9ddb04089700cf9c27f6f74262812&invt=2&fid=f3&fs=m:0+t:6,m:0+t:13,m:0+t:80,m:1+t:2,m:1+t:23,m:0+t:81+s:2048',
+		ut:'bd1d9ddb04089700cf9c27f6f74262812&invt=2&fid=f12&fs=m:0+t:6,m:0+t:13,m:0+t:80,m:1+t:2,m:1+t:23,m:0+t:81+s:2048',
 		_:1600744555569,
 		fields:'f12,f14,f2,f3,f6,f8,f15,f16,f18,f20,f21,f100,f101,f103,f109,f160,f110,f26',
-	}
+	};
+	
+	var reqPageNumberIndex = 1;
+	var pageSize = 200;   // 平台限制最大200
+	
 	var request = function(url, callback, isFirst = false) {
 		const xhr = new XMLHttpRequest();
 		console.log('request -> ' + url + ' time:' + new Date().toGMTString());
@@ -28,11 +32,19 @@ var requests = (function(){
 			if (xhr.status === 200) {
 				const responseText = xhr.responseText;
 				// 处理响应文本
-				
 				var s = responseText.indexOf('(') + 1; 
 				var json_str = responseText.substr(s, responseText.length - s - 2);
-			    rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff']);
+				console.log('Request Page number ' + reqPageNumberIndex);
 				console.log(JSON.parse(json_str));
+				var maxTicketNum = parseInt(JSON.parse(json_str)['data']['total']);
+				var maxPage = parseInt(maxTicketNum / pageSize) + 1;
+			    rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff'], 
+							maxTicketNum, reqPageNumberIndex, maxPage, pageSize);
+				if (reqPageNumberIndex >= maxPage) {
+					reqPageNumberIndex = 1;  // 重置1
+				} else {
+					reqPageNumberIndex ++;
+				};
 				if(typeof callback === 'function' && 
 					rtDataManager.checkIfRtDataUpdated() || 
 					isFirst) {
@@ -44,20 +56,40 @@ var requests = (function(){
 		};
 		xhr.send();
 	};
-	
-	var start = function(callback){
+	var gernerateURL = function() {
 		var url = urlH;
 		for(let prop in param) {
-			url += '&' + prop + '=' + param[prop];
+			if (prop == 'pn') {
+				url += '&' + prop + '=' + reqPageNumberIndex;
+			} else if (prop == 'pz') {
+				url += '&' + prop + '=' + pageSize;
+			} else {
+				url += '&' + prop + '=' + param[prop];
+			}
 		}
 		/*for(var i = 1; i < 200; i ++) {
 			url += ',f' + i;
 		} */
-		request(url, callback, true);
+		return url;
+	}
+	
+	var start = function(callback){
+		// 平台限制200，第一次需要快速把数据刷出来
+		var idx = 29;
+		var timerId = setInterval(function () {
+			if (idx > 0) {
+				request(gernerateURL());
+				idx --;
+			} else {
+				clearInterval(timerId);
+				request(gernerateURL(), callback, true);
+			}
+		}, 30);
+		// 这里才是真正得心跳包
 		Timer.addTimerCallback(()=>{
-			request(url, callback);
+			request(gernerateURL(), callback);
 		});
-		Timer.start();
+		Timer.start(); 
 	};
 	
 	var stop = function() {
