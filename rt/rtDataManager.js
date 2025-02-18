@@ -34,7 +34,7 @@ var rtDataManager = (function(){
 	
 	var getRTTicketFromCode = function(code) {
 		return realTimeTickets.find((t)=>{
-			return t['f12'] == code || code.indexOf(t['f12']) != -1;
+			return !!t && (t['f12'] == code || code.indexOf(t['f12']) != -1);
 		})
 	};
 	var getPreRTTickets = function() {
