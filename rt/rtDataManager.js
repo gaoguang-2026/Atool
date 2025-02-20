@@ -15,9 +15,9 @@ var rtDataManager = (function(){
 			realTimeTickets[(pageIndex-1)*pageSize + i] = ticketArr[i];
 		}
 		if (pageIndex == maxPageNum) {
+			rtDataStore.storeToday(realTimeTickets);
 			preRealTimeTickets = realTimeTickets.slice();
 		}
-		rtDataStore.storeToday(realTimeTickets);
 	};
 	
 	var checkIfRtDataUpdated = function() {
