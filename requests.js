@@ -22,9 +22,9 @@ var requests = (function(){
 	};
 	
 	var reqPageNumberIndex = 1;
-	var pageSize = 200;   // 平台限制最大200
+	var pageSize = 100;   // 平台限制最大100
 	
-	var request = function(url, callback, isFirst = false) {
+	var request = function(url, callback) {
 		const xhr = new XMLHttpRequest();
 		console.log('request -> ' + url + ' time:' + new Date().toGMTString());
 		xhr.open('GET', url);
@@ -38,17 +38,15 @@ var requests = (function(){
 				console.log(JSON.parse(json_str));
 				var maxTicketNum = parseInt(JSON.parse(json_str)['data']['total']);
 				var maxPage = parseInt(maxTicketNum / pageSize) + 1;
-			    rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff'], 
-							maxTicketNum, reqPageNumberIndex, maxPage, pageSize);
+				rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff'], 
+											maxTicketNum, reqPageNumberIndex, maxPage, pageSize);
 				if (reqPageNumberIndex >= maxPage) {
 					reqPageNumberIndex = 1;  // 重置1
+					if(typeof callback === 'function') {
+						callback();
+					};
 				} else {
 					reqPageNumberIndex ++;
-				};
-				if(typeof callback === 'function' && 
-					rtDataManager.checkIfRtDataUpdated() || 
-					isFirst) {
-					callback();
 				};
 			} else {
 				console.error('request error ' + xhr.status);
@@ -67,25 +65,10 @@ var requests = (function(){
 				url += '&' + prop + '=' + param[prop];
 			}
 		}
-		/*for(var i = 1; i < 200; i ++) {
-			url += ',f' + i;
-		} */
 		return url;
 	}
 	
 	var start = function(callback){
-		// 平台限制200，第一次需要快速把数据刷出来
-		var idx = 29;
-		var timerId = setInterval(function () {
-			if (idx > 0) {
-				request(gernerateURL());
-				idx --;
-			} else {
-				clearInterval(timerId);
-				request(gernerateURL(), callback, true);
-			}
-		}, 30);
-		// 这里才是真正得心跳包
 		Timer.addTimerCallback(()=>{
 			request(gernerateURL(), callback);
 		});
