@@ -8,6 +8,9 @@ var rtDataManager = (function(){
 	// 实时数据
 	var setRTTickets = function(ticketArr, maxTicketNum, pageIndex, maxPageNum, pageSize) {
 		curUpdateTickets = ticketArr.slice();
+		if(pageIndex == 1) {
+			preRealTimeTickets = realTimeTickets.slice();
+		}
 		if(realTimeTickets.length != maxTicketNum) {
 			realTimeTickets = new Array(maxTicketNum);
 		}
@@ -16,15 +19,15 @@ var rtDataManager = (function(){
 		}
 		if (pageIndex == maxPageNum) {
 			rtDataStore.storeToday(realTimeTickets);
-			preRealTimeTickets = realTimeTickets.slice();
 		}
 	};
 	
 	var checkIfRtDataUpdated = function() {
 		if(preRealTimeTickets && preRealTimeTickets.length) {
-			for(var i = 0; i < 10; i ++) {  //检查前10个数据是否一样
-				if(preRealTimeTickets[i]['f6'] != realTimeTickets[i]['f6']
-				  || preRealTimeTickets[i]['f2'] != realTimeTickets[i]['f2']) {
+			var n = 10;
+			var r = parseInt(preRealTimeTickets.length / n);
+			for(var i = 0; i < n; i ++) {  //检查每间隔r的第2个数据是否一样
+				if( preRealTimeTickets[2 + i*r]['f2'] != realTimeTickets[2 + i*r]['f2']) {
 					  return true;
 				}
 			}
