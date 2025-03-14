@@ -37,7 +37,7 @@ var requests = (function(){
 				console.log('Request Page number ' + reqPageNumberIndex);
 				console.log(JSON.parse(json_str));
 				var maxTicketNum = parseInt(JSON.parse(json_str)['data']['total']);
-				var maxPage = parseInt(maxTicketNum / pageSize) + 1;
+				var maxPage = Math.ceil(maxTicketNum / pageSize);
 				rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff'], 
 											maxTicketNum, reqPageNumberIndex, maxPage, pageSize);
 				if (reqPageNumberIndex >= maxPage) {
