@@ -98,6 +98,7 @@ var startup = (function(text) {
 		
 		var fr = document.getElementById('form1');
 		var fr2 = document.getElementById('form2');
+		var fr3 = document.getElementById('form3');
 		
 		var paramGainian = [];
 		var paramGainianForOther = [];
@@ -125,7 +126,8 @@ var startup = (function(text) {
 				fr.gtype[0].checked ? 0 : 1,   
 			sort: fr.sort[2].checked ? 2 :
 				fr.sort[0].checked ? 0 : 1,
-			other: fr2.all[1].checked
+			other: fr2.all[1].checked,
+			sector:(fr3.sector[0].checked << 0) | (fr3.sector[1].checked << 1) | (fr3.sector[2].checked << 2)
 		};
 		table.createTable(d, param, highlightTichets);
 	};
@@ -191,6 +193,7 @@ var startup = (function(text) {
 		};		
 		$('#form1').change(formUpdate);
 		$('#form2').change(formUpdate);
+		$('#form3').change(formUpdate);
 		$('#indecator').change(formUpdate);
 		$('#showdays').change(showDaysUpdate);
 		$('#rtShowdays').change(()=>{

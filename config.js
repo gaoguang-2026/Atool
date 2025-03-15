@@ -709,6 +709,7 @@ var Configure = (function(){
 	};
 	var isBJTicket = function(code) {
 		return code.substr(0,1) == '8' ||
+				code.substr(0,1) ==  '9' ||
 				code.substr(0,1) == '4';
 	};
 	var isFloorOrFailed = function(ticket, dateStr) {

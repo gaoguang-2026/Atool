@@ -223,6 +223,26 @@ var parser = (function(){
 			// do notiing
 		};
 		
+		//  sector
+		if(obj.sector) {
+			if ((obj.sector & 1) === 0 ) {   // 主板
+				retArr = retArr.filter((t)=>{
+					return !Configure.isSHTicket(t[Configure.title.code]) &&
+								!Configure.isSZTicket(t[Configure.title.code]);
+				});
+			} 
+			if ((obj.sector & 2) === 0) {    // 科/创
+				retArr = retArr.filter((t)=>{
+					return !Configure.isKechuangTicket(t[Configure.title.code]);
+				});
+			} 
+			if ((obj.sector & 4) === 0) {     // 北交所
+				retArr = retArr.filter((t)=>{
+					return !Configure.isBJTicket(t[Configure.title.code]);
+				});
+			}
+		}
+		
 		// gainian
 		if (obj.hotpointArr && obj.hotpointArr.length != 0) {
 			retArr = retArr.filter((t)=>{

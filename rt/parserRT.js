@@ -300,6 +300,26 @@ var parserRT = (function(){
 			ticketsArr = workbook.getRankTickets(preWeek);
 		}
 		
+		// 过滤板块
+		if(param.sector) {
+			if ((param.sector & 1) === 0 ) {   // 主板
+				ticketsArr = ticketsArr.filter((t)=>{
+					return !Configure.isSHTicket(t[Configure.title.code]) &&
+								!Configure.isSZTicket(t[Configure.title.code]);
+				});
+			} 
+			if ((param.sector & 2) === 0) {    // 科/创
+				ticketsArr = ticketsArr.filter((t)=>{
+					return !Configure.isKechuangTicket(t[Configure.title.code]);
+				});
+			} 
+			if ((param.sector & 4) === 0) {     // 北交所
+				ticketsArr = ticketsArr.filter((t)=>{
+					return !Configure.isBJTicket(t[Configure.title.code]);
+				});
+			}
+		}
+		
 		if (param.hotpointArr && param.hotpointArr.length != 0) {
 			ticketsArr = ticketsArr.filter((t)=>{
 				var isSelect = false;
