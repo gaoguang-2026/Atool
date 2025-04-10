@@ -604,7 +604,6 @@ var Configure = (function(){
 	var Echelons_show_type = 'score';   //  'fund' or 'score'
 	
 	// rt
-	var timerDuration = 1000;
 	var WinRTfactor = 0.4;   //canvas RT 窗口占比
 	var RT_show_min_rank_ticket_num = 10;  // rt最小显示限制
 	var RT_GAI_rank_max_length = 100;			// rt 概念排名记录的最大长度 , 不能太大，存储限制
@@ -777,7 +776,6 @@ var Configure = (function(){
 		setMode:setMode,
 		getMode:getMode,
 		modeType:modeType,
-		timerDuration:timerDuration,
 		apothegms: apothegms,
 		winCtxts: winCtxts,
 		getColorFromWinC:getColorFromWinC,
