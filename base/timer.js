@@ -2,12 +2,12 @@ var Timer = (function(){
 	var timerId;
 	
 	var callbackArray = [];
-	var start = function() {
+	var start = function(timerDuration = 1000) {
 		timerId = setInterval(function () {
 			callbackArray.forEach((f) => {
 				f();
 			});
-		}, Configure.timerDuration)
+		}, timerDuration)
 	};
 	
 	var addTimerCallback = function(callback) {

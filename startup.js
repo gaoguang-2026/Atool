@@ -162,6 +162,7 @@ var startup = (function(text) {
 					canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
 				}
 			});
+			Timer.start();
 			// 初始化精灵
 			rtSpirit.init();
 		}
@@ -394,6 +395,12 @@ var startup = (function(text) {
 	};
 	var start = function() {
 		window.performance.mark("startup:start");
+		
+		// 停止 Worker（页面卸载时清理）
+		window.addEventListener('beforeunload', () => {
+			requests.stop();
+		});
+		
 		window.onload = function(){
 			updateTitle(Configure.version);
 			$('#date').val(Configure.getDateStr(Configure.date, '-'));
