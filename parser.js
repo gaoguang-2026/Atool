@@ -258,6 +258,21 @@ var parser = (function(){
 		return retArr;
 	};
 	
+	var loadEchelonsFromExl = function() {
+		var retArr = workbook.getEchelonsFromExcel();
+		retArr.forEach((estr)=>{
+			var echelon = {name:estr[Configure.titleEchelons.name],
+							hotPoints:estr[Configure.titleEchelons.hotpoints].split(/[,，.;；。]/)};
+			var findIndx = Configure.echelons.findIndex((e)=>{
+				return e.name == echelon.name;
+			});
+			if(findIndx > -1) { // 找到就替换
+				Configure.echelons.splice(findIndx, 1, echelon); // 替换
+			} else {
+				Configure.echelons.push(echelon);
+			}
+		});
+	};
 	
 	// 根据hotpoint算出echelons
 	var getEchelons = function(dateStr) {
@@ -378,6 +393,7 @@ var parser = (function(){
 		getTickets: getTickets,
 		getTicket:getTicket,
 		getBandTickets:getBandTickets,
+		loadEchelonsFromExl:loadEchelonsFromExl,
 		getEchelons:getEchelons,
 		getCombinedEchelon:getCombinedEchelon,
 		getBoardHeight:getBoardHeight,

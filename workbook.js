@@ -81,6 +81,9 @@
 					item[Configure.titleTactics.tractic].includes(t);
 		});
 	};
+	var getEchelonsFromExcel = function() {
+		return getSheet('题材库');
+	};
 	var getContext = function(contextStr) {
 		var sheet = getSheet('交易模式');
 		return sheet.find((item)=> {
@@ -177,6 +180,7 @@
 		getValue:getValue,
 		getEmotionalCycles:getEmotionalCycles,
 		getTactics:getTactics,
+		getEchelonsFromExcel:getEchelonsFromExcel,
 		getContext:getContext,
 		getContextTypeAndParam:getContextTypeAndParam,
 		getDisplayLastDate:getDisplayLastDate,

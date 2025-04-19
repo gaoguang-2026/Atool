@@ -523,6 +523,10 @@ var Configure = (function(){
 		date: '日期',
 		//dragon:'龙头'
 	};
+	var titleEchelons = {
+		name: '名字',
+		hotpoints: '热点',
+	};
 	var titleTactics = {
 		context:'窗口',
 		param:'参数',
@@ -791,6 +795,7 @@ var Configure = (function(){
 		title:title,
 		title2:title2,
 		titleCycles:titleCycles,
+		titleEchelons:titleEchelons,
 		titleTactics:titleTactics,
 		titleGainian:titleGainian,
 		Days_Max_lengh:Days_Max_lengh,
