@@ -49,7 +49,7 @@
                 break;
         }
         _this.bind(_param.hideEvent,function(){box.hide(_param.hideTime,function(){$(this).remove();});});
-		_this.bind('DOMNodeRemoved',function(){box.hide(_param.hideTime,function(){$(this).remove();});});
+		//_this.bind('DOMNodeRemoved',function(){box.hide(_param.hideTime,function(){$(this).remove();});});
     });
 })(jQuery);
 
