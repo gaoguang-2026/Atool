@@ -261,10 +261,11 @@ var parser = (function(){
 	var loadEchelonsFromExl = function() {
 		var retArr = workbook.getEchelonsFromExcel();
 		retArr.forEach((estr)=>{
-			var echelon = {name:estr[Configure.titleEchelons.name],
-							hotPoints:estr[Configure.titleEchelons.hotpoints].split(/[,，.;；。]/)};
+			var echelon = {name:'#'+estr[Configure.titleEchelons.name],
+							hotPoints:
+							estr[Configure.titleEchelons.hotpoints].replace(/\s/g, '').split(/[,，.;；。、]/)};
 			var findIndx = Configure.echelons.findIndex((e)=>{
-				return e.name == echelon.name;
+				return echelon.name.includes(e.name);
 			});
 			if(findIndx > -1) { // 找到就替换
 				Configure.echelons.splice(findIndx, 1, echelon); // 替换
