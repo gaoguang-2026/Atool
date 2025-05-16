@@ -451,7 +451,7 @@ var canvas = (function(canvas) {
 			ctx.beginPath();
 			if (echelonNames.length == 0) {   // 没有echolon显示底部量能就显示总量能
 				Configure.ZHISHU_TITLE == Configure.title2.lianbanzhishu ? 
-					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, 800);
+					drawBottom(Configure.title2.jinji, 100) : drawBottom(Configure.title2.totalFund, Configure.Fund_MaxOffset);
 			} 
 			if (echelonNames.length <= 1) {
 				drawHeadorFoot('rgba(0,158,0,0.4)', 0, 2000, Configure.title2.jumped, 1, true);
@@ -470,7 +470,7 @@ var canvas = (function(canvas) {
 								Configure.title2.sz ,indecatorName == '上证指数');	
 			drawLine(Configure.sz_color, site_MIN_zs, site_MAX_zs - site_MIN_zs, 
 							Configure.title2.qadq , indecatorName == '全A等权');	
-			drawLine('black', 0, 200, Configure.title2.leader, '上证指数' == indecatorName);  
+			drawLine('black', 0, Configure.LEAER_NUM_MaxOffset, Configure.title2.leader, '上证指数' == indecatorName);  
 			
 			// 2 风险偏好
 			drawLine('rgba(75,0,130,0.5)', -4, 16, Configure.title2.subBeili, indecatorName == '涨停背离'/*'连扳背离'*/); 

@@ -520,7 +520,7 @@ var Configure = (function(){
 	};
 	var titleEchelons = {
 		name: '名字',
-		hotpoints: '热点',
+		hotpoints: '值',
 	};
 	var titleTactics = {
 		context:'窗口',
@@ -576,6 +576,9 @@ var Configure = (function(){
 	
 	var SZ_zero = 3100;    // sz 0轴坐标
 	var SZ_MaxOffset = 400;   // 纵轴
+	
+	var LEAER_NUM_MaxOffset = 200; 
+	var Fund_MaxOffset = 800;
 	
 	var BH_Draw_title = title2.height;  // title2.height or title2.boardHeight
 	var BH_zero = BH_Draw_title == title2.height ? 
@@ -806,6 +809,8 @@ var Configure = (function(){
 		ZHISHU_SUB_TITLE:ZHISHU_SUB_TITLE,
 		SZ_zero:SZ_zero,
 		SZ_MaxOffset:SZ_MaxOffset,
+		LEAER_NUM_MaxOffset:LEAER_NUM_MaxOffset,
+		Fund_MaxOffset:Fund_MaxOffset,
 		BH_zero:BH_zero,
 		BH_MaxOffset:BH_MaxOffset,
 		BH_Draw_title:BH_Draw_title,

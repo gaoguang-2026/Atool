@@ -146,7 +146,7 @@ var startup = (function(text) {
 			document.getElementById('excel-file').disabled = true;
 			document.getElementById('showdays').disabled = true;
 		}
-		parser.loadEchelonsFromExl();  // 加载题材库
+		parser.loadConfFromExl();  // 加载题材配置
 		AI.init();
 		dragons.init();
 		console.log("rtDataManager.init: " + (window.performance.now() - startTime) + "ms");

@@ -82,7 +82,7 @@
 		});
 	};
 	var getEchelonsFromExcel = function() {
-		return getSheet('题材库');
+		return getSheet('题材配置');
 	};
 	var getContext = function(contextStr) {
 		var sheet = getSheet('交易模式');

@@ -258,19 +258,24 @@ var parser = (function(){
 		return retArr;
 	};
 	
-	var loadEchelonsFromExl = function() {
+	var loadConfFromExl = function() {
 		var retArr = workbook.getEchelonsFromExcel();
 		retArr.forEach((estr)=>{
-			var echelon = {name:'#'+estr[Configure.titleEchelons.name],
+			if(estr[Configure.titleEchelons.name].includes('$')) {  // 配置
+				Configure[estr[Configure.titleEchelons.name].substring(1)] 
+							= estr[Configure.titleEchelons.hotpoints];
+			} else if(estr[Configure.titleEchelons.name].includes('#')){  // 题材库
+				var echelon = {name:estr[Configure.titleEchelons.name],
 							hotPoints:
 							estr[Configure.titleEchelons.hotpoints].replace(/\s/g, '').split(/[,，.;；。、]/)};
-			var findIndx = Configure.echelons.findIndex((e)=>{
-				return echelon.name.includes(e.name);
-			});
-			if(findIndx > -1) { // 找到就替换
-				Configure.echelons.splice(findIndx, 1, echelon); // 替换
-			} else {
-				Configure.echelons.push(echelon);
+				var findIndx = Configure.echelons.findIndex((e)=>{
+					return echelon.name.includes(e.name);
+				});
+				if(findIndx > -1) { // 找到就替换
+					Configure.echelons.splice(findIndx, 1, echelon); // 替换
+				} else {
+					Configure.echelons.push(echelon);
+				}
 			}
 		});
 	};
@@ -394,7 +399,7 @@ var parser = (function(){
 		getTickets: getTickets,
 		getTicket:getTicket,
 		getBandTickets:getBandTickets,
-		loadEchelonsFromExl:loadEchelonsFromExl,
+		loadConfFromExl:loadConfFromExl,
 		getEchelons:getEchelons,
 		getCombinedEchelon:getCombinedEchelon,
 		getBoardHeight:getBoardHeight,
