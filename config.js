@@ -618,6 +618,8 @@ var Configure = (function(){
 	var RT_echelons_max_num = 6;            // 生成的个数
 	var RT_echelon_contain_config = true;       // 是否加上config的echelon
 	
+	var Request_interval = 1000;    // 请求数据时间间隔
+	
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2
 	var Band_miss_tickit_period = 11;    //趋势检查断板的期限     SED + TFD
@@ -839,6 +841,7 @@ var Configure = (function(){
 		RT_canvas_record_days_num:RT_canvas_record_days_num,
 		RT_canvas_show_echelons_num:RT_canvas_show_echelons_num,
 		RT_echelon_contain_config:RT_echelon_contain_config,
+		Request_interval:Request_interval,
 		Band_tickit_period:Band_tickit_period,
 		Echelons_miss_tickit_period:Echelons_miss_tickit_period,
 		Band_miss_tickit_period:Band_miss_tickit_period,

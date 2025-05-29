@@ -135,7 +135,7 @@ var requests = (function(){
 			};
 
 			// 启动 Worker
-			worker.postMessage({ action: 'start', data: { interval: 1000} });
+			worker.postMessage({ action: 'start', data: { interval: Configure.Request_interval} });
 		 } else {
 			console.error('浏览器不支持 Web Workers!');
 		 }
