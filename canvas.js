@@ -157,7 +157,7 @@ var canvas = (function(canvas) {
 		siteY = height * (1 - height_factor)/2;
 		siteWidth = width * width_factor;
 		siteHeight = height * height_factor;
-		console.log('canvas width:' + width + 
+		Configure.Debug('canvas width:' + width + 
 					' height:' + height + 
 					' siteX' + siteX +
 					' siteY:' + siteY +
@@ -295,7 +295,7 @@ var canvas = (function(canvas) {
 		for(var i = 0; i < Configure.winCtxts.length; i ++) {
 			var xLv = i-center < 0 ? 0 : 1;
 			var yLv = i-center >= 0 ?  Math.abs(i-center) + 0.5 :  Math.abs(i-center);
-		//	console.log('x = ' + xLv + '  y = ' + yLv);
+		//	Configure.Debug('x = ' + xLv + '  y = ' + yLv);
 			var x = siteX + siteWidth + 15 * xLv;
 			var y = siteY + 5 + 30 * yLv;
 			var txt = '';
@@ -770,7 +770,7 @@ var canvas = (function(canvas) {
 			findTurnintPoint(emotionPoints, Configure.EmotionAngleDeafultDays + 1);
 			drawEmotionTurning();
 			window.performance.mark("Canvas:drawDone");
-			console.log('Canvas draw duration:' 
+			Configure.Debug('Canvas draw duration:' 
 				+ window.performance.measure("Canvas", "Canvas:draw", "Canvas:drawDone").duration + 'ms');
 		}
 	}

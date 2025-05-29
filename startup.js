@@ -13,7 +13,7 @@ var startup = (function(text) {
         var oTxt = document.createTextNode(recommend.txt);
 		Tip.show(oDiv, recommend.tatics);
 		oDiv.addEventListener('click', function(event){
-			console.log('click');
+			Configure.Debug('click');
 			speecher.speak(recommend.tatics, false);
 		});
 		
@@ -149,7 +149,7 @@ var startup = (function(text) {
 		parser.loadConfFromExl();  // 加载题材配置
 		AI.init();
 		dragons.init();
-		console.log("rtDataManager.init: " + (window.performance.now() - startTime) + "ms");
+		Configure.Debug("rtDataManager.init: " + (window.performance.now() - startTime) + "ms");
 		return rtDataManager.init(workbook.getDateArr(()=>{}));   // 读数据库，异步
 	};
 	
@@ -243,7 +243,7 @@ var startup = (function(text) {
 		};
 		
 		var keyBoardEvent = function(event) {
-			console.log('Keydown:', event.key);  
+			Configure.Debug('Keydown:', event.key);  
 			switch(event.key) {
 				case '1':
 				case '2':
@@ -332,15 +332,15 @@ var startup = (function(text) {
 				type: 'binary'
 			})); // 以二进制流方式读取得到整份excel表格对象
 		} catch (e) {
-			console.log('文件类型不正确');
+			Configure.Debug('文件类型不正确');
 			return;
 		}
 		window.performance.mark("XLSX:readDone");
-				console.log('XLSX read data duration:' 
+				Configure.Debug('XLSX read data duration:' 
 					+ window.performance.measure("XLSX", "XLSX:read", "XLSX:readDone").duration + 'ms');
-		console.log("Startup:init " + (window.performance.now() - startTime) + "ms");
+		Configure.Debug("Startup:init " + (window.performance.now() - startTime) + "ms");
 		init().then(()=>{							
-			console.log("Draw canvas: " + (window.performance.now() - startTime) + "ms");
+			Configure.Debug("Draw canvas: " + (window.performance.now() - startTime) + "ms");
 			const c = document.getElementById('drawing');
 			const ctx = c.getContext('2d');
 			ctx.clearRect(0, 0, c.width, c.height);
@@ -351,7 +351,7 @@ var startup = (function(text) {
 			drawCanvasLeft();
 			drawCanvasRight();
 			fillTicketsTable();
-			console.log("Draw canvas done: " + (window.performance.now() - startTime) + "ms");
+			Configure.Debug("Draw canvas done: " + (window.performance.now() - startTime) + "ms");
 			displayAI(AI.getRecommend());
 			AI.drawEmotionCycle();
 			
@@ -359,7 +359,7 @@ var startup = (function(text) {
 					
 			//start requests
 			startRequests();
-			console.log("Init done: " + (window.performance.now() - startTime) + "ms");
+			Configure.Debug("Init done: " + (window.performance.now() - startTime) + "ms");
 			document.querySelector('.loader-container').style.display = 'none';
 			updateTitle(Configure.getMode() == 0 ? 'fp' : 'dp');
 		});
@@ -477,7 +477,7 @@ var startup = (function(text) {
 			var backUpMonth = getLastMonth();
 			Downloader.download('备份数据' + backUpMonth + '.backup', backUpMonth);
 			window.performance.mark("startup:start done");
-				console.log('startup:start duration:' 
+				Configure.Debug('startup:start duration:' 
 					+ window.performance.measure("startup", "startup:start", "startup:start done").duration + 'ms');
 		};
 	};

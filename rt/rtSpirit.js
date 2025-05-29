@@ -129,7 +129,7 @@ var rtSpirit = (function(){
 					return b.raiseRate - a.raiseRate;
 				});
 				gaiNameArr.forEach((g)=>{
-					console.log('概念 ' + g.name + ' ' + g.raiseRate);
+					Configure.Debug('概念 ' + g.name + ' ' + g.raiseRate);
 				});
 				// 最快的那个判断是否需要播报
 				if(gaiNameArr[0].raiseRate > GaiReportThreshold.raise.Threshold

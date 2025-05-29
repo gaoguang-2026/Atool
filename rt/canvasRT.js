@@ -329,7 +329,7 @@ var canvasRT = (function() {
 			siteY = rect.y + height * (1 - height_factor)/2;
 			siteWidth = width * width_factor;
 			siteHeight = height * height_factor;
-			console.log('RT canvas width:' + width + 
+			Configure.Debug('RT canvas width:' + width + 
 					' height:' + height + 
 					' siteX' + siteX +
 					' siteY:' + siteY +
@@ -337,7 +337,7 @@ var canvasRT = (function() {
 					' siteHeight:' + siteHeight);		
 			reDraw(nameArr, rtShowD);
 			window.performance.mark("CanvasRT:drawDone");
-			console.log('CanvasRT draw duration:' 
+			Configure.Debug('CanvasRT draw duration:' 
 				+ window.performance.measure("CanvasRT", "CanvasRT:draw", "CanvasRT:drawDone").duration + 'ms');
 		}
 	};

@@ -14,7 +14,7 @@
 			sum += !!parseFloat(ticket[Configure.title.rise_10]) ? parseFloat(ticket[Configure.title.rise_10]) : 0;
 			sum += !!parseFloat(ticket[Configure.title.rise_20]) ? parseFloat(ticket[Configure.title.rise_20]) : 0;
 		}
-	//	console.log('getRankTicketFromCode code ' + t[Configure.title.code] + '  t score:' + 
+	//	Configure.Debug('getRankTicketFromCode code ' + t[Configure.title.code] + '  t score:' + 
 	//				t[Configure.title.score] + '  sum:' + sum + '  factor:' + scoreFactor);
 		return parseInt(t[Configure.title.score] + scoreFactor * sum);
 	};
@@ -32,7 +32,7 @@
 																		[1/4, 11/12]];
 																		
 		window.performance.mark("bandEchelon:constructor End");
-			console.log('bandEchelon constructor duration:' 
+			Configure.Debug('bandEchelon constructor duration:' 
 				+ window.performance.measure("bandEchelon", "bandEchelon:constructor", "bandEchelon:constructor End").duration + 'ms');
 	};			
 	
@@ -139,7 +139,7 @@
 		});  
 		workbook.setBandTickets(this.tickets);   // 剔除之前记录
 		window.performance.mark("bandEchelon:filterTickets End");
-			console.log('bandEchelon filterTickets duration:' 
+			Configure.Debug('bandEchelon filterTickets duration:' 
 				+ window.performance.measure("bandEchelon", "bandEchelon:filterTickets", "bandEchelon:filterTickets End").duration + 'ms');
 	};
 	
@@ -175,7 +175,7 @@
 		});
 		this.tickets = this.tickets.slice(0,Configure.Echelons_ticket_NUM);
 		window.performance.mark("bandEchelon:cutTickets End");
-			console.log('bandEchelon cutTickets duration:' 
+			Configure.Debug('bandEchelon cutTickets duration:' 
 				+ window.performance.measure("bandEchelon", "bandEchelon:cutTickets", "bandEchelon:cutTickets End").duration + 'ms');
 	};
 	

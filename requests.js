@@ -106,6 +106,7 @@ var requests = (function(){
 	var worker;
 	var startWorker = function(callback) {
 		if (window.Worker) {
+			var reqNum = 0;
 			const blob = new Blob([workerCode], { type: 'application/javascript' });
 			worker = new Worker(URL.createObjectURL(blob));
 
@@ -113,13 +114,13 @@ var requests = (function(){
 			worker.onmessage = function(e) {
 			  const { type, data, error } = e.data;
 			  if (type === 'data') {
-				//console.log('收到数据:', data);
+				//Configure.Debug('收到数据:', data);
 				var resObj = JSON.parse(data);
 				const json_str = resObj.data;
 				const reqPageNumberIndex = resObj.reqPageNumberIndex;
 				const pageSize = resObj.pageSize;
-				console.log('Request Page number ' + reqPageNumberIndex);
-				console.log(JSON.parse(json_str));
+				Configure.Debug('Request Page number ' + reqPageNumberIndex);
+				Configure.Debug(JSON.parse(json_str));
 				var maxTicketNum = parseInt(JSON.parse(json_str)['data']['total']);
 				var maxPage = Math.ceil(maxTicketNum / pageSize);
 				rtDataManager.setRTTickets(JSON.parse(json_str)['data']['diff'], 
@@ -129,6 +130,7 @@ var requests = (function(){
 						callback();
 					};
 				} 
+				Configure.Debug('Debug --- request num = ' + reqNum++ );
 			  } else if (type === 'error') {
 				console.error('请求出错:', error);
 			  }

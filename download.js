@@ -71,7 +71,7 @@ var Downloader = (function() {
 	}
 
 	var upload = function(data, index) {
-		console.log('upload index:' + index + ',data:' + data);
+		Configure.Debug('upload index:' + index + ',data:' + data);
 		rtDataStore.updateRtTicketsToDB(JSON.parse(data));
 	}
 	var download = function(saveName, backupMonth) {

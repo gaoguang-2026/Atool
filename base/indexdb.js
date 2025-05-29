@@ -21,12 +21,12 @@ var IndexDB = (function(){
 		// 数据库打开成功回调
 		request.onsuccess = function (event) {
 		  db = event.target.result; // 数据库对象
-		  console.log("数据库打开成功");
+		  Configure.Debug("数据库打开成功");
 		  resolve(db);
 		};
 		// 数据库打开失败的回调
 		request.onerror = function (event) {
-		  console.log("数据库打开报错");
+		  Configure.Debug("数据库打开报错");
 		};
 		// 数据库有更新时候的回调
 		request.onupgradeneeded = onupgradeneeded;
@@ -46,11 +46,11 @@ var IndexDB = (function(){
 		.add(data);
 
 	  request.onsuccess = function (event) {
-		console.log("数据写入成功");
+		Configure.Debug("数据写入成功");
 	  };
 
 	  request.onerror = function (event) {
-		console.log("数据写入失败");
+		Configure.Debug("数据写入失败");
 	  };
 	}
 
@@ -67,11 +67,11 @@ var IndexDB = (function(){
 		var request = objectStore.get(key); // 通过主键获取数据
 
 		request.onerror = function (event) {
-		  console.log("事务失败");
+		  Configure.Debug("事务失败");
 		};
 
 		request.onsuccess = function (event) {
-		  console.log("主键查询结果: ", request.result);
+		  Configure.Debug("主键查询结果: ", request.result);
 		  resolve(request.result);
 		};
 	  });
@@ -97,7 +97,7 @@ var IndexDB = (function(){
 			  list.push(cursor.value);
 			  cursor.continue(); // 遍历了存储对象中的所有内容
 			} else {
-			  console.log("游标读取的数据：", list);
+			  Configure.Debug("游标读取的数据：", list);
 			  resolve(list);
 			}
 		  };
@@ -116,11 +116,11 @@ var IndexDB = (function(){
 		  var store = db.transaction(storeName, "readwrite").objectStore(storeName);
 		  var request = store.index(indexName).get(indexValue);
 		  request.onerror = function () {
-			console.log("事务失败");
+			Configure.Debug("事务失败");
 		  };
 		  request.onsuccess = function (e) {
 			var result = e.target.result;
-			console.log("索引查询结果：", result);
+			Configure.Debug("索引查询结果：", result);
 			resolve(result);
 		  };
 		});
@@ -146,7 +146,7 @@ var IndexDB = (function(){
 		  list.push(cursor.value);
 		  cursor.continue(); // 遍历了存储对象中的所有内容
 		} else {
-		  console.log("游标索引查询结果：", list);
+		  Configure.Debug("游标索引查询结果：", list);
 		}
 	  };
 	  request.onerror = function (e) {};
@@ -178,7 +178,7 @@ var IndexDB = (function(){
 			  list.push(cursor.value);
 			  cursor.continue(); // 遍历了存储对象中的所有内容
 			} else {
-			  console.log("游标读取的数据：", list);
+			  Configure.Debug("游标读取的数据：", list);
 			  resolve(list);
 			}
 		  };
@@ -224,10 +224,10 @@ var IndexDB = (function(){
 			cursor.continue(); // 遍历了存储对象中的所有内容
 		  } else {
 			cursor = null;
-			console.log("分页查询结果", list);
+			Configure.Debug("分页查询结果", list);
 		  }
 		} else {
-		  console.log("分页查询结果", list);
+		  Configure.Debug("分页查询结果", list);
 		}
 	  };
 	  request.onerror = function (e) {};
@@ -246,11 +246,11 @@ var IndexDB = (function(){
 		.put(data);
 
 	  request.onsuccess = function () {
-		console.log("数据更新成功");
+		Configure.Debug("数据更新成功");
 	  };
 
 	  request.onerror = function () {
-		console.log("数据更新失败");
+		Configure.Debug("数据更新失败");
 	  };
 	}
 
@@ -267,11 +267,11 @@ var IndexDB = (function(){
 		.delete(id);
 
 	  request.onsuccess = function () {
-		console.log("数据删除成功");
+		Configure.Debug("数据删除成功");
 	  };
 
 	  request.onerror = function () {
-		console.log("数据删除失败");
+		Configure.Debug("数据删除失败");
 	  };
 	}
 
@@ -293,10 +293,10 @@ var IndexDB = (function(){
 		if (cursor) {
 		  deleteRequest = cursor.delete(); // 请求删除当前项
 		  deleteRequest.onerror = function () {
-			console.log("游标删除该记录失败");
+			Configure.Debug("游标删除该记录失败");
 		  };
 		  deleteRequest.onsuccess = function () {
-			console.log("游标删除该记录成功");
+			Configure.Debug("游标删除该记录成功");
 		  };
 		  cursor.continue();
 		}
@@ -310,7 +310,7 @@ var IndexDB = (function(){
 	 */
 	function closeDB(db) {
 	  db.close();
-	  console.log("数据库已关闭");
+	  Configure.Debug("数据库已关闭");
 	}
 	
 	/**
@@ -318,13 +318,13 @@ var IndexDB = (function(){
 	 * @param {object} dbName 数据库名称
 	 */
 	function deleteDBAll(dbName) {
-	  console.log(dbName);
+	  Configure.Debug(dbName);
 	  let deleteRequest = window.indexedDB.deleteDatabase(dbName);
 	  deleteRequest.onerror = function (event) {
-		console.log("删除失败");
+		Configure.Debug("删除失败");
 	  };
 	  deleteRequest.onsuccess = function (event) {
-		console.log("删除成功");
+		Configure.Debug("删除成功");
 	  };
 	}
 	return {

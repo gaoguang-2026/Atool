@@ -75,7 +75,7 @@ var AI = (function(){
 	};
 	
 	var saveLoacalstorage = function(dataStorage) {
-		console.log(dataStorage);
+		Configure.Debug(dataStorage);
 		var datestr = workbook.getDisplayLastDate();
 		if (LocalStore.get(storeNamePrefix + datestr)) {
 			LocalStore.remove(storeNamePrefix + datestr);
@@ -197,7 +197,7 @@ var AI = (function(){
 				(condition[i].max!=undefined && value != -1 && value > condition[i].max) ||
 				(condition[i].currentMin!=undefined && currentValue !=-1 && currentValue < condition[i].currentMin) ||
 				(condition[i].currentMax!=undefined && currentValue !=-1 && currentValue > condition[i].currentMax )) {
-			//		console.log('checkCondition failed for ' + (i =='a' ? '情绪角度' : '情绪level') + 
+			//		Configure.Debug('checkCondition failed for ' + (i =='a' ? '情绪角度' : '情绪level') + 
 			//			' value:' + value + '  currentValue:' + currentValue);
 					ret = false;
 			}
@@ -209,7 +209,7 @@ var AI = (function(){
 				ret = condition[i].min!=undefined ? checkZBHigherDays(title, days, minDays, condition[i].min) : ret;
 				ret = condition[i].max!=undefined ? checkZBUnderDays(title, days, minDays, condition[i].max) : ret; 
 				if(!ret) {
-			//		console.log('checkCondition failed for ' + title);
+			//		Configure.Debug('checkCondition failed for ' + title);
 				}
 			}			
 		}
@@ -219,17 +219,17 @@ var AI = (function(){
 		try {
 			Configure.cangMap.forEach(function(item, key){
 				item.conditions.forEach((condition, index)=>{
-				//	console.log('=> start check ' + item.stage + ' index ' + index);
+				//	Configure.Debug('=> start check ' + item.stage + ' index ' + index);
 					if(checkCondition(condition)) {
 						dataStorage.emotion = key;
-				//		console.log('Check done, ' + item.stage + ' index ' + index + '  selected!');
+				//		Configure.Debug('Check done, ' + item.stage + ' index ' + index + '  selected!');
 						throw new Error('LoopInterrupt');
 					};
 				});
 				
 			});
 			if (dataStorage.emotion == '') {
-				console.log('Failed match emotions !!!')
+				Configure.Debug('Failed match emotions !!!')
 			}
 		} catch(e) {
 			if(e.message != 'LoopInterrupt') throw e;
@@ -293,9 +293,9 @@ var AI = (function(){
 						window.GetBandFinalScroe(a, dataStorage.bandScoreFator);
 		});
 		if (/*Configure.debug*/false) {
-			console.log('AI趋势得分排名:');
+			Configure.Debug('AI趋势得分排名:');
 			tickets.forEach((t)=>{
-				console.log(t[Configure.title.name] + '  ' + window.GetBandFinalScroe(t));
+				Configure.Debug(t[Configure.title.name] + '  ' + window.GetBandFinalScroe(t));
 			})
 		}
 
@@ -335,9 +335,9 @@ var AI = (function(){
 			return getFinalScroe(b, dateStr) - getFinalScroe(a, dateStr);
 		});
 		if (/*Configure.debug*/false) {
-			console.log('AI超短得分排名:');
+			Configure.Debug('AI超短得分排名:');
 			tickets.forEach((t)=>{
-				console.log(t[Configure.title.name] + '  ' + getFinalScroe(t, dateStr));
+				Configure.Debug(t[Configure.title.name] + '  ' + getFinalScroe(t, dateStr));
 			})
 		}
 		var txt = '关注连板接力：';
@@ -410,7 +410,7 @@ var AI = (function(){
 	var isBandInCharge = function() {
 		var ret = false;
 		Configure.bandConditions.forEach((c, index)=>{
-			//console.log('start check bandConditions index = ' + index);
+			//Configure.Debug('start check bandConditions index = ' + index);
 			if(checkCondition(c)){
 				ret = true;
 			};
@@ -423,7 +423,7 @@ var AI = (function(){
 	var isIcePoint = function() {
 		var ret = true;
 		Configure.icePoint.forEach((c, index)=>{
-			//console.log('start check icePoint index = ' + index);
+			//Configure.Debug('start check icePoint index = ' + index);
 			if(!checkCondition(c)){
 				ret = false;
 			};

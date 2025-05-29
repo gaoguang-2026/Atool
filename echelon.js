@@ -233,7 +233,7 @@
 		this.drawTitle();
 		this.tickets.forEach((t)=>{
 			var p = this.getSitePoint(t);
-	//		console.log(p);
+	//		Configure.Debug(p);
 			if(p) {
 				this.drawTicket(t, {x : this.rect.x + this.rect.width * p[0] - 15,
 								y : this.rect.y + this.rect.height * p[1]});
@@ -243,7 +243,7 @@
 			
 		});
 		window.performance.mark("Echelon:drawDone");
-			console.log('Echelon draw duration:' 
+			Configure.Debug('Echelon draw duration:' 
 				+ window.performance.measure("Echelon", "Echelon:draw", "Echelon:drawDone").duration + 'ms');
 	};
 	

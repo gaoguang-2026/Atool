@@ -11,7 +11,7 @@ var rtDataStore = (function(){
 	
 	var onupgradeneeded = function(event) {
 		// 数据库创建或升级的时候会触发
-		console.log("onupgradeneeded");
+		Configure.Debug("onupgradeneeded");
 		db = event.target.result; // 数据库对象
 		var objectStore;
 		// 创建存储库
@@ -73,7 +73,7 @@ var rtDataStore = (function(){
 				window.performance.mark("IndexDB:readAll");
 				getRtTicketsFromDates(dateArr[0], dateArr[dateArr.length - 1]).then((list)=>{
 					window.performance.mark("IndexDB:readAllDone");
-					console.log('Load db duration:' 
+					Configure.Debug('Load db duration:' 
 						+ window.performance.measure("IndexDB", "IndexDB:readAll", "IndexDB:readAllDone").duration + 'ms');
 					historyRtTicketsArray = list;
 					resolve();

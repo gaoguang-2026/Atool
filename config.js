@@ -14,6 +14,10 @@ End Sub
 
 var Configure = (function(){
 	var debug = false;
+	var Debug = function(msg) {
+		if(!!Configure.debug) 
+			console.log(msg);
+	};
 	var version = 'dev';
 	var date = new Date();
 	var mode;       // 0 复盘模式， 1 盯盘模式
@@ -776,6 +780,7 @@ var Configure = (function(){
 	return {
 		date: date,
 		debug: debug,
+		Debug:Debug,
 		version:version,
 		setMode:setMode,
 		getMode:getMode,
