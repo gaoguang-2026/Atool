@@ -163,7 +163,7 @@ var startup = (function(text) {
 					canvasRT.reDraw(getParamEchelons(), document.getElementById('rtShowdays').value);
 				}
 			});
-			Timer.start();
+			Timer.start(Configure.Request_interval);
 			// 初始化精灵
 			rtSpirit.init();
 		}
