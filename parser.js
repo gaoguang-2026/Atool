@@ -108,8 +108,8 @@ var parser = (function(){
 		});
 		return ret;
 	};
-	// 获取过去num天内涨停过的所有票
-	var getAllBoardedTicketsFromDays = function (num){
+	// 获取过去num天内连续涨停n(默认是1)天以上的所有票
+	var getAllBoardedTicketsFromDays = function (num, n = 1){
 		var retTickets = [];
 		var dateArr = workbook.getDateArr((a,b)=>{
 			return b - a;
@@ -124,6 +124,9 @@ var parser = (function(){
 			var tArr = parser.getTickets(dateArr[i],param);
 			tArr = tArr.filter((t1)=>{
 				var isSelect = true;
+				if (t1[Configure.replaceTitleDate(Configure.title.dayNumber, dateArr[i])] < n) {
+					isSelect = false;
+				}
 				retTickets.forEach((t2)=> {
 					if(t2[Configure.title.code] == t1[Configure.title.code]){
 						isSelect = false;

@@ -327,7 +327,9 @@ var table = (function(){
 							td.innerHTML += '(新)';
 							td.className = 'grey';
 						} else if(AI.isBandTicket(ticket[Configure.title.code])) {
-								td.className = 'blue';
+							td.className = 'blue';
+						} else if(AI.isBoardsTicket(ticket[Configure.title.code])) {
+							td.className = 'lightRed';
 						};
 						if (ticket[Configure.title.dragonTag]) {
 							td.innerHTML += '  (' + ticket[Configure.title.dragonTag].tagDes.substr(0,2) + ')';

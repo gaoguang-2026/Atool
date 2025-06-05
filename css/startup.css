@@ -18,7 +18,7 @@ table,th,td {
 
 th,td {
 	text-align:center;
-	min-width: 50px;
+	min-width: 70px;
 }
 
 td,tr	{}.green{background-color: green}
@@ -26,6 +26,7 @@ td,tr	{}.green{background-color: green}
 		.lightGrey{background-color: LightGrey}
 		.red{background-color: red; color:yellow;}
 		.blue{background-color: LightSkyBlue}
+		.lightRed{background-color: LightSalmon}
 		.orange{background-color: Wheat}
 		.pink{background-color: LightPink}
 		.LightYellow{background-color: LightYellow}

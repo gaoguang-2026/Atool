@@ -408,13 +408,11 @@ var startup = (function(text) {
 			$('#rtShowdays').val(Configure.RT_canvas_show_days_num/2);
 
 			var fp = function() {
-				document.getElementById('form1').gtype[0].checked = true;
 				document.getElementById('form1').sort[2].checked = true;
 				document.getElementById('showdays').value = 60;
 				document.getElementById('rtShowdays').hidden = true;
 			};
 			var dp = function() {
-				document.getElementById('form1').gtype[2].checked = true;
 				document.getElementById('form1').sort[0].checked = true;
 				document.getElementById('showdays').value = 30;
 				document.getElementById('rtShowdays').hidden = false;
