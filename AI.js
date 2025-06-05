@@ -9,7 +9,7 @@ var AI = (function(){
 	var Rectify_factor = 7;
 	
 	var boardedTickets_10day = [];   //记录10天内所有涨停过的票
-	var boardedTickets_5day3 = [];   //记录5天内所有连续涨停3天的票
+	var boardedTickets_3day3 = [];   //记录5天内所有连续涨停3天的票
 	
 	var getAndUpdateLoacalstorage = function() {
 		var dateArr = workbook.getDateArr((a,b)=>{
@@ -286,7 +286,7 @@ var AI = (function(){
 		}) == -1;
 	};
 	var isBoardsTicket = function(code) {
-		return boardedTickets_5day3.findIndex((t)=>{
+		return boardedTickets_3day3.findIndex((t)=>{
 			return t[Configure.title.code].includes(code);
 		}) > -1;
 	};
@@ -412,7 +412,7 @@ var AI = (function(){
 		};
 		
 		boardedTickets_10day = [];
-		boardedTickets_5day3 = [];
+		boardedTickets_3day3 = [];
 	};
 	var isBandInCharge = function() {
 		var ret = false;
@@ -440,7 +440,7 @@ var AI = (function(){
 	var getRecommend = function() {
 		clear();
 		boardedTickets_10day = parser.getAllBoardedTicketsFromDays(10);
-		boardedTickets_5day3 = parser.getAllBoardedTicketsFromDays(10, 3);
+		boardedTickets_3day3 = parser.getAllBoardedTicketsFromDays(3, 3);
 		// 更新获取storage的数据
 		getAndUpdateLoacalstorage();
 		

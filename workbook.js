@@ -54,7 +54,7 @@
 	};
 	
 	var getEmotionalCycles = function(dateStr) {
-		var sheet = getSheet('周期');
+		var sheet = getSheet('情绪');
 		sheet.reverse();
 		var index = sheet.findIndex((e)=>{
 				var d = Configure.formatExcelDate(e[Configure.titleCycles.date]);
@@ -100,7 +100,7 @@
 	};
 	
 	var getDatesSheet= function() {
-		var sheet = getSheet('情绪');
+		var sheet = getSheet('周期');
 		var start = sheet.length > Configure.Days_Max_lengh ? 
 						sheet.length - Configure.Days_Max_lengh : 0;
 		var lastDate = Configure.getDateStr(Configure.date, '-');
@@ -130,7 +130,7 @@
 		return dateArr[index];
 	};
 	var getNextDate = function(dateStr, separator = '') {
-		var sheet = getSheet('情绪').reverse();    //获取原始的表
+		var sheet = getSheet('周期').reverse();    //获取原始的表
 		var index = sheet.findIndex((d)=>{
 			return Configure.formatExcelDate(d[Configure.title2.date], '') <= dateStr
 		});
@@ -139,7 +139,7 @@
 		return Configure.formatExcelDate(sheet[index][Configure.title2.date], separator);
 	};
 	var getLastDate = function(separator = '') {
-		var sheet = getSheet('情绪').reverse();    //获取原始的表
+		var sheet = getSheet('周期').reverse();    //获取原始的表
 		return  Configure.formatExcelDate(sheet[0][Configure.title2.date], separator);
 	};
 		

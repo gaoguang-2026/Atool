@@ -14,7 +14,7 @@ var dragons = (function() {
 	var dragon = {};
 	
 	var init = function () {
-		dragons = workbook.getSheet('龙头');
+		dragons = workbook.getSheet('连扳龙头');
 		dragon = getAverageValue();
 	};
 	
