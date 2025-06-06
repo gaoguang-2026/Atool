@@ -112,7 +112,16 @@ var requests = (function(){
 
 			// 监听 Worker 消息
 			worker.onmessage = function(e) {
-			  const { type, data, error } = e.data;
+				const { type, data, error } = e.data;
+				var suspendRequest = function() {
+					if(Configure.Request_suspend_duration > 0) {
+						Configure.Debug('Request suspend ' +  Configure.Request_suspend_duration + 's.');
+						worker.postMessage({ action: 'stop', data: {}});
+						setTimeout(()=>{
+							worker.postMessage({ action: 'setInterval', data: { interval: Configure.Request_interval} });
+						}, Configure.Request_suspend_duration);
+					};
+				};
 			  if (type === 'data') {
 				//Configure.Debug('收到数据:', data);
 				var resObj = JSON.parse(data);
@@ -129,18 +138,13 @@ var requests = (function(){
 					if(typeof callback === 'function') {
 						callback();
 					};
-					if(Configure.Request_suspend_duration > 0) {
-						Configure.Debug('Request suspend ' +  Configure.Request_suspend_duration + 's.');
-						worker.postMessage({ action: 'stop', data: {}});
-						setTimeout(()=>{
-							worker.postMessage({ action: 'setInterval', data: { interval: Configure.Request_interval} });
-						}, Configure.Request_suspend_duration)
-					};
+					suspendRequest();
 				} 
 				Configure.Debug('Debug --- request num = ' + reqNum++ );
 			  } else if (type === 'error') {
 				console.error('请求出错:', error);
 				speecher.speak('请求出错!', false);
+				suspendRequest();
 			  }
 			};
 
