@@ -628,7 +628,7 @@ var Configure = (function(){
 	var Band_tickit_period = 11;    // 趋势选出股票的期限      SED + TFD
 	var Band_Max_LENGTH = 22;    // 趋势选出股票画出的长度。    (SED + TFD)  * 2
 	var Band_miss_tickit_period = 11;    //趋势检查断板的期限     SED + TFD
-	var Band_tickit_filter_period = 0;   //趋势票涨停过滤期限     0 是一个涨停
+	var Band_tickit_filter_period = 1;   //趋势票涨停过滤期限     0 是一个涨停
 	var Band_MA_NUM = 5;    //MA5
 	var Band_Min_Value = 15000000000;  // 趋势票最小流通市值
 	
