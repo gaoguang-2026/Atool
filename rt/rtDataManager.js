@@ -134,6 +134,12 @@ var rtDataManager = (function(){
 	var getHistoryRTticketsBoard = function(dateStr) {
 		return rtDataStore.getHistoryFromDatestr(dateStr).filter(boardFilter);
 	};
+	var getHistoryRTticketsBoarded = function(dateStr) {
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter(boardedFilter);
+	};
+	var getHistoryRTticketsFloor = function(dateStr) {
+		return rtDataStore.getHistoryFromDatestr(dateStr).filter(floorFilter);
+	};
 	var getHistoryRTticketsFloored = function(dateStr) {
 		return rtDataStore.getHistoryFromDatestr(dateStr).filter(flooredFilter);
 	};
@@ -164,7 +170,9 @@ var rtDataManager = (function(){
 		getRTTicketFromCode:getRTTicketFromCode,
 		getHistoryRTticketsLeader:getHistoryRTticketsLeader,
 		getHistoryRTticketsBoard:getHistoryRTticketsBoard,
+		getHistoryRTticketsBoarded:getHistoryRTticketsBoarded,
 		getHistoryRTticketsFloored:getHistoryRTticketsFloored,
+		getHistoryRTticketsFloor:getHistoryRTticketsFloor,
 		getHistoryRTticketsJumped:getHistoryRTticketsJumped,
 		checkIfRtDataUpdated:checkIfRtDataUpdated,
 	}

@@ -96,10 +96,19 @@ var canvas = (function(canvas) {
 						day[Configure.title2.boardnum];
 			day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
 						day[Configure.title2.floornum]) / tickets.length).toFixed(2);
-			// 曾跌停数 和 超跌数  
-			if(!day[Configure.title2.floored] || !day[Configure.title2.jumped] ||
-				!day[Configure.title2.leader] ) {
+			if(!day[Configure.title2.failednum] || !day[Configure.title2.floornum] ||
+					!day[Configure.title2.floored]){    // 兼容
+				day[Configure.title2.floornum] = - rtDataManager.getHistoryRTticketsFloor(dateArr[dayIndex]).length;
+				day[Configure.title2.boardednum] = rtDataManager.getHistoryRTticketsBoarded(dateArr[dayIndex]).length;
 				day[Configure.title2.floored] = - rtDataManager.getHistoryRTticketsFloored(dateArr[dayIndex]).length;
+				day[Configure.title2.failednum] = day[Configure.title2.boardnum] -
+														day[Configure.title2.boardednum];
+				day[Configure.title2.failedRate] = ((day[Configure.title2.failednum] + 
+						day[Configure.title2.floornum]) / (day[Configure.title2.boardednum] - 
+							day[Configure.title2.floored])).toFixed(2);
+			}
+			// 超跌数 领涨数
+			if(!day[Configure.title2.jumped] || !day[Configure.title2.leader] ) {
 				day[Configure.title2.jumped]  = - rtDataManager.getHistoryRTticketsJumped(dateArr[dayIndex]).length;
 				day[Configure.title2.leader]  = rtDataManager.getHistoryRTticketsLeader(dateArr[dayIndex]).length;
 			}
@@ -111,9 +120,9 @@ var canvas = (function(canvas) {
 							ticket[Configure.title.realHandoverPercent] * ticket[Configure.title.realValue] / 100 : 0;
 				if(ticket[dayNumberTitle] >= 1) {
 					day[Configure.title2.totalFund] += fund;
-				} else if(ticket[dayNumberTitle] == 0 && ticket[boardTimeTilte] == '--') {
+				} /*else if(ticket[dayNumberTitle] == 0 && ticket[boardTimeTilte] == '--') {
 					day[Configure.title2.totalFund] -= fund;
-				}
+				}*/
 			});
 			day[Configure.title2.totalFund] = (day[Configure.title2.totalFund] / 100000000).toFixed(2);   // 亿为单位
 		}
@@ -327,7 +336,7 @@ var canvas = (function(canvas) {
 						height: rectHeight};
 			var grd=ctx.createLinearGradient(rect.x, rect.y + + siteHeight * winFactor * 0.5, 
 											rect.x, rect.y);
-			if(parseFloat(Days[i][title]) < 150) {
+			if(parseFloat(Days[i][title]) < maxOffset/5) {
 				grd.addColorStop(0,"yellow");
 				grd.addColorStop(1,"green");
 			} else {
