@@ -55,6 +55,7 @@ var requests = (function(){
 	// 启动定时器
 	function startTimer(data) {
 	  if (data && data.interval) interval = data.interval;
+	  if (data && data.pageSize) pageSize = data.pageSize;
 	  stopTimer(); // 确保先清除旧定时器
 	  timerId = setInterval(() => {
 		fetchData();
@@ -78,7 +79,7 @@ var requests = (function(){
 	// 发送请求
 	function fetchData() {
 	  let url = gernerateURL();
-	  console.log('fetch url -> ' + url);
+	  console.log('fetch pagenum ' + reqPageNumberIndex +' pageSize ' + pageSize + ' -> ' + url);
 	  fetch(url)
 		.then(response => {
 		  if (!response.ok) throw new Error('请求失败');
@@ -149,7 +150,8 @@ var requests = (function(){
 			};
 
 			// 启动 Worker
-			worker.postMessage({ action: 'start', data: { interval: Configure.Request_interval} });
+			worker.postMessage({ action: 'start', data: { interval: Configure.Request_interval, 
+														pageSize:Configure.Request_pagesize} });
 		 } else {
 			console.error('浏览器不支持 Web Workers!');
 		 }
